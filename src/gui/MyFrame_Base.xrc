@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="MyFrame_Base">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>1056,593</size>
+		<title>Stretcher</title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND | wxALL</flag>
+						<border>5</border>
+						<object class="wxNotebook" name="m_Experiments">
+							<object class="notebookpage">
+								<label>Initialize</label>
+								<selected>0</selected>
+								<object class="wxPanel" name="m_InitializePanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+							<object class="notebookpage">
+								<label>Clamping Position</label>
+								<selected>1</selected>
+								<object class="wxPanel" name="m_ClampingPosPanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+							<object class="notebookpage">
+								<label>Preload</label>
+								<selected>0</selected>
+								<object class="wxPanel" name="m_PreloadPanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+							<object class="notebookpage">
+								<label>E:Ramp to Failure</label>
+								<selected>0</selected>
+								<object class="wxPanel" name="m_Ramp2FailurePanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+							<object class="notebookpage">
+								<label>E:Relaxation</label>
+								<selected>0</selected>
+								<object class="wxPanel" name="m_RelaxationPanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+							<object class="notebookpage">
+								<label>E:Creep</label>
+								<selected>0</selected>
+								<object class="wxPanel" name="m_CreepPanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+							<object class="notebookpage">
+								<label>E:Fatigue Testing</label>
+								<selected>0</selected>
+								<object class="wxPanel" name="m_FatiguePanel">
+									<style>wxTAB_TRAVERSAL</style>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND | wxALL</flag>
+						<border>5</border>
+						<object class="wxPanel" name="m_Protocols">
+							<style>wxTAB_TRAVERSAL</style>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND | wxALL</flag>
+						<border>5</border>
+						<object class="wxScrolledWindow" name="m_Results">
+							<style>wxHSCROLL|wxVSCROLL</style>
+							<scrollrate>5,5</scrollrate>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>
+
