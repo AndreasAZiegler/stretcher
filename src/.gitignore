@@ -1,6 +1,6 @@
 *.xrc
 *.xrc~
-../bin/*
+bin/
 *.txt.swp
 *.txt~
 *.txt.user
