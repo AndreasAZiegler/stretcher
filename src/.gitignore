@@ -1,0 +1,7 @@
+*.xrc
+*.xrc~
+../bin/*
+*.txt.swp
+*.txt~
+*.txt.user
+*.bak

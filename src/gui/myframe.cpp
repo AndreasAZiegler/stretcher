@@ -1,4 +1,5 @@
 #include <wx/wx.h>
+#include <wx/menu.h>
 #include <wx/image.h>
 #include "myframe.h"
 
@@ -17,9 +18,10 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
 wxEND_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString &title, wxWindow *parent)
-  : MyFrame_Base(title)
+  : MyFrame_Base(title, parent)
 {
   SetIcon(wxICON(sample));
+
 }
 
 void MyFrame::OnExit(wxCommandEvent& event){

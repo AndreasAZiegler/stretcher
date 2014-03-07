@@ -1,7 +1,9 @@
 #ifndef MYFRAME_H
 #define MYFRAME_H
 
-#include "resource.h"
+#include <wx/window.h>
+#include <wx/string.h>
+#include "myframe_base.h"
 
 class MyFrame : public MyFrame_Base
 {

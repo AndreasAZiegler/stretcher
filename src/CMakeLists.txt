@@ -49,7 +49,7 @@ endif(WIN32)
  
 # Here we define the executable minimal.exe or minimal on other systems
 # the above paths and defines will be used in this build
-add_executable(Stretcher WIN32 ${SOURCE} ${HEADERS})
+add_executable(Stretcher ${SOURCE} ${HEADERS})
  
 # We add to our target 'minimal' the wxWidgets libraries. These are
 # set for us by the find script. If you need other libraries, you

@@ -2,7 +2,6 @@
 #include <wx/frame.h>
 #include "main.h"
 #include "./gui/myframe.h"
-#include "./gui/resource.h"
 
 IMPLEMENT_APP(MyApp)
 
