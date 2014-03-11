@@ -227,6 +227,6 @@ void InitXmlResource()
         else wxFileSystem::AddHandler(new wxMemoryFSHandler);
     }
 
-    XRC_ADD_FILE(wxT("XRC_resource/myports_base.cpp$K__Andreas_stretcher_src_gui_MyPorts_Base.xrc"), xml_res_file_0, xml_res_size_0, wxT("text/xml"));
-    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/myports_base.cpp$K__Andreas_stretcher_src_gui_MyPorts_Base.xrc"));
+    XRC_ADD_FILE(wxT("XRC_resource/myports_base.cpp$MyPorts_Base.xrc"), xml_res_file_0, xml_res_size_0, wxT("text/xml"));
+    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/myports_base.cpp$MyPorts_Base.xrc"));
 }

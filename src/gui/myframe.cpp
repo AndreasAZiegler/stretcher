@@ -2,6 +2,9 @@
 #include <wx/menu.h>
 #include <wx/image.h>
 #include "myframe.h"
+#include "mysamplingfrequency_base.h"
+#include "myports_base.h"
+#include "myfileoutput_base.h"
 
 //-----------------------------------------------------------------------------
 // Regular resources (the non-XRC kind).
@@ -15,6 +18,9 @@
 
 wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(wxID_EXIT,	MyFrame::OnExit)
+  EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
+  EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
+  EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
 wxEND_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString &title, wxWindow *parent)
@@ -26,4 +32,19 @@ MyFrame::MyFrame(const wxString &title, wxWindow *parent)
 
 void MyFrame::OnExit(wxCommandEvent& event){
   Close(true);
+}
+
+void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
+  MySamplingFrequency_Base *samplingFrequency = new MySamplingFrequency_Base(this);
+  samplingFrequency->Show();
+}
+
+void MyFrame::OnPortsSettings(wxCommandEvent& event){
+	MyPorts_Base *ports = new MyPorts_Base(this);
+	ports->Show();
+}
+
+void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
+	MyFileOutput_Base *fileOutput = new MyFileOutput_Base(this);
+	fileOutput->Show();
 }

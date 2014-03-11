@@ -4,6 +4,12 @@
 
 #ifndef __myports_base_h__
 #define __myports_base_h__
+
+#include <wx/stattext.h>
+#include <wx/choice.h>
+#include <wx/button.h>
+#include <wx/xrc/xmlres.h>
+
 class MyPorts_Base : public wxDialog {
 protected:
  wxStaticText* m_PortsMotor1StaticText;

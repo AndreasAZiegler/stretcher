@@ -11,8 +11,18 @@ class MyFrame : public MyFrame_Base
     MyFrame(const wxString& title, wxWindow* parent = (wxWindow *)NULL);
   private:
     void OnExit(wxCommandEvent& event);
+    void OnSamplingFrequencySettings(wxCommandEvent& event);
+    void OnPortsSettings(wxCommandEvent& event);
+    void OnFileOutputSettings(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
+};
+
+enum
+{
+    ID_SamplingFrequency = 1,
+    ID_Ports = 2,
+    ID_FileOutput = 3
 };
 
 #endif // MYFRAME_H

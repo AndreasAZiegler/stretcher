@@ -5,7 +5,6 @@
 #ifndef __myframe_base_h__
 #define __myframe_base_h__
 
-#include <wx/frame.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
@@ -16,8 +15,10 @@
 #include <wx/listbox.h>
 #include <wx/scrolwin.h>
 #include <wx/listctrl.h>
+#include <wx/filepicker.h>
+#include <wx/choice.h>
 #include <wx/xrc/xmlres.h>
-#include <wx/xrc/xmlreshandler.h>
+
 
 class MyFrame_Base : public wxFrame {
 protected:
@@ -28,14 +29,13 @@ protected:
  wxPanel* m_ClampingPosPanel;
  wxStaticText* m_ClampingPositionStaticText;
  wxSpinCtrl* m_ClampingPositionSpinCtrl;
- wxButton* m_m_ClampingPositionButton;
+ wxButton* m_ClampingPositionButton;
  wxPanel* m_PreloadPanel;
  wxRadioBox* m_PreloadUnitRadioBox;
  wxPanel* m_PreloadCalculateDiameterPanel;
  wxCheckBox* m_PreloadCalculateDiameterCheckBox;
  wxStaticText* m_PreloadYStaticText;
  wxSpinCtrl* m_PreloadYSpinCtrl;
- wxStaticText* m_PreloadXStaticText;
  wxRadioBox* m_PreloadXRadioBox;
  wxSpinCtrl* m_PreloadXSpinCtrl;
  wxStaticText* m_PreloadLimitStaticText;
@@ -126,22 +126,20 @@ protected:
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
   wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFrame_Base"), wxT("wxFrame"));
-  m_Experiments = (wxNotebook*)FindWindow("m_Experiments");
-  //m_Experiments = XRCCTRL(*this,"m_Experiments",wxNotebook);
+  m_Experiments = XRCCTRL(*this,"m_Experiments",wxNotebook);
   m_InitializePanel = XRCCTRL(*this,"m_InitializePanel",wxPanel);
   m_InitializeWarningStaticText = XRCCTRL(*this,"m_InitializeWarningStaticText",wxStaticText);
   m_InitializeHomeMotorsButton = XRCCTRL(*this,"m_InitializeHomeMotorsButton",wxButton);
   m_ClampingPosPanel = XRCCTRL(*this,"m_ClampingPosPanel",wxPanel);
   m_ClampingPositionStaticText = XRCCTRL(*this,"m_ClampingPositionStaticText",wxStaticText);
   m_ClampingPositionSpinCtrl = XRCCTRL(*this,"m_ClampingPositionSpinCtrl",wxSpinCtrl);
-  m_m_ClampingPositionButton = XRCCTRL(*this,"m_m_ClampingPositionButton",wxButton);
+  m_ClampingPositionButton = XRCCTRL(*this,"m_ClampingPositionButton",wxButton);
   m_PreloadPanel = XRCCTRL(*this,"m_PreloadPanel",wxPanel);
   m_PreloadUnitRadioBox = XRCCTRL(*this,"m_PreloadUnitRadioBox",wxRadioBox);
   m_PreloadCalculateDiameterPanel = XRCCTRL(*this,"m_PreloadCalculateDiameterPanel",wxPanel);
   m_PreloadCalculateDiameterCheckBox = XRCCTRL(*this,"m_PreloadCalculateDiameterCheckBox",wxCheckBox);
   m_PreloadYStaticText = XRCCTRL(*this,"m_PreloadYStaticText",wxStaticText);
   m_PreloadYSpinCtrl = XRCCTRL(*this,"m_PreloadYSpinCtrl",wxSpinCtrl);
-  m_PreloadXStaticText = XRCCTRL(*this,"m_PreloadXStaticText",wxStaticText);
   m_PreloadXRadioBox = XRCCTRL(*this,"m_PreloadXRadioBox",wxRadioBox);
   m_PreloadXSpinCtrl = XRCCTRL(*this,"m_PreloadXSpinCtrl",wxSpinCtrl);
   m_PreloadLimitStaticText = XRCCTRL(*this,"m_PreloadLimitStaticText",wxStaticText);
@@ -230,10 +228,8 @@ private:
   m_Graph = XRCCTRL(*this,"m_Graph",wxPanel);
  }
 public:
-MyFrame_Base(const wxString& title, wxWindow *parent=NULL)
-{
+MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
   InitWidgetsFromXRC((wxWindow *)parent);
-  SetTitle(title);
  }
 };
 

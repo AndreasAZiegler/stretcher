@@ -4,7 +4,12 @@
 
 #ifndef __myfileoutput_base_h__
 #define __myfileoutput_base_h__
-class MyFileOutput_Vase : public wxDialog {
+
+#include <wx/stattext.h>
+#include <wx/filepicker.h>
+#include <wx/xrc/xmlres.h>
+
+class MyFileOutput_Base : public wxDialog {
 protected:
  wxStaticText* m_FileOutputNameStaticText;
  wxFilePickerCtrl* m_FileOutputNameFilePicker;
@@ -20,7 +25,7 @@ private:
   wxID_CANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
  }
 public:
-MyFileOutput_Vase(wxWindow *parent=NULL){
+MyFileOutput_Base(wxWindow *parent=NULL){
   InitWidgetsFromXRC((wxWindow *)parent);
  }
 };
