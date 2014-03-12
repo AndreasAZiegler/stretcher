@@ -1,11 +1,14 @@
 /*************** Includes ************/
 #include <wx/wx.h>
 #include <wx/menu.h>
+#include <wx/checkbox.h>
 #include <wx/image.h>
 #include "myframe.h"
 #include "mysamplingfrequency_base.h"
 #include "myports_base.h"
 #include "myfileoutput_base.h"
+
+#include <iostream>
 
 //-----------------------------------------------------------------------------
 // Regular resources (the non-XRC kind).
@@ -23,6 +26,8 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
   EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
+  EVT_MENU(XRCID("m_PreloadCalculateDiameterCheckBox"), MyFrame::OnCalculateDiameter)
+  EVT_CHECKBOX(ID_CalculateDiameter, MyFrame::OnCalculateDiameter)
 wxEND_EVENT_TABLE()
 
 /**
@@ -34,6 +39,18 @@ MyFrame::MyFrame(const wxString &title, wxWindow *parent)
   : MyFrame_Base(title, parent)
 {
   SetIcon(wxICON(sample));
+
+	m_PreloadCalculateDiameterCheckBox->SetId(ID_CalculateDiameter);
+}
+
+void MyFrame::startup(void){
+	// Hide calculate diameter options
+	m_PreloadYStaticText->Show(false);
+	m_PreloadYSpinCtrl->Show(false);
+	m_PreloadXRadioBox->Show(false);
+	m_PreloadXSpinCtrl->Show(false);
+
+	m_ClampingPositionSpinCtrl->SetValue(m_ClampingPositionSpinCtrl->GetValue() + " mm");
 
 }
 
@@ -70,4 +87,20 @@ void MyFrame::OnPortsSettings(wxCommandEvent& event){
 void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
 	MyFileOutput_Base *fileOutput = new MyFileOutput_Base(this);
 	fileOutput->Show();
+}
+
+void MyFrame::OnCalculateDiameter(wxCommandEvent& event){
+	if(!m_PreloadYStaticText->IsShown()){
+		m_PreloadYStaticText->Show(true);
+		m_PreloadYSpinCtrl->Show(true);
+		m_PreloadXRadioBox->Show(true);
+		m_PreloadXSpinCtrl->Show(true);
+	}else{
+		m_PreloadYStaticText->Show(false);
+		m_PreloadYSpinCtrl->Show(false);
+		m_PreloadXRadioBox->Show(false);
+		m_PreloadXSpinCtrl->Show(false);
+	}
+
+	//this->Refresh();
 }

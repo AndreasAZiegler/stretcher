@@ -1,7 +1,7 @@
 #ifndef MYFRAME_H
 #define MYFRAME_H
 
-// Includes
+/*************** Includes ************/
 #include <wx/window.h>
 #include <wx/string.h>
 #include "myframe_base.h"
@@ -18,6 +18,8 @@ class MyFrame : public MyFrame_Base
      * @param parent Pointer to the parent object.
      */
     MyFrame(const wxString& title, wxWindow* parent = (wxWindow *)NULL);
+
+    void startup(void);
   private:
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
@@ -43,14 +45,17 @@ class MyFrame : public MyFrame_Base
      */
     void OnFileOutputSettings(wxCommandEvent& event);
 
+    void OnCalculateDiameter(wxCommandEvent& event);
+
     wxDECLARE_EVENT_TABLE();
 };
 
 enum
 {
-    ID_SamplingFrequency = 1,
-    ID_Ports = 2,
-    ID_FileOutput = 3
+	ID_SamplingFrequency = 1,
+	ID_Ports = 2,
+	ID_FileOutput = 3,
+	ID_CalculateDiameter = 44
 };
 
 #endif // MYFRAME_H

@@ -11,6 +11,7 @@
 #include <wx/button.h>
 #include <wx/spinctrl.h>
 #include <wx/radiobox.h>
+#include <wx/radiobut.h>
 #include <wx/checkbox.h>
 #include <wx/listbox.h>
 #include <wx/scrolwin.h>
@@ -18,7 +19,6 @@
 #include <wx/filepicker.h>
 #include <wx/choice.h>
 #include <wx/xrc/xmlres.h>
-
 
 class MyFrame_Base : public wxFrame {
 protected:
@@ -49,10 +49,13 @@ protected:
  wxSpinCtrl* m_ConditioningCyclesSpinCtrl;
  wxStaticText* m_ConditioningSpeedStaticText;
  wxSpinCtrl* m_ConditioningSpeedPreloadSpinCtrl;
+ wxStaticText* m_ConditioningSpeedPreloadStaticText;
  wxSpinCtrl* m_ConditioningSpeedMmSpinCtrl;
+ wxStaticText* m_ConditioningSpeedMMStaticText;
  wxStaticText* m_ConditioningStressForceLimitStaticText;
  wxSpinCtrl* m_ConditioningStressForceLimitSpinCtrl;
- wxRadioBox* m_ConditioningLimitRadioBox;
+ wxRadioButton* m_ConditioningStressRadioBtn;
+ wxRadioButton* m_ConditioningDistanceRadioBtn;
  wxStaticText* m_ConditioningDistanceLimitStaticText;
  wxSpinCtrl* m_ConditioningDistanceLimitSpinCtrl;
  wxRadioBox* m_ConditioningDisctanceLimitRadioBox;
@@ -60,7 +63,10 @@ protected:
  wxButton* wxID_ConditioningCANCEL;
  wxPanel* m_Ramp2FailurePanel;
  wxStaticText* m_R2FSpeedStaticText;
- wxSpinCtrl* m_R2FSpeedSpinCtrl;
+ wxSpinCtrl* m_R2FSpeedPreloadSpinCtrl;
+ wxStaticText* m_R2FSpeedPreloadStaticText;
+ wxSpinCtrl* m_R2FSpeedMmSpinCtrl;
+ wxStaticText* m_R2FSpeedMmStaticText;
  wxStaticText* m_R2FDropBStopStaticText;
  wxSpinCtrl* m_R2FDropBStopSpinCtrl;
  wxStaticText* m_R2FAfterFailureStaticText;
@@ -73,6 +79,7 @@ protected:
  wxStaticText* m_RelaxationRampStaticText;
  wxSpinCtrl* m_RelaxationRampSpinCtrl;
  wxRadioBox* m_RelaxationRampRadioBox;
+ wxStaticText* m_staticText321;
  wxStaticText* m_RelaxationPauseStaticText;
  wxSpinCtrl* m_RelaxationPauseSpinCtrl;
  wxStaticText* m_RelaxationStepsStaticText;
@@ -81,7 +88,10 @@ protected:
  wxButton* wxID_RelaxationCANCEL;
  wxPanel* m_CreepPanel;
  wxStaticText* m_CreepSpeedStaticText;
- wxSpinCtrl* m_CreepSpeedSpinCtrl;
+ wxSpinCtrl* m_CreepSpeedPreloadSpinCtrl;
+ wxStaticText* m_CreepSpeedPreloadStaticText;
+ wxSpinCtrl* m_CreepSpeedMmSpinCtrl;
+ wxStaticText* m_CreepSpeedMmStaticText;
  wxStaticText* m_CreepHoldForceStressStaticText;
  wxSpinCtrl* m_CreepHoldForceStressSpinCtrl;
  wxStaticText* m_CreepHoldTimeStaticText;
@@ -95,12 +105,15 @@ protected:
  wxSpinCtrl* m_FatigueTotalTimeSpinCtrl;
  wxStaticText* m_FatigueAmplitudeTimeStaticText;
  wxSpinCtrl* m_FatigueAmplitudeSpinCtrl;
- wxRadioBox* m_AmplitudeRadioBox;
- wxStaticText* m_RestTimeStaticText;
- wxSpinCtrl* m_RestTimeSpinCtrl;
- wxStaticText* m_FrequencyStaticText;
- wxSpinCtrl* m_spinCtrl24;
- wxCheckBox* m_checkBox2;
+ wxRadioBox* m_FatigueAmplitudeRadioBox;
+ wxStaticText* m_staticText33;
+ wxStaticText* m_FatigueRestTimeStaticText;
+ wxSpinCtrl* m_FatigueRestTimeSpinCtrl;
+ wxStaticText* m_FatigueFrequencyStaticText;
+ wxSpinCtrl* m_FatigueFrequencySpinCtrl;
+ wxCheckBox* m_FatigueLoopCheckBox;
+ wxButton* wxID_FatigueOK;
+ wxButton* wxID_FatigueCANCEL;
  wxButton* m_DecreaseDistanceButton;
  wxButton* m_IncreaseDistanceButton;
  wxButton* m_StopButton;
@@ -127,6 +140,7 @@ private:
  void InitWidgetsFromXRC(wxWindow *parent){
   wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFrame_Base"), wxT("wxFrame"));
   m_Experiments = XRCCTRL(*this,"m_Experiments",wxNotebook);
+  //m_Experiments = (wxNotebook*)FindWindow("m_Experiments");
   m_InitializePanel = XRCCTRL(*this,"m_InitializePanel",wxPanel);
   m_InitializeWarningStaticText = XRCCTRL(*this,"m_InitializeWarningStaticText",wxStaticText);
   m_InitializeHomeMotorsButton = XRCCTRL(*this,"m_InitializeHomeMotorsButton",wxButton);
@@ -153,10 +167,13 @@ private:
   m_ConditioningCyclesSpinCtrl = XRCCTRL(*this,"m_ConditioningCyclesSpinCtrl",wxSpinCtrl);
   m_ConditioningSpeedStaticText = XRCCTRL(*this,"m_ConditioningSpeedStaticText",wxStaticText);
   m_ConditioningSpeedPreloadSpinCtrl = XRCCTRL(*this,"m_ConditioningSpeedPreloadSpinCtrl",wxSpinCtrl);
+  m_ConditioningSpeedPreloadStaticText = XRCCTRL(*this,"m_ConditioningSpeedPreloadStaticText",wxStaticText);
   m_ConditioningSpeedMmSpinCtrl = XRCCTRL(*this,"m_ConditioningSpeedMmSpinCtrl",wxSpinCtrl);
+  m_ConditioningSpeedMMStaticText = XRCCTRL(*this,"m_ConditioningSpeedMMStaticText",wxStaticText);
   m_ConditioningStressForceLimitStaticText = XRCCTRL(*this,"m_ConditioningStressForceLimitStaticText",wxStaticText);
   m_ConditioningStressForceLimitSpinCtrl = XRCCTRL(*this,"m_ConditioningStressForceLimitSpinCtrl",wxSpinCtrl);
-  m_ConditioningLimitRadioBox = XRCCTRL(*this,"m_ConditioningLimitRadioBox",wxRadioBox);
+  m_ConditioningStressRadioBtn = XRCCTRL(*this,"m_ConditioningStressRadioBtn",wxRadioButton);
+  m_ConditioningDistanceRadioBtn = XRCCTRL(*this,"m_ConditioningDistanceRadioBtn",wxRadioButton);
   m_ConditioningDistanceLimitStaticText = XRCCTRL(*this,"m_ConditioningDistanceLimitStaticText",wxStaticText);
   m_ConditioningDistanceLimitSpinCtrl = XRCCTRL(*this,"m_ConditioningDistanceLimitSpinCtrl",wxSpinCtrl);
   m_ConditioningDisctanceLimitRadioBox = XRCCTRL(*this,"m_ConditioningDisctanceLimitRadioBox",wxRadioBox);
@@ -164,7 +181,10 @@ private:
   wxID_ConditioningCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
   m_Ramp2FailurePanel = XRCCTRL(*this,"m_Ramp2FailurePanel",wxPanel);
   m_R2FSpeedStaticText = XRCCTRL(*this,"m_R2FSpeedStaticText",wxStaticText);
-  m_R2FSpeedSpinCtrl = XRCCTRL(*this,"m_R2FSpeedSpinCtrl",wxSpinCtrl);
+  m_R2FSpeedPreloadSpinCtrl = XRCCTRL(*this,"m_R2FSpeedPreloadSpinCtrl",wxSpinCtrl);
+  m_R2FSpeedPreloadStaticText = XRCCTRL(*this,"m_R2FSpeedPreloadStaticText",wxStaticText);
+  m_R2FSpeedMmSpinCtrl = XRCCTRL(*this,"m_R2FSpeedMmSpinCtrl",wxSpinCtrl);
+  m_R2FSpeedMmStaticText = XRCCTRL(*this,"m_R2FSpeedMmStaticText",wxStaticText);
   m_R2FDropBStopStaticText = XRCCTRL(*this,"m_R2FDropBStopStaticText",wxStaticText);
   m_R2FDropBStopSpinCtrl = XRCCTRL(*this,"m_R2FDropBStopSpinCtrl",wxSpinCtrl);
   m_R2FAfterFailureStaticText = XRCCTRL(*this,"m_R2FAfterFailureStaticText",wxStaticText);
@@ -177,6 +197,7 @@ private:
   m_RelaxationRampStaticText = XRCCTRL(*this,"m_RelaxationRampStaticText",wxStaticText);
   m_RelaxationRampSpinCtrl = XRCCTRL(*this,"m_RelaxationRampSpinCtrl",wxSpinCtrl);
   m_RelaxationRampRadioBox = XRCCTRL(*this,"m_RelaxationRampRadioBox",wxRadioBox);
+  m_staticText321 = XRCCTRL(*this,"m_staticText321",wxStaticText);
   m_RelaxationPauseStaticText = XRCCTRL(*this,"m_RelaxationPauseStaticText",wxStaticText);
   m_RelaxationPauseSpinCtrl = XRCCTRL(*this,"m_RelaxationPauseSpinCtrl",wxSpinCtrl);
   m_RelaxationStepsStaticText = XRCCTRL(*this,"m_RelaxationStepsStaticText",wxStaticText);
@@ -185,7 +206,10 @@ private:
   wxID_RelaxationCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
   m_CreepPanel = XRCCTRL(*this,"m_CreepPanel",wxPanel);
   m_CreepSpeedStaticText = XRCCTRL(*this,"m_CreepSpeedStaticText",wxStaticText);
-  m_CreepSpeedSpinCtrl = XRCCTRL(*this,"m_CreepSpeedSpinCtrl",wxSpinCtrl);
+  m_CreepSpeedPreloadSpinCtrl = XRCCTRL(*this,"m_CreepSpeedPreloadSpinCtrl",wxSpinCtrl);
+  m_CreepSpeedPreloadStaticText = XRCCTRL(*this,"m_CreepSpeedPreloadStaticText",wxStaticText);
+  m_CreepSpeedMmSpinCtrl = XRCCTRL(*this,"m_CreepSpeedMmSpinCtrl",wxSpinCtrl);
+  m_CreepSpeedMmStaticText = XRCCTRL(*this,"m_CreepSpeedMmStaticText",wxStaticText);
   m_CreepHoldForceStressStaticText = XRCCTRL(*this,"m_CreepHoldForceStressStaticText",wxStaticText);
   m_CreepHoldForceStressSpinCtrl = XRCCTRL(*this,"m_CreepHoldForceStressSpinCtrl",wxSpinCtrl);
   m_CreepHoldTimeStaticText = XRCCTRL(*this,"m_CreepHoldTimeStaticText",wxStaticText);
@@ -199,12 +223,15 @@ private:
   m_FatigueTotalTimeSpinCtrl = XRCCTRL(*this,"m_FatigueTotalTimeSpinCtrl",wxSpinCtrl);
   m_FatigueAmplitudeTimeStaticText = XRCCTRL(*this,"m_FatigueAmplitudeTimeStaticText",wxStaticText);
   m_FatigueAmplitudeSpinCtrl = XRCCTRL(*this,"m_FatigueAmplitudeSpinCtrl",wxSpinCtrl);
-  m_AmplitudeRadioBox = XRCCTRL(*this,"m_AmplitudeRadioBox",wxRadioBox);
-  m_RestTimeStaticText = XRCCTRL(*this,"m_RestTimeStaticText",wxStaticText);
-  m_RestTimeSpinCtrl = XRCCTRL(*this,"m_RestTimeSpinCtrl",wxSpinCtrl);
-  m_FrequencyStaticText = XRCCTRL(*this,"m_FrequencyStaticText",wxStaticText);
-  m_spinCtrl24 = XRCCTRL(*this,"m_spinCtrl24",wxSpinCtrl);
-  m_checkBox2 = XRCCTRL(*this,"m_checkBox2",wxCheckBox);
+  m_FatigueAmplitudeRadioBox = XRCCTRL(*this,"m_FatigueAmplitudeRadioBox",wxRadioBox);
+  m_staticText33 = XRCCTRL(*this,"m_staticText33",wxStaticText);
+  m_FatigueRestTimeStaticText = XRCCTRL(*this,"m_FatigueRestTimeStaticText",wxStaticText);
+  m_FatigueRestTimeSpinCtrl = XRCCTRL(*this,"m_FatigueRestTimeSpinCtrl",wxSpinCtrl);
+  m_FatigueFrequencyStaticText = XRCCTRL(*this,"m_FatigueFrequencyStaticText",wxStaticText);
+  m_FatigueFrequencySpinCtrl = XRCCTRL(*this,"m_FatigueFrequencySpinCtrl",wxSpinCtrl);
+  m_FatigueLoopCheckBox = XRCCTRL(*this,"m_FatigueLoopCheckBox",wxCheckBox);
+  wxID_FatigueOK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_FatigueCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
   m_DecreaseDistanceButton = XRCCTRL(*this,"m_DecreaseDistanceButton",wxButton);
   m_IncreaseDistanceButton = XRCCTRL(*this,"m_IncreaseDistanceButton",wxButton);
   m_StopButton = XRCCTRL(*this,"m_StopButton",wxButton);

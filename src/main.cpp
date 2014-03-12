@@ -26,6 +26,7 @@ bool MyApp::OnInit(){
   // Create the main frame and show it
   MyFrame *myFrame = new MyFrame("Stretcher");
   myFrame->Show(true);
+  myFrame->startup();
   return(true);
 }
 
