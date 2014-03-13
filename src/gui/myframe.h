@@ -45,7 +45,31 @@ class MyFrame : public MyFrame_Base
      */
     void OnFileOutputSettings(wxCommandEvent& event);
 
+    /**
+     * @brief Method wich will be executed, when the user activates the calculate diameter settings.
+     * @param event Occuring event
+     */
     void OnCalculateDiameter(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user changes unit.
+     * @param event Occuring event
+     */
+    void OnUnit(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses distance as limit.
+     * @param event Occuring event
+     */
+    void OnDistanceLimit(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses stress as limit.
+     * @param event Occuring event
+     */
+    void OnStressLimit(wxCommandEvent& event);
+
+    void OnGoTo(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -55,7 +79,11 @@ enum
 	ID_SamplingFrequency = 1,
 	ID_Ports = 2,
 	ID_FileOutput = 3,
-	ID_CalculateDiameter = 44
+	ID_CalculateDiameter = 4,
+	ID_Unit = 5,
+	ID_DistanceLimit = 6,
+	ID_StressLimit = 7,
+	ID_GoTo = 8
 };
 
 #endif // MYFRAME_H

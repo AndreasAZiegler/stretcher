@@ -28,6 +28,10 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
   EVT_MENU(XRCID("m_PreloadCalculateDiameterCheckBox"), MyFrame::OnCalculateDiameter)
   EVT_CHECKBOX(ID_CalculateDiameter, MyFrame::OnCalculateDiameter)
+  EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
+  EVT_RADIOBUTTON(ID_DistanceLimit, MyFrame::OnDistanceLimit)
+  EVT_RADIOBUTTON(ID_StressLimit, MyFrame::OnStressLimit)
+  EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
 wxEND_EVENT_TABLE()
 
 /**
@@ -49,8 +53,20 @@ void MyFrame::startup(void){
 	m_PreloadYSpinCtrl->Show(false);
 	m_PreloadXRadioBox->Show(false);
 	m_PreloadXSpinCtrl->Show(false);
+  // Hide distance limit options
+  m_ConditioningDistanceLimitStaticText->Show(false);
+  m_ConditioningDistanceLimitSpinCtrl->Show(false);
+  m_ConditioningDisctanceLimitRadioBox->Show(false);
+  // Hide Go to options
+  m_R2FGoToSpinCtrl->Show(false);
+  m_R2FGoToRadioBox->Show(false);
 
+  // Set the required ID's
 	m_ClampingPositionSpinCtrl->SetValue(m_ClampingPositionSpinCtrl->GetValue() + " mm");
+	m_PreloadUnitRadioBox->SetId(ID_Unit);
+  m_ConditioningStressRadioBtn->SetId(ID_StressLimit);
+  m_ConditioningDistanceRadioBtn->SetId(ID_DistanceLimit);
+  m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
 
 }
 
@@ -89,6 +105,10 @@ void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
 	fileOutput->Show();
 }
 
+/**
+ * @brief Method wich will be executed, when the user activates the calculate diameter settings.
+ * @param event Occuring event
+ */
 void MyFrame::OnCalculateDiameter(wxCommandEvent& event){
 	if(!m_PreloadYStaticText->IsShown()){
 		m_PreloadYStaticText->Show(true);
@@ -101,4 +121,54 @@ void MyFrame::OnCalculateDiameter(wxCommandEvent& event){
 		m_PreloadXRadioBox->Show(false);
 		m_PreloadXSpinCtrl->Show(false);
 	}
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses stress as unit.
+ * @param event Occuring event
+ */
+void MyFrame::OnUnit(wxCommandEvent& event){
+  if(0 == m_PreloadUnitRadioBox->GetSelection()){
+    m_PreloadLimitStaticText->SetLabelText("Stress Limit");
+    m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit");
+  }else{
+    m_PreloadLimitStaticText->SetLabelText("Force Limit");
+    m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit");
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses distance as limit.
+ * @param event Occuring event
+ */
+void MyFrame::OnDistanceLimit(wxCommandEvent& event){
+  m_ConditioningDistanceLimitStaticText->Show(true);
+  m_ConditioningDistanceLimitSpinCtrl->Show(true);
+  m_ConditioningDisctanceLimitRadioBox->Show(true);
+
+  m_ConditioningStressForceLimitStaticText->Show(false);
+  m_ConditioningStressForceLimitSpinCtrl->Show(false);
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses stress as limit.
+ * @param event Occuring event
+ */
+void MyFrame::OnStressLimit(wxCommandEvent& event){
+  m_ConditioningStressForceLimitStaticText->Show(true);
+  m_ConditioningStressForceLimitSpinCtrl->Show(true);
+
+  m_ConditioningDistanceLimitStaticText->Show(false);
+  m_ConditioningDistanceLimitSpinCtrl->Show(false);
+  m_ConditioningDisctanceLimitRadioBox->Show(false);
+}
+
+void MyFrame::OnGoTo(wxCommandEvent& event){
+  if(2 == m_R2FAfterFailureRadioBox->GetSelection()){
+    m_R2FGoToSpinCtrl->Show(true);
+    m_R2FGoToRadioBox->Show(true);
+  }else{
+    m_R2FGoToSpinCtrl->Show(false);
+    m_R2FGoToRadioBox->Show(false);
+  }
 }
