@@ -101,6 +101,4 @@ void MyFrame::OnCalculateDiameter(wxCommandEvent& event){
 		m_PreloadXRadioBox->Show(false);
 		m_PreloadXSpinCtrl->Show(false);
 	}
-
-	//this->Refresh();
 }
