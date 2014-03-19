@@ -3,6 +3,8 @@
 #include <wx/menu.h>
 #include <wx/checkbox.h>
 #include <wx/image.h>
+#include "../gpPanel/gpLineLayer.h"
+#include "../gpPanel/gpPanel.h"
 #include "myframe.h"
 #include "mysamplingfrequency_base.h"
 #include "myports_base.h"
@@ -60,14 +62,57 @@ void MyFrame::startup(void){
   // Hide Go to options
   m_R2FGoToSpinCtrl->Show(false);
   m_R2FGoToRadioBox->Show(false);
+  // Set digits for the wxSpinCtrlDouble
+  m_ClampingPositionSpinCtrl->SetDigits(2);
+  m_PreloadYSpinCtrl->SetDigits(2);
+  m_PreloadXSpinCtrl->SetDigits(2);
+  m_PreloadLimitSpinCtrl->SetDigits(2);
+  m_PreloadSpeedSpinCtrl->SetDigits(2);
+  m_ConditioningSpeedMmSpinCtrl->SetDigits(2);
+  m_ConditioningSpeedPreloadSpinCtrl->SetDigits(2);
+  m_ConditioningStressForceLimitSpinCtrl->SetDigits(2);
+  m_ConditioningDistanceLimitSpinCtrl->SetDigits(2);
+  m_R2FSpeedPreloadSpinCtrl->SetDigits(2);
+  m_R2FSpeedMmSpinCtrl->SetDigits(2);
+  m_R2FDropBStopSpinCtrl->SetDigits(2);
+  m_R2FGoToSpinCtrl->SetDigits(2);
+  m_RelaxationRampSpinCtrl->SetDigits(2);
+  m_RelaxationPauseSpinCtrl->SetDigits(2);
+  m_CreepSpeedPreloadSpinCtrl->SetDigits(2);
+  m_CreepSpeedMmSpinCtrl->SetDigits(2);
+  m_CreepHoldForceStressSpinCtrl->SetDigits(2);
+  m_CreepHoldTimeSpinCtrl->SetDigits(2);
+  m_FatigueTotalTimeSpinCtrl->SetDigits(2);
+  m_FatigueAmplitudeSpinCtrl->SetDigits(2);
+  m_FatigueRestTimeSpinCtrl->SetDigits(2);
+  m_FatigueFrequencySpinCtrl->SetDigits(2);
 
   // Set the required ID's
-	m_ClampingPositionSpinCtrl->SetValue(m_ClampingPositionSpinCtrl->GetValue() + " mm");
+  wxString str;
+  str << m_ClampingPositionSpinCtrl->GetValue();
+  m_ClampingPositionSpinCtrl->SetValue(str + " mm");
 	m_PreloadUnitRadioBox->SetId(ID_Unit);
   m_ConditioningStressRadioBtn->SetId(ID_StressLimit);
   m_ConditioningDistanceRadioBtn->SetId(ID_DistanceLimit);
   m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
 
+  /*
+  gpPanel* graphPanel = new gpPanel(this, wxNewId(), wxDefaultPosition, wxSize(240,336));
+  gpLineLayer *line = new gpLineLayer(_("my line"), _("x-label"), _("y-label"));
+  m_Graph->AddChild(graphPanel);
+  */
+
+  //Push data to gpLayer
+  /*
+  for(int i=0;i<12;i++)
+     line->DataPush( i, (rand()+1)%1024);
+  */
+
+  //add gpLayer to gpPanel
+  //graphPanel->AddLayer( line,1 );
+
+  //Finally, updated graphics data
+  //line->Refresh();
 }
 
 /**
@@ -131,9 +176,11 @@ void MyFrame::OnUnit(wxCommandEvent& event){
   if(0 == m_PreloadUnitRadioBox->GetSelection()){
     m_PreloadLimitStaticText->SetLabelText("Stress Limit");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit");
+    m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress");
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit");
+    m_CreepHoldForceStressStaticText->SetLabelText("Hold Force");
   }
 }
 

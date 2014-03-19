@@ -6,6 +6,7 @@
 #define __mysamplingfrequency_base_h__
 
 #include <wx/xrc/xmlres.h>
+#include <wx/dialog.h>
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
 #include <wx/button.h>
@@ -16,8 +17,8 @@ protected:
  wxSpinCtrl* m_SamplingFrequencyDistanceSpinCtrl;
  wxStaticText* m_SamplingFrequencyForceStaticText;
  wxSpinCtrl* m_SamplingFrequencyForceSpinCtrl;
- wxButton* wxSamplingID_OK;
- wxButton* wxSamplingID_CANCEL;
+ wxButton* wxID_OK;
+ wxButton* wxID_CANCEL;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -26,8 +27,8 @@ private:
   m_SamplingFrequencyDistanceSpinCtrl = XRCCTRL(*this,"m_SamplingFrequencyDistanceSpinCtrl",wxSpinCtrl);
   m_SamplingFrequencyForceStaticText = XRCCTRL(*this,"m_SamplingFrequencyForceStaticText",wxStaticText);
   m_SamplingFrequencyForceSpinCtrl = XRCCTRL(*this,"m_SamplingFrequencyForceSpinCtrl",wxSpinCtrl);
-  wxSamplingID_OK = XRCCTRL(*this,"wxID_OK",wxButton);
-  wxSamplingID_CANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
+  wxID_OK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_CANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
  }
 public:
 MySamplingFrequency_Base(wxWindow *parent=NULL){

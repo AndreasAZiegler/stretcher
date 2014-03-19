@@ -1,20 +1,11 @@
 ##---------------------------------------------------------------------------
 ## Author:      Andreas Ziegler
 ##---------------------------------------------------------------------------
- 
-# define minimum cmake version
-cmake_minimum_required(VERSION 2.8)
- 
-# Our project is called 'minimal' this is how it will be called in
-# visual studio, and in our makefiles. 
-project(Stretcher)
- 
-# Location where cmake first looks for cmake modules.
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
 # Add the subdirectories to the CMake configuration
 include_directories("./gui")
- 
+include_directories("./gpPanel")
+
 ##---------------------------------------------------
 ## Please set your wxWidgets configuration here
 ##--------------------------------------------------- 
@@ -39,7 +30,14 @@ include( "${wxWidgets_USE_FILE}" )
 # header files and cpp/c files and CMake will sort them out
 set(SOURCE main.cpp)
 
+# Add gui part
 add_subdirectory(./gui)
+
+# Add libraries
+add_library(libgpPanel SHARED IMPORTED)
+set_target_properties(libgpPanel PROPERTIES IMPORTED_LOCATION ${CMAKE_LIBRARY_PATH}/libgpPanel.so)
+#set_target_properties(libgpPanel PROPERTIES LINKER_LANGUAGE C)
+#install(TARGETS libgpPanel DESTINATION ../bin)
  
 # If we build for windows systems, we also include the resource file
 # containing the manifest, icon and other resources
@@ -54,4 +52,4 @@ add_executable(Stretcher ${SOURCE} ${HEADERS})
 # We add to our target 'minimal' the wxWidgets libraries. These are
 # set for us by the find script. If you need other libraries, you
 # can add them here as well. 
-target_link_libraries(Stretcher ${wxWidgets_LIBRARIES})
+target_link_libraries(Stretcher ${wxWidgets_LIBRARIES} libgpPanel)

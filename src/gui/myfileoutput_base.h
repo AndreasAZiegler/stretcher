@@ -5,9 +5,10 @@
 #ifndef __myfileoutput_base_h__
 #define __myfileoutput_base_h__
 
+#include <wx/xrc/xmlres.h>
 #include <wx/stattext.h>
 #include <wx/filepicker.h>
-#include <wx/xrc/xmlres.h>
+#include <wx/button.h>
 
 class MyFileOutput_Base : public wxDialog {
 protected:
@@ -18,7 +19,7 @@ protected:
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
-  wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFileOutput_Vase"), wxT("wxDialog"));
+  wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFileOutput_Base"), wxT("wxDialog"));
   m_FileOutputNameStaticText = XRCCTRL(*this,"m_FileOutputNameStaticText",wxStaticText);
   m_FileOutputNameFilePicker = XRCCTRL(*this,"m_FileOutputNameFilePicker",wxFilePickerCtrl);
   wxID_OK = XRCCTRL(*this,"wxID_OK",wxButton);

@@ -130,8 +130,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_ClampingPositionSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_ClampingPositionSpinCtrl">
 																<value>7</value>
 																<min>0</min>
 																<max>10</max>
@@ -198,7 +197,7 @@
 																<border>5</border>
 																<object class="wxCheckBox" name="m_PreloadCalculateDiameterCheckBox">
 																	<label>Calculate diameter</label>
-																	<checked>1</checked>
+																	<checked>0</checked>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -220,8 +219,7 @@
 																		<option>0</option>
 																		<flag>wxALIGN_CENTER|wxALL</flag>
 																		<border>5</border>
-																		<object class="wxSpinCtrl" name="m_PreloadYSpinCtrl">
-																			<style>wxSP_ARROW_KEYS</style>
+																		<object class="wxSpinCtrlDouble" name="m_PreloadYSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
 																			<max>10</max>
@@ -246,8 +244,7 @@
 																		<option>0</option>
 																		<flag>wxALIGN_CENTER|wxALL</flag>
 																		<border>5</border>
-																		<object class="wxSpinCtrl" name="m_PreloadXSpinCtrl">
-																			<style>wxSP_ARROW_KEYS</style>
+																		<object class="wxSpinCtrlDouble" name="m_PreloadXSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
 																			<max>10</max>
@@ -277,8 +274,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_PreloadLimitSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_PreloadLimitSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -297,8 +293,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_PreloadSpeedSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_PreloadSpeedSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -404,8 +399,7 @@
 																	<option>0</option>
 																	<flag>wxALL</flag>
 																	<border>5</border>
-																	<object class="wxSpinCtrl" name="m_ConditioningSpeedPreloadSpinCtrl">
-																		<style>wxSP_ARROW_KEYS</style>
+																	<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedPreloadSpinCtrl">
 																		<value>7</value>
 																		<min>0</min>
 																		<max>10</max>
@@ -424,8 +418,7 @@
 																	<option>0</option>
 																	<flag>wxALL</flag>
 																	<border>5</border>
-																	<object class="wxSpinCtrl" name="m_ConditioningSpeedMmSpinCtrl">
-																		<style>wxSP_ARROW_KEYS</style>
+																	<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedMmSpinCtrl">
 																		<value>0</value>
 																		<min>0</min>
 																		<max>10</max>
@@ -463,8 +456,7 @@
 															<option>0</option>
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_ConditioningStressForceLimitSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_ConditioningStressForceLimitSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -501,8 +493,7 @@
 															<option>0</option>
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_ConditioningDistanceLimitSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_ConditioningDistanceLimitSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -614,8 +605,7 @@
 																	<option>0</option>
 																	<flag>wxALL</flag>
 																	<border>5</border>
-																	<object class="wxSpinCtrl" name="m_R2FSpeedPreloadSpinCtrl">
-																		<style>wxSP_ARROW_KEYS</style>
+																	<object class="wxSpinCtrlDouble" name="m_R2FSpeedPreloadSpinCtrl">
 																		<value>6</value>
 																		<min>0</min>
 																		<max>10</max>
@@ -634,8 +624,7 @@
 																	<option>0</option>
 																	<flag>wxALL</flag>
 																	<border>5</border>
-																	<object class="wxSpinCtrl" name="m_R2FSpeedMmSpinCtrl">
-																		<style>wxSP_ARROW_KEYS</style>
+																	<object class="wxSpinCtrlDouble" name="m_R2FSpeedMmSpinCtrl">
 																		<value>0</value>
 																		<min>0</min>
 																		<max>10</max>
@@ -665,8 +654,7 @@
 															<option>0</option>
 															<flag>wxALIGN_CENTER|wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_R2FDropBStopSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_R2FDropBStopSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -701,8 +689,7 @@
 															<option>0</option>
 															<flag>wxALIGN_BOTTOM|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_R2FGoToSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_R2FGoToSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -803,8 +790,7 @@
 															<option>0</option>
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_RelaxationRampSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_RelaxationRampSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -817,10 +803,10 @@
 															<object class="wxRadioBox" name="m_RelaxationRampRadioBox">
 																<style>wxRA_SPECIFY_ROWS</style>
 																<label></label>
-																<selection>0</selection>
+																<selection>1</selection>
 																<content>
 																	<item>distance</item>
-																	<item>expension</item>
+																	<item>expansion</item>
 																</content>
 																<dimension>1</dimension>
 															</object>
@@ -847,8 +833,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_RelaxationPauseSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_RelaxationPauseSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -914,7 +899,7 @@
 									</object>
 									<object class="notebookpage">
 										<label>E:Creep</label>
-										<selected>1</selected>
+										<selected>0</selected>
 										<object class="wxPanel" name="m_CreepPanel">
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
@@ -965,8 +950,7 @@
 																	<option>0</option>
 																	<flag>wxALL</flag>
 																	<border>5</border>
-																	<object class="wxSpinCtrl" name="m_CreepSpeedPreloadSpinCtrl">
-																		<style>wxSP_ARROW_KEYS</style>
+																	<object class="wxSpinCtrlDouble" name="m_CreepSpeedPreloadSpinCtrl">
 																		<value>0</value>
 																		<min>0</min>
 																		<max>10</max>
@@ -985,8 +969,7 @@
 																	<option>0</option>
 																	<flag>wxALL</flag>
 																	<border>5</border>
-																	<object class="wxSpinCtrl" name="m_CreepSpeedMmSpinCtrl">
-																		<style>wxSP_ARROW_KEYS</style>
+																	<object class="wxSpinCtrlDouble" name="m_CreepSpeedMmSpinCtrl">
 																		<value>0</value>
 																		<min>0</min>
 																		<max>10</max>
@@ -1008,7 +991,7 @@
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
 															<object class="wxStaticText" name="m_CreepHoldForceStressStaticText">
-																<label>Hold Force/Stress:</label>
+																<label>Hold Stress:</label>
 																<wrap>-1</wrap>
 															</object>
 														</object>
@@ -1016,8 +999,7 @@
 															<option>0</option>
 															<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_CreepHoldForceStressSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_CreepHoldForceStressSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -1036,8 +1018,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_CreepHoldTimeSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_CreepHoldTimeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -1083,7 +1064,7 @@
 									</object>
 									<object class="notebookpage">
 										<label>E:Fatigue Testing</label>
-										<selected>0</selected>
+										<selected>1</selected>
 										<object class="wxPanel" name="m_FatiguePanel">
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
@@ -1143,8 +1124,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_FatigueTotalTimeSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_FatigueTotalTimeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -1163,8 +1143,7 @@
 															<option>0</option>
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_FatigueAmplitudeSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_FatigueAmplitudeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -1207,8 +1186,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_FatigueRestTimeSpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_FatigueRestTimeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>
@@ -1227,8 +1205,7 @@
 															<option>0</option>
 															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrl" name="m_FatigueFrequencySpinCtrl">
-																<style>wxSP_ARROW_KEYS</style>
+															<object class="wxSpinCtrlDouble" name="m_FatigueFrequencySpinCtrl">
 																<value>0</value>
 																<min>0</min>
 																<max>10</max>

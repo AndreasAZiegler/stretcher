@@ -1,0 +1,20 @@
+set(HEADERS
+	${HEADERS}
+        ./gpPanel/Fourier.h
+        ./gpPanel/Fourier.inline.h
+        ./gpPanel/baseData.h
+        ./gpPanel/gpFormula.h
+        ./gpPanel/gpLayer.h
+        ./gpPanel/gpLineLayer.h
+        ./gpPanel/gpMath.h
+        ./gpPanel/gpMenu.h
+        ./gpPanel/gpMenuGroup.h
+        ./gpPanel/gpPanel.h
+        ./gpPanel/gpPopup.h
+        ./gpPanel/gpPopupGroup.h
+        ./gpPanel/gpSeries.h
+        ./gpPanel/gpSizer.h
+        ./gpPanel/mathplot.h
+        ./gpPanel/symbols.h
+	PARENT_SCOPE
+)
