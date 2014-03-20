@@ -69,7 +69,17 @@ class MyFrame : public MyFrame_Base
      */
     void OnStressLimit(wxCommandEvent& event);
 
+    /**
+     * @brief Method wich will be executed, when the user chooses "Go to" after failure in R2F.
+     * @param event Occuring event
+     */
     void OnGoTo(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses a measurement in Chamber stretch.
+     * @param event Occuring event
+     */
+    void OnChamberMeasurement(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -83,7 +93,8 @@ enum
 	ID_Unit = 5,
 	ID_DistanceLimit = 6,
 	ID_StressLimit = 7,
-	ID_GoTo = 8
+  ID_GoTo = 8,
+  ID_ChamberMeasurement = 9
 };
 
 #endif // MYFRAME_H

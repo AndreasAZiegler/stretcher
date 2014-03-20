@@ -31,6 +31,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_PreloadCalculateDiameterCheckBox"), MyFrame::OnCalculateDiameter)
   EVT_CHECKBOX(ID_CalculateDiameter, MyFrame::OnCalculateDiameter)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
+  EVT_RADIOBOX(ID_ChamberMeasurement, MyFrame::OnChamberMeasurement)
   EVT_RADIOBUTTON(ID_DistanceLimit, MyFrame::OnDistanceLimit)
   EVT_RADIOBUTTON(ID_StressLimit, MyFrame::OnStressLimit)
   EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
@@ -46,7 +47,7 @@ MyFrame::MyFrame(const wxString &title, wxWindow *parent)
 {
   SetIcon(wxICON(sample));
 
-	m_PreloadCalculateDiameterCheckBox->SetId(ID_CalculateDiameter);
+  m_PreloadCalculateCrosssectionCheckBox->SetId(ID_CalculateDiameter);
 }
 
 void MyFrame::startup(void){
@@ -55,6 +56,9 @@ void MyFrame::startup(void){
 	m_PreloadYSpinCtrl->Show(false);
 	m_PreloadXRadioBox->Show(false);
 	m_PreloadXSpinCtrl->Show(false);
+  // Hide cells panel in Chamber stretch
+  m_ChamberStretchCellsPanel->Show(false);
+
   // Hide distance limit options
   m_ConditioningDistanceLimitStaticText->Show(false);
   m_ConditioningDistanceLimitSpinCtrl->Show(false);
@@ -67,7 +71,8 @@ void MyFrame::startup(void){
   m_PreloadYSpinCtrl->SetDigits(2);
   m_PreloadXSpinCtrl->SetDigits(2);
   m_PreloadLimitSpinCtrl->SetDigits(2);
-  m_PreloadSpeedSpinCtrl->SetDigits(2);
+  m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
+  m_PreloadSpeedMmSpinCtrl->SetDigits(2);
   m_ConditioningSpeedMmSpinCtrl->SetDigits(2);
   m_ConditioningSpeedPreloadSpinCtrl->SetDigits(2);
   m_ConditioningStressForceLimitSpinCtrl->SetDigits(2);
@@ -95,6 +100,7 @@ void MyFrame::startup(void){
   m_ConditioningStressRadioBtn->SetId(ID_StressLimit);
   m_ConditioningDistanceRadioBtn->SetId(ID_DistanceLimit);
   m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
+  m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberMeasurement);
 
   /*
   gpPanel* graphPanel = new gpPanel(this, wxNewId(), wxDefaultPosition, wxSize(240,336));
@@ -210,6 +216,10 @@ void MyFrame::OnStressLimit(wxCommandEvent& event){
   m_ConditioningDisctanceLimitRadioBox->Show(false);
 }
 
+/**
+ * @brief Method wich will be executed, when the user chooses "Go to" after failure in R2F.
+ * @param event Occuring event
+ */
 void MyFrame::OnGoTo(wxCommandEvent& event){
   if(2 == m_R2FAfterFailureRadioBox->GetSelection()){
     m_R2FGoToSpinCtrl->Show(true);
@@ -217,5 +227,21 @@ void MyFrame::OnGoTo(wxCommandEvent& event){
   }else{
     m_R2FGoToSpinCtrl->Show(false);
     m_R2FGoToRadioBox->Show(false);
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses a measurement in Chamber stretch.
+ * @param event Occuring event
+ */
+void MyFrame::OnChamberMeasurement(wxCommandEvent& event){
+  if(0 == m_ChamberStretchMeasurementRadioBox->GetSelection()){
+    m_ChamberStretchCellsPanel->Show(false);
+    m_ChamberStretchGelPanel->Show(true);
+    m_ChamberStretchSizer1->Layout();
+  } else{
+    m_ChamberStretchGelPanel->Show(false);
+    m_ChamberStretchCellsPanel->Show(true);
+    m_ChamberStretchSizer1->Layout();
   }
 }

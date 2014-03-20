@@ -195,8 +195,8 @@
 																<option>0</option>
 																<flag>wxALL</flag>
 																<border>5</border>
-																<object class="wxCheckBox" name="m_PreloadCalculateDiameterCheckBox">
-																	<label>Calculate diameter</label>
+																<object class="wxCheckBox" name="m_PreloadCalculateCrosssectionCheckBox">
+																	<label>Calculate crosssection</label>
 																	<checked>0</checked>
 																</object>
 															</object>
@@ -266,13 +266,13 @@
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
 															<object class="wxStaticText" name="m_PreloadLimitStaticText">
-																<label>Stress Limit:</label>
+																<label>Stress Limit [kPa]:</label>
 																<wrap>-1</wrap>
 															</object>
 														</object>
 														<object class="sizeritem">
 															<option>0</option>
-															<flag>wxALL</flag>
+															<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 															<border>5</border>
 															<object class="wxSpinCtrlDouble" name="m_PreloadLimitSpinCtrl">
 																<value>0</value>
@@ -290,13 +290,57 @@
 															</object>
 														</object>
 														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL</flag>
+															<option>1</option>
+															<flag>wxEXPAND | wxALL</flag>
 															<border>5</border>
-															<object class="wxSpinCtrlDouble" name="m_PreloadSpeedSpinCtrl">
-																<value>0</value>
-																<min>0</min>
-																<max>10</max>
+															<object class="wxPanel" name="m_PreloadSpeedPanel">
+																<style>wxSIMPLE_BORDER</style>
+																<object class="wxFlexGridSizer">
+																	<rows>2</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols></growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_PreloadSpeedPreloadSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_PreloadSpeedPreloadStaticText">
+																			<label>% preload/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_PreloadSpeedMmSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_PreloadSpeedMmStaticText">
+																			<label>mm/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																</object>
 															</object>
 														</object>
 													</object>
@@ -309,21 +353,31 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxALIGN_RIGHT</flag>
 													<border>5</border>
-													<object class="wxStdDialogButtonSizer">
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_OK">
-																<label>&amp;OK</label>
+															<object class="wxButton" name="m_PreloadCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_CANCEL">
-																<label>&amp;Cancel</label>
+															<object class="wxButton" name="m_PreloadSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -386,51 +440,54 @@
 														</object>
 														<object class="sizeritem">
 															<option>1</option>
-															<flag>wxEXPAND</flag>
+															<flag>wxEXPAND | wxALL</flag>
 															<border>5</border>
-															<object class="wxFlexGridSizer">
-																<rows>2</rows>
-																<cols>2</cols>
-																<vgap>0</vgap>
-																<hgap>0</hgap>
-																<growablecols></growablecols>
-																<growablerows></growablerows>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL</flag>
-																	<border>5</border>
-																	<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedPreloadSpinCtrl">
-																		<value>7</value>
-																		<min>0</min>
-																		<max>10</max>
+															<object class="wxPanel" name="m_ConditioningSpeedPanel">
+																<style>wxSIMPLE_BORDER</style>
+																<object class="wxFlexGridSizer">
+																	<rows>2</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols></growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedPreloadSpinCtrl">
+																			<value>7</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																	<border>5</border>
-																	<object class="wxStaticText" name="m_ConditioningSpeedPreloadStaticText">
-																		<label>% preload/sec.</label>
-																		<wrap>-1</wrap>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_ConditioningSpeedPreloadStaticText">
+																			<label>% preload/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL</flag>
-																	<border>5</border>
-																	<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedMmSpinCtrl">
-																		<value>0</value>
-																		<min>0</min>
-																		<max>10</max>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedMmSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																	<border>5</border>
-																	<object class="wxStaticText" name="m_ConditioningSpeedMMStaticText">
-																		<label>mm/sec.</label>
-																		<wrap>-1</wrap>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_ConditioningSpeedMMStaticText">
+																			<label>mm/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
 																	</object>
 																</object>
 															</object>
@@ -448,7 +505,7 @@
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
 															<object class="wxStaticText" name="m_ConditioningStressForceLimitStaticText">
-																<label>Stress Limit:</label>
+																<label>Stress Limit [kPa]:</label>
 																<wrap>-1</wrap>
 															</object>
 														</object>
@@ -524,21 +581,31 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxALIGN_RIGHT</flag>
 													<border>5</border>
-													<object class="wxStdDialogButtonSizer">
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_OK">
-																<label>&amp;OK</label>
+															<object class="wxButton" name="m_ConditioningCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_CANCEL">
-																<label>&amp;Cancel</label>
+															<object class="wxButton" name="m_ConditioningSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -592,51 +659,54 @@
 														</object>
 														<object class="sizeritem">
 															<option>1</option>
-															<flag>wxEXPAND</flag>
+															<flag>wxEXPAND | wxALL</flag>
 															<border>5</border>
-															<object class="wxFlexGridSizer">
-																<rows>2</rows>
-																<cols>2</cols>
-																<vgap>0</vgap>
-																<hgap>0</hgap>
-																<growablecols></growablecols>
-																<growablerows></growablerows>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL</flag>
-																	<border>5</border>
-																	<object class="wxSpinCtrlDouble" name="m_R2FSpeedPreloadSpinCtrl">
-																		<value>6</value>
-																		<min>0</min>
-																		<max>10</max>
+															<object class="wxPanel" name="m_R2FSpeedPanel">
+																<style>wxSIMPLE_BORDER</style>
+																<object class="wxFlexGridSizer">
+																	<rows>2</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols></growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_R2FSpeedPreloadSpinCtrl">
+																			<value>6</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																	<border>5</border>
-																	<object class="wxStaticText" name="m_R2FSpeedPreloadStaticText">
-																		<label>% preload/sec.</label>
-																		<wrap>-1</wrap>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_R2FSpeedPreloadStaticText">
+																			<label>% preload/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL</flag>
-																	<border>5</border>
-																	<object class="wxSpinCtrlDouble" name="m_R2FSpeedMmSpinCtrl">
-																		<value>0</value>
-																		<min>0</min>
-																		<max>10</max>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_R2FSpeedMmSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																	<border>5</border>
-																	<object class="wxStaticText" name="m_R2FSpeedMmStaticText">
-																		<label>mm/sec.</label>
-																		<wrap>-1</wrap>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_R2FSpeedMmStaticText">
+																			<label>mm/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
 																	</object>
 																</object>
 															</object>
@@ -720,21 +790,31 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxALIGN_RIGHT</flag>
 													<border>5</border>
-													<object class="wxStdDialogButtonSizer">
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_OK">
-																<label>&amp;OK</label>
+															<object class="wxButton" name="m_R2FCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_CANCEL">
-																<label>&amp;Cancel</label>
+															<object class="wxButton" name="m_R2FSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -805,8 +885,8 @@
 																<label></label>
 																<selection>1</selection>
 																<content>
-																	<item>distance</item>
-																	<item>expansion</item>
+																	<item>mm</item>
+																	<item>% preload</item>
 																</content>
 																<dimension>1</dimension>
 															</object>
@@ -869,21 +949,31 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxALIGN_RIGHT</flag>
 													<border>5</border>
-													<object class="wxStdDialogButtonSizer">
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_OK">
-																<label>&amp;OK</label>
+															<object class="wxButton" name="m_RelaxationCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_CANCEL">
-																<label>&amp;Cancel</label>
+															<object class="wxButton" name="m_RelaxationSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -937,51 +1027,54 @@
 														</object>
 														<object class="sizeritem">
 															<option>1</option>
-															<flag>wxEXPAND</flag>
+															<flag>wxEXPAND | wxALL</flag>
 															<border>5</border>
-															<object class="wxFlexGridSizer">
-																<rows>2</rows>
-																<cols>2</cols>
-																<vgap>0</vgap>
-																<hgap>0</hgap>
-																<growablecols></growablecols>
-																<growablerows></growablerows>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL</flag>
-																	<border>5</border>
-																	<object class="wxSpinCtrlDouble" name="m_CreepSpeedPreloadSpinCtrl">
-																		<value>0</value>
-																		<min>0</min>
-																		<max>10</max>
+															<object class="wxPanel" name="m_CreepSpeedPanel">
+																<style>wxSIMPLE_BORDER</style>
+																<object class="wxFlexGridSizer">
+																	<rows>2</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols></growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_CreepSpeedPreloadSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																	<border>5</border>
-																	<object class="wxStaticText" name="m_CreepSpeedPreloadStaticText">
-																		<label>% preload/sec.</label>
-																		<wrap>-1</wrap>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_CreepSpeedPreloadStaticText">
+																			<label>% preload/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALL</flag>
-																	<border>5</border>
-																	<object class="wxSpinCtrlDouble" name="m_CreepSpeedMmSpinCtrl">
-																		<value>0</value>
-																		<min>0</min>
-																		<max>10</max>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_CreepSpeedMmSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
 																	</object>
-																</object>
-																<object class="sizeritem">
-																	<option>0</option>
-																	<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																	<border>5</border>
-																	<object class="wxStaticText" name="m_CreepSpeedMmStaticText">
-																		<label>mm/sec.</label>
-																		<wrap>-1</wrap>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_CreepSpeedMmStaticText">
+																			<label>mm/sec.</label>
+																			<wrap>-1</wrap>
+																		</object>
 																	</object>
 																</object>
 															</object>
@@ -991,7 +1084,7 @@
 															<flag>wxALIGN_CENTER|wxALL</flag>
 															<border>5</border>
 															<object class="wxStaticText" name="m_CreepHoldForceStressStaticText">
-																<label>Hold Stress:</label>
+																<label>Hold Stress [kPa]:</label>
 																<wrap>-1</wrap>
 															</object>
 														</object>
@@ -1034,21 +1127,31 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxALIGN_RIGHT</flag>
 													<border>5</border>
-													<object class="wxStdDialogButtonSizer">
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_OK">
-																<label>&amp;OK</label>
+															<object class="wxButton" name="m_CreepCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_CANCEL">
-																<label>&amp;Cancel</label>
+															<object class="wxButton" name="m_CreepSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -1064,7 +1167,7 @@
 									</object>
 									<object class="notebookpage">
 										<label>E:Fatigue Testing</label>
-										<selected>1</selected>
+										<selected>0</selected>
 										<object class="wxPanel" name="m_FatiguePanel">
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
@@ -1156,9 +1259,9 @@
 															<object class="wxRadioBox" name="m_FatigueAmplitudeRadioBox">
 																<style>wxRA_SPECIFY_ROWS</style>
 																<label></label>
-																<selection>1</selection>
+																<selection>0</selection>
 																<content>
-																	<item>distance</item>
+																	<item>mm</item>
 																	<item>%preload</item>
 																</content>
 																<dimension>1</dimension>
@@ -1230,21 +1333,408 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxALIGN_RIGHT</flag>
 													<border>5</border>
-													<object class="wxStdDialogButtonSizer">
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_OK">
-																<label>&amp;OK</label>
+															<object class="wxButton" name="m_FatigueCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
 															</object>
 														</object>
-														<object class="button">
-															<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
 															<border>5</border>
-															<object class="wxButton" name="wxID_CANCEL">
-																<label>&amp;Cancel</label>
+															<object class="wxButton" name="m_FatigueSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
+															</object>
+														</object>
+													</object>
+												</object>
+												<object class="spacer">
+													<option>1</option>
+													<flag>wxEXPAND</flag>
+													<border>5</border>
+													<size>0,0</size>
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="notebookpage">
+										<label>Chamber stretch</label>
+										<selected>1</selected>
+										<object class="wxPanel" name="m_ChamberStretchPanel">
+											<style>wxTAB_TRAVERSAL</style>
+											<object class="wxFlexGridSizer">
+												<rows>6</rows>
+												<cols>1</cols>
+												<vgap>0</vgap>
+												<hgap>0</hgap>
+												<growablecols>0</growablecols>
+												<growablerows>5</growablerows>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="m_ChamberStretchMeasurementRadioBox">
+														<style>wxRA_SPECIFY_COLS</style>
+														<label>Measurement</label>
+														<selection>0</selection>
+														<content>
+															<item>Gel</item>
+															<item>Cells on 2D Subs.</item>
+														</content>
+														<dimension>2</dimension>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_ChamberStretchGelPanel">
+														<style>wxTAB_TRAVERSAL</style>
+														<object class="wxFlexGridSizer">
+															<rows>6</rows>
+															<cols>4</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols></growablecols>
+															<growablerows></growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchEmodLeftStaticText">
+																	<label>Emod left:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchEmodLeftSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchEmodRightStaticText">
+																	<label>Emod right:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchEmodRightSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchStrinStaticText">
+																	<label>Strain:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchStrainSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchFreqStaticText">
+																	<label>Freq.:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchFreqSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchAmplStaticText">
+																	<label>Ampl.:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchAmplSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchRateStaticText">
+																	<label>Rate:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchRateSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchPauseStaticText">
+																	<label>Pause:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchPauseSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxCheckBox" name="m_ChamberStretchImageCheckBox">
+																	<label>Image at max./min. strain</label>
+																	<checked>0</checked>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_ChamberStretchCellsPanel">
+														<style>wxTAB_TRAVERSAL</style>
+														<hidden>1</hidden>
+														<object class="wxFlexGridSizer">
+															<rows>4</rows>
+															<cols>4</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols>3</growablecols>
+															<growablerows>3</growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchCyclesStaticText1">
+																	<label>N of cycles:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrl" name="m_ChamberStretchCyclesSpinCtrl1">
+																	<style>wxSP_ARROW_KEYS</style>
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchTotalTimeStaticText1">
+																	<label>Total time [min]:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchTotalTimeSpinCtrl1">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchAmplitudeTimeStaticText1">
+																	<label>Amplitude:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchAmplitudeSpinCtrl1">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxRadioBox" name="m_ChamberStretchAmplitudeRadioBox1">
+																	<style>wxRA_SPECIFY_ROWS</style>
+																	<label></label>
+																	<selection>0</selection>
+																	<content>
+																		<item>mm</item>
+																		<item>%preload</item>
+																	</content>
+																	<dimension>1</dimension>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchText331">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchRestTimeStaticText1">
+																	<label>Rest time [h]:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchRestTimeSpinCtrl1">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ChamberStretchFrequencyStaticText1">
+																	<label>Frequency [cycles/h]:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ChamberStretchFrequencySpinCtrl1">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxCheckBox" name="m_ChamberStretchLoopCheckBox1">
+																	<label>Loop + nr.</label>
+																	<checked>0</checked>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+												<object class="spacer">
+													<option>1</option>
+													<flag>wxEXPAND</flag>
+													<border>5</border>
+													<size>0,0</size>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxALIGN_RIGHT</flag>
+													<border>5</border>
+													<object class="wxFlexGridSizer">
+														<rows>0</rows>
+														<cols>2</cols>
+														<vgap>0</vgap>
+														<hgap>0</hgap>
+														<growablecols></growablecols>
+														<growablerows></growablerows>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
+															<border>5</border>
+															<object class="wxButton" name="m_ChamberStretchCancelButton">
+																<label>Cancel</label>
+																<default>0</default>
+															</object>
+														</object>
+														<object class="sizeritem">
+															<option>0</option>
+															<flag>wxALL</flag>
+															<border>5</border>
+															<object class="wxButton" name="m_ChamberStretchSendButton">
+																<label>Send to protocol</label>
+																<default>0</default>
 															</object>
 														</object>
 													</object>
@@ -1335,8 +1825,8 @@
 									<object class="wxPanel" name="m_ProtocolsNavigationPanel">
 										<style>wxTAB_TRAVERSAL</style>
 										<object class="wxFlexGridSizer">
-											<rows>5</rows>
-											<cols>2</cols>
+											<rows>6</rows>
+											<cols>3</cols>
 											<vgap>0</vgap>
 											<hgap>0</hgap>
 											<growablecols>0,1</growablecols>
@@ -1361,6 +1851,15 @@
 											</object>
 											<object class="sizeritem">
 												<option>0</option>
+												<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+												<border>5</border>
+												<object class="wxButton" name="m_ProtocolsPauseButton">
+													<label>Pause</label>
+													<default>0</default>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
 												<object class="wxButton" name="m_ProtocolsExperiment2Button">
@@ -1374,6 +1873,15 @@
 												<border>5</border>
 												<object class="wxButton" name="m_ProtocolsUpButton">
 													<label>↑</label>
+													<default>0</default>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+												<border>5</border>
+												<object class="wxButton" name="m_ProtocolsPhotoButton">
+													<label>Photo</label>
 													<default>0</default>
 												</object>
 											</object>
@@ -1397,6 +1905,15 @@
 											</object>
 											<object class="sizeritem">
 												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="m_staticText324">
+													<label></label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
 												<object class="wxButton" name="m_ProtocolsExperiment4Button">
@@ -1415,6 +1932,15 @@
 											</object>
 											<object class="sizeritem">
 												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="m_staticText325">
+													<label></label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
 												<object class="wxButton" name="m_ProtocolsExperiment5Button">
@@ -1429,6 +1955,42 @@
 												<object class="wxCheckBox" name="m_checkBox3">
 													<label>Loop</label>
 													<checked>0</checked>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="m_staticText326">
+													<label></label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxButton" name="m_ProtocolsRunButton">
+													<label>Run</label>
+													<default>0</default>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxButton" name="m_ProtocolsStopButton">
+													<label>Stop</label>
+													<default>0</default>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxButton" name="m_ProtocolsSaveButton">
+													<label>Save</label>
+													<default>0</default>
 												</object>
 											</object>
 										</object>
