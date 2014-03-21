@@ -1584,7 +1584,6 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrl" name="m_ChamberStretchCyclesSpinCtrl1">
-																	<style>wxSP_ARROW_KEYS</style>
 																	<value>0</value>
 																	<min>0</min>
 																	<max>10</max>
@@ -2056,10 +2055,50 @@
 						<option>1</option>
 						<flag>wxEXPAND | wxALL</flag>
 						<border>5</border>
-						<object class="wxPanel" name="m_Graph">
+						<object class="wxPanel" name="m_GraphPanel">
 							<style>wxTAB_TRAVERSAL</style>
-							<object class="wxBoxSizer">
-								<orient>wxVERTICAL</orient>
+							<object class="wxFlexGridSizer">
+								<rows>2</rows>
+								<cols>1</cols>
+								<vgap>0</vgap>
+								<hgap>0</hgap>
+								<growablecols>0</growablecols>
+								<growablerows>0</growablerows>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxButton" name="m_GraphExportCSVButton">
+												<label>Export CSV</label>
+												<default>0</default>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxButton" name="m_GraphExportPNGButton">
+												<label>Export PNG</label>
+												<default>0</default>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxButton" name="m_GraphClearButton">
+												<label>Clear</label>
+												<default>0</default>
+											</object>
+										</object>
+									</object>
+								</object>
 							</object>
 						</object>
 					</object>

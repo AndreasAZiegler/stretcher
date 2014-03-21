@@ -81,6 +81,9 @@ class MyFrame : public MyFrame_Base
      */
     void OnChamberMeasurement(wxCommandEvent& event);
 
+    mpWindow* m_Graph;
+
+
     wxDECLARE_EVENT_TABLE();
 };
 

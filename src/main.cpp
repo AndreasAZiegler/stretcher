@@ -7,6 +7,7 @@
 #include "main.h"
 #include "./gui/myframe.h"
 #include "./gui/xh_wxspinctrldoublexmlhandler.h"
+#include "./gui/xh_mathplotxmlhandler.h"
 #include <wx/spinctrl.h>
 
 // Define main app.
@@ -26,6 +27,7 @@ bool MyApp::OnInit(){
 //  wxXmlResource::AddHandler(tmp);
 //  wxXmlResource::AddHandler(new wxIconXmlHandler);
   wxXmlResource::Get()->AddHandler(new wxSpinCtrlDoubleXmlHandler);
+  wxXmlResource::Get()->AddHandler(new mpWindowXmlHandler);
   wxXmlResource::Get()->InitAllHandlers();
   // Load all xrc files from the subfolder gui.
   if(false == wxXmlResource::Get()->LoadAllFiles("gui")){

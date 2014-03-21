@@ -4,7 +4,6 @@
 
 # Add the subdirectories to the CMake configuration
 include_directories("./gui")
-include_directories("./gpPanel")
 
 ##---------------------------------------------------
 ## Please set your wxWidgets configuration here
@@ -29,13 +28,14 @@ include( "${wxWidgets_USE_FILE}" )
 # For convenience we define the sources as a variable. You can add 
 # header files and cpp/c files and CMake will sort them out
 set(SOURCE main.cpp)
+set(HEADERS main.h)
 
 # Add gui part
 add_subdirectory(./gui)
 
 # Add libraries
-add_library(libgpPanel SHARED IMPORTED)
-set_target_properties(libgpPanel PROPERTIES IMPORTED_LOCATION ${CMAKE_LIBRARY_PATH}/libgpPanel.so)
+add_library(libmathplot SHARED IMPORTED)
+set_target_properties(libmathplot PROPERTIES IMPORTED_LOCATION ${CMAKE_LIBRARY_PATH}/libmathplot.so)
 #set_target_properties(libgpPanel PROPERTIES LINKER_LANGUAGE C)
 #install(TARGETS libgpPanel DESTINATION ../bin)
  
@@ -52,4 +52,4 @@ add_executable(Stretcher ${SOURCE} ${HEADERS})
 # We add to our target 'minimal' the wxWidgets libraries. These are
 # set for us by the find script. If you need other libraries, you
 # can add them here as well. 
-target_link_libraries(Stretcher ${wxWidgets_LIBRARIES} libgpPanel)
+target_link_libraries(Stretcher ${wxWidgets_LIBRARIES} libmathplot)

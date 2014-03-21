@@ -2,7 +2,8 @@ set(SOURCE
 	${SOURCE}
         ./gui/myframe.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
-	PARENT_SCOPE
+        ./gui/xh_mathplotxmlhandler.cpp
+        PARENT_SCOPE
 )
 
 set(HEADERS
@@ -13,5 +14,6 @@ set(HEADERS
         ./gui/mysamplingfrequency_base.h
         ./gui/myframe.h
         ./gui/xh_wxspinctrldoublexmlhandler.h
+        ./gui/xh_mathplotxmlhandler.h
         PARENT_SCOPE
 )

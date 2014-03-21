@@ -17,7 +17,6 @@
 wxFlexGridSizer* m_ChamberStretchSizer1;
 
 wxBoxSizer* m_GraphSizer1;
-wxBoxSizer* m_GraphSizer2;
 
 m_ChamberStretchSizer1 = static_cast<wxFlexGridSizer*>(m_ChamberStretchGelPanel->GetContainingSizer());
 

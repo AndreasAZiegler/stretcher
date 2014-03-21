@@ -18,6 +18,7 @@
 #include <wx/listctrl.h>
 #include <wx/filepicker.h>
 #include <wx/choice.h>
+#include <mathplot.h>
 #include <wx/xrc/xmlres.h>
 
 class MyFrame_Base : public wxFrame {
@@ -125,7 +126,6 @@ protected:
  wxFlexGridSizer* m_ChamberStretchSizer1;
  wxRadioBox* m_ChamberStretchMeasurementRadioBox;
  wxPanel* m_ChamberStretchGelPanel;
- wxFlexGridSizer* m_ChamberStretchSizer21;
  wxStaticText* m_ChamberStretchEmodLeftStaticText;
  wxSpinCtrlDouble* m_ChamberStretchEmodLeftSpinCtrl;
  wxStaticText* m_ChamberStretchEmodRightStaticText;
@@ -142,7 +142,6 @@ protected:
  wxSpinCtrlDouble* m_ChamberStretchPauseSpinCtrl;
  wxCheckBox* m_ChamberStretchImageCheckBox;
  wxPanel* m_ChamberStretchCellsPanel;
- wxFlexGridSizer* m_ChamberStretchSizer22;
  wxStaticText* m_ChamberStretchCyclesStaticText1;
  wxSpinCtrl* m_ChamberStretchCyclesSpinCtrl1;
  wxStaticText* m_ChamberStretchTotalTimeStaticText1;
@@ -186,7 +185,12 @@ protected:
  wxScrolledWindow* m_Results;
  wxListCtrl* m_ResultListCtrl;
  wxButton* m_ResultSaveButton;
- wxPanel* m_Graph;
+ wxPanel* m_GraphPanel;
+ wxBoxSizer* m_GraphSizer1;
+ wxBoxSizer* m_GraphSizer2;
+ wxButton* m_GraphExportCSVButton;
+ wxButton* m_GraphExportPNGButton;
+ wxButton* m_GraphClearButton;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -308,7 +312,6 @@ private:
   m_ChamberStretchPauseStaticText = XRCCTRL(*this,"m_ChamberStretchPauseStaticText",wxStaticText);
   m_ChamberStretchPauseSpinCtrl = XRCCTRL(*this,"m_ChamberStretchPauseSpinCtrl",wxSpinCtrlDouble);
   m_ChamberStretchImageCheckBox = XRCCTRL(*this,"m_ChamberStretchImageCheckBox",wxCheckBox);
-  m_ChamberStretchSizer21 = static_cast<wxFlexGridSizer*>(m_ChamberStretchImageCheckBox->GetContainingSizer());
   m_ChamberStretchCellsPanel = XRCCTRL(*this,"m_ChamberStretchCellsPanel",wxPanel);
   m_ChamberStretchCyclesStaticText1 = XRCCTRL(*this,"m_ChamberStretchCyclesStaticText1",wxStaticText);
   m_ChamberStretchCyclesSpinCtrl1 = XRCCTRL(*this,"m_ChamberStretchCyclesSpinCtrl1",wxSpinCtrl);
@@ -323,10 +326,9 @@ private:
   m_ChamberStretchFrequencyStaticText1 = XRCCTRL(*this,"m_ChamberStretchFrequencyStaticText1",wxStaticText);
   m_ChamberStretchFrequencySpinCtrl1 = XRCCTRL(*this,"m_ChamberStretchFrequencySpinCtrl1",wxSpinCtrlDouble);
   m_ChamberStretchLoopCheckBox1 = XRCCTRL(*this,"m_ChamberStretchLoopCheckBox1",wxCheckBox);
-  m_ChamberStretchSizer22 = static_cast<wxFlexGridSizer*>(m_ChamberStretchLoopCheckBox1->GetContainingSizer());
   m_ChamberStretchCancelButton = XRCCTRL(*this,"m_ChamberStretchCancelButton",wxButton);
   m_ChamberStretchSendButton = XRCCTRL(*this,"m_ChamberStretchSendButton",wxButton);
-  m_ChamberStretchSizer1 = static_cast<wxFlexGridSizer*>(m_ChamberStretchCellsPanel->GetContainingSizer());
+  m_ChamberStretchSizer1 = static_cast<wxFlexGridSizer*>(m_ChamberStretchGelPanel->GetContainingSizer());
   m_DecreaseDistanceButton = XRCCTRL(*this,"m_DecreaseDistanceButton",wxButton);
   m_IncreaseDistanceButton = XRCCTRL(*this,"m_IncreaseDistanceButton",wxButton);
   m_StopButton = XRCCTRL(*this,"m_StopButton",wxButton);
@@ -355,7 +357,12 @@ private:
   m_Results = XRCCTRL(*this,"m_Results",wxScrolledWindow);
   m_ResultListCtrl = XRCCTRL(*this,"m_ResultListCtrl",wxListCtrl);
   m_ResultSaveButton = XRCCTRL(*this,"m_ResultSaveButton",wxButton);
-  m_Graph = XRCCTRL(*this,"m_Graph",wxPanel);
+  m_GraphPanel = XRCCTRL(*this,"m_GraphPanel",wxPanel);
+  m_GraphExportCSVButton = XRCCTRL(*this,"m_GraphExportCSVButton",wxButton);
+  m_GraphExportPNGButton = XRCCTRL(*this,"m_GraphExportPNGButton",wxButton);
+  m_GraphClearButton = XRCCTRL(*this,"m_GraphClearButton",wxButton);
+  m_GraphSizer2 = static_cast<wxBoxSizer*>(m_GraphExportCSVButton->GetContainingSizer());
+  m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
  }
 public:
 MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
