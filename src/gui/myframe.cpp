@@ -135,11 +135,11 @@ MyFrame::MyFrame(const wxString &title, wxWindow *parent)
   l->SetPen( mypen);
   //----------------------------
 
+  // Add graph to window
   m_Graph->Fit();
   m_GraphSizer1->Insert(0, m_Graph, 0, wxEXPAND);
   m_GraphPanel->Layout();
 
-  //m_Graph->SetMPScrollbars(false);
   }
 
 void MyFrame::startup(void){
