@@ -43,7 +43,14 @@
 						<border>5</border>
 						<object class="wxChoice" name="m_PortsMotor1Choice">
 							<selection>0</selection>
-							<content />
+							<content>
+								<item>ttyUSB0</item>
+								<item>ttyUSB1</item>
+								<item>ttyUSB2</item>
+								<item>ttyUSB3</item>
+								<item>ttyUSB4</item>
+								<item>ttyUSB5</item>
+							</content>
 						</object>
 					</object>
 					<object class="sizeritem">
@@ -60,8 +67,15 @@
 						<flag>wxALL</flag>
 						<border>5</border>
 						<object class="wxChoice" name="m_PortsMotor2Choice">
-							<selection>0</selection>
-							<content />
+							<selection>1</selection>
+							<content>
+								<item>ttyUSB0</item>
+								<item>ttyUSB1</item>
+								<item>ttyUSB2</item>
+								<item>ttyUSB3</item>
+								<item>ttyUSB4</item>
+								<item>ttyUSB5</item>
+							</content>
 						</object>
 					</object>
 					<object class="sizeritem">
@@ -78,8 +92,15 @@
 						<flag>wxALL</flag>
 						<border>5</border>
 						<object class="wxChoice" name="m_PortsForceChoice">
-							<selection>0</selection>
-							<content />
+							<selection>2</selection>
+							<content>
+								<item>ttyUSB0</item>
+								<item>ttyUSB1</item>
+								<item>ttyUSB2</item>
+								<item>ttyUSB3</item>
+								<item>ttyUSB4</item>
+								<item>ttyUSB5</item>
+							</content>
 						</object>
 					</object>
 				</object>

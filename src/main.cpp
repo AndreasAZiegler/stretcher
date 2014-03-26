@@ -23,8 +23,6 @@ bool MyApp::OnInit(){
   }
 
   // Get all handlers
-  wxSpinCtrlDoubleXmlHandler *tmp = new wxSpinCtrlDoubleXmlHandler();
-//  wxXmlResource::AddHandler(tmp);
 //  wxXmlResource::AddHandler(new wxIconXmlHandler);
   wxXmlResource::Get()->AddHandler(new wxSpinCtrlDoubleXmlHandler);
   wxXmlResource::Get()->AddHandler(new mpWindowXmlHandler);

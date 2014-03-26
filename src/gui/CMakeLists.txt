@@ -1,6 +1,7 @@
 set(SOURCE
 	${SOURCE}
         ./gui/myframe.cpp
+        ./gui/myports.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
         ./gui/xh_mathplotxmlhandler.cpp
         PARENT_SCOPE

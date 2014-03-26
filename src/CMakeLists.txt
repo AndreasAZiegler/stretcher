@@ -4,6 +4,7 @@
 
 # Add the subdirectories to the CMake configuration
 include_directories("./gui")
+include_directories("./hardware")
 
 ##---------------------------------------------------
 ## Please set your wxWidgets configuration here
@@ -32,12 +33,25 @@ set(HEADERS main.h)
 
 # Add gui part
 add_subdirectory(./gui)
+# Add hardware parts
+add_subdirectory(./hardware)
 
-# Add libraries
-add_library(libmathplot SHARED IMPORTED)
-set_target_properties(libmathplot PROPERTIES IMPORTED_LOCATION ${CMAKE_LIBRARY_PATH}/libmathplot.so)
+# Add library for the serial interface wxctb-0.13
+find_package(Wxctb REQUIRED)
+if(WXCTB_FOUND)
+  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${WXCTB_INCLUDE_DIR})
+  set(EXTERN_LIBS ${EXTERN_LIBS} ${WXCTB_LIBRARY})
+endif(WXCTB_FOUND)
+
+# Add library for the graph wxmathplot
+find_package(Libmathplot REQUIRED)
+if(WXMATHPLOT_FOUND)
+  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${WXMATHPLOT_INCLUDE_DIR})
+  set(EXTERN_LIBS ${EXTERN_LIBS} ${WXMATHPLOT_LIBRARY})
+endif(WXMATHPLOT_FOUND)
+
 #set_target_properties(libgpPanel PROPERTIES LINKER_LANGUAGE C)
-#install(TARGETS libgpPanel DESTINATION ../bin)
+#install(TARGETS libwxctb DESTINATION ../build)
  
 # If we build for windows systems, we also include the resource file
 # containing the manifest, icon and other resources
@@ -52,4 +66,10 @@ add_executable(Stretcher ${SOURCE} ${HEADERS})
 # We add to our target 'minimal' the wxWidgets libraries. These are
 # set for us by the find script. If you need other libraries, you
 # can add them here as well. 
-target_link_libraries(Stretcher ${wxWidgets_LIBRARIES} libmathplot)
+include_directories(${EXTERN_INCLUDES})
+target_link_libraries(Stretcher ${wxWidgets_LIBRARIES} "${EXTERN_LIBS}")
+
+# Installation
+install(TARGETS Stretcher DESTINATION bin)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/src/gui" DESTINATION bin/gui)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/lib" DESTINATION bin)

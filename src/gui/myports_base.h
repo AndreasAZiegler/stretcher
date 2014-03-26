@@ -6,6 +6,7 @@
 #define __myports_base_h__
 
 #include <wx/xrc/xmlres.h>
+#include <wx/dialog.h>
 #include <wx/stattext.h>
 #include <wx/choice.h>
 #include <wx/button.h>
@@ -18,8 +19,8 @@ protected:
  wxChoice* m_PortsMotor2Choice;
  wxStaticText* m_PortsForceStaticText;
  wxChoice* m_PortsForceChoice;
- wxButton* wxID_OK;
- wxButton* wxID_CANCEL;
+ wxButton* wxID_PortsOK;
+ wxButton* wxID_PortsCANCEL;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -30,8 +31,8 @@ private:
   m_PortsMotor2Choice = XRCCTRL(*this,"m_PortsMotor2Choice",wxChoice);
   m_PortsForceStaticText = XRCCTRL(*this,"m_PortsForceStaticText",wxStaticText);
   m_PortsForceChoice = XRCCTRL(*this,"m_PortsForceChoice",wxChoice);
-  wxID_OK = XRCCTRL(*this,"wxID_OK",wxButton);
-  wxID_CANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
+  wxID_PortsOK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_PortsCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
  }
 public:
 MyPorts_Base(wxWindow *parent=NULL){
@@ -39,6 +40,5 @@ MyPorts_Base(wxWindow *parent=NULL){
  }
 };
 
-void 
-InitXmlResource();
+//void InitXmlResource();
 #endif

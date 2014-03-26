@@ -3,10 +3,10 @@
 #include <wx/menu.h>
 #include <wx/checkbox.h>
 #include <wx/image.h>
-#include "../../include/mathplot.h"
+#include "../../include/ctb-0.13/serport.h"
 #include "myframe.h"
 #include "mysamplingfrequency_base.h"
-#include "myports_base.h"
+#include "myports.h"
 #include "myfileoutput_base.h"
 
 #include <iostream>
@@ -211,7 +211,8 @@ void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPortsSettings(wxCommandEvent& event){
-	MyPorts_Base *ports = new MyPorts_Base(this);
+  MyPorts *ports = new MyPorts(this);
+
 	ports->Show();
 }
 
