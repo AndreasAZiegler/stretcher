@@ -1,15 +1,8 @@
-/*
- Copyright (c) 2009-2011, Reto Grieder
 
- Permission to use, copy, modify, and/or distribute this software for any
- purpose with or without fee is hereby granted, provided that the above
- copyright notice and this permission notice appear in all copies.
- This software is provided 'as-is', without any express or implied warranty.
-*/
+#ifndef SERIALINTERFACE_H
+#define SERIALINTERFACE_H
 
-#ifndef _SerialInterface_H__
-#define _SerialInterface_H__
-
+// Includes
 #include <wx-3.0/wx/ctb-0.13/serport.h>
 #include <string>
 
@@ -19,12 +12,21 @@
 class SerialInterface
 {
   public:
-    //! Initialises the values and creates the wxSerialPort
-    SerialInterface(std::string iPort = "com0", unsigned int iBaudrate = 9600);
-    //! Closes the port if still open
+    /**
+     * @brief Initialises the com port and the baud rate and creates the wxSerialPort
+     * @param Port com port
+     * @param Baudrate baudrate
+     */
+    SerialInterface(std::string comPort = "com0", unsigned int baudrate = 9600);
+
+    /**
+     * @brief Closes the port if still open
+     */
     virtual ~SerialInterface();
 
-    //! Opens the connection with the specified baud rate and port
+    /**
+     * @brief Opens the connection with the specified baud rate and port
+     */
     virtual void connect();
 
     /**
@@ -33,12 +35,12 @@ class SerialInterface
     virtual void disconnect();
 
   protected:
-    wxSerialPort* mSerialPort;  //!< We use a pointer to avoid the include file in this header
-    std::string   mPort;        //!< Port as string in the form "com3" for instance
-    unsigned int  mBaudrate;    //!< Serial port baud rate
+    wxSerialPort	m_SerialPort;  /**< Pointer to the serial port object */
+    std::string   m_ComPort;     /**< Port as string in the form "com3" for instance */
+    unsigned int  m_Baudrate;    /**< Serial port baud rate */
 
   private:
-    SerialInterface(const SerialInterface&); //!< Don't use (undefined symbol)
+    SerialInterface(const SerialInterface&) = delete; /**< Don't use (undefined symbol) */
 };
 
-#endif /* _SerialInterface_H__ */
+#endif /* SERIALINTERFACE_H */

@@ -1,38 +1,42 @@
-/*
- Copyright (c) 2009-2011, Reto Grieder
 
- Permission to use, copy, modify, and/or distribute this software for any
- purpose with or without fee is hereby granted, provided that the above
- copyright notice and this permission notice appear in all copies.
- This software is provided 'as-is', without any express or implied warranty.
-*/
-
+// Includes
 #include "serialinterface.h"
 
-SerialInterface::SerialInterface(std::string iPort, unsigned int iBaudrate)
-  : mPort(iPort), mBaudrate(iBaudrate)
+/**
+ * @brief Initialises the com port and the baud rate and creates the wxSerialPort
+ * @param Port com port
+ * @param Baudrate baudrate
+ */
+SerialInterface::SerialInterface(std::string comPort, unsigned int baudrate)
+  : m_ComPort(comPort), m_Baudrate(baudrate)
 {
-  mSerialPort = new wxSerialPort();
+  //m_SerialPort = new wxSerialPort();
 }
 
+/**
+ * @brief Closes the port if still open
+ */
 SerialInterface::~SerialInterface()
 {
-  if (mSerialPort->IsOpen()){
-    mSerialPort->Close();
+  if(m_SerialPort.IsOpen()){
+    m_SerialPort.Close();
   }
-  delete mSerialPort;
+  //delete m_SerialPort;
 }
 
+/**
+ * @brief Opens the connection with the specified baud rate and port
+ */
 void SerialInterface::connect()
 {
   wxSerialPort_DCS parameters;
-  parameters.baud = (wxBaud)mBaudrate;
-  mSerialPort->Open(mPort.c_str(), &parameters);
+  parameters.baud = (wxBaud)m_Baudrate;
+  m_SerialPort.Open(m_ComPort.c_str(), &parameters);
 }
 
 /**
  * @brief Close the existing connection.
  */
 void SerialInterface::disconnect() {
-  mSerialPort->Close();
+  m_SerialPort.Close();
 }

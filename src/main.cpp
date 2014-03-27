@@ -5,7 +5,6 @@
 #include <wx/frame.h>
 #include <wx/grid.h>
 #include "main.h"
-#include "./gui/myframe.h"
 #include "./gui/xh_wxspinctrldoublexmlhandler.h"
 #include "./gui/xh_mathplotxmlhandler.h"
 #include <wx/spinctrl.h>
@@ -33,9 +32,9 @@ bool MyApp::OnInit(){
   }
 
   // Create the main frame and show it
-  MyFrame *myFrame = new MyFrame("Stretcher");
-  myFrame->Show(true);
-  myFrame->startup();
+  m_MyFrame = new MyFrame("Stretcher");
+  m_MyFrame->Show(true);
+  m_MyFrame->startup();
   return(true);
 }
 

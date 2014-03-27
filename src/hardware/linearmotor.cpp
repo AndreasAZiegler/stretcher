@@ -1,24 +1,19 @@
-/*
- Copyright (c) 2009-2013, Reto Grieder, Benjamin Beyeler, Andreas Ziegler
 
- Permission to use, copy, modify, and/or distribute this software for any
- purpose with or without fee is hereby granted, provided that the above
- copyright notice and this permission notice appear in all copies.
- This software is provided 'as-is', without any express or implied warranty.
-*/
-
+// Includes
 #include "linearmotor.h"
 #include "../../include/ctb-0.13/serport.h"
 
-
-//LinearMotor::LinearMotor(QObject* parent, AutoStretch* iAutoStretch)
-LinearMotor::LinearMotor()
-    //: QObject(parent),
-    : SerialInterface("com4", 9600/*baudrate*/),
+/**
+ * @brief Forwards the com port and the baud rate to SerialPort
+ * @param comPort com port
+ * @param baudrate baudrate
+ */
+LinearMotor::LinearMotor(std::string comPort, unsigned int baudrate)
+    : SerialInterface(comPort, baudrate),
     mExpectedMessagesFlag(0),
     mOldPositionFlag(true),
     mMoveFinishedFlag(true),
-    mStepsize(0.000047625),                    //Stepsize of Zaber T-LSM025A motor in millimeters
+    m_Stepsize(0.000047625),                    //Stepsize of Zaber T-LSM025A motor in millimeters
     mOscstate(0),
     mStoprequest(false),
     mLMtimerID(0),
@@ -34,12 +29,12 @@ LinearMotor::LinearMotor()
     MOTORS_STOP("\x00\x017"),
     MM_PER_MS(0.000047625),
     DecIncSpeed(0.3),
-    mZeroDistance(45144/*microsteps=6.39mm offset */),
+    m_ZeroDistance(45144/*microsteps=6.39mm offset */),
     mPositionPendingFlag(false),
     mStartUpFlag(true)
-  {
-  }
+{
+}
 
-  LinearMotor::~LinearMotor()
-  {
-  }
+LinearMotor::~LinearMotor()
+{
+}

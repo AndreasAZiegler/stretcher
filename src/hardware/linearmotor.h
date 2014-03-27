@@ -1,11 +1,3 @@
-/*
- Copyright (c) 2014, Andreas Ziegler
-
- Permission to use, copy, modify, and/or distribute this software for any
- purpose with or without fee is hereby granted, provided that the above
- copyright notice and this permission notice appear in all copies.
- This software is provided 'as-is', without any express or implied warranty.
-*/
 
 #ifndef _LINEARMOTOR_H__
 #define _LINEARMOTOR_H__
@@ -13,48 +5,49 @@
 // included dependencies
 #include "serialinterface.h"
 
-  /** Class that provides access to the hardware module with the zaber linear stepper motor.
-  *
-  */
-
-  class LinearMotor : public SerialInterface
-  {
+/**
+ * @brief Class that provides access to the hardware module with the zaber linear stepper motor.
+ */
+class LinearMotor : public SerialInterface
+{
 
   public:
-    //! Port defaults to com1 and baud rate to 115200
-    LinearMotor();
+    /**
+     * @brief Forwards the com port and the baud rate to SerialPort
+     * @param comPort com port
+     * @param baudrate baudrate
+     */
+    LinearMotor(std::string comPort = "com0", unsigned int baudrate = 9600);
+
     ~LinearMotor();
 
 
    private:
-    //! Command strings that persuade the motors to move
-    //Some commands need a suffix with data
-    // additional commands can be found in the Zaber manual
 
     // Defined commands for the Zaber linear motors.
-    const char *MOTORS_DEVICE_MODE;
-    const char *MOTORS_RESET;
-    const char *MOTORS_RETURN_CURRENT_POSITION;
-    const char *MOTORS_GO_HOME;			//set to home distance (0)
-    const char *MOTORS_MOVE_ABSOLUTE;
-    const char *MOTORS_MOVE_RELATIVE;
-    const char *MOTORS_SET_SPEED;
-    const char *MOTORS_MOVE_AT_CONSTANT_SPEED;
-    const char *MOTORS_STOP;
+    const char *MOTORS_DEVICE_MODE;								/**< Command to get the device mode */
+    const char *MOTORS_RESET;											/**< Command to reset the motor */
+    const char *MOTORS_RETURN_CURRENT_POSITION;		/**< Command to get the current position */
+    const char *MOTORS_GO_HOME;										/**< Command to move the motor to home distance (0) */
+    const char *MOTORS_MOVE_ABSOLUTE;							/**< Cammand to move the motor absolut */
+    const char *MOTORS_MOVE_RELATIVE;							/**< Cammand to move the motor relative */
+    const char *MOTORS_SET_SPEED;									/**< Command to set the motor speed */
+    const char *MOTORS_MOVE_AT_CONSTANT_SPEED;		/**< Command to let the motor move at constant speed */
+    const char *MOTORS_STOP;											/**< Command to stop the motor */
 
-    const double MM_PER_MS;               /**< milimeter per microstep */
+    const double MM_PER_MS;               				/**< milimeter per microstep */
 
-    const float DecIncSpeed;              /**< Amount of speed to increase/decrease */
+    const float DecIncSpeed;              				/**< Amount of speed to increase/decrease */
 
-    double mStepsize;			           			//!< Stepsize of the stepper motor in millimeters
-    char mbytedata[4];
+    double m_Stepsize;			     				    			/**< Stepsize of the stepper motor in millimeters */
+    //char mbytedata[4];
     int mOscstate;							          //!< Current state of the oscillation
     double mAmplitude;						        //!< Amplitude of the oscillation
     bool mStoprequest;						        //!< stopflag for the oscillation
     int mLMtimerID;							          //!< Timer ID of the oscillation timer
-    int mCurrentSpeed;                    /**< The current speed */
-    int mCurrentPosMotor[2];              /**< Position of the two motors */
-    double mZeroDistance;                 /**< Distance when the motors are on max position (resulting in smallest distance) */
+    int m_CurrentSpeed;         			           /**< The current speed */
+    int m_CurrentPosMotor[2];   			           /**< Position of the two motors */
+    double m_ZeroDistance;    			             /**< Distance when the motors are on max position (resulting in smallest distance) */
     bool mOldPositionFlag;                /**< Flag to indicate that the current "old" position is still up to date */
     bool mMoveFinishedFlag;               /**< Flag to indicate, that the motors finished moving */
     bool mPositionPendingFlag;            /**< Indicate that a RETURN_CURRENT_POSITION command is executed but the answer not yet arrived */
@@ -63,6 +56,6 @@
     bool mExpectedMessagesFlag;           /**< Indicates that messages are expected */
 
     //MessagesHandler *mMessagesHandler;    /**< Pointer to the MessagesHandler object */
-  };
+};
 
 #endif /* _LINEARMOTOR_H__ */

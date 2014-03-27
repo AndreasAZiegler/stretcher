@@ -28,8 +28,8 @@ include( "${wxWidgets_USE_FILE}" )
  
 # For convenience we define the sources as a variable. You can add 
 # header files and cpp/c files and CMake will sort them out
-set(SOURCE main.cpp)
-set(HEADERS main.h)
+set(SOURCE main.cpp settings.cpp)
+set(HEADERS main.h settings.h)
 
 # Add gui part
 add_subdirectory(./gui)
@@ -49,6 +49,14 @@ if(WXMATHPLOT_FOUND)
   set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${WXMATHPLOT_INCLUDE_DIR})
   set(EXTERN_LIBS ${EXTERN_LIBS} ${WXMATHPLOT_LIBRARY})
 endif(WXMATHPLOT_FOUND)
+
+# Add library for loading and saving of settings
+find_package(Libconfig REQUIRED)
+if(LIBCONFIG_FOUND)
+  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${LIBCONFIG_INCLUDE_DIR})
+  set(EXTERN_LIBS ${EXTERN_LIBS} ${LIBCONFIG_LIBRARY})
+endif(LIBCONFIG_FOUND)
+
 
 #set_target_properties(libgpPanel PROPERTIES LINKER_LANGUAGE C)
 #install(TARGETS libwxctb DESTINATION ../build)
