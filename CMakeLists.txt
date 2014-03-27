@@ -4,6 +4,9 @@
  
 # define minimum cmake version
 cmake_minimum_required(VERSION 2.8)
+
+# Activate C++11
+add_definitions(-std=c++11)
  
 # Our project is called 'Stretcher' this is how it will be called in
 # visual studio, and in our makefiles. 
