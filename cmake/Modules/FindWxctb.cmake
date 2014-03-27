@@ -13,7 +13,7 @@ find_path(WXCTB_INCLUDE_DIR
 find_library(WXCTB_LIBRARY
 	NAMES libwxctb-0.13.so
 	PATHS
-	/us/local/lib
+	/usr/local/lib
 )
 
 message( STATUS "WXCTB INCLUDE DIR " ${WXCTB_INCLUDE_DIR})
