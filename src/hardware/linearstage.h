@@ -24,18 +24,34 @@ class LinearStage : public SerialInterface
 
     void setSpeed(double speed);
 
+    /**
+     * @brief Stops the linear stage.
+     */
     void stop();
 
     void move();
 
     void moveTo(int position);
 
+    /**
+     * @brief Moves the stage the amount of steps.
+     * @param steps Amount of steps
+     */
     void moveSteps(int steps);
 
+    /**
+     * @brief Moves the stage the amount of millimeters.
+     * @param milimeters Amount of milimeters
+     */
     void moveMillimeters(double millimeters);
 
    private:
 
+    /**
+     * @brief Transforms a decimal number to a char* variable.
+     * @param dec Number in the decimal number system.
+     * @return The number as a char* variable.
+     */
     char* transformDecToText(int dec);
 
     // Defined commands for the Zaber linear motors.

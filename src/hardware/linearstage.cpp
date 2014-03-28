@@ -46,6 +46,9 @@ void LinearStage::setSpeed(double speed){
 
 }
 
+/**
+ * @brief Stops the linear stage.
+ */
 void LinearStage::stop(){
   char buffer[6];
   char command[6] = "";
@@ -64,6 +67,10 @@ void LinearStage::moveTo(int position){
 
 }
 
+/**
+ * @brief Moves the stage the amount of steps.
+ * @param steps Amount of steps
+ */
 void LinearStage::moveSteps(int steps){
   char buffer[6];
   char command[6]="";
@@ -73,19 +80,24 @@ void LinearStage::moveSteps(int steps){
   memcpy(command+2,number,4);
   memcpy(buffer,command , 6);
 
-  test = 0;
-  test = m_SerialPort.IsOpen();
-  if(test){
-    test = m_SerialPort.Writev(buffer, 6, 50/*ms*/);
-  }
+  m_SerialPort.Writev(buffer, 6, 50/*ms*/);
 }
 
+/**
+ * @brief Moves the stage the amount of millimeters.
+ * @param milimeters Amount of milimeters
+ */
 void LinearStage::moveMillimeters(double millimeters){
   int steps=0;
   steps=millimeters/m_Stepsize;//transformation from millimeters to steps
   moveSteps(steps);
 }
 
+/**
+ * @brief Transforms a decimal number to a char* variable.
+ * @param dec Number in the decimal number system.
+ * @return The number as a char* variable.
+ */
 char* LinearStage::transformDecToText(int dec){
   char bytes[4];
   unsigned int decnumber;
