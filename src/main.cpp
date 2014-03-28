@@ -40,8 +40,8 @@ bool MyApp::OnInit(){
   m_MyFrame->startup();
 
   // Create the linear motor objects
-  m_LinearStages.push_back(new LinearStage(115200/*baudrate*/));
-  m_LinearStages.push_back(new LinearStage(115200/*baudrate*/));
+  m_LinearStages.push_back(new LinearStage(m_MySettings.getLinMot1BaudRate()));
+  m_LinearStages.push_back(new LinearStage(m_MySettings.getLinMot2BaudRate()));
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
   m_MyFrame->registerLinearStage(&m_LinearStages);

@@ -42,11 +42,27 @@ class Settings
     }
 
     /**
+     * @brief Returns the baud rate of the first linear stage motor.
+     * @return com port as a string.
+     */
+    int getLinMot1BaudRate(){
+      return(m_LinMot1BaudRate);
+    }
+
+    /**
      * @brief Returns the com port of the second linear stage motor.
      * @return com port as a string.
      */
     const char* getLinMot2ComPort(){
       return(m_LinMot2ComPort.c_str());
+    }
+
+    /**
+     * @brief Returns the baud rate of the second linear stage motor.
+     * @return com port as a string.
+     */
+    int getLinMot2BaudRate(){
+      return(m_LinMot2BaudRate);
     }
 
     /**
@@ -68,10 +84,17 @@ class Settings
     /**
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
-     * @return true if sucessfull, false otherwise.
      */
     void setLinMot1ComPort(const char* comPort){
       m_LinMot1ComPort = comPort;
+    }
+
+    /**
+     * @brief Set the baud rate for the first linear stage motor.
+     * @param comPort com port as a string.
+     */
+    void setLinMot1BaudRate(int baudrate){
+      m_LinMot1BaudRate = baudrate;
     }
 
     /**
@@ -81,6 +104,14 @@ class Settings
      */
     void setLinMot2ComPort(const char* comPort){
       m_LinMot2ComPort = comPort;
+    }
+
+    /**
+     * @brief Set the baud rate for the second linear stage motor.
+     * @param comPort com port as a string.
+     */
+    void setLinMot2BaudRate(int baudrate){
+      m_LinMot2BaudRate = baudrate;
     }
 
     /**
