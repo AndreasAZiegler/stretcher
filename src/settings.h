@@ -37,23 +37,23 @@ class Settings
      * @brief Returns the com port of the first linear stage motor.
      * @return com port as a string.
      */
-    std::string getLinMot1ComPort(){
-      return(m_LinMot1ComPort);
+    const char* getLinMot1ComPort(){
+      return(m_LinMot1ComPort.c_str());
     }
 
     /**
      * @brief Returns the com port of the second linear stage motor.
      * @return com port as a string.
      */
-    std::string getLinMot2ComPort(){
-      return(m_LinMot2ComPort);
+    const char* getLinMot2ComPort(){
+      return(m_LinMot2ComPort.c_str());
     }
 
     /**
      * @brief Returns the com port of the force sensor.
      * @return com port as a string.
      */
-    std::string getForceSensorComPort(){
+    const char* getForceSensorComPort(){
       return(m_ForceSensorComPort);
     }
 
@@ -70,7 +70,7 @@ class Settings
      * @param comPort com port as a string.
      * @return true if sucessfull, false otherwise.
      */
-    void setLinMot1ComPort(std::string comPort){
+    void setLinMot1ComPort(const char* comPort){
       m_LinMot1ComPort = comPort;
     }
 
@@ -79,7 +79,7 @@ class Settings
      * @param comPort com port as a string.
      * @return true if sucessfull, false otherwise.
      */
-    void setLinMot2ComPort(std::string comPort){
+    void setLinMot2ComPort(const char* comPort){
       m_LinMot2ComPort = comPort;
     }
 
@@ -88,7 +88,7 @@ class Settings
      * @param comPort com port as a string.
      * @return true if sucessfull, false otherwise.
      */
-    void setForceSensorComPort(std::string comPort){
+    void setForceSensorComPort(const char* comPort){
       m_ForceSensorComPort = comPort;
     }
 
@@ -104,14 +104,24 @@ class Settings
   private:
 
     libconfig::Config m_CurrentConfig;						/**< Current configuration */
-    const char *s_ConfigurationFileName;		/**< The file name for the configuration file */
-    libconfig::Setting* m_RootSettings;
-    libconfig::Setting* m_LinMot1Settings;
-    libconfig::Setting* m_LinMot2Settings;
-    libconfig::Setting* m_ForceSensorSettings;
+    const char *s_ConfigurationFileName;					/**< The file name for the configuration file */
+
+    libconfig::Setting* m_RootSettings;						/**< The root settings */
+    libconfig::Setting* m_LinMot1Settings;				/**< The settings for the first linear stage motor */
+    libconfig::Setting* m_LinMot2Settings;				/**< The settings for the second linear stage motor */
+    libconfig::Setting* m_ForceSensorSettings;		/**< The settings for the force sensor */
+    libconfig::Setting* m_LinMot1ComPortSettings;
+    libconfig::Setting* m_LinMot2ComPortSettings;
+    libconfig::Setting* m_LinMot1BaudRateSettings;
+    libconfig::Setting* m_LinMot2BaudRateSettings;
+    libconfig::Setting* m_ForceSensorComPortSettings;
+    libconfig::Setting* m_StoragePathSettings;
+
     std::string m_LinMot1ComPort;									/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;									/**< The com port for the second linear stage motor */
-    std::string m_ForceSensorComPort;							/**< The com port for the force sensor */
+    int m_LinMot1BaudRate;												/**< The baud rate for the first linear stage motor */
+    int m_LinMot2BaudRate;												/**< The baud rate for the second linear stage motor */
+    const char* m_ForceSensorComPort;							/**< The com port for the force sensor */
     std::string m_StoragePath;										/**< Folder where the images and the data will be saved */
 
 };

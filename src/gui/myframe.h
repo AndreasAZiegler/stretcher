@@ -5,6 +5,8 @@
 #include <wx/window.h>
 #include <wx/string.h>
 #include "myframe_base.h"
+#include "../settings.h"
+#include "./hardware/linearstage.h"
 
 /**
  * @brief The Main Frame class
@@ -17,7 +19,15 @@ class MyFrame : public MyFrame_Base
      * @param title Title of the software.
      * @param parent Pointer to the parent object.
      */
-    MyFrame(const wxString& title, wxWindow* parent = (wxWindow *)NULL);
+    MyFrame(const wxString& title, Settings *settings, wxWindow* parent = (wxWindow *)NULL);
+
+    /**
+     * @brief Register the liner motors.
+     * @param linearmotor Pointer to the vector containing the linear motors.
+     */
+    void registerLinearStage(std::vector<LinearStage *> *linearmotor);
+
+    ~MyFrame();
 
     void startup(void);
   private:
@@ -81,7 +91,27 @@ class MyFrame : public MyFrame_Base
      */
     void OnChamberMeasurement(wxCommandEvent& event);
 
-    mpWindow* m_Graph;
+    /**
+     * @brief Method wich will be executed, when the user klicks on the decrease distance button.
+     * @param event Occuring event
+     */
+    void OnMotorDecreaseDistance(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user klicks on the increase distance button.
+     * @param event Occuring event
+     */
+    void OnMotorIncreaseDistance(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user klicks on the motor stop button.
+     * @param event Occuring event
+     */
+    void OnMotorStop(wxCommandEvent& event);
+
+    mpWindow* m_Graph;					/**< Pointer to the graph */
+    Settings *m_Settings;				/**< Pointer to the settings object */
+    std::vector<LinearStage*> *m_LinearStages;
 
 
     wxDECLARE_EVENT_TABLE();
@@ -97,7 +127,10 @@ enum
 	ID_DistanceLimit = 6,
 	ID_StressLimit = 7,
   ID_GoTo = 8,
-  ID_ChamberMeasurement = 9
+  ID_ChamberMeasurement = 9,
+  ID_MotorDecreaseDistance = 10,
+  ID_MotorIncreaseDistance = 11,
+  ID_MotorStop = 12
 };
 
 #endif // MYFRAME_H

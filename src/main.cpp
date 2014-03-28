@@ -22,7 +22,7 @@ bool MyApp::OnInit(){
   }
 
   // Get all handlers
-//  wxXmlResource::AddHandler(new wxIconXmlHandler);
+  //  wxXmlResource::AddHandler(new wxIconXmlHandler);
   wxXmlResource::Get()->AddHandler(new wxSpinCtrlDoubleXmlHandler);
   wxXmlResource::Get()->AddHandler(new mpWindowXmlHandler);
   wxXmlResource::Get()->InitAllHandlers();
@@ -31,10 +31,26 @@ bool MyApp::OnInit(){
     return(false);
   }
 
+  // Create the settings
+  //m_MySettings = new Settings();
+
   // Create the main frame and show it
-  m_MyFrame = new MyFrame("Stretcher");
+  m_MyFrame = new MyFrame("Stretcher", &m_MySettings);
   m_MyFrame->Show(true);
   m_MyFrame->startup();
+
+  // Create the linear motor objects
+  m_LinearStages.push_back(new LinearStage(115200/*baudrate*/));
+  m_LinearStages.push_back(new LinearStage(115200/*baudrate*/));
+  m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
+  m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
+  m_MyFrame->registerLinearStage(&m_LinearStages);
+
+  // Create the force sensor object
+  /**
+    @todo Creating force sensor
+    */
+
   return(true);
 }
 

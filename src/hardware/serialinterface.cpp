@@ -7,8 +7,8 @@
  * @param Port com port
  * @param Baudrate baudrate
  */
-SerialInterface::SerialInterface(std::string comPort, unsigned int baudrate)
-  : m_ComPort(comPort), m_Baudrate(baudrate)
+SerialInterface::SerialInterface(unsigned int baudrate)
+  : m_Baudrate(baudrate)
 {
   //m_SerialPort = new wxSerialPort();
 }
@@ -27,11 +27,11 @@ SerialInterface::~SerialInterface()
 /**
  * @brief Opens the connection with the specified baud rate and port
  */
-void SerialInterface::connect()
+void SerialInterface::connect(const char* comPort)
 {
   wxSerialPort_DCS parameters;
   parameters.baud = (wxBaud)m_Baudrate;
-  m_SerialPort.Open(m_ComPort.c_str(), &parameters);
+  m_SerialPort.Open(comPort, &parameters);
 }
 
 /**

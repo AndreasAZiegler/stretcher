@@ -2,17 +2,39 @@
 #define MYPORTS_H
 
 /*************** Includes ************/
+#include <vector>
 #include <wx/window.h>
 #include <wx/string.h>
 #include "myports_base.h"
+#include "../settings.h"
+#include "../hardware/linearstage.h"
 
+/**
+ * @brief Handles the com port settings window.
+ */
 class MyPorts : public MyPorts_Base
 {
   public:
-    MyPorts(wxWindow *parent=NULL);
+
+    /**
+     * @brief Creates the window for the com port settings
+     * @param parent Pointer to the parent object.
+     * @param settings Pointer to the Settings object.
+     */
+    MyPorts(Settings *settings, std::vector<LinearStage *> *linearstage, wxWindow *parent=NULL);
+
   private:
+
+    /**
+     * @brief Method wich will be executed, when the user klicks on the OK button.
+     * @param event Occuring event
+     */
     void OnOK(wxCommandEvent& event);
 
+    const char* choiceToString(int i);
+
+    Settings *m_Settings;					/**< Pointer to the Settings object. */
+    std::vector<LinearStage*> *m_LinearStages;
 
     wxDECLARE_EVENT_TABLE();
 };

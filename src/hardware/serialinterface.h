@@ -17,7 +17,7 @@ class SerialInterface
      * @param Port com port
      * @param Baudrate baudrate
      */
-    SerialInterface(std::string comPort = "com0", unsigned int baudrate = 9600);
+    SerialInterface(unsigned int baudrate = 9600);
 
     /**
      * @brief Closes the port if still open
@@ -27,7 +27,7 @@ class SerialInterface
     /**
      * @brief Opens the connection with the specified baud rate and port
      */
-    virtual void connect();
+    virtual void connect(const char *comPort);
 
     /**
      * @brief Close the existing connection.
@@ -36,8 +36,10 @@ class SerialInterface
 
   protected:
     wxSerialPort	m_SerialPort;  /**< Pointer to the serial port object */
-    std::string   m_ComPort;     /**< Port as string in the form "com3" for instance */
     unsigned int  m_Baudrate;    /**< Serial port baud rate */
+
+
+    int test;
 
   private:
     SerialInterface(const SerialInterface&) = delete; /**< Don't use (undefined symbol) */

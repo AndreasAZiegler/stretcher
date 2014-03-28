@@ -1,13 +1,17 @@
 set(SOURCE
 	${SOURCE}
         ./hardware/serialinterface.cpp
-        ./hardware/linearmotor.cpp
+        ./hardware/linearstage.cpp
+        ./hardware/messagehandler.cpp
+        ./hardware/linearstagemessagehandler.cpp
         PARENT_SCOPE
 )
 
 set(HEADERS
 	${HEADERS}
         ./hardware/serialinterface.h
-        ./hardware/linearmotor.h
+        ./hardware/linearstage.h
+        ./hardware/messagehandler.cpp
+        ./hardware/linearstagemessagehandler.cpp
         PARENT_SCOPE
 )

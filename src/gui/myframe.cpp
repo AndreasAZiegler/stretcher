@@ -64,6 +64,9 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_RADIOBUTTON(ID_DistanceLimit, MyFrame::OnDistanceLimit)
   EVT_RADIOBUTTON(ID_StressLimit, MyFrame::OnStressLimit)
   EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
+  EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
+  EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
+  EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
 wxEND_EVENT_TABLE()
 
 /**
@@ -71,8 +74,9 @@ wxEND_EVENT_TABLE()
  * @param Title of the software.
  * @param Pointer to the parent object.
  */
-MyFrame::MyFrame(const wxString &title, wxWindow *parent)
-  : MyFrame_Base(title, parent)
+MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
+  : MyFrame_Base(title, parent),
+    m_Settings(settings)
 {
   SetIcon(wxICON(sample));
 
@@ -86,6 +90,9 @@ MyFrame::MyFrame(const wxString &title, wxWindow *parent)
   m_ConditioningDistanceRadioBtn->SetId(ID_DistanceLimit);
   m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
   m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberMeasurement);
+  m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
+  m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
+  m_StopButton->SetId(ID_MotorStop);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -141,6 +148,18 @@ MyFrame::MyFrame(const wxString &title, wxWindow *parent)
   m_GraphPanel->Layout();
 
   }
+
+/**
+ * @brief Register the liner motors.
+ * @param linearstage Pointer to the vector containing the linear motors.
+ */
+void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage){
+  m_LinearStages = linearstage;
+}
+
+MyFrame::~MyFrame(){
+  delete m_Graph;
+}
 
 void MyFrame::startup(void){
 	// Hide calculate diameter options
@@ -211,7 +230,7 @@ void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPortsSettings(wxCommandEvent& event){
-  MyPorts *ports = new MyPorts(this);
+  MyPorts *ports = new MyPorts(m_Settings, m_LinearStages, this);
 
 	ports->Show();
 }
@@ -315,3 +334,32 @@ void MyFrame::OnChamberMeasurement(wxCommandEvent& event){
   }
 }
 
+/**
+ * @brief Method wich will be executed, when the user klicks on the decrease distance button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
+  if(NULL != m_LinearStages){
+    (m_LinearStages->at(0))->moveMillimeters(0.25);
+    (m_LinearStages->at(1))->moveMillimeters(0.25);
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user klicks on the increase distance button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
+  if(NULL != m_LinearStages){
+    (m_LinearStages->at(0))->moveMillimeters(-0.25);
+    (m_LinearStages->at(1))->moveMillimeters(-0.25);
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user klicks on the motor stop button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorStop(wxCommandEvent& event){
+
+}
