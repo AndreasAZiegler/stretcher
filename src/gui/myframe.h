@@ -5,13 +5,14 @@
 #include <wx/window.h>
 #include <wx/string.h>
 #include "myframe_base.h"
+#include "../updatevalues.h"
 #include "../settings.h"
 #include "./hardware/linearstage.h"
 
 /**
  * @brief The Main Frame class
  */
-class MyFrame : public MyFrame_Base
+class MyFrame : public MyFrame_Base, public UpdateValues
 {
   public:
     /**
@@ -29,6 +30,12 @@ class MyFrame : public MyFrame_Base
 
     ~MyFrame();
 
+    void updateValue(int value, UpdateValues::ValueType type);
+
+    /**
+     * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
+     * 				sets digits for the wxSpinCtrlDouble.
+     */
     void startup(void);
   private:
     /**
@@ -92,6 +99,12 @@ class MyFrame : public MyFrame_Base
     void OnChamberMeasurement(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user klicks on the home stage button.
+     * @param event Occuring event
+     */
+    void OnHomeLinearStages(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -109,10 +122,16 @@ class MyFrame : public MyFrame_Base
      */
     void OnMotorStop(wxCommandEvent& event);
 
+    /**
+     * @brief Calculates the distance and print the value in the GUI.
+     */
+    void updateDistance();
+
     mpWindow* m_Graph;					/**< Pointer to the graph */
     Settings *m_Settings;				/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;
-
+    std::vector<int> m_CurrentPositions;	/**< Vector with the current stage positions */
+    double m_Distance;										/**< Distance */
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -130,7 +149,8 @@ enum
   ID_ChamberMeasurement = 9,
   ID_MotorDecreaseDistance = 10,
   ID_MotorIncreaseDistance = 11,
-  ID_MotorStop = 12
+  ID_MotorStop = 12,
+  ID_HomeStages = 13
 };
 
 #endif // MYFRAME_H

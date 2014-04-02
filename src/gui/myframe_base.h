@@ -123,9 +123,9 @@ protected:
  wxButton* m_FatigueCancelButton;
  wxButton* m_FatigueSendButton;
  wxPanel* m_ChamberStretchPanel;
- wxFlexGridSizer* m_ChamberStretchSizer1;
  wxRadioBox* m_ChamberStretchMeasurementRadioBox;
  wxPanel* m_ChamberStretchGelPanel;
+ wxFlexGridSizer* m_ChamberStretchSizer1;
  wxStaticText* m_ChamberStretchEmodLeftStaticText;
  wxSpinCtrlDouble* m_ChamberStretchEmodLeftSpinCtrl;
  wxStaticText* m_ChamberStretchEmodRightStaticText;
@@ -161,6 +161,7 @@ protected:
  wxButton* m_IncreaseDistanceButton;
  wxButton* m_StopButton;
  wxStaticText* m_ForceStaticText;
+ wxStaticText* m_DistanceStaticText;
  wxPanel* m_Protocols;
  wxListBox* m_ProtocolsListBox;
  wxPanel* m_ProtocolsNavigationPanel;
@@ -333,6 +334,7 @@ private:
   m_IncreaseDistanceButton = XRCCTRL(*this,"m_IncreaseDistanceButton",wxButton);
   m_StopButton = XRCCTRL(*this,"m_StopButton",wxButton);
   m_ForceStaticText = XRCCTRL(*this,"m_ForceStaticText",wxStaticText);
+  m_DistanceStaticText = XRCCTRL(*this,"m_DistanceStaticText",wxStaticText);
   m_Protocols = XRCCTRL(*this,"m_Protocols",wxPanel);
   m_ProtocolsListBox = XRCCTRL(*this,"m_ProtocolsListBox",wxListBox);
   m_ProtocolsNavigationPanel = XRCCTRL(*this,"m_ProtocolsNavigationPanel",wxPanel);
@@ -370,6 +372,5 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void 
-InitXmlResource();
+void InitXmlResource();
 #endif

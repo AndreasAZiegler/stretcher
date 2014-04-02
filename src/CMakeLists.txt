@@ -28,8 +28,8 @@ include( "${wxWidgets_USE_FILE}" )
  
 # For convenience we define the sources as a variable. You can add 
 # header files and cpp/c files and CMake will sort them out
-set(SOURCE main.cpp settings.cpp)
-set(HEADERS main.h settings.h)
+set(SOURCE main.cpp settings.cpp updatevalues.cpp)
+set(HEADERS main.h settings.h updatevalues.h)
 
 # Add gui part
 add_subdirectory(./gui)

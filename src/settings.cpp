@@ -22,7 +22,7 @@ Settings::Settings()
 
 Settings::~Settings(){
   writeSettings();
-  /*
+
   delete m_LinMot1ComPortSettings;
   delete m_LinMot2ComPortSettings;
   delete m_ForceSensorComPortSettings;
@@ -30,7 +30,6 @@ Settings::~Settings(){
   delete m_LinMot2Settings;
   delete m_ForceSensorSettings;
   delete m_RootSettings;
-  */
 }
 
 /**

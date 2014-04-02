@@ -8,6 +8,7 @@
 #include "./gui/xh_wxspinctrldoublexmlhandler.h"
 #include "./gui/xh_mathplotxmlhandler.h"
 #include <wx/spinctrl.h>
+#include "updatevalues.h"
 
 // Define main app.
 IMPLEMENT_APP(MyApp)
@@ -39,12 +40,20 @@ bool MyApp::OnInit(){
   m_MyFrame->Show(true);
   m_MyFrame->startup();
 
-  // Create the linear motor objects
-  m_LinearStages.push_back(new LinearStage(m_MySettings.getLinMot1BaudRate()));
-  m_LinearStages.push_back(new LinearStage(m_MySettings.getLinMot2BaudRate()));
+  // Create the linear motor objects.
+  m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos1, m_MySettings.getLinMot1BaudRate()));
+  m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos1, m_MySettings.getLinMot2BaudRate()));
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
   m_MyFrame->registerLinearStage(&m_LinearStages);
+
+  // Get the message handlers for the linear stages.
+  m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(0))->getMessageHandler());
+  m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
+
+  // Run the receivers of the linear stages in seperate threads.
+  m_LinearStage1Receiver = std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0));
+  m_LinearStage2Receiver = std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(1));
 
   // Create the force sensor object
   /**

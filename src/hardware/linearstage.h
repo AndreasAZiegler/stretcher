@@ -3,6 +3,7 @@
 #define _LINEARMOTOR_H__
 
 // included dependencies
+#include <mutex>
 #include "serialinterface.h"
 #include "linearstagemessagehandler.h"
 
@@ -18,9 +19,22 @@ class LinearStage : public SerialInterface
      * @param comPort com port
      * @param baudrate baudrate
      */
-    LinearStage(unsigned int baudrate = 9600);
+    LinearStage(UpdateValues::ValueType type, unsigned int baudrate = 115200);
 
     ~LinearStage();
+
+    /**
+      * @brief Returns the pointer to the message handler.
+      * @return Pointer to the message handler.
+      */
+    LinearStageMessageHandler* getMessageHandler(void){
+      return(&m_MessageHandler);
+    }
+
+    /**
+     * @brief Sends linear stage to the home positin.
+     */
+    void home();
 
     void setSpeed(double speed);
 
@@ -29,9 +43,17 @@ class LinearStage : public SerialInterface
      */
     void stop();
 
+    /**
+     * @brief Moves the stage at constant speed
+     */
     void move();
 
-    void moveTo(int position);
+    /**
+     * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
+     *        and start the motors.
+     * @param distance Desired clamping distance in micro steps from the GUI
+     */
+    void gotoMMDistance(int mmDistance);
 
     /**
      * @brief Moves the stage the amount of steps.
@@ -48,6 +70,22 @@ class LinearStage : public SerialInterface
    private:
 
     /**
+     * @brief Disable the knob and enables move tracking.
+     */
+    void setDeviceMode(void);
+
+    /**
+     * @brief Configure the interval between each Move Tracking of Manual Move Tracking responses.
+     */
+    void setMoveTrackingPeriod(void);
+
+    /**
+     * @todo Implementation
+     * @brief getCurrentDistance
+     */
+    double getCurrentDistance(void);
+
+    /**
      * @brief Transforms a decimal number to a char* variable.
      * @param dec Number in the decimal number system.
      * @return The number as a char* variable.
@@ -55,15 +93,16 @@ class LinearStage : public SerialInterface
     char* transformDecToText(int dec);
 
     // Defined commands for the Zaber linear motors.
-    const char *MOTORS_DEVICE_MODE;								/**< Command to get the device mode */
-    const char *MOTORS_RESET;											/**< Command to reset the motor */
-    const char *MOTORS_RETURN_CURRENT_POSITION;		/**< Command to get the current position */
-    const char *MOTORS_GO_HOME;										/**< Command to move the motor to home distance (0) */
-    const char *MOTORS_MOVE_ABSOLUTE;							/**< Cammand to move the motor absolut */
-    const char *MOTORS_MOVE_RELATIVE;							/**< Cammand to move the motor relative */
-    const char *MOTORS_SET_SPEED;									/**< Command to set the motor speed */
-    const char *MOTORS_MOVE_AT_CONSTANT_SPEED;		/**< Command to let the motor move at constant speed */
-    const char *MOTORS_STOP;											/**< Command to stop the motor */
+    const char *STAGE_DEVICE_MODE;								/**< Command to get the device mode */
+    const char *STAGE_SET_MOVE_TRACKING_PERIOD;				/**< Command to set the move tracking period */
+    const char *STAGE_RESET;											/**< Command to reset the motor */
+    const char *STAGE_RETURN_CURRENT_POSITION;		/**< Command to get the current position */
+    const char *STAGE_GO_HOME;										/**< Command to move the motor to home distance (0) */
+    const char *STAGE_MOVE_ABSOLUTE;							/**< Cammand to move the motor absolut */
+    const char *STAGE_MOVE_RELATIVE;							/**< Cammand to move the motor relative */
+    const char *STAGE_SET_SPEED;									/**< Command to set the motor speed */
+    const char *STAGE_MOVE_AT_CONSTANT_SPEED;			/**< Command to let the motor move at constant speed */
+    const char *STAGE_STOP;												/**< Command to stop the motor */
 
     const double MM_PER_MS;               				/**< milimeter per microstep */
 

@@ -3,14 +3,17 @@
 #include "linearstage.h"
 #include "../../include/ctb-0.13/serport.h"
 
+using namespace std;
+
 /**
  * @brief Forwards the com port and the baud rate to SerialPort
  * @param comPort com port
  * @param baudrate baudrate
  */
-LinearStage::LinearStage(unsigned int baudrate)
-    : SerialInterface(baudrate),
-    m_Stepsize(0.000047625),                    //Stepsize of Zaber T-LSM025A motor in millimeters
+LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
+    : SerialInterface(type, baudrate),
+      m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
+      m_Stepsize(0.000047625),                    //Stepsize of Zaber T-LSM025A motor in millimeters
     /*
     mExpectedMessagesFlag(0),
     mOldPositionFlag(true),
@@ -25,21 +28,78 @@ LinearStage::LinearStage(unsigned int baudrate)
     mPositionPendingFlag(false),
     mStartUpFlag(true)
     */
-    MOTORS_DEVICE_MODE("\x00\x028"),
-    MOTORS_RESET("\x00\x00"),
-    MOTORS_RETURN_CURRENT_POSITION("\x00\x03c"),
-    MOTORS_GO_HOME("\x00\x01"),
-    MOTORS_MOVE_ABSOLUTE("\x00\x014"),
-    MOTORS_MOVE_RELATIVE("\x00\x015"),
-    MOTORS_SET_SPEED("\x00\x02a"),
-    MOTORS_MOVE_AT_CONSTANT_SPEED("\x00\x016"), //: QObject(parent)
-    MOTORS_STOP("\x00\x017"),
-    MM_PER_MS(0.000047625)
+      STAGE_DEVICE_MODE("\x00\x028"),
+      STAGE_SET_MOVE_TRACKING_PERIOD("\x00\x075"),
+      STAGE_RESET("\x00\x00"),
+      STAGE_RETURN_CURRENT_POSITION("\x00\x03c"),
+      STAGE_GO_HOME("\x00\x01"),
+      STAGE_MOVE_ABSOLUTE("\x00\x014"),
+      STAGE_MOVE_RELATIVE("\x00\x015"),
+      STAGE_SET_SPEED("\x00\x02a"),
+      STAGE_MOVE_AT_CONSTANT_SPEED("\x00\x016"), //: QObject(parent)
+      STAGE_STOP("\x00\x017"),
+      MM_PER_MS(0.000047625)
 {
+  setDeviceMode();
+  setMoveTrackingPeriod();
 }
 
 LinearStage::~LinearStage()
 {
+}
+
+/**
+ * @brief Disable the knob and enables move tracking.
+ */
+void LinearStage::setDeviceMode(void){
+  char buffer[6];
+  char command[6] = "";
+
+  char *settings = transformDecToText(1*8/*disable knob*/ +
+                                      1*16/*enable move tracking*/);
+  memcpy(command, STAGE_DEVICE_MODE, 2);
+  memcpy(command+2, settings, sizeof(settings));
+
+  memcpy(buffer, command, 6);
+
+  {
+    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Configure the interval between each Move Tracking of Manual Move Tracking responses.
+ */
+void LinearStage::setMoveTrackingPeriod(void){
+  char buffer[6];
+  char command[6] = "";
+
+  char *settings = transformDecToText(10/*ms*/);
+  memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
+  memcpy(command+2, settings, 1);
+  memcpy(buffer, command, 6);
+
+  {
+    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Sends linear stage to the home positin.
+ */
+void LinearStage::home(){
+  char buffer[6];
+  char command[6] = "";
+
+  memcpy(command, STAGE_GO_HOME, 2);
+  memcpy(buffer, command, 6);
+
+  {
+    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
 }
 
 void LinearStage::setSpeed(double speed){
@@ -53,18 +113,41 @@ void LinearStage::stop(){
   char buffer[6];
   char command[6] = "";
 
-  memcpy(command, MOTORS_STOP, 2);
+  memcpy(command, STAGE_STOP, 2);
   memcpy(buffer, command, 6);
 
-  m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  {
+    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
 }
 
+/**
+ * @brief Moves the stage at constant speed
+ */
 void LinearStage::move(){
+  char buffer[6];
+  char command[6] = "";
 
+  memcpy(command, STAGE_MOVE_AT_CONSTANT_SPEED, 2);
+  memcpy(buffer, command, 6);
+
+  {
+    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
 }
 
-void LinearStage::moveTo(int position){
+/**
+ * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
+ *        and start the motors.
+ * @param distance Desired istance in milli meters.
+ */
+void LinearStage::gotoMMDistance(int mmDistance){
+  int currentDistance = getCurrentDistance();
 
+  int amSteps = (currentDistance - mmDistance/MM_PER_MS) / 2;
+  moveSteps(amSteps);
 }
 
 /**
@@ -75,12 +158,15 @@ void LinearStage::moveSteps(int steps){
   char buffer[6];
   char command[6]="";
   char* number;
-  memcpy(command,MOTORS_MOVE_RELATIVE,2);
+  memcpy(command,STAGE_MOVE_RELATIVE,2);
   number = transformDecToText(steps);
   memcpy(command+2,number,4);
   memcpy(buffer,command , 6);
 
-  m_SerialPort.Writev(buffer, 6, 50/*ms*/);
+  {
+    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 50/*ms*/);
+  }
 }
 
 /**
@@ -91,6 +177,10 @@ void LinearStage::moveMillimeters(double millimeters){
   int steps=0;
   steps=millimeters/m_Stepsize;//transformation from millimeters to steps
   moveSteps(steps);
+}
+
+double LinearStage::getCurrentDistance(void){
+  return(0);
 }
 
 /**

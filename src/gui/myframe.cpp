@@ -67,6 +67,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
   EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
+  EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
 wxEND_EVENT_TABLE()
 
 /**
@@ -76,7 +77,8 @@ wxEND_EVENT_TABLE()
  */
 MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
-    m_Settings(settings)
+    m_Settings(settings),
+    m_CurrentPositions(0,0)
 {
   SetIcon(wxICON(sample));
 
@@ -93,6 +95,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StopButton->SetId(ID_MotorStop);
+  m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -155,12 +158,34 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
  */
 void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage){
   m_LinearStages = linearstage;
+
+  // Registers update stage position methods at linearmessagehandler.
+  ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, (UpdateValues*)this);
+  ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, (UpdateValues*)this);
 }
 
 MyFrame::~MyFrame(){
   delete m_Graph;
 }
 
+void MyFrame::updateValue(int value, UpdateValues::ValueType type){
+  switch(type){
+    case UpdateValues::ValueType::Pos1:
+      m_CurrentPositions.at(0) = value;
+      break;
+    case UpdateValues::ValueType::Pos2:
+      m_CurrentPositions.at(1) = value;
+      break;
+    case UpdateValues::ValueType::Force:
+
+      break;
+  }
+}
+
+/**
+ * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
+ * 				sets digits for the wxSpinCtrlDouble.
+ */
 void MyFrame::startup(void){
 	// Hide calculate diameter options
 	m_PreloadYStaticText->Show(false);
@@ -335,6 +360,15 @@ void MyFrame::OnChamberMeasurement(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user klicks on the home stage button.
+ * @param event Occuring event
+ */
+void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
+  (m_LinearStages->at(0))->home();
+  (m_LinearStages->at(1))->home();
+}
+
+/**
  * @brief Method wich will be executed, when the user klicks on the decrease distance button.
  * @param event Occuring event
  */
@@ -361,5 +395,17 @@ void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorStop(wxCommandEvent& event){
+  if(NULL != m_LinearStages){
+    (m_LinearStages->at(0))->stop();
+    (m_LinearStages->at(1))->stop();
+  }
+}
 
+/**
+ * @brief Calculates the distance and print the value in the GUI.
+ */
+void MyFrame::updateDistance(){
+  m_Distance = (std::abs(533334 /*max. position*/ - m_CurrentPositions[0]) + std::abs(533334 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+  wxString tmp = wxString::Format(wxT("%i"), m_Distance) + " mm";
+  m_DistanceStaticText->SetLabel(tmp);
 }
