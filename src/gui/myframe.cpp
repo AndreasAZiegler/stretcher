@@ -78,7 +78,7 @@ wxEND_EVENT_TABLE()
 MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
     m_Settings(settings),
-    m_CurrentPositions(0,0)
+    m_CurrentPositions{0,0}
 {
   SetIcon(wxICON(sample));
 
@@ -164,17 +164,28 @@ void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage){
   ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, (UpdateValues*)this);
 }
 
+/**
+ * @brief Destructor
+ */
 MyFrame::~MyFrame(){
   delete m_Graph;
 }
 
+/**
+ * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
+ * 				thread. (CallAfter() asynchronously call the updateDistance method)
+ * @param value The position of a stage or a force.
+ * @param type	Defines the type of the value (position of stage 1, 2 or force)
+ */
 void MyFrame::updateValue(int value, UpdateValues::ValueType type){
   switch(type){
     case UpdateValues::ValueType::Pos1:
-      m_CurrentPositions.at(0) = value;
+      m_CurrentPositions[0] = value;
+      CallAfter(&MyFrame::updateDistance);
       break;
     case UpdateValues::ValueType::Pos2:
-      m_CurrentPositions.at(1) = value;
+      m_CurrentPositions[1] = value;
+      CallAfter(&MyFrame::updateDistance);
       break;
     case UpdateValues::ValueType::Force:
 
@@ -406,6 +417,8 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  */
 void MyFrame::updateDistance(){
   m_Distance = (std::abs(533334 /*max. position*/ - m_CurrentPositions[0]) + std::abs(533334 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
-  wxString tmp = wxString::Format(wxT("%i"), m_Distance) + " mm";
+  wxString tmp;
+  tmp << m_Distance << wxT(" mm");
   m_DistanceStaticText->SetLabel(tmp);
+  //CallAfter(&wxStaticText::SetLabelText, "0.25");
 }

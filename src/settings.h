@@ -6,10 +6,8 @@
 #include <string>
 
 /**
-  * class Settings
-  * 
-  */
-
+ * @brief Loads the settings from the file "config.cfg" it exists during program start and saves the settings during program exit.
+ */
 class Settings
 {
   public:
@@ -134,26 +132,26 @@ class Settings
 
   private:
 
-    libconfig::Config m_CurrentConfig;						/**< Current configuration */
-    const char *s_ConfigurationFileName;					/**< The file name for the configuration file */
+    libconfig::Config m_CurrentConfig;								/**< Current configuration */
+    const char *s_ConfigurationFileName;							/**< The file name for the configuration file */
 
-    libconfig::Setting* m_RootSettings;						/**< The root settings */
-    libconfig::Setting* m_LinMot1Settings;				/**< The settings for the first linear stage motor */
-    libconfig::Setting* m_LinMot2Settings;				/**< The settings for the second linear stage motor */
-    libconfig::Setting* m_ForceSensorSettings;		/**< The settings for the force sensor */
-    libconfig::Setting* m_LinMot1ComPortSettings;
-    libconfig::Setting* m_LinMot2ComPortSettings;
-    libconfig::Setting* m_LinMot1BaudRateSettings;
-    libconfig::Setting* m_LinMot2BaudRateSettings;
-    libconfig::Setting* m_ForceSensorComPortSettings;
-    libconfig::Setting* m_StoragePathSettings;
+    libconfig::Setting* m_RootSettings;								/**< The root settings */
+    libconfig::Setting* m_LinMot1Settings;						/**< The settings for the first linear stage motor */
+    libconfig::Setting* m_LinMot2Settings;						/**< The settings for the second linear stage motor */
+    libconfig::Setting* m_ForceSensorSettings;				/**< The settings for the force sensor */
+    libconfig::Setting* m_LinMot1ComPortSettings;			/**< The settings for the com port of the first linear stage */
+    libconfig::Setting* m_LinMot2ComPortSettings;			/**< The settings for the com port of the second linear stage */
+    libconfig::Setting* m_LinMot1BaudRateSettings;		/**< The settings for the baud rate of the first linear stage */
+    libconfig::Setting* m_LinMot2BaudRateSettings;		/**< The settings for the baud rate of the second linear stage */
+    libconfig::Setting* m_ForceSensorComPortSettings; /**< The settings for the com port of the force sensor */
+    libconfig::Setting* m_StoragePathSettings;				/**< The settings for the storage path */
 
-    std::string m_LinMot1ComPort;									/**< The com port for the first linear stage motor */
-    std::string m_LinMot2ComPort;									/**< The com port for the second linear stage motor */
-    int m_LinMot1BaudRate;												/**< The baud rate for the first linear stage motor */
-    int m_LinMot2BaudRate;												/**< The baud rate for the second linear stage motor */
-    const char* m_ForceSensorComPort;							/**< The com port for the force sensor */
-    std::string m_StoragePath;										/**< Folder where the images and the data will be saved */
+    std::string m_LinMot1ComPort;											/**< The com port for the first linear stage motor */
+    std::string m_LinMot2ComPort;											/**< The com port for the second linear stage motor */
+    int m_LinMot1BaudRate;														/**< The baud rate for the first linear stage motor */
+    int m_LinMot2BaudRate;														/**< The baud rate for the second linear stage motor */
+    const char* m_ForceSensorComPort;									/**< The com port for the force sensor */
+    std::string m_StoragePath;												/**< Folder where the images and the data will be saved */
 
 };
 

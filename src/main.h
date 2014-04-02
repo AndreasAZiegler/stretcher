@@ -22,13 +22,12 @@ class MyApp : public wxApp
     virtual bool OnInit();
 
   private:
-    MyFrame* m_MyFrame;
-    Settings m_MySettings;
-    std::vector<LinearStage*> m_LinearStages;
-    std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers;
+    MyFrame* m_MyFrame;																											/**< Pointer to the main frame object */
+    Settings m_MySettings;																									/**< Settings object (Reads settings from "config.cfg" at start and stores at exit */
+    std::vector<LinearStage*> m_LinearStages;																/**< Vector containing the two linear stage object pointer */
+    std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers;	/**< Vector containing the two linear stage message handler object pointer */
 
-    std::thread m_LinearStage1Receiver;
-    std::thread m_LinearStage2Receiver;
+    std::vector<std::thread> m_LinearStagesReceivers;												/**< Vector containing the threads for the linear stage receivers */
 };
 
 #endif // MAIN_H

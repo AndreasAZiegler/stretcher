@@ -27,42 +27,31 @@ void LinearStageMessageHandler::handler(char *message){
     case ANSWER_CURRENT_POSITION:
       // Notify updated distance
       for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
+        //(((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
       }
       break;
     case MESSAGE_CURRENT_POSITION:
       // Notify updated distance
-      /*
       for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
+        (*i)(calculatePosition(&message[1]), m_Type);
       }
-      */
-      /*
-      for(std::list<TestStruct>::iterator i = test.begin(); i != test.end(); ++i){
-        std::cout << "Entry is: " << (*i).value << std::endl;
-      }
-      ((m_UpdateMethodList.front().updatevalues)->*(m_UpdateMethodList.front().method))(calculatePosition(&message[1]), m_Type);
-      */
-      tmpint = calculatePosition(&message[1]);
-      (m_UpdateClass->*m_UpdateMethod)(tmpint, m_Type);
-
       break;
     case ANSWER_GO_HOME:
       // Notify updated distance
-      for(std::list<UpdateValuesStruct>::iterator i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
+      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+        (*i)(calculatePosition(&message[1]), m_Type);
       }
       break;
     case ANSWER_MOVE_ABSOLUT:
       // Notify updated distance
-      for(std::list<UpdateValuesStruct>::iterator i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
+      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+        (*i)(calculatePosition(&message[1]), m_Type);
       }
       break;
     case ANSWER_MOVE_RELATIVE:
       // Notify updated distance
-      for(std::list<UpdateValuesStruct>::iterator i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
+      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+        (*i)(calculatePosition(&message[1]), m_Type);
       }
       break;
     case ANSWER_SET_SPEED:
@@ -71,8 +60,8 @@ void LinearStageMessageHandler::handler(char *message){
       break;
     case ANSWER_MOTOR_STOP:
       // Notify updated distance
-      for(std::list<UpdateValuesStruct>::iterator i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (((*i).updatevalues)->*((*i).method))(calculatePosition(&message[1]), m_Type);
+      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+        (*i)(calculatePosition(&message[1]), m_Type);
       }
       break;
   }

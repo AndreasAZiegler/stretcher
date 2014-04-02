@@ -52,8 +52,8 @@ bool MyApp::OnInit(){
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
 
   // Run the receivers of the linear stages in seperate threads.
-  m_LinearStage1Receiver = std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0));
-  m_LinearStage2Receiver = std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(1));
+  m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));
+  m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(1)));
 
   // Create the force sensor object
   /**

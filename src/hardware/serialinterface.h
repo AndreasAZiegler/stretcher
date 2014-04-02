@@ -37,15 +37,12 @@ class SerialInterface
     virtual void disconnect();
 
   protected:
-    wxSerialPort	m_SerialPort;  /**< The serial port object */
-    unsigned int  m_Baudrate;    /**< Serial port baud rate */
+    wxSerialPort	m_SerialPort;  									/**< The serial port object */
+    unsigned int  m_Baudrate;    									/**< Serial port baud rate */
     std::mutex m_AccessSerialInterfaceMutex;			/**< Mutex to protect serial interface of simultanously access. */
     std::mutex m_WritingSerialInterfaceMutex;			/**< Mutex to protect serial interface of simultanously writing. */
     std::mutex m_ReadingSerialInterfaceMutex;			/**< Mutex to protect serial interface of simultanously reading. */
     UpdateValues::ValueType m_Type;								/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
-
-
-    int test;
 
   private:
     SerialInterface(const SerialInterface&) = delete; /**< Don't use (undefined symbol) */

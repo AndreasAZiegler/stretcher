@@ -28,15 +28,25 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      */
     void registerLinearStage(std::vector<LinearStage *> *linearmotor);
 
+    /**
+     * @brief Destructor
+     */
     ~MyFrame();
 
-    void updateValue(int value, UpdateValues::ValueType type);
+    /**
+     * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
+     * 				thread. (CallAfter() asynchronously call the updateDistance method)
+     * @param value The position of a stage or a force.
+     * @param type	Defines the type of the value (position of stage 1, 2 or force)
+     */
+    virtual void updateValue(int value, UpdateValues::ValueType type);
 
     /**
      * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
      * 				sets digits for the wxSpinCtrlDouble.
      */
     void startup(void);
+
   private:
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
@@ -127,11 +137,11 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      */
     void updateDistance();
 
-    mpWindow* m_Graph;					/**< Pointer to the graph */
-    Settings *m_Settings;				/**< Pointer to the settings object */
-    std::vector<LinearStage*> *m_LinearStages;
-    std::vector<int> m_CurrentPositions;	/**< Vector with the current stage positions */
-    double m_Distance;										/**< Distance */
+    mpWindow* m_Graph;													/**< Pointer to the graph */
+    Settings *m_Settings;												/**< Pointer to the settings object */
+    std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
+    std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
+    double m_Distance;													/**< Distance */
 
     wxDECLARE_EVENT_TABLE();
 };
