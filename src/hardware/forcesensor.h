@@ -19,6 +19,11 @@ class ForceSensor : public SerialInterface
      */
     ForceSensor(UpdateValues::ValueType type, unsigned int baudrate = 115200);
 
+    /**
+     * @brief Set the force sensor to the bipolar mode.
+     */
+    void setBipolarMode();
+
     ~ForceSensor();
 
    /**
@@ -42,6 +47,9 @@ class ForceSensor : public SerialInterface
 
 
   private:
+
+    // Defined commands for the force sensor.
+    const char *FORCE_SENSOR_SET_BIPOLAR;											/**< Command to get the device mode */
 
     /**
      * @brief Calculate scaling factor depending on the nominal value, the measurement end value, the nominal force and the input sensitivity.

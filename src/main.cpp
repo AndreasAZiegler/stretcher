@@ -60,6 +60,7 @@ bool MyApp::OnInit(){
   // Create the force sensor object
   m_ForceSensor = new ForceSensor(UpdateValues::ValueType::Force, m_MySettings.getForceSensorBaudRate());
   m_ForceSensor->connect(m_MySettings.getForceSensorComPort());
+  m_ForceSensor->setBipolarMode();
   m_ForceSensor->setScaleFactor(m_MySettings.getForceSensorNominalForce(),
                                 m_MySettings.getForceSensorNominalValue(),
                                 m_MySettings.getForceSensorInputSensitivity(),
