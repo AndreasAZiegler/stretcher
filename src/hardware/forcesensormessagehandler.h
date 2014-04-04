@@ -1,0 +1,58 @@
+
+#ifndef FORCESENSORMESSAGEHANDLER_H
+#define FORCESENSORMESSAGEHANDLER_H
+
+// Includes
+#include <wx-3.0/wx/ctb-0.13/serport.h>
+#include <mutex>
+#include "messagehandler.h"
+
+/**
+ * @brief Message handler for the linear stages
+ */
+class ForceSensorMessageHandler : virtual public MessageHandler
+{
+  public:
+
+    /**
+     * @brief Forwards the pointer to the serial port to the base class.
+     * @param serialport Pointer to the serial port.
+     */
+    ForceSensorMessageHandler(wxSerialPort *serialport, UpdateValues::ValueType type, std::mutex *readingSerialInterfaceMutex);
+
+    /**
+     * @brief Updated scale factor parameters with the values given from the GUI.
+     * @param scalingfactor Force sensor scaling factor
+     * @param zerovalue Force sensor zero value
+     */
+    void setScaleFactor(double scalingfactor, double zerovalue);
+
+    /**
+     * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
+     */
+    virtual void receiver(void);
+
+    /**
+     * @brief Informs the related objects according to the received message
+     * @param message Received message
+     */
+    void handler(char *message);
+
+    /**
+     * @brief Returns the latest position of the linear stage
+     * @return latest position of the linear stage.
+     */
+    int getCurrentForce(){
+      return(m_CurrentForce);
+    }
+
+  private:
+
+    int m_CurrentForce;
+
+    double m_ScalingFactor;                  			/**< Sensor scaling factor */
+    double m_ZeroValue;                      			/**< Zero value */
+
+};
+
+#endif // LINEARSTAGEMESSAGEHANDLER_H

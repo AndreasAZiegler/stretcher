@@ -29,7 +29,7 @@ class MessageHandler
     /**
      * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
      */
-    void receiver(void);
+    virtual void receiver(void) = 0;
 
     /**
      * @brief Registers the update methods, which will be called, when the value changes.
@@ -40,6 +40,8 @@ class MessageHandler
      * @brief Unregisters the update methods, which will be called, when the value changes.
      */
     void unregisterUpdateMethod(updateValue mp, UpdateValues *updateClass);
+
+    void setExitFlag(bool flag);
 
   protected:
 
@@ -55,6 +57,7 @@ class MessageHandler
     UpdateValues::ValueType m_Type;																										/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
     std::mutex *m_ReadingSerialInterfaceMutex;																				/**< Pointer to the mutex to protect serial interface of simultanously writing. */
     std::list<std::function<void(int, UpdateValues::ValueType)>> m_UpdateMethodList;	/**< List containing struct with pointers to the MyFrame object and the update method*/
+    bool m_ExitFlag;
 
 };
 

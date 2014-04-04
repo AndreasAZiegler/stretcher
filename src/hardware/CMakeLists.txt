@@ -4,6 +4,8 @@ set(SOURCE
         ./hardware/linearstage.cpp
         ./hardware/messagehandler.cpp
         ./hardware/linearstagemessagehandler.cpp
+        ./hardware/forcesensor.cpp
+        ./hardware/forcesensormessagehandler.cpp
         PARENT_SCOPE
 )
 
@@ -11,7 +13,9 @@ set(HEADERS
 	${HEADERS}
         ./hardware/serialinterface.h
         ./hardware/linearstage.h
-        ./hardware/messagehandler.cpp
-        ./hardware/linearstagemessagehandler.cpp
+        ./hardware/messagehandler.h
+        ./hardware/linearstagemessagehandler.h
+        ./hardware/forcesensor.h
+        ./hardware/forcesensormessagehandler.h
         PARENT_SCOPE
 )

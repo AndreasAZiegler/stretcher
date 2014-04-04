@@ -144,7 +144,7 @@ void LinearStage::move(){
  * @param distance Desired istance in milli meters.
  */
 void LinearStage::gotoMMDistance(int mmDistance){
-  int currentDistance = getCurrentDistance();
+  int currentDistance = getPosition();
 
   int amSteps = (currentDistance - mmDistance/MM_PER_MS) / 2;
   moveSteps(amSteps);
@@ -179,8 +179,8 @@ void LinearStage::moveMillimeters(double millimeters){
   moveSteps(steps);
 }
 
-double LinearStage::getCurrentDistance(void){
-  return(0);
+double LinearStage::getPosition(void){
+  return(m_MessageHandler.getCurrentPosition());
 }
 
 /**

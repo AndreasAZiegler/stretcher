@@ -8,6 +8,8 @@
 #include "settings.h"
 #include "./hardware/linearstage.h"
 #include "./hardware/linearstagemessagehandler.h"
+#include "./hardware/forcesensor.h"
+#include "./hardware/forcesensormessagehandler.h"
 
 /**
  * @brief The MyApp class
@@ -26,8 +28,12 @@ class MyApp : public wxApp
     Settings m_MySettings;																									/**< Settings object (Reads settings from "config.cfg" at start and stores at exit */
     std::vector<LinearStage*> m_LinearStages;																/**< Vector containing the two linear stage object pointer */
     std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers;	/**< Vector containing the two linear stage message handler object pointer */
+    ForceSensor* m_ForceSensor;																							/**< Pointer to the force sensor */
+    ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the force sensor message handler object */
 
     std::vector<std::thread> m_LinearStagesReceivers;												/**< Vector containing the threads for the linear stage receivers */
+    std::thread m_ForceSensorReceiver;																			/**< Thread for the force sensor receiver */
+
 };
 
 #endif // MAIN_H

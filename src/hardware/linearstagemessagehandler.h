@@ -21,10 +21,23 @@ class LinearStageMessageHandler : virtual public MessageHandler
     LinearStageMessageHandler(wxSerialPort *serialport, UpdateValues::ValueType type, std::mutex *readingSerialInterfaceMutex);
 
     /**
+     * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
+     */
+    virtual void receiver(void);
+
+    /**
      * @brief Informs the related objects according to the received message
      * @param message Received message
      */
     void handler(char *message);
+
+    /**
+     * @brief Returns the latest position of the linear stage
+     * @return latest position of the linear stage.
+     */
+    int getCurrentPosition(){
+      return(m_CurrentPosition);
+    }
 
   private:
     enum { ANSWER_RESET = 0x00};											/**< Answer from the command "Reset" */
@@ -43,6 +56,8 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @param message Received message.
      */
     int calculatePosition(char* message);
+
+    int m_CurrentPosition;
 
 };
 

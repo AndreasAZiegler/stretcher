@@ -8,6 +8,7 @@
 #include "../updatevalues.h"
 #include "../settings.h"
 #include "./hardware/linearstage.h"
+#include "./hardware/forcesensor.h"
 
 /**
  * @brief The Main Frame class
@@ -27,6 +28,12 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      * @param linearmotor Pointer to the vector containing the linear motors.
      */
     void registerLinearStage(std::vector<LinearStage *> *linearmotor);
+
+    /**
+     * @brief Register the force sensor.
+     * @param forcesensor Pointer to the force sensor.
+     */
+    void registerForceSensor(ForceSensor *forcesensor);
 
     /**
      * @brief Destructor
@@ -137,11 +144,19 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      */
     void updateDistance();
 
+    /**
+     * @brief Calculates the distance and print the value in the GUI.
+     */
+    void updateForce();
+
     mpWindow* m_Graph;													/**< Pointer to the graph */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
+    ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
-    double m_Distance;													/**< Distance */
+    double m_CurrentDistance;													/**< Distance */
+
+    double m_CurrentForce;
 
     wxDECLARE_EVENT_TABLE();
 };

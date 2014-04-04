@@ -54,11 +54,26 @@ bool MyApp::OnInit(){
   // Run the receivers of the linear stages in seperate threads.
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(1)));
+  m_LinearStagesReceivers.at(0).detach();
+  m_LinearStagesReceivers.at(1).detach();
 
   // Create the force sensor object
-  /**
-    @todo Creating force sensor
-    */
+  m_ForceSensor = new ForceSensor(UpdateValues::ValueType::Force, m_MySettings.getForceSensorBaudRate());
+  m_ForceSensor->connect(m_MySettings.getForceSensorComPort());
+  m_ForceSensor->setScaleFactor(m_MySettings.getForceSensorNominalForce(),
+                                m_MySettings.getForceSensorNominalValue(),
+                                m_MySettings.getForceSensorInputSensitivity(),
+                                m_MySettings.getForceSensorMeasureEndValue(),
+                                m_MySettings.getForceSensorZeroValue());
+  m_MyFrame->registerForceSensor(m_ForceSensor);
+
+  // Get the message handlers for the force sensor.
+  m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
+
+  // Run the receiver of the force sensor in seperate threads.
+  m_ForceSensorReceiver = std::thread(&ForceSensorMessageHandler::receiver, m_ForceSensorMessageHandler);
+  m_ForceSensorReceiver.detach();
+
 
   return(true);
 }

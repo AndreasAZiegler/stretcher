@@ -13,10 +13,11 @@ wxEND_EVENT_TABLE()
  * @param parent Pointer to the parent object.
  * @param settings Pointer to the Settings object.
  */
-MyPorts::MyPorts(Settings *settings, std::vector<LinearStage *> *linearstage, wxWindow *parent)
+MyPorts::MyPorts(Settings *settings, std::vector<LinearStage *> *linearstage, ForceSensor *forcesensor, wxWindow *parent)
   : MyPorts_Base(parent),
     m_Settings(settings),
-    m_LinearStages(linearstage)
+    m_LinearStages(linearstage),
+    m_ForceSensor(forcesensor)
 {
   wxID_PortsOK->SetId(ID_PortsOK);
 }
@@ -37,10 +38,10 @@ void MyPorts::OnOK(wxCommandEvent &event){
      m_LinearStages->at(0)->connect(m_Settings->getLinMot1ComPort());
      m_LinearStages->at(1)->connect(m_Settings->getLinMot2ComPort());
    }
-   /*
-   m_ForceSensor->disconnect();
-   * m_ForceSensor->connect(settings->getForceSensorComPort());
-   */
+   if(NULL != m_ForceSensor){
+     m_ForceSensor->disconnect();
+     m_ForceSensor->connect(m_Settings->getForceSensorComPort());
+   }
 
    Close(true);
 

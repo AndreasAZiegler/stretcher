@@ -78,7 +78,8 @@ wxEND_EVENT_TABLE()
 MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
     m_Settings(settings),
-    m_CurrentPositions{0,0}
+    m_CurrentPositions{0,0},
+    m_CurrentForce(0)
 {
   SetIcon(wxICON(sample));
 
@@ -159,15 +160,33 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage){
   m_LinearStages = linearstage;
 
-  // Registers update stage position methods at linearmessagehandler.
-  ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, (UpdateValues*)this);
-  ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, (UpdateValues*)this);
+  // Registers update methods at linearstagemessagehandler.
+  ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+  ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+}
+
+/**
+ * @brief Register the force sensor.
+ * @param forcesensor Pointer to the force sensor.
+ */
+void MyFrame::registerForceSensor(ForceSensor *forcesensor){
+  m_ForceSensor = forcesensor;
+
+  // Registers update method at forcesensormessagehandler.
+  (m_ForceSensor->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
 }
 
 /**
  * @brief Destructor
  */
 MyFrame::~MyFrame(){
+  // Stop linear stage receiver threads
+  ((m_LinearStages->at(0))->getMessageHandler())->setExitFlag(false);
+  ((m_LinearStages->at(1))->getMessageHandler())->setExitFlag(false);
+
+  // Stop force sensor receiver thread
+  (m_ForceSensor->getMessageHandler())->setExitFlag(false);
+
   delete m_Graph;
 }
 
@@ -188,7 +207,8 @@ void MyFrame::updateValue(int value, UpdateValues::ValueType type){
       CallAfter(&MyFrame::updateDistance);
       break;
     case UpdateValues::ValueType::Force:
-
+      m_CurrentForce = value;
+      CallAfter(&MyFrame::updateForce);
       break;
   }
 }
@@ -266,7 +286,7 @@ void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPortsSettings(wxCommandEvent& event){
-  MyPorts *ports = new MyPorts(m_Settings, m_LinearStages, this);
+  MyPorts *ports = new MyPorts(m_Settings, m_LinearStages, m_ForceSensor, this);
 
 	ports->Show();
 }
@@ -416,9 +436,17 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  * @brief Calculates the distance and print the value in the GUI.
  */
 void MyFrame::updateDistance(){
-  m_Distance = (std::abs(533334 /*max. position*/ - m_CurrentPositions[0]) + std::abs(533334 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+  m_CurrentDistance = (std::abs(533334 /*max. position*/ - m_CurrentPositions[0]) + std::abs(533334 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
   wxString tmp;
-  tmp << m_Distance << wxT(" mm");
+  tmp << m_CurrentDistance << wxT(" mm");
   m_DistanceStaticText->SetLabel(tmp);
-  //CallAfter(&wxStaticText::SetLabelText, "0.25");
+}
+
+/**
+ * @brief Calculates the distance and print the value in the GUI.
+ */
+void MyFrame::updateForce(){
+  wxString tmp;
+  tmp << m_CurrentForce << wxT(" kPa");
+  m_ForceStaticText->SetLabel(tmp);
 }

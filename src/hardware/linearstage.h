@@ -83,7 +83,7 @@ class LinearStage : public SerialInterface
      * @todo Implementation
      * @brief getCurrentDistance
      */
-    double getCurrentDistance(void);
+    double getPosition(void);
 
     /**
      * @brief Transforms a decimal number to a char* variable.
