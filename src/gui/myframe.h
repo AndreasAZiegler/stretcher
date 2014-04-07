@@ -154,9 +154,10 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
-    double m_CurrentDistance;													/**< Distance */
+    double m_CurrentDistance;										/**< Current distance */
 
-    double m_CurrentForce;
+    double m_CurrentForce;											/**< Current force */
+    wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
 
     wxDECLARE_EVENT_TABLE();
 };

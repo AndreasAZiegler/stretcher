@@ -13,7 +13,8 @@ using namespace std;
 LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
     : SerialInterface(type, baudrate),
       m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
-      m_Stepsize(0.000047625),                    //Stepsize of Zaber T-LSM025A motor in millimeters
+      m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
+      m_CurrentSpeed(0),
     /*
     mExpectedMessagesFlag(0),
     mOldPositionFlag(true),
@@ -36,12 +37,21 @@ LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
       STAGE_MOVE_ABSOLUTE("\x00\x014"),
       STAGE_MOVE_RELATIVE("\x00\x015"),
       STAGE_SET_SPEED("\x00\x02a"),
+      STAGE_SET_HOME_SPEED("\x00\x029"),
       STAGE_MOVE_AT_CONSTANT_SPEED("\x00\x016"), //: QObject(parent)
       STAGE_STOP("\x00\x017"),
       MM_PER_MS(0.000047625)
 {
+}
+
+/**
+ * @brief Sets the device mode, the move tracking period and the speed of the linear stage.
+ */
+void LinearStage::configure(){
   setDeviceMode();
   setMoveTrackingPeriod();
+  setHomeSpeed(25/*mm/s*/);
+  setSpeed(25/*mm/s*/);
 }
 
 LinearStage::~LinearStage()
@@ -63,7 +73,33 @@ void LinearStage::setDeviceMode(void){
   memcpy(buffer, command, 6);
 
   {
-    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 10/*ms*/);
+  }
+}
+
+/**
+ * @brief Sets the home speed of the linear stage.
+ * @param speedinmm Speed in mm/s
+ */
+void LinearStage::setHomeSpeed(double speedinmm){
+  int speed = 0;
+  char buffer[6];
+  char command[6] = "";
+  char* number;
+
+  if(speedinmm != 0) {
+    speed = speedinmm * (1.6384 * m_Stepsize); //transformation from mm/s to datavalue
+  } else {
+    speed = m_CurrentSpeed;
+  }
+
+  memcpy(command,STAGE_SET_HOME_SPEED,2);
+  number = transformDecToText(speed);
+  memcpy(command+2,number,4);
+  memcpy(buffer,command , 6);
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
@@ -81,7 +117,7 @@ void LinearStage::setMoveTrackingPeriod(void){
   memcpy(buffer, command, 6);
 
   {
-    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
@@ -97,13 +133,36 @@ void LinearStage::home(){
   memcpy(buffer, command, 6);
 
   {
-    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
 
-void LinearStage::setSpeed(double speed){
+/**
+ * @brief Sets the speed of the linear stage.
+ * @param speedinmm Speed in mm/s
+ */
+void LinearStage::setSpeed(double speedinmm){
+  int speed = 0;
+  char buffer[6];
+  char command[6] = "";
+  char* number;
 
+  if(speedinmm != 0) {
+    speed = speedinmm * (1.6384 * m_Stepsize); //transformation from mm/s to datavalue
+    m_CurrentSpeed = speed;
+  } else {
+    speed = m_CurrentSpeed;
+  }
+
+  memcpy(command,STAGE_SET_SPEED,2);
+  number = transformDecToText(speed);
+  memcpy(command+2,number,4);
+  memcpy(buffer,command , 6);
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
 }
 
 /**
@@ -117,7 +176,7 @@ void LinearStage::stop(){
   memcpy(buffer, command, 6);
 
   {
-    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
@@ -133,7 +192,7 @@ void LinearStage::move(){
   memcpy(buffer, command, 6);
 
   {
-    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
@@ -164,7 +223,7 @@ void LinearStage::moveSteps(int steps){
   memcpy(buffer,command , 6);
 
   {
-    unique_lock<mutex> lck{m_WritingSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 50/*ms*/);
   }
 }

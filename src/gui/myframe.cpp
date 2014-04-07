@@ -79,7 +79,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
     m_Settings(settings),
     m_CurrentPositions{0,0},
-    m_CurrentForce(0)
+    m_CurrentForce(0),
+    m_ForceUnit(wxT(" kPa"))
 {
   SetIcon(wxICON(sample));
 
@@ -327,10 +328,12 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_PreloadLimitStaticText->SetLabelText("Stress Limit");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress");
+    m_ForceUnit = wxT(" kPa");
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Force");
+    m_ForceUnit = wxT(" N");
   }
 }
 
@@ -447,6 +450,6 @@ void MyFrame::updateDistance(){
  */
 void MyFrame::updateForce(){
   wxString tmp;
-  tmp << m_CurrentForce << wxT(" kPa");
+  tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   m_ForceStaticText->SetLabel(tmp);
 }

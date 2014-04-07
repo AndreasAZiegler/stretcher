@@ -21,6 +21,11 @@ class LinearStage : public SerialInterface
      */
     LinearStage(UpdateValues::ValueType type, unsigned int baudrate = 115200);
 
+    /**
+     * @brief Sets the device mode, the move tracking period and the speed of the linear stage.
+     */
+    void configure();
+
     ~LinearStage();
 
     /**
@@ -36,7 +41,11 @@ class LinearStage : public SerialInterface
      */
     void home();
 
-    void setSpeed(double speed);
+    /**
+     * @brief Sets the speed of the linear stage.
+     * @param speedinmm Speed in mm/s
+     */
+    void setSpeed(double speedinmm);
 
     /**
      * @brief Stops the linear stage.
@@ -75,6 +84,12 @@ class LinearStage : public SerialInterface
     void setDeviceMode(void);
 
     /**
+     * @brief Sets the home speed of the linear stage.
+     * @param speedinmm Speed in mm/s
+     */
+    void setHomeSpeed(double speedinmm);
+
+    /**
      * @brief Configure the interval between each Move Tracking of Manual Move Tracking responses.
      */
     void setMoveTrackingPeriod(void);
@@ -101,6 +116,7 @@ class LinearStage : public SerialInterface
     const char *STAGE_MOVE_ABSOLUTE;							/**< Cammand to move the motor absolut */
     const char *STAGE_MOVE_RELATIVE;							/**< Cammand to move the motor relative */
     const char *STAGE_SET_SPEED;									/**< Command to set the motor speed */
+    const char *STAGE_SET_HOME_SPEED;							/**< Command to set the motor home speed */
     const char *STAGE_MOVE_AT_CONSTANT_SPEED;			/**< Command to let the motor move at constant speed */
     const char *STAGE_STOP;												/**< Command to stop the motor */
 
@@ -114,7 +130,7 @@ class LinearStage : public SerialInterface
     //double mAmplitude;						        //!< Amplitude of the oscillation
     //bool mStoprequest;						        //!< stopflag for the oscillation
     //int mLMtimerID;							          //!< Timer ID of the oscillation timer
-    //int m_CurrentSpeed;         			           /**< The current speed */
+    int m_CurrentSpeed;         			           /**< The current speed */
     //int m_CurrentPosMotor[2];   			           /**< Position of the two motors */
     //double m_ZeroDistance;    			             /**< Distance when the motors are on max position (resulting in smallest distance) */
     //bool mOldPositionFlag;                /**< Flag to indicate that the current "old" position is still up to date */

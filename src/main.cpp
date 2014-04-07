@@ -42,9 +42,11 @@ bool MyApp::OnInit(){
 
   // Create the linear motor objects.
   m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos1, m_MySettings.getLinMot1BaudRate()));
-  m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos1, m_MySettings.getLinMot2BaudRate()));
+  m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos2, m_MySettings.getLinMot2BaudRate()));
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
+  m_LinearStages.at(0)->configure();
+  m_LinearStages.at(1)->configure();
   m_MyFrame->registerLinearStage(&m_LinearStages);
 
   // Get the message handlers for the linear stages.

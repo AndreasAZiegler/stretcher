@@ -20,7 +20,7 @@ SerialInterface::SerialInterface(UpdateValues::ValueType type, unsigned int baud
  */
 SerialInterface::~SerialInterface()
 {
-  unique_lock<mutex> lck{m_AccessSerialInterfaceMutex};
+  lock_guard<mutex> lck{m_AccessSerialInterfaceMutex};
   if(m_SerialPort.IsOpen()){
     m_SerialPort.Close();
   }
@@ -35,7 +35,7 @@ void SerialInterface::connect(const char* comPort)
   wxSerialPort_DCS parameters;
   parameters.baud = (wxBaud)m_Baudrate;
   {
-    unique_lock<mutex> lck{m_AccessSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_AccessSerialInterfaceMutex};
     m_SerialPort.Open(comPort, &parameters);
   }
 }
@@ -45,7 +45,7 @@ void SerialInterface::connect(const char* comPort)
  */
 void SerialInterface::disconnect() {
   {
-    unique_lock<mutex> lck{m_AccessSerialInterfaceMutex};
+    lock_guard<mutex> lck{m_AccessSerialInterfaceMutex};
     m_SerialPort.Close();
   }
 }

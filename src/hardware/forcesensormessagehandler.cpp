@@ -34,36 +34,75 @@ void ForceSensorMessageHandler::receiver(void){
   int measforce = 0;
   double force = 0;
 
+  bool syncReceived;
+  int syncPos;
+
   while(m_ExitFlag){
     {
       lock_guard<mutex> lck {*m_ReadingSerialInterfaceMutex};
-      //if(true == m_ReadingSerialInterfaceMutex->try_lock()){
-        if(1 == m_SerialPort->IsOpen()) {
-          answerLen = m_SerialPort->Readv(m_ReceiveBuffer, 5, 5/*ms*/);
-          //std::cout << "PressureSensor answerLen: " << answerLen << std::endl;
-        }
-      //}
-      //m_ReadingSerialInterfaceMutex->unlock();
-    }
+      if(1 == m_SerialPort->IsOpen()){
+        answerLen = m_SerialPort->Readv(m_ReceiveBuffer, 5, 5/*ms*/);
+        //std::cout << "PressureSensor answerLen: " << answerLen << std::endl;
 
-    if(answerLen > 4) {
+        if(0 < answerLen){
+          // Read data until 1 message is received if synced.
+          while(5 > answerLen){
+            answerLen += m_SerialPort->Readv(&m_ReceiveBuffer[answerLen], (5 - answerLen) , 5/*ms*/);
+          }
 
-      for(int i = 0; i < (static_cast<int>(answerLen) - 3); ++i) {
-        std::cout << "ForceSensor m_ReceiveBuffer[" << i <<"]: " << static_cast<unsigned int>(m_ReceiveBuffer[i]) << std::endl;
-        if((m_ReceiveBuffer[i] == 44 /*sync symbol*/)) { // && (answerBuffer[i + 5] == 44)) {
+          syncReceived = false;
+          syncPos = 100;
 
-          //measforce = static_cast<unsigned char>(answerBuffer[2])*256*256 + static_cast<unsigned char>(answerBuffer[3])*256 + static_cast<unsigned char>(answerBuffer[4]);
-          measforce = (static_cast<unsigned char>(m_ReceiveBuffer[i+2]) << 16) +
-                      (static_cast<unsigned char>(m_ReceiveBuffer[i+3]) << 8) +
-                      (static_cast<unsigned char>(m_ReceiveBuffer[i+4]));
+          // Check if the received 5 bytes contains the sync symbol.
+          for(int i = 0; ((i < 5) && !syncReceived); ++i){
+            if(44 == m_ReceiveBuffer[i]){
+              syncReceived = true;
+              syncPos = i;
+            }
+          }
 
-          m_CurrentForce = (measforce - m_ZeroValue) / m_ScalingFactor;
-          std::cout << "PressureSensor force: " << m_CurrentForce << " at pos: " << i << std::endl;
-          for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-            (*i)(m_CurrentForce, m_Type);
+          // If sync symbol not received yet, continueing receiving a byte until sync symbol received.
+          if(false == syncReceived){
+            while(!syncReceived){
+              answerLen += m_SerialPort->Readv(&m_ReceiveBuffer[answerLen], 1, 5/*ms*/);
+              if(44 == m_ReceiveBuffer[answerLen - 1]){
+                syncReceived = true;
+                syncPos = answerLen - 1;
+              }
+            }
+          }
+
+          // Receive the rest of the message, if the message isn't complete yet.
+          if(0 != syncPos){
+            // If sync symbol is within the first 5 bytes less than 4 bytes are needed to complete the message.
+            if(5 > syncPos){
+              answerLen += m_SerialPort->Readv(&m_ReceiveBuffer[answerLen], syncPos, 5/*ms*/);
+            }else{
+              answerLen += m_SerialPort->Readv(&m_ReceiveBuffer[answerLen], 4, 5/*ms*/);
+            }
           }
         }
       }
+    }
+
+    if(answerLen > 4){
+
+      //for(int i = 0; i < (static_cast<int>(answerLen) - 4); ++i) {
+      //std::cout << "ForceSensor m_ReceiveBuffer[" << syncPos <<"]: " << static_cast<unsigned int>(m_ReceiveBuffer[syncPos]) << std::endl;
+      //if((m_ReceiveBuffer[i] == 44 /*sync symbol*/)) { // && (answerBuffer[i + 5] == 44)) {
+
+      //measforce = static_cast<unsigned char>(answerBuffer[2])*256*256 + static_cast<unsigned char>(answerBuffer[3])*256 + static_cast<unsigned char>(answerBuffer[4]);
+      measforce = (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+2]) << 16) +
+                  (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+3]) << 8) +
+                  (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+4]));
+
+      m_CurrentForce = (measforce - m_ZeroValue) / m_ScalingFactor;
+      //std::cout << "PressureSensor force: " << m_CurrentForce << " at pos: " << syncPos << std::endl;
+      for(auto j = m_UpdateMethodList.begin(); j != m_UpdateMethodList.end(); ++j){
+        (*j)(m_CurrentForce, m_Type);
+      }
+        //}
+      //}
     }
   }
 }
