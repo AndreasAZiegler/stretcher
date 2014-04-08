@@ -15,6 +15,21 @@ void StageFrame::registerLinearStages(std::vector<LinearStage*> *linearstages){
   m_LinearStagesMessageHandlers.push_back((m_LinearStages->at(1))->getMessageHandler());
 }
 
+/**
+ * @brief Moves the stage frame forward at constant speed
+ */
+void StageFrame::moveForward(){
+ (m_LinearStages->at(0))->moveForward();
+ (m_LinearStages->at(1))->moveForward();
+}
+
+/**
+ * @brief Moves the stage frame backward at constant speed
+ */
+void StageFrame::moveBackward(){
+ (m_LinearStages->at(0))->moveBackward();
+ (m_LinearStages->at(1))->moveBackward();
+}
 
 /**
  * @brief Moves the stage the amount of millimeters.
@@ -38,6 +53,14 @@ void StageFrame::gotoMMDistance(int mmDistance){
   long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
   (m_LinearStages->at(0))->moveSteps(amSteps);
   (m_LinearStages->at(1))->moveSteps(amSteps);
+}
+
+/**
+ * @brief Stops the stage frame.
+ */
+void StageFrame::stop(){
+  (m_LinearStages->at(0))->stop();
+  (m_LinearStages->at(1))->stop();
 }
 
 double StageFrame::getCurrentDistance(void){

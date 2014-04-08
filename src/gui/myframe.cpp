@@ -3,11 +3,14 @@
 #include <wx/menu.h>
 #include <wx/checkbox.h>
 #include <wx/image.h>
+#include <thread>
+#include <functional>
 #include "../../include/ctb-0.13/serport.h"
 #include "myframe.h"
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
 #include "myfileoutput_base.h"
+#include "../experiments/preload.h"
 
 #include <iostream>
 
@@ -70,6 +73,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
   EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
   EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
+  EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
 wxEND_EVENT_TABLE()
 
 /**
@@ -84,7 +88,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentDistance(150),
     m_CurrentForce(0),
     m_ForceUnit(wxT(" kPa")),
-    m_ClampingPosition(150)
+    m_ClampingPosition(150),
+    m_ForceOrStress(Experiment::ForceOrStress::Force),
+    m_CurrentExperiment(NULL)
 {
   SetIcon(wxICON(sample));
 
@@ -104,6 +110,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
   m_ClampingPositionButton->SetId((ID_ClampingGoTo));
+  m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -169,8 +176,8 @@ void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, Stage
   m_StageFrame = stageframe;
 
   // Registers update methods at linearstagemessagehandler.
-  ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
-  ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_Pos1Id = ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_Pos2Id = ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
 }
 
 /**
@@ -181,13 +188,18 @@ void MyFrame::registerForceSensor(ForceSensor *forcesensor){
   m_ForceSensor = forcesensor;
 
   // Registers update method at forcesensormessagehandler.
-  (m_ForceSensor->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdateValues::updateValue, this);
 }
 
 /**
  * @brief Destructor
  */
 MyFrame::~MyFrame(){
+  // Unregister update methods
+  ((m_LinearStages->at(0))->getMessageHandler())->unregisterUpdateMethod(m_Pos1Id);
+  ((m_LinearStages->at(1))->getMessageHandler())->unregisterUpdateMethod(m_Pos2Id);
+  m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   // Stop linear stage receiver threads
   ((m_LinearStages->at(0))->getMessageHandler())->setExitFlag(false);
   ((m_LinearStages->at(1))->getMessageHandler())->setExitFlag(false);
@@ -332,15 +344,17 @@ void MyFrame::OnCalculateDiameter(wxCommandEvent& event){
  */
 void MyFrame::OnUnit(wxCommandEvent& event){
   if(0 == m_PreloadUnitRadioBox->GetSelection()){
-    m_PreloadLimitStaticText->SetLabelText("Stress Limit");
-    m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit");
-    m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress");
+    m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
+    m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
+    m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
     m_ForceUnit = wxT(" kPa");
+    m_ForceOrStress = Experiment::ForceOrStress::Stress;
   }else{
-    m_PreloadLimitStaticText->SetLabelText("Force Limit");
-    m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit");
-    m_CreepHoldForceStressStaticText->SetLabelText("Hold Force");
+    m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
+    m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
+    m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
     m_ForceUnit = wxT(" N");
+    m_ForceOrStress = Experiment::ForceOrStress::Force;
   }
 }
 
@@ -423,6 +437,33 @@ void MyFrame::OnClampingPosValueChanged(wxSpinDoubleEvent& event){
  */
 void MyFrame::OnClampingGoTo(wxCommandEvent& event){
   m_StageFrame->gotoMMDistance(m_ClampingPosition);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload.
+ * @param event Occuring event
+ */
+void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
+  double area = 0;
+  if(true == m_PreloadCalculateCrosssectionCheckBox->IsChecked()){
+    switch(m_PreloadXRadioBox->GetSelection()){
+      case 0:
+        area = (m_PreloadYSpinCtrl->GetValue()) * (1 + m_PreloadXSpinCtrl->GetValue() / 100);
+        break;
+      case 1:
+        area = m_PreloadYSpinCtrl->GetValue() * m_PreloadXSpinCtrl->GetValue();
+        break;
+    }
+  }
+  m_CurrentExperiment = new Preload(Experiment::ExperimentType::Preload,
+                                    m_ForceOrStress,
+                                    m_StageFrame,
+                                    m_ForceSensorMessageHandler,
+                                    m_PreloadLimitSpinCtrl->GetValue(),
+                                    m_PreloadSpeedMmSpinCtrl->GetValue(), area);
+  //preload.process(Preload::Event::evStart);
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
+  t1.join();
 }
 
 /**

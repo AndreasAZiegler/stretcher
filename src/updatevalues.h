@@ -1,6 +1,9 @@
 #ifndef UPDATEVALUES_H
 #define UPDATEVALUES_H
 
+#include <list>
+#include <functional>
+
 /**
  * @brief Abstract class used as an interface, that the message handlers can use the updateValue() method of the receiver in a standard way.
  */
@@ -24,6 +27,11 @@ class UpdateValues
      * @param type Type of value.
      */
     virtual void updateValue(int value, UpdateValues::ValueType type) = 0;
+
+  protected:
+    std::list<std::function<void(int, UpdateValues::ValueType)>>::iterator m_ForceId;	/**< Id of the force callback method */
+    std::list<std::function<void(int, UpdateValues::ValueType)>>::iterator m_Pos1Id;	/**< Id of the pos 1 callback method */
+    std::list<std::function<void(int, UpdateValues::ValueType)>>::iterator m_Pos2Id;	/**< Id of the pos 2 callback method */
 };
 
 #endif // UPDATEVALUES_H

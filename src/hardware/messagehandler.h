@@ -33,13 +33,17 @@ class MessageHandler
 
     /**
      * @brief Registers the update methods, which will be called, when the value changes.
+     * @param updateMethod Method which updates a value.
+     * @param updateClass Pointer to the object, to which the method belongs.
+     * @return Id of the callback method.
      */
-    void registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass);
+    std::list<std::function<void(int, UpdateValues::ValueType)>>::iterator registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass);
 
     /**
      * @brief Unregisters the update methods, which will be called, when the value changes.
+     * @param id Id of the callback method
      */
-    void unregisterUpdateMethod(updateValue mp, UpdateValues *updateClass);
+    void unregisterUpdateMethod(std::list<std::function<void(int, UpdateValues::ValueType)>>::iterator id);
 
     void setExitFlag(bool flag);
 

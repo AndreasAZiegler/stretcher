@@ -14,6 +14,16 @@ class StageFrame
     void registerLinearStages(std::vector<LinearStage*> *linearstages);
 
     /**
+     * @brief Moves the stage forward frame at constant speed
+     */
+    void moveForward();
+
+    /**
+     * @brief Moves the stage backward frame at constant speed
+     */
+    void moveBackward();
+
+    /**
      * @brief Moves the stage the amount of millimeters.
      * @param milimeters Amount of milimeters
      */
@@ -25,6 +35,11 @@ class StageFrame
      * @param distance Desired clamping distance in micro steps from the GUI
      */
     void gotoMMDistance(int mmDistance);
+
+    /**
+     * @brief Stops the stage frame.
+     */
+    void stop();
 
   private:
 

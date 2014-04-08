@@ -59,9 +59,14 @@ class LinearStage : public SerialInterface
     void stop();
 
     /**
-     * @brief Moves the stage at constant speed
+     * @brief Moves the stage forward at constant speed
      */
-    void move();
+    void moveForward(double speedinmm = 0);
+
+    /**
+     * @brief Moves the stage backward at constant speed
+     */
+    void moveBackward(double speedinmm = 0);
 
     /**
      * @brief Moves the stage the amount of steps.

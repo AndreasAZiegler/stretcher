@@ -10,6 +10,7 @@
 #include "./hardware/linearstage.h"
 #include "./hardware/stageframe.h"
 #include "./hardware/forcesensor.h"
+#include "./experiments/experiment.h"
 
 /**
  * @brief The Main Frame class
@@ -135,6 +136,12 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     void OnClampingGoTo(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload.
+     * @param event Occuring event
+     */
+    void OnPreloadSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -167,9 +174,12 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
+    ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     double m_CurrentDistance;										/**< Current distance */
+    Experiment *m_CurrentExperiment;
 
+    Experiment::ForceOrStress m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
     double m_CurrentForce;											/**< Current force */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
     double m_ClampingPosition;									/**< Clamping position */
@@ -193,7 +203,8 @@ enum
   ID_MotorStop = 12,
   ID_HomeStages = 13,
   ID_ClampingPosValue = 14,
-  ID_ClampingGoTo = 15
+  ID_ClampingGoTo = 15,
+  ID_PreloadSendToProtocol = 16
 };
 
 #endif // MYFRAME_H

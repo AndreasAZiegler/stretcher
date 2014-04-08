@@ -1,0 +1,106 @@
+
+#ifndef PRELOAD_H
+#define PRELOAD_H
+#include "experiment.h"
+#include "../hardware/stageframe.h"
+#include "../hardware/forcesensormessagehandler.h"
+#include "../updatevalues.h"
+
+/**
+ * @brief Class which represents the preload process
+ */
+class Preload : virtual public Experiment, virtual public UpdateValues
+{
+  public:
+
+    /**
+     * @brief Initializes all the needed variables
+     * @param type Type of the experiment.
+     * @param forceOrStress Indicates if experiment is force or stress based.
+     * @param forcesensormessagehandler Pointer to the force sensor message handler.
+     * @param stressForceLimit Stress or force limit value.
+     * @param speedInMM Speed in mm/s.
+     * @param area Value of the area.
+     */
+    Preload(Experiment::ExperimentType type, Experiment::ForceOrStress forceOrStress, StageFrame *stageframe, ForceSensorMessageHandler *forcesensormessagehandler,  double stressForceLimit, double speedInMM, double area);
+
+    ~Preload();
+
+    /**
+     * @brief FSM of the experiment
+     * @param e Occuring event
+     */
+    virtual void process(Event e);
+
+    /**
+     * @brief Sets speed.
+     * @param mm Speed in mm/s
+     */
+    void setSpeedInMM(double mm){
+      m_SpeedInMM = mm;
+    }
+
+    /**
+     * @brief Sets speed.
+     * @param percent Speed in percent of the clamping distance / second.
+     */
+    void setSpeedInPercent(double percent){
+      m_SpeedInPercent = percent;
+    }
+
+
+    /**
+     * @brief Sets the area.
+     * @param x Length in x direction.
+     * @param y Length in y direction.
+     */
+    void setArea (double x, double y);
+
+    /**
+     * @brief Sets the force or stress limit.
+     * @param forceStress Force or stress limit.
+     */
+    void setForceStressLimit (double forceStress){
+      m_ForceStressLimit = forceStress;
+    }
+
+    /**
+     * @brief Abstract method which will be calles by the message handlers to update the values
+     * @param value Position of linear stage 1 or 2 or the force
+     * @param type Type of value.
+     */
+    virtual void updateValue(int value, UpdateValues::ValueType type);
+
+  private:
+    /**
+     * @enum State
+     * @brief Defines the states of the AutoStretch FSM.
+     */
+    enum State{stopState,       /**< Stop state */
+               runState};       /**< Run state */
+
+    /**
+     * @enum Direction
+     * @brief Defines Forwards, Backwards and Stop
+     */
+    enum Direction{Forwards,
+                   Backwards,
+                   Stop};
+
+    StageFrame *m_StageFrame;																/**< Pointer to the stage frame object */
+    ForceSensorMessageHandler *m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
+
+    State m_CurrentState;																		/**< Current state of the preload FSM */
+    Direction m_CurrentDirection;
+    double m_ForceStressThreshold;
+
+    double m_ForceStressLimit;															/**< Stress or force limit value */
+    double m_Area;																					/**< Area needed for stress calculation */
+    double m_SpeedInMM;																			/**< Speed in mm/sec */
+    double m_SpeedInPercent;																/**< Speed in percent of clamping distance / sec */
+
+    double m_CurrentForce;																	/**< Current force */
+
+};
+
+#endif // PRELOAD_H

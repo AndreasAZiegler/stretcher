@@ -148,7 +148,8 @@ void LinearStage::setMoveTrackingPeriod(void){
   char buffer[6];
   char command[6] = "";
 
-  char *settings = transformDecToText(10/*ms*/);
+  //char *settings = transformDecToText(10/*ms*/);
+  char *settings = transformDecToText(250/*ms*/);
   memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
   memcpy(command+2, settings, 1);
   memcpy(buffer, command, 6);
@@ -219,20 +220,57 @@ void LinearStage::stop(){
 }
 
 /**
- * @brief Moves the stage at constant speed
+ * @brief Moves the stage forwards at constant speed
  */
-void LinearStage::move(){
+void LinearStage::moveForward(double speedinmm){
+  int speed = 0;
   char buffer[6];
   char command[6] = "";
+  char *number;
+
+  if(speedinmm != 0) {
+    speed = speedinmm * 1.6384 / m_Stepsize; //transformation from mm/s to datavalue
+    m_CurrentSpeed = speed;
+  } else {
+    speed = m_CurrentSpeed;
+  }
 
   memcpy(command, STAGE_MOVE_AT_CONSTANT_SPEED, 2);
+  number = transformDecToText(speed);
+  memcpy(command+2, number, 4);
   memcpy(buffer, command, 6);
-
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
+
+/**
+ * @brief Moves the stage backwards at constant speed
+ */
+void LinearStage::moveBackward(double speedinmm){
+  int speed = 0;
+  char buffer[6];
+  char command[6] = "";
+  char *number;
+
+  if(speedinmm != 0) {
+    speed = speedinmm * 1.6384 / m_Stepsize; //transformation from mm/s to datavalue
+    m_CurrentSpeed = speed;
+  } else {
+    speed = m_CurrentSpeed;
+  }
+
+  memcpy(command, STAGE_MOVE_AT_CONSTANT_SPEED, 2);
+  number = transformDecToText(-speed);
+  memcpy(command+2, number, 4);
+  memcpy(buffer, command, 6);
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
 /**
  * @brief Moves the stage the amount of steps.
  * @param steps Amount of steps
