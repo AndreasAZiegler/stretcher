@@ -116,10 +116,10 @@ void LinearStageMessageHandler::handler(char *message){
  */
 int LinearStageMessageHandler::calculatePosition(char* message){
 
- int position = static_cast<unsigned char>(message[5]) * (256*256*256) +
-                static_cast<unsigned char>(message[4]) * (256*256) +
-                static_cast<unsigned char>(message[3]) * 256 +
-                static_cast<unsigned char>(message[2]);
+ int position = static_cast<unsigned char>(message[4]) * (256*256*256) +
+                static_cast<unsigned char>(message[3]) * (256*256) +
+                static_cast<unsigned char>(message[2]) * 256 +
+                static_cast<unsigned char>(message[1]);
 
   if(message[5] > 127) {
     position -= 256*256*256*256;

@@ -1,4 +1,4 @@
-/*************** Includes ************/
+// Includes
 #include <wx/wx.h>
 #include <wx/menu.h>
 #include <wx/checkbox.h>
@@ -68,6 +68,8 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
+  EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
+  EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
 wxEND_EVENT_TABLE()
 
 /**
@@ -79,8 +81,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
     m_Settings(settings),
     m_CurrentPositions{0,0},
+    m_CurrentDistance(150),
     m_CurrentForce(0),
-    m_ForceUnit(wxT(" kPa"))
+    m_ForceUnit(wxT(" kPa")),
+    m_ClampingPosition(150)
 {
   SetIcon(wxICON(sample));
 
@@ -98,6 +102,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
+  m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
+  m_ClampingPositionButton->SetId((ID_ClampingGoTo));
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -158,8 +164,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
  * @brief Register the liner motors.
  * @param linearstage Pointer to the vector containing the linear motors.
  */
-void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage){
+void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, StageFrame *stageframe){
   m_LinearStages = linearstage;
+  m_StageFrame = stageframe;
 
   // Registers update methods at linearstagemessagehandler.
   ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
@@ -403,13 +410,34 @@ void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user changes the clamping position value.
+ * @param event Occuring event
+ */
+void MyFrame::OnClampingPosValueChanged(wxSpinDoubleEvent& event){
+  m_ClampingPosition = m_ClampingPositionSpinCtrl->GetValue();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
+ * @param event Occuring event
+ */
+void MyFrame::OnClampingGoTo(wxCommandEvent& event){
+  m_StageFrame->gotoMMDistance(m_ClampingPosition);
+}
+
+/**
  * @brief Method wich will be executed, when the user klicks on the decrease distance button.
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
   if(NULL != m_LinearStages){
-    (m_LinearStages->at(0))->moveMillimeters(0.25);
-    (m_LinearStages->at(1))->moveMillimeters(0.25);
+    m_StageFrame->moveMM(0.25);
+
+    // If the clamping position tab is active.
+    if(1 == m_Experiments->GetSelection()){
+      m_ClampingPosition -= (2 * 0.25);
+      m_ClampingPositionSpinCtrl->SetValue(m_ClampingPosition);
+    }
   }
 }
 
@@ -419,8 +447,13 @@ void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
  */
 void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
   if(NULL != m_LinearStages){
-    (m_LinearStages->at(0))->moveMillimeters(-0.25);
-    (m_LinearStages->at(1))->moveMillimeters(-0.25);
+    m_StageFrame->moveMM(-0.25);
+  }
+
+  // If the clamping position tab is active.
+  if(1 == m_Experiments->GetSelection()){
+    m_ClampingPosition += (2 * 0.25);
+    m_ClampingPositionSpinCtrl->SetValue(m_ClampingPosition);
   }
 }
 

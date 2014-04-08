@@ -26,6 +26,12 @@ class LinearStage : public SerialInterface
      */
     void configure();
 
+    /**
+     * @brief Registers the message handler of the other linear stage.
+     * @param othermessagehandler Pointer to the message handler object of the other linear stage.
+     */
+    void registerOtherMessageHandler(LinearStageMessageHandler *othermessagehandler);
+
     ~LinearStage();
 
     /**
@@ -58,23 +64,10 @@ class LinearStage : public SerialInterface
     void move();
 
     /**
-     * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
-     *        and start the motors.
-     * @param distance Desired clamping distance in micro steps from the GUI
-     */
-    void gotoMMDistance(int mmDistance);
-
-    /**
      * @brief Moves the stage the amount of steps.
      * @param steps Amount of steps
      */
     void moveSteps(int steps);
-
-    /**
-     * @brief Moves the stage the amount of millimeters.
-     * @param milimeters Amount of milimeters
-     */
-    void moveMillimeters(double millimeters);
 
    private:
 
@@ -90,15 +83,15 @@ class LinearStage : public SerialInterface
     void setHomeSpeed(double speedinmm);
 
     /**
+     * @brief Sets the acceleration of the linear stage
+     * @param acceleration
+     */
+    void setAcceleration(double acceleration);
+
+    /**
      * @brief Configure the interval between each Move Tracking of Manual Move Tracking responses.
      */
     void setMoveTrackingPeriod(void);
-
-    /**
-     * @todo Implementation
-     * @brief getCurrentDistance
-     */
-    double getPosition(void);
 
     /**
      * @brief Transforms a decimal number to a char* variable.
@@ -108,31 +101,32 @@ class LinearStage : public SerialInterface
     char* transformDecToText(int dec);
 
     // Defined commands for the Zaber linear motors.
-    const char *STAGE_DEVICE_MODE;								/**< Command to get the device mode */
+    const char *STAGE_DEVICE_MODE;										/**< Command to get the device mode */
     const char *STAGE_SET_MOVE_TRACKING_PERIOD;				/**< Command to set the move tracking period */
-    const char *STAGE_RESET;											/**< Command to reset the motor */
-    const char *STAGE_RETURN_CURRENT_POSITION;		/**< Command to get the current position */
-    const char *STAGE_GO_HOME;										/**< Command to move the motor to home distance (0) */
-    const char *STAGE_MOVE_ABSOLUTE;							/**< Cammand to move the motor absolut */
-    const char *STAGE_MOVE_RELATIVE;							/**< Cammand to move the motor relative */
-    const char *STAGE_SET_SPEED;									/**< Command to set the motor speed */
-    const char *STAGE_SET_HOME_SPEED;							/**< Command to set the motor home speed */
-    const char *STAGE_MOVE_AT_CONSTANT_SPEED;			/**< Command to let the motor move at constant speed */
-    const char *STAGE_STOP;												/**< Command to stop the motor */
+    const char *STAGE_RESET;													/**< Command to reset the motor */
+    const char *STAGE_RETURN_CURRENT_POSITION;				/**< Command to get the current position */
+    const char *STAGE_GO_HOME;												/**< Command to move the motor to home distance (0) */
+    const char *STAGE_MOVE_ABSOLUTE;									/**< Cammand to move the motor absolut */
+    const char *STAGE_MOVE_RELATIVE;									/**< Cammand to move the motor relative */
+    const char *STAGE_SET_SPEED;											/**< Command to set the motor speed */
+    const char *STAGE_SET_HOME_SPEED;									/**< Command to set the motor home speed */
+    const char *STAGE_SET_ACCELERATION;								/**< Command to set the motor acceleration */
+    const char *STAGE_MOVE_AT_CONSTANT_SPEED;					/**< Command to let the motor move at constant speed */
+    const char *STAGE_STOP;														/**< Command to stop the motor */
 
-    const double MM_PER_MS;               				/**< milimeter per microstep */
+    const double MM_PER_MS;               						/**< milimeter per microstep */
 
     //const float DecIncSpeed;              				/**< Amount of speed to increase/decrease */
 
-    double m_Stepsize;			     				    			/**< Stepsize of the stepper motor in millimeters */
+    double m_Stepsize;			     				    					/**< Stepsize of the stepper motor in millimeters */
     char mbytedata[4];
     //int mOscstate;							          //!< Current state of the oscillation
     //double mAmplitude;						        //!< Amplitude of the oscillation
     //bool mStoprequest;						        //!< stopflag for the oscillation
     //int mLMtimerID;							          //!< Timer ID of the oscillation timer
-    int m_CurrentSpeed;         			           /**< The current speed */
+    int m_CurrentSpeed;         			           			/**< The current speed */
     //int m_CurrentPosMotor[2];   			           /**< Position of the two motors */
-    //double m_ZeroDistance;    			             /**< Distance when the motors are on max position (resulting in smallest distance) */
+    double m_ZeroDistance;		    			             /**< Distance when the motors are on max position (resulting in smallest distance) */
     //bool mOldPositionFlag;                /**< Flag to indicate that the current "old" position is still up to date */
     //bool mMoveFinishedFlag;               /**< Flag to indicate, that the motors finished moving */
     //bool mPositionPendingFlag;            /**< Indicate that a RETURN_CURRENT_POSITION command is executed but the answer not yet arrived */
@@ -140,7 +134,8 @@ class LinearStage : public SerialInterface
 
     //bool mExpectedMessagesFlag;           /**< Indicates that messages are expected */
 
-    LinearStageMessageHandler m_MessageHandler;    /**< Pointer to the MessageHandler object */
+    LinearStageMessageHandler m_MessageHandler;    		/**< The MessageHandler object */
+    LinearStageMessageHandler *m_OtherMessageHandler; /**< Pointer to the other linear stage message handler */
 };
 
 #endif /* _LINEARMOTOR_H__ */

@@ -5,6 +5,7 @@
 # Add the subdirectories to the CMake configuration
 include_directories("./gui")
 include_directories("./hardware")
+include_directories("./experiments")
 
 ##---------------------------------------------------
 ## Please set your wxWidgets configuration here
@@ -35,6 +36,8 @@ set(HEADERS main.h settings.h updatevalues.h)
 add_subdirectory(./gui)
 # Add hardware parts
 add_subdirectory(./hardware)
+# Add experiments part
+add_subdirectory(./experiments)
 
 # Add library for the serial interface wxctb-0.13
 find_package(Wxctb REQUIRED)

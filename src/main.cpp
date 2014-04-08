@@ -43,15 +43,18 @@ bool MyApp::OnInit(){
   // Create the linear motor objects.
   m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos1, m_MySettings.getLinMot1BaudRate()));
   m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos2, m_MySettings.getLinMot2BaudRate()));
+  m_StageFrame.registerLinearStages(&m_LinearStages);
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
   m_LinearStages.at(0)->configure();
   m_LinearStages.at(1)->configure();
-  m_MyFrame->registerLinearStage(&m_LinearStages);
+  m_MyFrame->registerLinearStage(&m_LinearStages, &m_StageFrame);
 
   // Get the message handlers for the linear stages.
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(0))->getMessageHandler());
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
+  (m_LinearStages.at(0))->registerOtherMessageHandler(m_LinearStagesMessageHandlers.at(1));
+  (m_LinearStages.at(1))->registerOtherMessageHandler(m_LinearStagesMessageHandlers.at(0));
 
   // Run the receivers of the linear stages in seperate threads.
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));

@@ -2,6 +2,7 @@ set(SOURCE
 	${SOURCE}
         ./hardware/serialinterface.cpp
         ./hardware/linearstage.cpp
+        ./hardware/stageframe.cpp
         ./hardware/messagehandler.cpp
         ./hardware/linearstagemessagehandler.cpp
         ./hardware/forcesensor.cpp
@@ -13,6 +14,7 @@ set(HEADERS
 	${HEADERS}
         ./hardware/serialinterface.h
         ./hardware/linearstage.h
+        ./hardware/stageframe.h
         ./hardware/messagehandler.h
         ./hardware/linearstagemessagehandler.h
         ./hardware/forcesensor.h

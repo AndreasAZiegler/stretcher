@@ -15,6 +15,7 @@ LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
       m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
       m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
       m_CurrentSpeed(0),
+      m_ZeroDistance(0),
     /*
     mExpectedMessagesFlag(0),
     mOldPositionFlag(true),
@@ -38,9 +39,10 @@ LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
       STAGE_MOVE_RELATIVE("\x00\x015"),
       STAGE_SET_SPEED("\x00\x02a"),
       STAGE_SET_HOME_SPEED("\x00\x029"),
+      STAGE_SET_ACCELERATION("\x00\x02b"),
       STAGE_MOVE_AT_CONSTANT_SPEED("\x00\x016"), //: QObject(parent)
       STAGE_STOP("\x00\x017"),
-      MM_PER_MS(0.000047625)
+      MM_PER_MS(0.00009921875)
 {
 }
 
@@ -50,8 +52,17 @@ LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
 void LinearStage::configure(){
   setDeviceMode();
   setMoveTrackingPeriod();
-  setHomeSpeed(25/*mm/s*/);
-  setSpeed(25/*mm/s*/);
+  setHomeSpeed(10/*mm/s*/);
+  setSpeed(10/*mm/s*/);
+  setAcceleration(500);
+}
+
+/**
+ * @brief Registers the message handler of the other linear stage.
+ * @param othermessagehandler Pointer to the message handler object of the other linear stage.
+ */
+void LinearStage::registerOtherMessageHandler(LinearStageMessageHandler *othermessagehandler){
+  m_OtherMessageHandler = othermessagehandler;
 }
 
 LinearStage::~LinearStage()
@@ -89,13 +100,39 @@ void LinearStage::setHomeSpeed(double speedinmm){
   char* number;
 
   if(speedinmm != 0) {
-    speed = speedinmm * (1.6384 * m_Stepsize); //transformation from mm/s to datavalue
+    speed = speedinmm * 1.6384 / m_Stepsize; //transformation from mm/s to datavalue
   } else {
     speed = m_CurrentSpeed;
   }
 
   memcpy(command,STAGE_SET_HOME_SPEED,2);
   number = transformDecToText(speed);
+  memcpy(command+2,number,4);
+  memcpy(buffer,command , 6);
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Sets the acceleration of the linear stage
+ * @param acceleration Acceleration in mm/s^2
+ */
+void LinearStage::setAcceleration(double accelerationinmm){
+  int acceleration = 0;
+  char buffer[6];
+  char command[6] = "";
+  char* number;
+
+  if(accelerationinmm != 0) {
+    acceleration = accelerationinmm * 1.6384 / (10000 * m_Stepsize); //transformation from mm/s to datavalue
+  } else {
+    acceleration =0;
+  }
+
+  memcpy(command,STAGE_SET_ACCELERATION,2);
+  number = transformDecToText(acceleration);
   memcpy(command+2,number,4);
   memcpy(buffer,command , 6);
   {
@@ -149,7 +186,7 @@ void LinearStage::setSpeed(double speedinmm){
   char* number;
 
   if(speedinmm != 0) {
-    speed = speedinmm * (1.6384 * m_Stepsize); //transformation from mm/s to datavalue
+    speed = speedinmm * 1.6384 / m_Stepsize; //transformation from mm/s to datavalue
     m_CurrentSpeed = speed;
   } else {
     speed = m_CurrentSpeed;
@@ -196,19 +233,6 @@ void LinearStage::move(){
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
-
-/**
- * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
- *        and start the motors.
- * @param distance Desired istance in milli meters.
- */
-void LinearStage::gotoMMDistance(int mmDistance){
-  int currentDistance = getPosition();
-
-  int amSteps = (currentDistance - mmDistance/MM_PER_MS) / 2;
-  moveSteps(amSteps);
-}
-
 /**
  * @brief Moves the stage the amount of steps.
  * @param steps Amount of steps
@@ -226,20 +250,6 @@ void LinearStage::moveSteps(int steps){
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 50/*ms*/);
   }
-}
-
-/**
- * @brief Moves the stage the amount of millimeters.
- * @param milimeters Amount of milimeters
- */
-void LinearStage::moveMillimeters(double millimeters){
-  int steps=0;
-  steps=millimeters/m_Stepsize;//transformation from millimeters to steps
-  moveSteps(steps);
-}
-
-double LinearStage::getPosition(void){
-  return(m_MessageHandler.getCurrentPosition());
 }
 
 /**

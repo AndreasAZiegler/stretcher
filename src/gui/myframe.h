@@ -8,6 +8,7 @@
 #include "../updatevalues.h"
 #include "../settings.h"
 #include "./hardware/linearstage.h"
+#include "./hardware/stageframe.h"
 #include "./hardware/forcesensor.h"
 
 /**
@@ -27,7 +28,7 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      * @brief Register the liner motors.
      * @param linearmotor Pointer to the vector containing the linear motors.
      */
-    void registerLinearStage(std::vector<LinearStage *> *linearmotor);
+    void registerLinearStage(std::vector<LinearStage *> *linearmotor, StageFrame *stageframe);
 
     /**
      * @brief Register the force sensor.
@@ -122,6 +123,18 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     void OnHomeLinearStages(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the clamping position value.
+     * @param event Occuring event
+     */
+    void OnClampingPosValueChanged(wxSpinDoubleEvent &event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
+     * @param event Occuring event
+     */
+    void OnClampingGoTo(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -152,12 +165,14 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     mpWindow* m_Graph;													/**< Pointer to the graph */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
+    StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     double m_CurrentDistance;										/**< Current distance */
 
     double m_CurrentForce;											/**< Current force */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
+    double m_ClampingPosition;									/**< Clamping position */
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -176,7 +191,9 @@ enum
   ID_MotorDecreaseDistance = 10,
   ID_MotorIncreaseDistance = 11,
   ID_MotorStop = 12,
-  ID_HomeStages = 13
+  ID_HomeStages = 13,
+  ID_ClampingPosValue = 14,
+  ID_ClampingGoTo = 15
 };
 
 #endif // MYFRAME_H
