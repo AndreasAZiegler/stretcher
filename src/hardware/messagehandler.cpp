@@ -21,7 +21,7 @@ MessageHandler::MessageHandler(wxSerialPort *serialPort, UpdateValues::ValueType
  */
 //void MessageHandler::registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass){
 std::list<std::function<void(int, UpdateValues::ValueType)>>::iterator MessageHandler::registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass){
-  m_UpdateMethodList.push_back(std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2));
+  return(m_UpdateMethodList.insert(m_UpdateMethodList.end(), std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2)));
 }
 
 /**

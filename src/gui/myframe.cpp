@@ -73,6 +73,8 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
   EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
   EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
+  EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
+  EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
 wxEND_EVENT_TABLE()
 
@@ -88,7 +90,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentDistance(150),
     m_CurrentForce(0),
     m_ForceUnit(wxT(" kPa")),
-    m_ClampingPosition(150),
+    m_ClampingDistance(150),
     m_ForceOrStress(Experiment::ForceOrStress::Force),
     m_CurrentExperiment(NULL)
 {
@@ -428,7 +430,7 @@ void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnClampingPosValueChanged(wxSpinDoubleEvent& event){
-  m_ClampingPosition = m_ClampingPositionSpinCtrl->GetValue();
+  m_ClampingDistance = m_ClampingPositionSpinCtrl->GetValue();
 }
 
 /**
@@ -436,7 +438,25 @@ void MyFrame::OnClampingPosValueChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnClampingGoTo(wxCommandEvent& event){
-  m_StageFrame->gotoMMDistance(m_ClampingPosition);
+  m_StageFrame->gotoMMDistance(m_ClampingDistance);
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
+ * @param event Occuring event
+ */
+void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
+ double speedmm = m_ClampingDistance * 0.00009921875 * m_PreloadSpeedPreloadSpinCtrl->GetValue();
+ m_PreloadSpeedMmSpinCtrl->SetValue(speedmm);
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in mm in preload.
+ * @param event Occuring event
+ */
+void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
+  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / (m_ClampingDistance * 0.00009921875) * 100/*%*/;
+  m_PreloadSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
 /**
@@ -476,8 +496,8 @@ void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
 
     // If the clamping position tab is active.
     if(1 == m_Experiments->GetSelection()){
-      m_ClampingPosition -= (2 * 0.25);
-      m_ClampingPositionSpinCtrl->SetValue(m_ClampingPosition);
+      m_ClampingDistance -= (2 * 0.25);
+      m_ClampingPositionSpinCtrl->SetValue(m_ClampingDistance);
     }
   }
 }
@@ -493,8 +513,8 @@ void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
 
   // If the clamping position tab is active.
   if(1 == m_Experiments->GetSelection()){
-    m_ClampingPosition += (2 * 0.25);
-    m_ClampingPositionSpinCtrl->SetValue(m_ClampingPosition);
+    m_ClampingDistance += (2 * 0.25);
+    m_ClampingPositionSpinCtrl->SetValue(m_ClampingDistance);
   }
 }
 
@@ -515,7 +535,7 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
 void MyFrame::updateDistance(){
   m_CurrentDistance = (std::abs(533334 /*max. position*/ - m_CurrentPositions[0]) + std::abs(533334 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
   wxString tmp;
-  tmp << m_CurrentDistance << wxT(" mm");
+  tmp << m_CurrentDistance * 0.00009921875/*mm per micro step*/ << wxT(" mm");
   m_DistanceStaticText->SetLabel(tmp);
 }
 

@@ -136,6 +136,18 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     void OnClampingGoTo(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
+     * @param event Occuring event
+     */
+    void OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user changes the speed value in mm in preload.
+     * @param event Occuring event
+     */
+    void OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload.
      * @param event Occuring event
      */
@@ -182,7 +194,7 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     Experiment::ForceOrStress m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
     double m_CurrentForce;											/**< Current force */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
-    double m_ClampingPosition;									/**< Clamping position */
+    double m_ClampingDistance;									/**< Clamping position */
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -204,7 +216,9 @@ enum
   ID_HomeStages = 13,
   ID_ClampingPosValue = 14,
   ID_ClampingGoTo = 15,
-  ID_PreloadSendToProtocol = 16
+  ID_PreloadSpeedPercent = 16,
+  ID_PreloadSpeedMm = 17,
+  ID_PreloadSendToProtocol = 18
 };
 
 #endif // MYFRAME_H

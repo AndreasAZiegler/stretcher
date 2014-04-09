@@ -56,7 +56,7 @@ void Preload::process(Event e){
   switch(m_CurrentState){
     case stopState:
       if(evStart == e){
-        std::cout << "Preload FSM switched to state: runState." << std::endl;
+        //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_CurrentState = runState;
 
         if((m_CurrentForce - m_ForceStressLimit) > m_ForceStressThreshold){
