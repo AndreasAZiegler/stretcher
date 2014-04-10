@@ -1,6 +1,8 @@
 
 #ifndef PRELOAD_H
 #define PRELOAD_H
+
+#include <condition_variable>
 #include "experiment.h"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
@@ -18,11 +20,19 @@ class Preload : virtual public Experiment, virtual public UpdateValues
      * @param type Type of the experiment.
      * @param forceOrStress Indicates if experiment is force or stress based.
      * @param forcesensormessagehandler Pointer to the force sensor message handler.
+     * @param wait Wait condition.
+     * @param mutex Mutex for wait condition.
      * @param stressForceLimit Stress or force limit value.
      * @param speedInMM Speed in mm/s.
      * @param area Value of the area.
      */
-    Preload(Experiment::ExperimentType type, Experiment::ForceOrStress forceOrStress, StageFrame *stageframe, ForceSensorMessageHandler *forcesensormessagehandler,  double stressForceLimit, double speedInMM, double area);
+    Preload(Experiment::ExperimentType type,
+            Experiment::StressOrForce forceOrStress,
+            StageFrame *stageframe,
+            ForceSensorMessageHandler *forcesensormessagehandler,
+            std::condition_variable *wait,
+            std::mutex *mutex,
+            double stressForceLimit, double speedInMM, double area);
 
     ~Preload();
 
@@ -79,27 +89,19 @@ class Preload : virtual public Experiment, virtual public UpdateValues
     enum State{stopState,       /**< Stop state */
                runState};       /**< Run state */
 
-    /**
-     * @enum Direction
-     * @brief Defines Forwards, Backwards and Stop
-     */
-    enum Direction{Forwards,
-                   Backwards,
-                   Stop};
-
     StageFrame *m_StageFrame;																/**< Pointer to the stage frame object */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
 
     State m_CurrentState;																		/**< Current state of the preload FSM */
-    Direction m_CurrentDirection;
-    double m_ForceStressThreshold;
 
     double m_ForceStressLimit;															/**< Stress or force limit value */
     double m_Area;																					/**< Area needed for stress calculation */
     double m_SpeedInMM;																			/**< Speed in mm/sec */
     double m_SpeedInPercent;																/**< Speed in percent of clamping distance / sec */
 
-    double m_CurrentForce;																	/**< Current force */
+
+    std::condition_variable *m_Wait;
+    std::mutex *m_WaitMutex;
 
 };
 

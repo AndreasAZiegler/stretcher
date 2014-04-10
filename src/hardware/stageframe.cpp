@@ -18,17 +18,17 @@ void StageFrame::registerLinearStages(std::vector<LinearStage*> *linearstages){
 /**
  * @brief Moves the stage frame forward at constant speed
  */
-void StageFrame::moveForward(){
- (m_LinearStages->at(0))->moveForward();
- (m_LinearStages->at(1))->moveForward();
+void StageFrame::moveForward(double speed){
+ (m_LinearStages->at(0))->moveForward(speed);
+ (m_LinearStages->at(1))->moveForward(speed);
 }
 
 /**
  * @brief Moves the stage frame backward at constant speed
  */
-void StageFrame::moveBackward(){
- (m_LinearStages->at(0))->moveBackward();
- (m_LinearStages->at(1))->moveBackward();
+void StageFrame::moveBackward(double speed){
+ (m_LinearStages->at(0))->moveBackward(speed);
+ (m_LinearStages->at(1))->moveBackward(speed);
 }
 
 /**

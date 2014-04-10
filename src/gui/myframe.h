@@ -4,6 +4,7 @@
 /*************** Includes ************/
 #include <wx/window.h>
 #include <wx/string.h>
+#include <condition_variable>
 #include "myframe_base.h"
 #include "../updatevalues.h"
 #include "../settings.h"
@@ -30,6 +31,12 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      * @param linearmotor Pointer to the vector containing the linear motors.
      */
     void registerLinearStage(std::vector<LinearStage *> *linearmotor, StageFrame *stageframe);
+
+    /**
+     * @brief Registers the message handlers of the linear stages.
+     * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
+     */
+    void registerLinearStageMessageHandlers(std::vector<LinearStageMessageHandler*> *linearstagesmessagehandlers);
 
     /**
      * @brief Register the force sensor.
@@ -154,6 +161,24 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     void OnPreloadSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the speed value in percent in conditioning.
+     * @param event Occuring event
+     */
+    void OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user changes the speed value in mm in conditioning.
+     * @param event Occuring event
+     */
+    void OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in conditioning.
+     * @param event Occuring event
+     */
+    void OnConditioningSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -184,17 +209,22 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     mpWindow* m_Graph;													/**< Pointer to the graph */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
+    std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
     StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
-    double m_CurrentDistance;										/**< Current distance */
+    long m_CurrentDistance; 										/**< Current distance */
     Experiment *m_CurrentExperiment;
+    double m_Area;															/**< Area of the sample */
+    std::condition_variable m_Wait;
+    std::mutex m_WaitMutex;
 
-    Experiment::ForceOrStress m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
+    Experiment::StressOrForce m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
     double m_CurrentForce;											/**< Current force */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
-    double m_ClampingDistance;									/**< Clamping position */
+    long m_ClampingDistance;										/**< Clamping distance */
+    long m_PreloadDistance;											/**< Preload distance */
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -218,7 +248,10 @@ enum
   ID_ClampingGoTo = 15,
   ID_PreloadSpeedPercent = 16,
   ID_PreloadSpeedMm = 17,
-  ID_PreloadSendToProtocol = 18
+  ID_PreloadSendToProtocol = 18,
+  ID_ConditioningSpeedPercent = 19,
+  ID_ConditioningSpeedMm = 20,
+  ID_ConditioningSendToProtocol = 21
 };
 
 #endif // MYFRAME_H

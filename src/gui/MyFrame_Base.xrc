@@ -50,7 +50,7 @@
 								<object class="wxNotebook" name="m_Experiments">
 									<object class="notebookpage">
 										<label>Initialize</label>
-										<selected>0</selected>
+										<selected>1</selected>
 										<object class="wxPanel" name="m_InitializePanel">
 											<object class="wxFlexGridSizer">
 												<rows>4</rows>
@@ -95,7 +95,7 @@
 									</object>
 									<object class="notebookpage">
 										<label>Clamping Position</label>
-										<selected>1</selected>
+										<selected>0</selected>
 										<object class="wxPanel" name="m_ClampingPosPanel">
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
@@ -222,7 +222,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_PreloadYSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>10000</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -247,7 +247,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_PreloadXSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>10000</max>
 																		</object>
 																	</object>
 																</object>
@@ -309,7 +309,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_PreloadSpeedPreloadSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>1000</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -317,7 +317,7 @@
 																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_PreloadSpeedPreloadStaticText">
-																			<label>% preload/sec.</label>
+																			<label>% clamping/sec.</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
@@ -328,7 +328,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_PreloadSpeedMmSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>53</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -426,7 +426,7 @@
 																<style>wxSP_ARROW_KEYS</style>
 																<value>5</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -456,9 +456,9 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedPreloadSpinCtrl">
-																			<value>7</value>
+																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>1000</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -477,7 +477,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_ConditioningSpeedMmSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>53</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -515,8 +515,8 @@
 															<border>5</border>
 															<object class="wxSpinCtrlDouble" name="m_ConditioningStressForceLimitSpinCtrl">
 																<value>0</value>
-																<min>0</min>
-																<max>10</max>
+																<min>-1000</min>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -553,7 +553,7 @@
 															<object class="wxSpinCtrlDouble" name="m_ConditioningDistanceLimitSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -565,7 +565,7 @@
 																<label></label>
 																<selection>0</selection>
 																<content>
-																	<item>mm/sec</item>
+																	<item>mm</item>
 																	<item>%</item>
 																</content>
 																<dimension>1</dimension>
@@ -677,7 +677,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_R2FSpeedPreloadSpinCtrl">
 																			<value>6</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>1000</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -696,7 +696,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_R2FSpeedMmSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>53</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -873,7 +873,7 @@
 															<object class="wxSpinCtrlDouble" name="m_RelaxationRampSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -916,7 +916,7 @@
 															<object class="wxSpinCtrlDouble" name="m_RelaxationPauseSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -936,7 +936,7 @@
 																<style>wxSP_ARROW_KEYS</style>
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 													</object>
@@ -1045,7 +1045,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_CreepSpeedPreloadSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>1000</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">
@@ -1064,7 +1064,7 @@
 																		<object class="wxSpinCtrlDouble" name="m_CreepSpeedMmSpinCtrl">
 																			<value>0</value>
 																			<min>0</min>
-																			<max>10</max>
+																			<max>53</max>
 																		</object>
 																	</object>
 																	<object class="sizeritem">

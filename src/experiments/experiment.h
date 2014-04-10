@@ -2,6 +2,9 @@
 #ifndef EXPERIMENT_H
 #define EXPERIMENT_H
 
+// Includes
+#include <vector>
+
 /**
  * @brief Base class for all the experiments.
  */
@@ -24,7 +27,7 @@ class Experiment
     /**
      * @brief Force or stress
      */
-    enum class ForceOrStress{
+    enum class StressOrForce{
       Force = 0,
       Stress = 1
     };
@@ -37,12 +40,25 @@ class Experiment
                evUpdate,        /**< New measured value */
                evStop};         /**< AutoStretch should stop */
 
+  protected:
+    /**
+     * @enum Direction
+     * @brief Defines Forwards, Backwards and Stop
+     */
+    enum Direction{Forwards,
+                   Backwards,
+                   Stop};
+
+  public:
     /**
      * @brief Initializes the experiment type and if experiment is force or stress based.
      * @param type Type of experiment.
      * @param forceOrStress Force or stress.
      */
-    Experiment(Experiment::ExperimentType type, Experiment::ForceOrStress forceOrStress);
+    Experiment(Experiment::ExperimentType type,
+               Experiment::StressOrForce forceOrStress,
+               Experiment::Direction direction,
+               double forcesStressThreshold, double distanceThreshold);
 
     /**
      * @brief FSM of the experiment
@@ -62,14 +78,21 @@ class Experiment
      * @brief Defines if experiment is force or stress based.
      * @param forceOrStress
      */
-    void setForceOrStress(ForceOrStress forceOrStress){
-      m_ForceOrStress = forceOrStress;
+    void setForceOrStress(StressOrForce forceOrStress){
+      m_StressOrForce = forceOrStress;
     }
 
-	private:
+  protected:
 
+    double m_ForceStressThreshold;							/**< Threshold for the comparison */
+    double m_DistanceThreshold;									/**< Threshold for the coparison of distances */
+    Direction m_CurrentDirection;								/**< The current direction */
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
-    ForceOrStress m_ForceOrStress;							/**< Defines if the experiment is force or stress based. */
+    StressOrForce m_StressOrForce;							/**< Defines if the experiment is force or stress based. */
+
+    long m_CurrentForce;											/**< Current force */
+    std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
+    long m_CurrentDistance;										/**< Current distance of the stage frame */
 
 };
 

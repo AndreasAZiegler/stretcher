@@ -1,0 +1,276 @@
+#include <iostream>
+#include <cmath>
+#include "conditioning.h"
+
+/**
+ * @brief Initializes all the needed variables
+ * @param type Type of the experiment.
+ * @param distanceOrStressForce Indicates if experiment is distance or force/stress based.
+ * @param forceOrStress Indicates if experiment is force or stress based.
+ * @param stageframe Pointer to the stage frame object.
+ * @param linearstagemessagehandlers Pointer to th message handlers of the linear stages.
+ * @param forcesensormessagehandler Pointer to the force sensor message handler.
+ * @param wait Wait condition.
+ * @param mutex Mutex for wait condition.
+ * @param stressForceLimit Stress or force limit value.
+ * @param speedInMM Speed in mm/s.
+ * @param area Value of the area.
+ * @param preloaddistance Preload distance of the stage frame.
+ */
+Conditioning::Conditioning(Experiment::ExperimentType type,
+                            Conditioning::DistanceOrStressForce distanceOrStressForce,
+                            Experiment::StressOrForce stressOrForce,
+                            StageFrame *stageframe, std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
+                            ForceSensorMessageHandler *forcesensormessagehandler,
+                            std::condition_variable *wait,
+                            std::mutex *mutex,
+                            double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance)
+  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 1.0 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+    m_DistanceOrStressForceLimit(distanceOrStressForce),
+    m_StageFrame(stageframe),
+    m_ForceSensorMessageHandler(forcesensormessagehandler),
+    m_LinearStageMessageHanders(linearstagemessagehandlers),
+    m_Wait(wait),
+    m_WaitMutex(mutex),
+    m_Cycles(cycles),
+    m_StressForceLimit(stressForceLimit * 1000),
+    m_DistanceLimit(distanceLimit / 0.00009921875/*mm per micro step*/),
+    m_SpeedInMm(speedInMM),
+    m_Area(area * 0.000000000001/*um^2*/),
+    m_PreloadDistance(preloaddistance),
+    m_CurrentState(State::stopState),
+    m_CurrentCycle(0)
+{
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_Pos1Id = (m_LinearStageMessageHanders->at(0))->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_Pos2Id = (m_LinearStageMessageHanders->at(1))->registerUpdateMethod(&UpdateValues::updateValue, this);
+}
+
+Conditioning::~Conditioning(){
+  m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
+  (m_LinearStageMessageHanders->at(0))->unregisterUpdateMethod(m_Pos1Id);
+  (m_LinearStageMessageHanders->at(1))->unregisterUpdateMethod(m_Pos2Id);
+}
+
+/**
+ * @return bool
+ * @param  event
+ */
+void Conditioning::process(Experiment::Event event){
+  switch(m_CurrentState){
+    case stopState:
+      if(Experiment::Event::evStart == event){
+        m_CurrentState = runState;
+
+        // If force/stress based
+        if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+          // If force based
+          if(Experiment::StressOrForce::Force == m_StressOrForce){
+            if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
+              //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward();
+            }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
+              //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward();
+            }
+          }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
+            if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
+              //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward();
+            }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+              //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward();
+            }
+
+          }
+        }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+          if((m_CurrentDistance - m_DistanceLimit) > m_ForceStressThreshold){
+            m_CurrentDirection = Direction::Backwards;
+            m_StageFrame->moveBackward();
+          }else if((m_DistanceLimit - m_CurrentDistance) > m_ForceStressThreshold){
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward();
+          }
+        }
+      }
+
+      break;
+
+    case runState:
+
+      if(evStop == event){
+        //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
+        m_CurrentState = stopState;
+        m_StageFrame->stop();
+      }
+      if(evUpdate == event){
+        // If stress/force based
+        if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+          // If force based
+          if(Experiment::StressOrForce::Force == m_StressOrForce){
+            if(m_CurrentForce <= -2000){
+              //std::cout << "m_CurrentForce: " << m_CurrentForce << " m_ForceStressLimit: " << m_StressForceLimit << std::endl;
+            }
+            if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
+              //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+
+              if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+                m_CurrentDirection = Direction::Forwards;
+                m_StageFrame->moveForward();
+              }
+            }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
+              //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+
+              if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
+                m_CurrentDirection = Direction::Backwards;
+                m_StageFrame->moveBackward();
+              }
+            }else{
+
+              if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
+                m_CurrentState = goBackState;
+                m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
+                std::cout << "Go to preload distance" << std::endl;
+              }
+            }
+          }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
+            if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
+              //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+
+              if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+                m_CurrentDirection = Direction::Forwards;
+                m_StageFrame->moveForward();
+              }
+            }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){ // Only reverse motor, if state changed
+              //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+
+              if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
+                m_CurrentDirection = Direction::Backwards;
+                m_StageFrame->moveBackward();
+              }
+            }else{
+
+              if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
+                m_CurrentState = goBackState;
+                m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
+              }
+            }
+          }
+        }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+          if((m_CurrentDistance - m_DistanceLimit) > m_ForceStressThreshold){
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward();
+            }
+          }else if((m_DistanceLimit - m_CurrentDistance) > m_ForceStressThreshold){
+            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward();
+            }
+          }else{
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
+              m_CurrentState = goBackState;
+              m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
+            }
+          }
+        }
+      }
+      break;
+
+    case goBackState:
+      if(evUpdate == event){
+        //std::cout << "m_CurrentDistance - m_PreloadDistance > m_DistanceThreshold: " << m_CurrentDistance - m_PreloadDistance << "   " << m_DistanceThreshold << std::endl;
+        if((m_CurrentDistance - m_PreloadDistance) > m_DistanceThreshold){
+          /*
+          m_CurrentDirection = Direction::Backwards;
+          m_StageFrame->moveBackward();
+          */
+        }else if((m_PreloadDistance - m_CurrentDistance) > m_DistanceThreshold){
+          /*
+          m_CurrentDirection = Direction::Forwards;
+          m_StageFrame->moveForward();
+          */
+        }else{
+          //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
+          if((m_Cycles - 1) <= m_CurrentCycle){
+            m_CurrentState = stopState;
+            m_CurrentCycle = 0;
+            m_CurrentDirection = Direction::Stop;
+            m_StageFrame->stop();
+            std::lock_guard<std::mutex> lck(*m_WaitMutex);
+            m_Wait->notify_one();
+          }else{
+            std::cout << "Another cycle." << std::endl;
+            m_CurrentCycle++;
+            m_CurrentState = runState;
+
+            // If force/stress based
+            if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+              // If force based
+              if(Experiment::StressOrForce::Force == m_StressOrForce){
+                if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
+                  //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+                  m_CurrentDirection = Direction::Forwards;
+                  m_StageFrame->moveForward();
+                }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
+                  //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+                  m_CurrentDirection = Direction::Backwards;
+                  m_StageFrame->moveBackward();
+                }
+              }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
+                if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
+                  //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+                  m_CurrentDirection = Direction::Forwards;
+                  m_StageFrame->moveForward();
+                }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+                  //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+                  m_CurrentDirection = Direction::Backwards;
+                  m_StageFrame->moveBackward();
+                }
+              }
+            }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+              if((m_CurrentDistance - m_DistanceLimit) > m_ForceStressThreshold){
+                m_CurrentDirection = Direction::Backwards;
+                m_StageFrame->moveBackward();
+              }else if((m_DistanceLimit - m_CurrentDistance) > m_ForceStressThreshold){
+                m_CurrentDirection = Direction::Forwards;
+                m_StageFrame->moveForward();
+              }
+            }
+          }
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * @brief Abstract method which will be calles by the message handlers to update the values
+ * @param value Position of linear stage 1 or 2 or the force
+ * @param type Type of value.
+ */
+void Conditioning::updateValue(int value, UpdateValues::ValueType type){
+  switch(type){
+    case UpdateValues::ValueType::Force:
+      m_CurrentForce = value;
+      break;
+
+    case UpdateValues::ValueType::Pos1:
+      m_CurrentPositions[0] = value;
+      m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
+                           std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+      break;
+
+    case UpdateValues::ValueType::Pos2:
+      m_CurrentPositions[1] = value;
+      m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
+                           std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+      break;
+  }
+
+  process(Event::evUpdate);
+}

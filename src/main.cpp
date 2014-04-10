@@ -55,6 +55,7 @@ bool MyApp::OnInit(){
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
   (m_LinearStages.at(0))->registerOtherMessageHandler(m_LinearStagesMessageHandlers.at(1));
   (m_LinearStages.at(1))->registerOtherMessageHandler(m_LinearStagesMessageHandlers.at(0));
+  m_MyFrame->registerLinearStageMessageHandlers(&m_LinearStagesMessageHandlers);
 
   // Run the receivers of the linear stages in seperate threads.
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));

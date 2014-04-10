@@ -16,12 +16,12 @@ class StageFrame
     /**
      * @brief Moves the stage forward frame at constant speed
      */
-    void moveForward();
+    void moveForward(double speed = 0);
 
     /**
      * @brief Moves the stage backward frame at constant speed
      */
-    void moveBackward();
+    void moveBackward(double speed = 0);
 
     /**
      * @brief Moves the stage the amount of millimeters.

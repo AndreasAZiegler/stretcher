@@ -4,6 +4,7 @@
 #include <wx/checkbox.h>
 #include <wx/image.h>
 #include <thread>
+#include <mutex>
 #include <functional>
 #include "../../include/ctb-0.13/serport.h"
 #include "myframe.h"
@@ -11,6 +12,7 @@
 #include "myports.h"
 #include "myfileoutput_base.h"
 #include "../experiments/preload.h"
+#include "../experiments/conditioning.h"
 
 #include <iostream>
 
@@ -76,6 +78,9 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
+  EVT_SPINCTRLDOUBLE(ID_ConditioningSpeedPercent, MyFrame::OnConditioningSpeedPercentChanged)
+  EVT_SPINCTRLDOUBLE(ID_ConditioningSpeedMm, MyFrame::OnConditioningSpeedMmChanged)
+  EVT_BUTTON(ID_ConditioningSendToProtocol, MyFrame::OnConditioningSendToProtocol)
 wxEND_EVENT_TABLE()
 
 /**
@@ -91,8 +96,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" kPa")),
     m_ClampingDistance(150),
-    m_ForceOrStress(Experiment::ForceOrStress::Force),
-    m_CurrentExperiment(NULL)
+    m_PreloadDistance(0),
+    m_ForceOrStress(Experiment::StressOrForce::Force),
+    m_CurrentExperiment(NULL),
+    m_Area(0)
 {
   SetIcon(wxICON(sample));
 
@@ -112,7 +119,12 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
   m_ClampingPositionButton->SetId((ID_ClampingGoTo));
+  m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
+  m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
   m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
+  m_ConditioningSpeedPreloadSpinCtrl->SetId(ID_ConditioningSpeedPercent);
+  m_ConditioningSpeedMmSpinCtrl->SetId(ID_ConditioningSpeedMm);
+  m_ConditioningSendButton->SetId(ID_ConditioningSendToProtocol);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -180,6 +192,14 @@ void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, Stage
   // Registers update methods at linearstagemessagehandler.
   m_Pos1Id = ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
   m_Pos2Id = ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+}
+
+/**
+ * @brief Registers the message handlers of the linear stages.
+ * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
+ */
+void MyFrame::registerLinearStageMessageHandlers(std::vector<LinearStageMessageHandler*> *linearstagesmessagehandlers){
+ m_LinearStagesMessageHandlers = linearstagesmessagehandlers;
 }
 
 /**
@@ -350,13 +370,13 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
     m_ForceUnit = wxT(" kPa");
-    m_ForceOrStress = Experiment::ForceOrStress::Stress;
+    m_ForceOrStress = Experiment::StressOrForce::Stress;
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
     m_ForceUnit = wxT(" N");
-    m_ForceOrStress = Experiment::ForceOrStress::Force;
+    m_ForceOrStress = Experiment::StressOrForce::Force;
   }
 }
 
@@ -446,7 +466,7 @@ void MyFrame::OnClampingGoTo(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
- double speedmm = m_ClampingDistance * 0.00009921875 * m_PreloadSpeedPreloadSpinCtrl->GetValue();
+ double speedmm = m_ClampingDistance * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
  m_PreloadSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
@@ -455,7 +475,7 @@ void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / (m_ClampingDistance * 0.00009921875) * 100/*%*/;
+  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / m_ClampingDistance * 100/*%*/;
   m_PreloadSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
@@ -464,14 +484,13 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
-  double area = 0;
   if(true == m_PreloadCalculateCrosssectionCheckBox->IsChecked()){
     switch(m_PreloadXRadioBox->GetSelection()){
       case 0:
-        area = (m_PreloadYSpinCtrl->GetValue()) * (1 + m_PreloadXSpinCtrl->GetValue() / 100);
+        m_Area = (m_PreloadYSpinCtrl->GetValue()) * (1 + m_PreloadXSpinCtrl->GetValue() / 100);
         break;
       case 1:
-        area = m_PreloadYSpinCtrl->GetValue() * m_PreloadXSpinCtrl->GetValue();
+        m_Area = m_PreloadYSpinCtrl->GetValue() * m_PreloadXSpinCtrl->GetValue();
         break;
     }
   }
@@ -479,11 +498,78 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                     m_ForceOrStress,
                                     m_StageFrame,
                                     m_ForceSensorMessageHandler,
+                                    &m_Wait,
+                                    &m_WaitMutex,
                                     m_PreloadLimitSpinCtrl->GetValue(),
-                                    m_PreloadSpeedMmSpinCtrl->GetValue(), area);
+                                    m_PreloadSpeedMmSpinCtrl->GetValue(),
+                                    m_Area);
   //preload.process(Preload::Event::evStart);
   std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
   t1.join();
+  std::unique_lock<std::mutex> lck(m_WaitMutex);
+  m_Wait.wait(lck);
+  m_PreloadDistance = m_CurrentDistance;
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in percent in conditioning.
+ * @param event Occuring event
+ */
+void MyFrame::OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event){
+ double speedmm = m_ClampingDistance * (m_ConditioningSpeedPreloadSpinCtrl->GetValue() / 100);
+ m_ConditioningSpeedMmSpinCtrl->SetValue(speedmm);
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in mm in conditioning.
+ * @param event Occuring event
+ */
+void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
+  double speedpercent = m_ConditioningSpeedMmSpinCtrl->GetValue() / m_ClampingDistance * 100/*%*/;
+  m_ConditioningSpeedPreloadSpinCtrl->SetValue(speedpercent);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in conditioning.
+ * @param event Occuring event
+ */
+void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
+  Conditioning::DistanceOrStressForce distanceOrStressForce;
+  if(true == m_ConditioningStressRadioBtn->GetValue()){
+    distanceOrStressForce = Conditioning::DistanceOrStressForce::StressForce;
+  }else if(true == m_ConditioningDistanceRadioBtn->GetValue()){
+    distanceOrStressForce = Conditioning::DistanceOrStressForce::Distance;
+  }
+
+  long distancelimit = 0;
+  switch(m_ConditioningDisctanceLimitRadioBox->GetSelection()){
+    case 0:
+      distancelimit = static_cast<long>(m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+      break;
+    case 1:
+      distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1) * m_PreloadDistance;
+      break;
+  }
+
+  //delete m_CurrentExperiment;
+  m_CurrentExperiment = new Conditioning(Experiment::ExperimentType::Conditioning,
+                                         distanceOrStressForce,
+                                         m_ForceOrStress,
+                                         m_StageFrame,
+                                         m_LinearStagesMessageHandlers,
+                                         m_ForceSensorMessageHandler,
+                                         &m_Wait,
+                                         &m_WaitMutex,
+                                         m_ConditioningStressForceLimitSpinCtrl->GetValue(),
+                                         m_ConditioningCyclesSpinCtrl->GetValue(),
+                                         distancelimit,
+                                         m_ConditioningSpeedMmSpinCtrl->GetValue(),
+                                         m_Area, m_PreloadDistance);
+
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
+  t1.join();
+  std::unique_lock<std::mutex> lck(m_WaitMutex);
+  m_Wait.wait(lck);
 }
 
 /**
@@ -533,7 +619,8 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  * @brief Calculates the distance and print the value in the GUI.
  */
 void MyFrame::updateDistance(){
-  m_CurrentDistance = (std::abs(533334 /*max. position*/ - m_CurrentPositions[0]) + std::abs(533334 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+  m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
+                       std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
   wxString tmp;
   tmp << m_CurrentDistance * 0.00009921875/*mm per micro step*/ << wxT(" mm");
   m_DistanceStaticText->SetLabel(tmp);

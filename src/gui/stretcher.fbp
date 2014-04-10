@@ -955,7 +955,7 @@
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
                                             <property name="label">Preload</property>
-                                            <property name="select">1</property>
+                                            <property name="select">0</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
@@ -1438,7 +1438,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">10000</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -1615,7 +1615,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">10000</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -2059,7 +2059,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">1000</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -2229,7 +2229,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">53</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -2581,7 +2581,7 @@
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
                                             <property name="label">Conditioning</property>
-                                            <property name="select">0</property>
+                                            <property name="select">1</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
@@ -2803,7 +2803,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">5</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -3062,8 +3062,8 @@
                                                                                 <property name="gripper">0</property>
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
-                                                                                <property name="initial">7</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="initial">0</property>
+                                                                                <property name="max">1000</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -3233,7 +3233,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">53</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -3500,11 +3500,11 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
-                                                                    <property name="min">0</property>
+                                                                    <property name="min">-1000</property>
                                                                     <property name="min_size"></property>
                                                                     <property name="minimize_button">0</property>
                                                                     <property name="minimum_size"></property>
@@ -3846,7 +3846,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -3918,7 +3918,7 @@
                                                                     <property name="caption"></property>
                                                                     <property name="caption_visible">1</property>
                                                                     <property name="center_pane">0</property>
-                                                                    <property name="choices">&quot;mm/sec&quot; &quot;%&quot;</property>
+                                                                    <property name="choices">&quot;mm&quot; &quot;%&quot;</property>
                                                                     <property name="close_button">1</property>
                                                                     <property name="context_help"></property>
                                                                     <property name="context_menu">1</property>
@@ -4531,7 +4531,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">6</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">1000</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -4701,7 +4701,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">53</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -5812,7 +5812,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -6155,7 +6155,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -6325,7 +6325,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -6920,7 +6920,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">1000</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
@@ -7090,7 +7090,7 @@
                                                                                 <property name="hidden">0</property>
                                                                                 <property name="id">wxID_ANY</property>
                                                                                 <property name="initial">0</property>
-                                                                                <property name="max">10</property>
+                                                                                <property name="max">53</property>
                                                                                 <property name="max_size"></property>
                                                                                 <property name="maximize_button">0</property>
                                                                                 <property name="maximum_size"></property>
