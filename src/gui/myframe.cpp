@@ -3,7 +3,6 @@
 #include <wx/menu.h>
 #include <wx/checkbox.h>
 #include <wx/image.h>
-#include <thread>
 #include <mutex>
 #include <functional>
 #include "../../include/ctb-0.13/serport.h"
@@ -99,7 +98,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_PreloadDistance(0),
     m_ForceOrStress(Experiment::StressOrForce::Force),
     m_CurrentExperiment(NULL),
-    m_Area(0)
+    m_Area(0),
+    m_ExperimentRunningFlag(false),
+    m_PreloadDoneFlag(false)
 {
   SetIcon(wxICON(sample));
 
@@ -477,6 +478,11 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
+  // Return if an experiment is currently running
+  if(true == m_ExperimentRunningFlag){
+    return;
+  }
+
   if(true == m_PreloadCalculateCrosssectionCheckBox->IsChecked()){
     switch(m_PreloadXRadioBox->GetSelection()){
       case 0:
@@ -496,15 +502,14 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                     m_PreloadLimitSpinCtrl->GetValue(),
                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
                                     m_Area);
-  //preload.process(Preload::Event::evStart);
+  m_ExperimentRunningFlag = true;
   std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
   t1.join();
-  /**
-   * @todo put into waiting thread, which sets (mutex protected) a operation finished flag.
-   */
-  std::unique_lock<std::mutex> lck(m_WaitMutex);
-  m_Wait.wait(lck);
-  m_PreloadDistance = m_CurrentDistance;
+
+  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
+
+  return;
 }
 
 /**
@@ -530,6 +535,11 @@ void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
+  // Return if an experiment is currently running
+  if(true == m_ExperimentRunningFlag){
+    return;
+  }
+
   Conditioning::DistanceOrStressForce distanceOrStressForce;
   if(true == m_ConditioningStressRadioBtn->GetValue()){
     distanceOrStressForce = Conditioning::DistanceOrStressForce::StressForce;
@@ -562,11 +572,14 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          m_ConditioningSpeedMmSpinCtrl->GetValue(),
                                          m_Area, m_PreloadDistance);
 
+  m_ExperimentRunningFlag = true;
   std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
   t1.join();
-  std::unique_lock<std::mutex> lck(m_WaitMutex);
-  m_Wait.wait(lck);
-  m_CurrentExperiment = NULL;
+
+  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
+
+  return;
 }
 
 /**
@@ -630,4 +643,23 @@ void MyFrame::updateForce(){
   wxString tmp;
   tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   m_ForceStaticText->SetLabel(tmp);
+}
+
+/**
+ * @brief Sets the m_ExperimentRunningFlag false if experiment is finished.
+ */
+void MyFrame::checkFinishedExperiment(){
+  std::unique_lock<std::mutex> lck1(m_WaitMutex);
+  m_Wait.wait(lck1);
+  {
+    std::lock_guard<std::mutex> lck2{m_PreloadDoneMutex};
+    if(false == m_PreloadDoneFlag){
+      m_PreloadDistance = m_CurrentDistance;
+      m_PreloadDoneFlag = true;
+    }
+  }
+  {
+    std::lock_guard<std::mutex> lck3{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = false;
+  }
 }

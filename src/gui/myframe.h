@@ -2,6 +2,7 @@
 #define MYFRAME_H
 
 /*************** Includes ************/
+#include <thread>
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
@@ -206,6 +207,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void updateForce();
 
+    /**
+     * @brief Sets the m_ExperimentRunningFlag false if experiment is finished.
+     */
+    void checkFinishedExperiment();
+
     mpWindow* m_Graph;													/**< Pointer to the graph */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
@@ -215,10 +221,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
-    Experiment *m_CurrentExperiment;
+    Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
+    std::thread *m_ExperimentRunningThread;			/**< Pointer to the experiment running check thread */
+    bool m_ExperimentRunningFlag;								/**< Flag which indicates if an experiment is running */
+    std::mutex m_ExperimentRunningMutex;				/**< Mutex to protect m_ExperimentRunningFlag */
+    bool m_PreloadDoneFlag;											/**< Indicates if preloading is done */
+    std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
     double m_Area;															/**< Area of the sample */
-    std::condition_variable m_Wait;
-    std::mutex m_WaitMutex;
+    std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
+    std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
 
     Experiment::StressOrForce m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
