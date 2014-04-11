@@ -18,7 +18,7 @@ class ForceSensorMessageHandler : virtual public MessageHandler
      * @brief Forwards the pointer to the serial port to the base class.
      * @param serialport Pointer to the serial port.
      */
-    ForceSensorMessageHandler(wxSerialPort *serialport, UpdateValues::ValueType type, std::mutex *readingSerialInterfaceMutex);
+    ForceSensorMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex);
 
     /**
      * @brief Updated scale factor parameters with the values given from the GUI.
@@ -48,7 +48,7 @@ class ForceSensorMessageHandler : virtual public MessageHandler
 
   private:
 
-    int m_CurrentForce;
+    long m_CurrentForce;
 
     double m_ScalingFactor;                  			/**< Sensor scaling factor */
     double m_ZeroValue;                      			/**< Zero value */

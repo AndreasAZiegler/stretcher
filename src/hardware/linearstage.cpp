@@ -10,7 +10,7 @@ using namespace std;
  * @param comPort com port
  * @param baudrate baudrate
  */
-LinearStage::LinearStage(UpdateValues::ValueType type, unsigned int baudrate)
+LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int baudrate)
     : SerialInterface(type, baudrate),
       m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
       m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
@@ -149,7 +149,7 @@ void LinearStage::setMoveTrackingPeriod(void){
   char command[6] = "";
 
   //char *settings = transformDecToText(10/*ms*/);
-  char *settings = transformDecToText(250/*ms*/);
+  char *settings = transformDecToText(50/*ms*/);
   memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
   memcpy(command+2, settings, 1);
   memcpy(buffer, command, 6);

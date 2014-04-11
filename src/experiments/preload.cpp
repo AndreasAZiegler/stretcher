@@ -33,7 +33,7 @@ Preload::Preload(Experiment::ExperimentType type,
     m_Area(area * 0.000000000001/*um^2*/),
     m_CurrentState(State::stopState)
 {
-  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 Preload::~Preload(){
@@ -55,8 +55,8 @@ void Preload::setArea(double x, double y){
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void Preload::updateValue(int value, UpdateValues::ValueType type){
-  if(UpdateValues::ValueType::Force == type){
+void Preload::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+  if(UpdatedValuesReceiver::ValueType::Force == type){
     m_CurrentForce = value / 10000.0;
 
     process(Event::evUpdate);
@@ -102,8 +102,12 @@ void Preload::process(Event e){
     case runState:
       if(evStop == e){
         std::cout << "Preload FSM switched to state: stopState." << std::endl;
+
         m_CurrentState = stopState;
+        m_CurrentDirection = Direction::Stop;
         m_StageFrame->stop();
+        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+        m_Wait->notify_one();
       }
       if(evUpdate == e){
         // If force based

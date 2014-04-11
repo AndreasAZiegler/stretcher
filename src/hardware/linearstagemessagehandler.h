@@ -18,7 +18,7 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @brief Forwards the pointer to the serial port to the base class.
      * @param serialport Pointer to the serial port.
      */
-    LinearStageMessageHandler(wxSerialPort *serialport, UpdateValues::ValueType type, std::mutex *readingSerialInterfaceMutex);
+    LinearStageMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex);
 
     /**
      * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
@@ -55,9 +55,9 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @brief Calculates the position from the receiving position data. See manual page. 7
      * @param message Received message.
      */
-    int calculatePosition(char* message);
+    long calculatePosition(char* message);
 
-    int m_CurrentPosition;
+    long m_CurrentPosition;
 
 };
 

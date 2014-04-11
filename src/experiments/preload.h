@@ -6,12 +6,12 @@
 #include "experiment.h"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
-#include "../updatevalues.h"
+#include "../updatedvaluesreceiver.h"
 
 /**
  * @brief Class which represents the preload process
  */
-class Preload : virtual public Experiment, virtual public UpdateValues
+class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
 
@@ -79,7 +79,7 @@ class Preload : virtual public Experiment, virtual public UpdateValues
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    virtual void updateValue(int value, UpdateValues::ValueType type);
+    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
 
   private:
     /**

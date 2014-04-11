@@ -1,4 +1,6 @@
 /*************** Includes ************/
+#include <sched.h>
+#include <cstring>
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/xrc/xmlreshandler.h>
@@ -8,7 +10,7 @@
 #include "./gui/xh_wxspinctrldoublexmlhandler.h"
 #include "./gui/xh_mathplotxmlhandler.h"
 #include <wx/spinctrl.h>
-#include "updatevalues.h"
+#include "updatedvaluesreceiver.h"
 
 // Define main app.
 IMPLEMENT_APP(MyApp)
@@ -41,8 +43,8 @@ bool MyApp::OnInit(){
   m_MyFrame->startup();
 
   // Create the linear motor objects.
-  m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos1, m_MySettings.getLinMot1BaudRate()));
-  m_LinearStages.push_back(new LinearStage(UpdateValues::ValueType::Pos2, m_MySettings.getLinMot2BaudRate()));
+  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos1, m_MySettings.getLinMot1BaudRate()));
+  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos2, m_MySettings.getLinMot2BaudRate()));
   m_StageFrame.registerLinearStages(&m_LinearStages);
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
@@ -60,11 +62,24 @@ bool MyApp::OnInit(){
   // Run the receivers of the linear stages in seperate threads.
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(1)));
+  // Set thread priority to max
+  sched_param sch;
+  int policy;
+  pthread_getschedparam(m_LinearStagesReceivers[0].native_handle(), &policy, &sch);
+  sch.sched_priority = 99;
+  if(pthread_setschedparam(m_LinearStagesReceivers[0].native_handle(), SCHED_RR, &sch)){
+    std::cout << "Failed to setschedparam: " << std::strerror(errno) << std::endl;
+  }
+  pthread_getschedparam(m_LinearStagesReceivers[1].native_handle(), &policy, &sch);
+  sch.sched_priority = 99;
+  if(pthread_setschedparam(m_LinearStagesReceivers[1].native_handle(), SCHED_RR, &sch)){
+    std::cout << "Failed to setschedparam: " << std::strerror(errno) << std::endl;
+  }
   m_LinearStagesReceivers.at(0).detach();
   m_LinearStagesReceivers.at(1).detach();
 
   // Create the force sensor object
-  m_ForceSensor = new ForceSensor(UpdateValues::ValueType::Force, m_MySettings.getForceSensorBaudRate());
+  m_ForceSensor = new ForceSensor(UpdatedValuesReceiver::ValueType::Force, m_MySettings.getForceSensorBaudRate());
   m_ForceSensor->connect(m_MySettings.getForceSensorComPort());
   m_ForceSensor->setBipolarMode();
   m_ForceSensor->setScaleFactor(m_MySettings.getForceSensorNominalForce(),

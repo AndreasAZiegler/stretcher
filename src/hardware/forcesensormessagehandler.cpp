@@ -9,7 +9,7 @@ using namespace std;
  * @param serialport Pointer to the serial port.
  */
 ForceSensorMessageHandler::ForceSensorMessageHandler(wxSerialPort *serialport,
-                                                     UpdateValues::ValueType type,
+                                                     UpdatedValuesReceiver::ValueType type,
                                                      std::mutex *readingSerialInterfaceMutex)
   : MessageHandler(serialport, type, readingSerialInterfaceMutex),
     m_CurrentForce(0)

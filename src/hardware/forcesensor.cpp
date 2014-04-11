@@ -10,7 +10,7 @@ using namespace std;
  * @param comPort com port
  * @param baudrate baudrate
  */
-ForceSensor::ForceSensor(UpdateValues::ValueType type, unsigned int baudrate)
+ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type, unsigned int baudrate)
   : SerialInterface(type, baudrate),
     m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
     m_ScalingFactor(161380.83),

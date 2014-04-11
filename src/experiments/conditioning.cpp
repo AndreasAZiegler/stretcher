@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <thread>
 #include "conditioning.h"
 
 /**
@@ -41,15 +42,13 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
     m_CurrentState(State::stopState),
     m_CurrentCycle(0)
 {
-  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdateValues::updateValue, this);
-  m_Pos1Id = (m_LinearStageMessageHanders->at(0))->registerUpdateMethod(&UpdateValues::updateValue, this);
-  m_Pos2Id = (m_LinearStageMessageHanders->at(1))->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 Conditioning::~Conditioning(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
-  (m_LinearStageMessageHanders->at(0))->unregisterUpdateMethod(m_Pos1Id);
-  (m_LinearStageMessageHanders->at(1))->unregisterUpdateMethod(m_Pos2Id);
+  m_StageFrame->unregisterUpdateMethod(m_DistanceId);
 }
 
 /**
@@ -105,7 +104,11 @@ void Conditioning::process(Experiment::Event event){
       if(evStop == event){
         //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
         m_CurrentState = stopState;
+        m_CurrentDirection = Direction::Stop;
+        m_CurrentCycle = 0;
         m_StageFrame->stop();
+        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+        m_Wait->notify_one();
       }
       if(evUpdate == event){
         // If stress/force based
@@ -130,12 +133,9 @@ void Conditioning::process(Experiment::Event event){
                 m_StageFrame->moveBackward();
               }
             }else{
-
-              if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
-                m_CurrentState = goBackState;
-                m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
-                std::cout << "Go to preload distance" << std::endl;
-              }
+              m_CurrentState = goBackState;
+              m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
+              //std::cout << "Go to preload distance" << std::endl;
             }
           }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
             if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
@@ -153,11 +153,8 @@ void Conditioning::process(Experiment::Event event){
                 m_StageFrame->moveBackward();
               }
             }else{
-
-              if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
-                m_CurrentState = goBackState;
-                m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
-              }
+              m_CurrentState = goBackState;
+              m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
             }
           }
         }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
@@ -172,10 +169,8 @@ void Conditioning::process(Experiment::Event event){
               m_StageFrame->moveForward();
             }
           }else{
-            if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
-              m_CurrentState = goBackState;
-              m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
-            }
+            m_CurrentState = goBackState;
+            m_StageFrame->gotoMMDistance(m_PreloadDistance * 0.00009921875/*mm per micro step*/);
           }
         }
       }
@@ -184,19 +179,11 @@ void Conditioning::process(Experiment::Event event){
     case goBackState:
       if(evUpdate == event){
         //std::cout << "m_CurrentDistance - m_PreloadDistance > m_DistanceThreshold: " << m_CurrentDistance - m_PreloadDistance << "   " << m_DistanceThreshold << std::endl;
-        if((m_CurrentDistance - m_PreloadDistance) > m_DistanceThreshold){
-          /*
-          m_CurrentDirection = Direction::Backwards;
-          m_StageFrame->moveBackward();
-          */
-        }else if((m_PreloadDistance - m_CurrentDistance) > m_DistanceThreshold){
-          /*
-          m_CurrentDirection = Direction::Forwards;
-          m_StageFrame->moveForward();
-          */
-        }else{
-          //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
+        //std::cout << "m_CurrentDistance: " << m_CurrentDistance << " m_PreloadDistance: " << m_PreloadDistance << std::endl;
+        if(std::abs(m_PreloadDistance - m_CurrentDistance) < m_DistanceThreshold){
+          //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles - 1 << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
           if((m_Cycles - 1) <= m_CurrentCycle){
+            std::cout << "Stop conditioning." << std::endl;
             m_CurrentState = stopState;
             m_CurrentCycle = 0;
             m_CurrentDirection = Direction::Stop;
@@ -204,7 +191,7 @@ void Conditioning::process(Experiment::Event event){
             std::lock_guard<std::mutex> lck(*m_WaitMutex);
             m_Wait->notify_one();
           }else{
-            std::cout << "Another cycle." << std::endl;
+            //std::cout << "Another cycle." << std::endl;
             m_CurrentCycle++;
             m_CurrentState = runState;
 
@@ -253,24 +240,20 @@ void Conditioning::process(Experiment::Event event){
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void Conditioning::updateValue(int value, UpdateValues::ValueType type){
+void Conditioning::updateValues(long value, UpdatedValuesReceiver::ValueType type){
   switch(type){
-    case UpdateValues::ValueType::Force:
+    case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = value;
       break;
 
-    case UpdateValues::ValueType::Pos1:
-      m_CurrentPositions[0] = value;
-      m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
-                           std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
-      break;
-
-    case UpdateValues::ValueType::Pos2:
-      m_CurrentPositions[1] = value;
-      m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
-                           std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+    case UpdatedValuesReceiver::ValueType::Distance:
+      m_CurrentDistance = value;
       break;
   }
 
+  /*
+  std::thread t1(&Experiment::process, this, Experiment::Event::evUpdate);
+  t1.detach();
+  */
   process(Event::evUpdate);
 }

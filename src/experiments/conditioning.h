@@ -5,13 +5,13 @@
 // Includes
 #include <condition_variable>
 #include "experiment.h"
-#include "../updatevalues.h"
+#include "../updatedvaluesreceiver.h"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensor.h"
 
 //#include "ExperimentValues.h"
 
-class Conditioning : virtual public Experiment, virtual public UpdateValues
+class Conditioning : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
 
@@ -39,14 +39,14 @@ class Conditioning : virtual public Experiment, virtual public UpdateValues
      * @param preloaddistance Preload distance of the stage frame.
      */
     Conditioning(Experiment::ExperimentType type,
-                  Conditioning::DistanceOrStressForce distanceOrStressForce,
-                  Experiment::StressOrForce forceOrStress,
-                  StageFrame *stageframe,
-                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-                  ForceSensorMessageHandler *forcesensormessagehandler,
-                  std::condition_variable *wait,
-                  std::mutex *mutex,
-                  double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance);
+                 Conditioning::DistanceOrStressForce distanceOrStressForce,
+                 Experiment::StressOrForce forceOrStress,
+                 StageFrame *stageframe,
+                 std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
+                 ForceSensorMessageHandler *forcesensormessagehandler,
+                 std::condition_variable *wait,
+                 std::mutex *mutex,
+                 double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance);
 
     ~Conditioning();
 
@@ -109,7 +109,7 @@ class Conditioning : virtual public Experiment, virtual public UpdateValues
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    virtual void updateValue(int value, UpdateValues::ValueType type);
+    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
 
   private:
 

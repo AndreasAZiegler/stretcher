@@ -82,6 +82,15 @@ class Experiment
       m_StressOrForce = forceOrStress;
     }
 
+    /**
+     * @brief Sets the exit flag, that the experiment stops.
+     * @param flag flag value.
+     */
+    void setExitFlag(bool flag){
+      m_ExitFlag = flag;
+      process(Experiment::Event::evStop);
+    }
+
   protected:
 
     double m_ForceStressThreshold;							/**< Threshold for the comparison */
@@ -90,9 +99,10 @@ class Experiment
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
     StressOrForce m_StressOrForce;							/**< Defines if the experiment is force or stress based. */
 
-    long m_CurrentForce;											/**< Current force */
+    long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
-    long m_CurrentDistance;										/**< Current distance of the stage frame */
+    long m_CurrentDistance;											/**< Current distance of the stage frame */
+    bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
 
 };
 

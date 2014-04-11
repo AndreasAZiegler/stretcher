@@ -19,7 +19,7 @@ class LinearStage : public SerialInterface
      * @param comPort com port
      * @param baudrate baudrate
      */
-    LinearStage(UpdateValues::ValueType type, unsigned int baudrate = 115200);
+    LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int baudrate = 115200);
 
     /**
      * @brief Sets the device mode, the move tracking period and the speed of the linear stage.

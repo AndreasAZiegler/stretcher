@@ -9,7 +9,7 @@ using namespace std;
  * @param Port com port
  * @param Baudrate baudrate
  */
-SerialInterface::SerialInterface(UpdateValues::ValueType type, unsigned int baudrate)
+SerialInterface::SerialInterface(UpdatedValuesReceiver::ValueType type, unsigned int baudrate)
   : m_Baudrate(baudrate)
 {
   //m_SerialPort = new wxSerialPort();

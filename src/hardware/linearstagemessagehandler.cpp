@@ -8,7 +8,7 @@ using namespace std;
  * @brief Forwards the pointer to the serial port to the base class.
  * @param serialport Pointer to the serial port.
  */
-LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport, UpdateValues::ValueType type, std::mutex *readingSerialInterfaceMutex)
+LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex)
   : MessageHandler(serialport, type, readingSerialInterfaceMutex),
     m_CurrentPosition(0)
 {
@@ -114,12 +114,12 @@ void LinearStageMessageHandler::handler(char *message){
  * @brief Calculates the position from the receiving position data. See manual page. 7
  * @param message Received message.
  */
-int LinearStageMessageHandler::calculatePosition(char* message){
+long LinearStageMessageHandler::calculatePosition(char* message){
 
- int position = static_cast<unsigned char>(message[4]) * (256*256*256) +
-                static_cast<unsigned char>(message[3]) * (256*256) +
-                static_cast<unsigned char>(message[2]) * 256 +
-                static_cast<unsigned char>(message[1]);
+ long position = static_cast<unsigned char>(message[4]) * (256*256*256) +
+                 static_cast<unsigned char>(message[3]) * (256*256) +
+                 static_cast<unsigned char>(message[2]) * 256 +
+                 static_cast<unsigned char>(message[1]);
 
   if(message[5] > 127) {
     position -= 256*256*256*256;

@@ -6,7 +6,7 @@
 #include <wx/string.h>
 #include <condition_variable>
 #include "myframe_base.h"
-#include "../updatevalues.h"
+#include "../updatedvaluesreceiver.h"
 #include "../settings.h"
 #include "./hardware/linearstage.h"
 #include "./hardware/stageframe.h"
@@ -16,7 +16,7 @@
 /**
  * @brief The Main Frame class
  */
-class MyFrame : public MyFrame_Base, public UpdateValues
+class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
 {
   public:
     /**
@@ -55,7 +55,7 @@ class MyFrame : public MyFrame_Base, public UpdateValues
      * @param value The position of a stage or a force.
      * @param type	Defines the type of the value (position of stage 1, 2 or force)
      */
-    virtual void updateValue(int value, UpdateValues::ValueType type);
+    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
 
     /**
      * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
@@ -199,7 +199,7 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     /**
      * @brief Calculates the distance and print the value in the GUI.
      */
-    void updateDistance();
+    void updateDistance(void);
 
     /**
      * @brief Calculates the distance and print the value in the GUI.
@@ -221,7 +221,7 @@ class MyFrame : public MyFrame_Base, public UpdateValues
     std::mutex m_WaitMutex;
 
     Experiment::StressOrForce m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
-    double m_CurrentForce;											/**< Current force */
+    long m_CurrentForce;												/**< Current force */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
     long m_ClampingDistance;										/**< Clamping distance */
     long m_PreloadDistance;											/**< Preload distance */

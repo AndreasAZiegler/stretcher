@@ -189,9 +189,8 @@ void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, Stage
   m_LinearStages = linearstage;
   m_StageFrame = stageframe;
 
-  // Registers update methods at linearstagemessagehandler.
-  m_Pos1Id = ((m_LinearStages->at(0))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
-  m_Pos2Id = ((m_LinearStages->at(1))->getMessageHandler())->registerUpdateMethod(&UpdateValues::updateValue, this);
+  // Registers update methods at stage frame.
+  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**
@@ -211,7 +210,7 @@ void MyFrame::registerForceSensor(ForceSensor *forcesensor){
 
   // Registers update method at forcesensormessagehandler.
   m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
-  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdateValues::updateValue, this);
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**
@@ -219,8 +218,6 @@ void MyFrame::registerForceSensor(ForceSensor *forcesensor){
  */
 MyFrame::~MyFrame(){
   // Unregister update methods
-  ((m_LinearStages->at(0))->getMessageHandler())->unregisterUpdateMethod(m_Pos1Id);
-  ((m_LinearStages->at(1))->getMessageHandler())->unregisterUpdateMethod(m_Pos2Id);
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   // Stop linear stage receiver threads
   ((m_LinearStages->at(0))->getMessageHandler())->setExitFlag(false);
@@ -238,17 +235,13 @@ MyFrame::~MyFrame(){
  * @param value The position of a stage or a force.
  * @param type	Defines the type of the value (position of stage 1, 2 or force)
  */
-void MyFrame::updateValue(int value, UpdateValues::ValueType type){
+void MyFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type){
   switch(type){
-    case UpdateValues::ValueType::Pos1:
-      m_CurrentPositions[0] = value;
+    case UpdatedValuesReceiver::ValueType::Distance:
+      m_CurrentDistance = value;
       CallAfter(&MyFrame::updateDistance);
       break;
-    case UpdateValues::ValueType::Pos2:
-      m_CurrentPositions[1] = value;
-      CallAfter(&MyFrame::updateDistance);
-      break;
-    case UpdateValues::ValueType::Force:
+    case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = value;
       CallAfter(&MyFrame::updateForce);
       break;
@@ -506,6 +499,9 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   //preload.process(Preload::Event::evStart);
   std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
   t1.join();
+  /**
+   * @todo put into waiting thread, which sets (mutex protected) a operation finished flag.
+   */
   std::unique_lock<std::mutex> lck(m_WaitMutex);
   m_Wait.wait(lck);
   m_PreloadDistance = m_CurrentDistance;
@@ -570,6 +566,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
   t1.join();
   std::unique_lock<std::mutex> lck(m_WaitMutex);
   m_Wait.wait(lck);
+  m_CurrentExperiment = NULL;
 }
 
 /**
@@ -613,14 +610,14 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
     (m_LinearStages->at(0))->stop();
     (m_LinearStages->at(1))->stop();
   }
+  std::lock_guard<std::mutex> lck(m_WaitMutex);
+  m_Wait.notify_all();
 }
 
 /**
  * @brief Calculates the distance and print the value in the GUI.
  */
-void MyFrame::updateDistance(){
-  m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
-                       std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+void MyFrame::updateDistance(void){
   wxString tmp;
   tmp << m_CurrentDistance * 0.00009921875/*mm per micro step*/ << wxT(" mm");
   m_DistanceStaticText->SetLabel(tmp);
