@@ -78,22 +78,22 @@ void Preload::process(Event e){
         if(Experiment::StressOrForce::Force == m_StressOrForce){
           if((m_CurrentForce - m_ForceStressLimit) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-            m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward();
-          }else if((m_ForceStressLimit - m_CurrentForce) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward();
+          }else if((m_ForceStressLimit - m_CurrentForce) > m_ForceStressThreshold){
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward();
           }
         }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
           if((m_CurrentForce/m_Area - m_ForceStressLimit) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-            m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward();
-          }else if((m_ForceStressLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward();
+          }else if((m_ForceStressLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward();
           }
 
         }
@@ -115,16 +115,16 @@ void Preload::process(Event e){
           if((m_CurrentForce - m_ForceStressLimit) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
-            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
-              m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward();
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward();
             }
           }else if((m_ForceStressLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
 
-            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
-              m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward();
+            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward();
             }
           }else{
 
@@ -140,16 +140,16 @@ void Preload::process(Event e){
           if((m_CurrentForce/m_Area - m_ForceStressLimit) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
-            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
-              m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward();
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward();
             }
           }else if((m_ForceStressLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){ // Only reverse motor, if state changed
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
 
-            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
-              m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward();
+            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward();
             }
           }else{
 

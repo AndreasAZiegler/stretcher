@@ -275,7 +275,7 @@ void LinearStage::moveBackward(double speedinmm){
  * @brief Moves the stage the amount of steps.
  * @param steps Amount of steps
  */
-void LinearStage::moveSteps(int steps){
+void LinearStage::moveSteps(long steps){
   char buffer[6];
   char command[6]="";
   char* number;

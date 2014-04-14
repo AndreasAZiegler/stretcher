@@ -72,7 +72,7 @@ class LinearStage : public SerialInterface
      * @brief Moves the stage the amount of steps.
      * @param steps Amount of steps
      */
-    void moveSteps(int steps);
+    void moveSteps(long steps);
 
    private:
 

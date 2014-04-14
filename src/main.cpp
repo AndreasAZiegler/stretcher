@@ -63,6 +63,7 @@ bool MyApp::OnInit(){
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(1)));
   // Set thread priority to max
+  /*
   sched_param sch;
   int policy;
   pthread_getschedparam(m_LinearStagesReceivers[0].native_handle(), &policy, &sch);
@@ -75,6 +76,7 @@ bool MyApp::OnInit(){
   if(pthread_setschedparam(m_LinearStagesReceivers[1].native_handle(), SCHED_RR, &sch)){
     std::cout << "Failed to setschedparam: " << std::strerror(errno) << std::endl;
   }
+  */
   m_LinearStagesReceivers.at(0).detach();
   m_LinearStagesReceivers.at(1).detach();
 

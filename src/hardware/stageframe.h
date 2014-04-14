@@ -65,9 +65,16 @@ class StageFrame : virtual public UpdatedValuesReceiver
     /**
      * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
      *        and start the motors.
-     * @param distance Desired clamping distance in micro steps from the GUI
+     * @param distance Desired clamping distance in mm from the GUI
      */
     void gotoMMDistance(int mmDistance);
+
+    /**
+     * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
+     *        and start the motors.
+     * @param distance Desired clamping distance in micro steps from the GUI
+     */
+    void gotoStepsDistance(long stepsDistance);
 
     /**
      * @brief Stops the stage frame.
@@ -80,7 +87,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @todo Implementation
      * @brief Get the current distance.
      */
-    double getCurrentDistance(void);
+    long getCurrentDistance(void);
 
     std::vector<LinearStage*> *m_LinearStages;
     std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers;

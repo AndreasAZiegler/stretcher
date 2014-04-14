@@ -55,6 +55,7 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
     case UpdatedValuesReceiver::ValueType::Pos1:
       //std::cout << "Stage frame pos 1 update" << std::endl;
       m_CurrentPositions[0] = value;
+      std::cout << "m_CurrentPositions[0]: " << m_CurrentPositions[0] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos2ChangedFlag){
@@ -75,7 +76,8 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
 
     case UpdatedValuesReceiver::ValueType::Pos2:
       //std::cout << "Stage frame pos 2 update" << std::endl;
-      m_CurrentPositions[2] = value;
+      m_CurrentPositions[1] = value;
+      std::cout << "m_CurrentPositions[1]: " << m_CurrentPositions[1] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos1ChangedFlag){
@@ -128,9 +130,22 @@ void StageFrame::moveMM(double millimeters){
  * @param distance Desired istance in milli meters.
  */
 void StageFrame::gotoMMDistance(int mmDistance){
-  int currentDistance = getCurrentDistance();
+  //int currentDistance = getCurrentDistance();
 
-  long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
+  long dist = (mmDistance/MM_PER_MS);
+  //long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
+  long amSteps = (m_CurrentDistance - dist) / 2;
+  (m_LinearStages->at(0))->moveSteps(amSteps);
+  (m_LinearStages->at(1))->moveSteps(amSteps);
+}
+
+/**
+ * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance
+ *        and start the motors.
+ * @param distance Desired clamping distance in micro steps from the GUI
+ */
+void StageFrame::gotoStepsDistance(long stepsDistance){
+  long amSteps = (m_CurrentDistance - stepsDistance) / 2;
   (m_LinearStages->at(0))->moveSteps(amSteps);
   (m_LinearStages->at(1))->moveSteps(amSteps);
 }
@@ -143,8 +158,8 @@ void StageFrame::stop(){
   (m_LinearStages->at(1))->stop();
 }
 
-double StageFrame::getCurrentDistance(void){
-  return(std::abs(755906 /*max. position*/ - (m_LinearStagesMessageHandlers.at(0))->getCurrentPosition()) +
-         std::abs(755906 /*max. position*/ - (m_LinearStagesMessageHandlers.at(1))->getCurrentPosition()) +
+long StageFrame::getCurrentDistance(void){
+  return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
+         std::abs(771029 /*max. position*/ - m_CurrentPositions[1]) +
          m_ZeroDistance);
 }
