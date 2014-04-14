@@ -57,14 +57,6 @@ void LinearStage::configure(){
   setAcceleration(500);
 }
 
-/**
- * @brief Registers the message handler of the other linear stage.
- * @param othermessagehandler Pointer to the message handler object of the other linear stage.
- */
-void LinearStage::registerOtherMessageHandler(LinearStageMessageHandler *othermessagehandler){
-  m_OtherMessageHandler = othermessagehandler;
-}
-
 LinearStage::~LinearStage()
 {
 }
@@ -148,8 +140,8 @@ void LinearStage::setMoveTrackingPeriod(void){
   char buffer[6];
   char command[6] = "";
 
-  //char *settings = transformDecToText(10/*ms*/);
-  char *settings = transformDecToText(50/*ms*/);
+  char *settings = transformDecToText(10/*ms*/);
+  //char *settings = transformDecToText(50/*ms*/);
   memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
   memcpy(command+2, settings, 1);
   memcpy(buffer, command, 6);
@@ -283,11 +275,29 @@ void LinearStage::moveSteps(long steps){
   number = transformDecToText(steps);
   memcpy(command+2,number,4);
   memcpy(buffer,command , 6);
-
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 50/*ms*/);
   }
+}
+
+/**
+ * @brief Move the stage to the absolute position
+ * @param position Absolute stage position.
+ */
+void LinearStage::moveToAbsolute(long position){
+  char buffer[6];
+  char command[6]="";
+  char* number;
+  memcpy(command,STAGE_MOVE_ABSOLUTE,2);
+  number = transformDecToText(position);
+  memcpy(command+2,number,4);
+  memcpy(buffer,command , 6);
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 50/*ms*/);
+  }
+
 }
 
 /**

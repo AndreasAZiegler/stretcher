@@ -634,6 +634,7 @@ void MyFrame::updateDistance(void){
   wxString tmp;
   tmp << m_CurrentDistance * 0.00009921875/*mm per micro step*/ << wxT(" mm");
   m_DistanceStaticText->SetLabel(tmp);
+  //std::cout << "Distance updated." << std::endl;
 }
 
 /**

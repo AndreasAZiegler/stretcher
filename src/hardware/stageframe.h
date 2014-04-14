@@ -77,6 +77,12 @@ class StageFrame : virtual public UpdatedValuesReceiver
     void gotoStepsDistance(long stepsDistance);
 
     /**
+     * @brief Move the stage to the absolute position
+     * @param position Absolute stage position.
+     */
+    void gotoToAbsolute(long position);
+
+    /**
      * @brief Stops the stage frame.
      */
     void stop();

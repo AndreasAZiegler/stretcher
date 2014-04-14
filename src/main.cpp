@@ -55,8 +55,6 @@ bool MyApp::OnInit(){
   // Get the message handlers for the linear stages.
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(0))->getMessageHandler());
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
-  (m_LinearStages.at(0))->registerOtherMessageHandler(m_LinearStagesMessageHandlers.at(1));
-  (m_LinearStages.at(1))->registerOtherMessageHandler(m_LinearStagesMessageHandlers.at(0));
   m_MyFrame->registerLinearStageMessageHandlers(&m_LinearStagesMessageHandlers);
 
   // Run the receivers of the linear stages in seperate threads.

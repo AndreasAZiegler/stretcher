@@ -26,12 +26,6 @@ class LinearStage : public SerialInterface
      */
     void configure();
 
-    /**
-     * @brief Registers the message handler of the other linear stage.
-     * @param othermessagehandler Pointer to the message handler object of the other linear stage.
-     */
-    void registerOtherMessageHandler(LinearStageMessageHandler *othermessagehandler);
-
     ~LinearStage();
 
     /**
@@ -73,6 +67,12 @@ class LinearStage : public SerialInterface
      * @param steps Amount of steps
      */
     void moveSteps(long steps);
+
+    /**
+     * @brief Move the stage to the absolute position
+     * @param position Absolute stage position.
+     */
+    void moveToAbsolute(long position);
 
    private:
 
@@ -140,7 +140,6 @@ class LinearStage : public SerialInterface
     //bool mExpectedMessagesFlag;           /**< Indicates that messages are expected */
 
     LinearStageMessageHandler m_MessageHandler;    		/**< The MessageHandler object */
-    LinearStageMessageHandler *m_OtherMessageHandler; /**< Pointer to the other linear stage message handler */
 };
 
 #endif /* _LINEARMOTOR_H__ */

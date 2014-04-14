@@ -55,7 +55,7 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
     case UpdatedValuesReceiver::ValueType::Pos1:
       //std::cout << "Stage frame pos 1 update" << std::endl;
       m_CurrentPositions[0] = value;
-      std::cout << "m_CurrentPositions[0]: " << m_CurrentPositions[0] << std::endl;
+      //std::cout << "m_CurrentPositions[0]: " << m_CurrentPositions[0] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos2ChangedFlag){
@@ -77,7 +77,7 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
     case UpdatedValuesReceiver::ValueType::Pos2:
       //std::cout << "Stage frame pos 2 update" << std::endl;
       m_CurrentPositions[1] = value;
-      std::cout << "m_CurrentPositions[1]: " << m_CurrentPositions[1] << std::endl;
+      //std::cout << "m_CurrentPositions[1]: " << m_CurrentPositions[1] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos1ChangedFlag){
@@ -134,9 +134,10 @@ void StageFrame::gotoMMDistance(int mmDistance){
 
   long dist = (mmDistance/MM_PER_MS);
   //long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
-  long amSteps = (m_CurrentDistance - dist) / 2;
-  (m_LinearStages->at(0))->moveSteps(amSteps);
-  (m_LinearStages->at(1))->moveSteps(amSteps);
+  //long amSteps = (m_CurrentDistance - dist) / 2;
+  long position = (771029 /*max. position*/ - (dist / 2));
+  (m_LinearStages->at(0))->moveSteps(position);
+  (m_LinearStages->at(1))->moveSteps(position);
 }
 
 /**
@@ -145,9 +146,23 @@ void StageFrame::gotoMMDistance(int mmDistance){
  * @param distance Desired clamping distance in micro steps from the GUI
  */
 void StageFrame::gotoStepsDistance(long stepsDistance){
-  long amSteps = (m_CurrentDistance - stepsDistance) / 2;
-  (m_LinearStages->at(0))->moveSteps(amSteps);
-  (m_LinearStages->at(1))->moveSteps(amSteps);
+  //long amSteps = (m_CurrentDistance - stepsDistance) / 2;
+  long position = (771029 /*max. position*/ - (stepsDistance / 2));
+  /*
+  (m_LinearStages->at(0))->moveSteps(position);
+  (m_LinearStages->at(1))->moveSteps(position);
+  */
+  (m_LinearStages->at(0))->moveToAbsolute(position);
+  (m_LinearStages->at(1))->moveToAbsolute(position);
+}
+
+/**
+ * @brief Move the stage to the absolute position
+ * @param position Absolute stage position.
+ */
+void StageFrame::gotoToAbsolute(long position){
+  (m_LinearStages->at(0))->moveToAbsolute(position);
+  (m_LinearStages->at(1))->moveToAbsolute(position);
 }
 
 /**
@@ -156,6 +171,7 @@ void StageFrame::gotoStepsDistance(long stepsDistance){
 void StageFrame::stop(){
   (m_LinearStages->at(0))->stop();
   (m_LinearStages->at(1))->stop();
+  std::cout << "Stop stages." << std::endl;
 }
 
 long StageFrame::getCurrentDistance(void){
