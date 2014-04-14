@@ -28,7 +28,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     MyFrame(const wxString& title, Settings *settings, wxWindow* parent = (wxWindow *)NULL);
 
     /**
-     * @brief Register the liner motors.
+     * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
      * @param linearmotor Pointer to the vector containing the linear motors.
      */
     void registerLinearStage(std::vector<LinearStage *> *linearmotor, StageFrame *stageframe);
@@ -230,6 +230,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_Area;															/**< Area of the sample */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
+    std::condition_variable m_WaitStop;					/**< Wait condition variable to wait to record the preload position until stop answer received. */
+    std::mutex m_WaitStopMutex;									/**< Mutex for m_WaitStop */
 
     Experiment::StressOrForce m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */

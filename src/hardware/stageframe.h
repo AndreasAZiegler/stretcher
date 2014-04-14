@@ -4,9 +4,12 @@
 
 #include <vector>
 #include <mutex>
-#include "linearstage.h"
-#include "linearstagemessagehandler.h"
+#include <condition_variable>
 #include "../updatedvaluesreceiver.h"
+
+// Class forward declaration
+class LinearStage;
+class LinearStageMessageHandler;
 
 // Method pointer typedef
 typedef void (UpdatedValuesReceiver::*updateValue)(long, UpdatedValuesReceiver::ValueType);
@@ -25,6 +28,16 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.
      */
     void registerLinearStages(std::vector<LinearStage*> *linearstages);
+
+    /**
+     * @brief Registers the wait condition variable for the wait for stop.
+     * @param waitcond Pointer to the wait condition variable.
+     * @param mutex Mutex for the wait stop.
+     */
+    void registerWaitStop(std::condition_variable *waitcond, std::mutex *mutex){
+      m_WaitStop = waitcond;
+      m_WaitStopMutex = mutex;
+    }
 
      /**
      * @brief Registers the update methods, which will be called, when the value changes.
@@ -87,6 +100,11 @@ class StageFrame : virtual public UpdatedValuesReceiver
      */
     void stop();
 
+    /**
+     * @brief Is executed by a linear stage messsage handler to indicate, that one motor stopped.
+     */
+    void stopped();
+
   private:
 
     /**
@@ -109,6 +127,12 @@ class StageFrame : virtual public UpdatedValuesReceiver
 
     std::vector<long> m_CurrentPositions;							/**< Vector containing the current positions of the linear stages */
     long m_CurrentDistance;														/**< Current distance */
+
+    std::condition_variable *m_WaitStop;							/**< Wait condition variable to wait to record the preload position until stop answer received. */
+    std::mutex *m_WaitStopMutex;											/**< Mutex for m_WaitStop */
+
+    int m_AmStopped;																	/**< Number of stopped motors */
+    std::mutex m_AmStoppedMutex;											/**< Mutex to protect m_AmStopped */
 };
 
 #endif // STAGEFRAME_H

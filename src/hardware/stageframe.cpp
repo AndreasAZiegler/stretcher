@@ -1,5 +1,7 @@
 #include <iostream>
 #include "stageframe.h"
+#include "linearstage.h"
+#include "linearstagemessagehandler.h"
 
 StageFrame::StageFrame()
   :	m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
@@ -8,7 +10,8 @@ StageFrame::StageFrame()
     m_Pos1ChangedFlag(false),
     m_Pos2ChangedFlag(false),
     m_CurrentPositions{0, 0},
-    m_CurrentDistance(0)
+    m_CurrentDistance(0),
+    m_AmStopped(0)
 {
 }
 
@@ -172,6 +175,24 @@ void StageFrame::stop(){
   (m_LinearStages->at(0))->stop();
   (m_LinearStages->at(1))->stop();
   std::cout << "Stop stages." << std::endl;
+}
+
+/**
+ * @brief Is executed by a linear stage messsage handler to indicate, that one motor stopped.
+ */
+void StageFrame::stopped(){
+
+  std::lock_guard<std::mutex> lck{m_AmStoppedMutex};
+  m_AmStopped++;
+
+  if(m_AmStopped >= 2){
+    m_AmStopped = 0;
+
+    {
+      std::lock_guard<std::mutex> lck(*m_WaitStopMutex);
+      m_WaitStop->notify_all();
+    }
+  }
 }
 
 long StageFrame::getCurrentDistance(void){

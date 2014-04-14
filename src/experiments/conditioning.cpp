@@ -26,7 +26,7 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
                             std::condition_variable *wait,
                             std::mutex *mutex,
                             double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance)
-  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.3 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_DistanceOrStressForceLimit(distanceOrStressForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
@@ -132,7 +132,7 @@ void Conditioning::process(Experiment::Event event){
             }else{
               m_CurrentState = goBackState;
               //m_StageFrame->stop();
-              std::cout << "Go to preload distance" << std::endl;
+              //std::cout << "Go to preload distance" << std::endl;
               m_StageFrame->gotoStepsDistance(m_PreloadDistance);
             }
           }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
@@ -191,7 +191,7 @@ void Conditioning::process(Experiment::Event event){
             std::lock_guard<std::mutex> lck(*m_WaitMutex);
             m_Wait->notify_one();
           }else{
-            std::cout << "Another cycle." << std::endl;
+            //std::cout << "Another cycle." << std::endl;
             m_CurrentCycle++;
             m_CurrentState = runState;
 

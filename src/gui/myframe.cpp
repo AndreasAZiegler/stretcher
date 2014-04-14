@@ -183,7 +183,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   }
 
 /**
- * @brief Register the liner motors.
+ * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
  * @param linearstage Pointer to the vector containing the linear motors.
  */
 void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, StageFrame *stageframe){
@@ -192,14 +192,21 @@ void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, Stage
 
   // Registers update methods at stage frame.
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+
+  // Registers stop wait conditional variable and mutex.
+  m_StageFrame->registerWaitStop(&m_WaitStop, &m_WaitStopMutex);
 }
 
 /**
- * @brief Registers the message handlers of the linear stages.
+ * @brief Registers the message handlers of the linear stages, registers the stage frame at the linear stage message handlers.
  * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
  */
 void MyFrame::registerLinearStageMessageHandlers(std::vector<LinearStageMessageHandler*> *linearstagesmessagehandlers){
- m_LinearStagesMessageHandlers = linearstagesmessagehandlers;
+  m_LinearStagesMessageHandlers = linearstagesmessagehandlers;
+
+  // Register stage frame
+  (m_LinearStagesMessageHandlers->at(0))->registerStageFrame(m_StageFrame);
+  (m_LinearStagesMessageHandlers->at(1))->registerStageFrame(m_StageFrame);
 }
 
 /**
@@ -502,6 +509,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                     m_PreloadLimitSpinCtrl->GetValue(),
                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
                                     m_Area);
+  m_PreloadDoneFlag = false;
   m_ExperimentRunningFlag = true;
   std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
   t1.join();
@@ -655,7 +663,11 @@ void MyFrame::checkFinishedExperiment(){
   {
     std::lock_guard<std::mutex> lck2{m_PreloadDoneMutex};
     if(false == m_PreloadDoneFlag){
+      std::unique_lock<std::mutex> lck3(m_WaitStopMutex);
+      m_WaitStop.wait(lck3);
+
       m_PreloadDistance = m_CurrentDistance;
+      std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
       m_PreloadDoneFlag = true;
     }
   }

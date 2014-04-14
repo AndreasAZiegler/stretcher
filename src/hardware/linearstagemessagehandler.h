@@ -5,7 +5,12 @@
 // Includes
 #include <wx-3.0/wx/ctb-0.13/serport.h>
 #include <mutex>
+#include <condition_variable>
 #include "messagehandler.h"
+#include "stageframe.h"
+
+// Forward declaration
+class StageFrame;
 
 /**
  * @brief Message handler for the linear stages
@@ -19,6 +24,14 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @param serialport Pointer to the serial port.
      */
     LinearStageMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex);
+
+    /**
+     * @brief Registers the stage frame object.
+     * @param stageframe Pointer to the stage frame object.
+     */
+    void registerStageFrame(StageFrame *stageframe){
+      m_StageFrame = stageframe;
+    }
 
     /**
      * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
@@ -57,7 +70,9 @@ class LinearStageMessageHandler : virtual public MessageHandler
      */
     long calculatePosition(char* message);
 
-    long m_CurrentPosition;
+    long m_CurrentPosition;														/**< Current position */
+
+    StageFrame *m_StageFrame;													/**< Pointer to the stage frame object */
 
 };
 

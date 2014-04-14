@@ -85,7 +85,7 @@ void LinearStageMessageHandler::handler(char *message){
     case ANSWER_MOVE_ABSOLUT:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
-      std::cout << "ANSWER_MOVE_ABSOLUT m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
+      //std::cout << "ANSWER_MOVE_ABSOLUT m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
       for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
         (*i)(m_CurrentPosition, m_Type);
       }
@@ -93,7 +93,7 @@ void LinearStageMessageHandler::handler(char *message){
     case ANSWER_MOVE_RELATIVE:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
-      std::cout << "ANSWER_MOVE_RELATIVE m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
+      //std::cout << "ANSWER_MOVE_RELATIVE m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
       for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
         (*i)(m_CurrentPosition, m_Type);
       }
@@ -105,10 +105,11 @@ void LinearStageMessageHandler::handler(char *message){
     case ANSWER_MOTOR_STOP:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
-      std::cout << "ANSWER_MOTOR_STOP m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
+      //std::cout << "ANSWER_MOTOR_STOP m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
       for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
         (*i)(m_CurrentPosition, m_Type);
       }
+      m_StageFrame->stopped();
       break;
   }
 }
