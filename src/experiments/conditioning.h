@@ -41,6 +41,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     Conditioning(Experiment::ExperimentType type,
                  Conditioning::DistanceOrStressForce distanceOrStressForce,
                  Experiment::StressOrForce forceOrStress,
+                 long currentdistance,
                  StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                  ForceSensorMessageHandler *forcesensormessagehandler,
@@ -94,7 +95,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @brief Sets the distance limit value.
      * @param distanceLimit Distance limit value.
      */
-    void setDistanceLimit(double distanceLimit){
+    void setDistanceLimit(long distanceLimit){
       m_DistanceLimit = distanceLimit;
     }
 

@@ -60,6 +60,12 @@ class StageFrame : virtual public UpdatedValuesReceiver
     void updateValues(long value, UpdatedValuesReceiver::ValueType type);
 
     /**
+     * @brief Sets the speed of the linear stage.
+     * @param speedinmm Speed in mm/s
+     */
+    void setSpeed(double speedinmm);
+
+    /**
      * @brief Moves the stage forward frame at constant speed
      */
     void moveForward(double speed = 0);

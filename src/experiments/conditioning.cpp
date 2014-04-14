@@ -21,12 +21,13 @@
 Conditioning::Conditioning(Experiment::ExperimentType type,
                             Conditioning::DistanceOrStressForce distanceOrStressForce,
                             Experiment::StressOrForce stressOrForce,
+                            long currentdistance,
                             StageFrame *stageframe, std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
                             ForceSensorMessageHandler *forcesensormessagehandler,
                             std::condition_variable *wait,
                             std::mutex *mutex,
                             double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance)
-  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, currentdistance),
     m_DistanceOrStressForceLimit(distanceOrStressForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
@@ -35,7 +36,7 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
     m_WaitMutex(mutex),
     m_Cycles(cycles),
     m_StressForceLimit(stressForceLimit * 1000),
-    m_DistanceLimit(distanceLimit / 0.00009921875/*mm per micro step*/),
+    m_DistanceLimit(distanceLimit),
     m_SpeedInMm(speedInMM),
     m_Area(area * 0.000000000001/*um^2*/),
     m_PreloadDistance(preloaddistance),
@@ -52,13 +53,14 @@ Conditioning::~Conditioning(){
 }
 
 /**
- * @return bool
- * @param  event
+ * @brief FSM of the conditioning experiment
+ * @param event Occuring event
  */
 void Conditioning::process(Experiment::Event event){
   switch(m_CurrentState){
     case stopState:
       if(Experiment::Event::evStart == event){
+        m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
 
         // If force/stress based
@@ -68,31 +70,35 @@ void Conditioning::process(Experiment::Event event){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward();
+              m_StageFrame->moveBackward(m_SpeedInMm);
             }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
               //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward();
+              m_StageFrame->moveForward(m_SpeedInMm);
             }
           }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
             if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward();
+              m_StageFrame->moveBackward(m_SpeedInMm);
             }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
               //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward();
+              m_StageFrame->moveForward(m_SpeedInMm);
             }
 
           }
         }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
-          if((m_CurrentDistance - m_DistanceLimit) > m_ForceStressThreshold){
+          if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
+            std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward();
-          }else if((m_DistanceLimit - m_CurrentDistance) > m_ForceStressThreshold){
+            m_StageFrame->moveForward(m_SpeedInMm);
+            std::cout << "Conditioning moveForward" << std::endl;
+          }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
+            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_DistanceLimit - m_CurrentDistance << std::endl;
             m_CurrentDirection = Direction::Backwards;
-            m_StageFrame->moveBackward();
+            m_StageFrame->moveBackward(m_SpeedInMm);
+            std::cout << "Conditioning moveBackward" << std::endl;
           }
         }
       }
@@ -120,14 +126,14 @@ void Conditioning::process(Experiment::Event event){
 
               if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
                 m_CurrentDirection = Direction::Backwards;
-                m_StageFrame->moveBackward();
+                m_StageFrame->moveBackward(m_SpeedInMm);
               }
             }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
               //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
 
               if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
                 m_CurrentDirection = Direction::Forwards;
-                m_StageFrame->moveForward();
+                m_StageFrame->moveForward(m_SpeedInMm);
               }
             }else{
               m_CurrentState = goBackState;
@@ -141,14 +147,14 @@ void Conditioning::process(Experiment::Event event){
 
               if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
                 m_CurrentDirection = Direction::Backwards;
-                m_StageFrame->moveBackward();
+                m_StageFrame->moveBackward(m_SpeedInMm);
               }
             }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){ // Only reverse motor, if state changed
               //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
 
               if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
                 m_CurrentDirection = Direction::Forwards;
-                m_StageFrame->moveForward();
+                m_StageFrame->moveForward(m_SpeedInMm);
               }
             }else{
               m_CurrentState = goBackState;
@@ -160,12 +166,12 @@ void Conditioning::process(Experiment::Event event){
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward();
+              m_StageFrame->moveForward(m_SpeedInMm);
             }
           }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward();
+              m_StageFrame->moveBackward(m_SpeedInMm);
             }
           }else{
             m_CurrentState = goBackState;
@@ -202,30 +208,30 @@ void Conditioning::process(Experiment::Event event){
                 if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
                   //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
                   m_CurrentDirection = Direction::Forwards;
-                  m_StageFrame->moveForward();
+                  m_StageFrame->moveForward(m_SpeedInMm);
                 }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
                   //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
                   m_CurrentDirection = Direction::Backwards;
-                  m_StageFrame->moveBackward();
+                  m_StageFrame->moveBackward(m_SpeedInMm);
                 }
               }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
                 if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
                   //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
                   m_CurrentDirection = Direction::Forwards;
-                  m_StageFrame->moveForward();
+                  m_StageFrame->moveForward(m_SpeedInMm);
                 }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
                   //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
                   m_CurrentDirection = Direction::Backwards;
-                  m_StageFrame->moveBackward();
+                  m_StageFrame->moveBackward(m_SpeedInMm);
                 }
               }
             }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
               if((m_CurrentDistance - m_DistanceLimit) > m_ForceStressThreshold){
                 m_CurrentDirection = Direction::Forwards;
-                m_StageFrame->moveForward();
+                m_StageFrame->moveForward(m_SpeedInMm);
               }else if((m_DistanceLimit - m_CurrentDistance) > m_ForceStressThreshold){
                 m_CurrentDirection = Direction::Backwards;
-                m_StageFrame->moveBackward();
+                m_StageFrame->moveBackward(m_SpeedInMm);
               }
             }
           }
@@ -248,6 +254,7 @@ void Conditioning::updateValues(long value, UpdatedValuesReceiver::ValueType typ
 
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = value;
+      //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
 

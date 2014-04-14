@@ -558,10 +558,10 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
   long distancelimit = 0;
   switch(m_ConditioningDisctanceLimitRadioBox->GetSelection()){
     case 0:
-      distancelimit = static_cast<long>(m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+      distancelimit = static_cast<long>(m_PreloadDistance + m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
       break;
     case 1:
-      distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1) * m_PreloadDistance;
+      distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
       break;
   }
 
@@ -569,6 +569,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
   m_CurrentExperiment = new Conditioning(Experiment::ExperimentType::Conditioning,
                                          distanceOrStressForce,
                                          m_ForceOrStress,
+                                         m_CurrentDistance,
                                          m_StageFrame,
                                          m_LinearStagesMessageHandlers,
                                          m_ForceSensorMessageHandler,

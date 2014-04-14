@@ -101,6 +101,15 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
 }
 
 /**
+ * @brief Sets the speed of the linear stage.
+ * @param speedinmm Speed in mm/s
+ */
+void StageFrame::setSpeed(double speedinmm){
+ (m_LinearStages->at(0))->setSpeed(speedinmm);
+ (m_LinearStages->at(1))->setSpeed(speedinmm);
+}
+
+/**
  * @brief Moves the stage frame forward at constant speed
  */
 void StageFrame::moveForward(double speed){
@@ -174,7 +183,7 @@ void StageFrame::gotoToAbsolute(long position){
 void StageFrame::stop(){
   (m_LinearStages->at(0))->stop();
   (m_LinearStages->at(1))->stop();
-  std::cout << "Stop stages." << std::endl;
+  //std::cout << "Stop stages." << std::endl;
 }
 
 /**

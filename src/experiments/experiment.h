@@ -58,7 +58,8 @@ class Experiment
     Experiment(Experiment::ExperimentType type,
                Experiment::StressOrForce forceOrStress,
                Experiment::Direction direction,
-               double forcesStressThreshold, double distanceThreshold);
+               double forcesStressThreshold, double distanceThreshold,
+               long currentdistance = 0);
 
     /**
      * @brief FSM of the experiment
