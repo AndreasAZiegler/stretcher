@@ -664,7 +664,7 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
   if(0 == m_R2FGoToRadioBox->GetSelection()){
     distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() /0.00009921875/*mm per micro step*/;
   }else if(1 == m_R2FGoToRadioBox->GetSelection()){
-    distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
+    distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) /*+ 1.0*/) * m_PreloadDistance;
   }
 
   m_CurrentExperiment = new Ramp2Failure(Experiment::ExperimentType::Ramp2Failure,
@@ -762,24 +762,26 @@ void MyFrame::updateForce(){
 }
 
 /**
- * @brief Sets the m_ExperimentRunningFlag false if experiment is finished.
+ * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
  */
 void MyFrame::checkFinishedExperiment(){
   std::unique_lock<std::mutex> lck1(m_WaitMutex);
   std::unique_lock<std::mutex> lck3(m_WaitStopMutex);
+  // Wait until experiment is finised.
   m_Wait.wait(lck1);
+  {
+    std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = false;
+  }
   {
     std::lock_guard<std::mutex> lck2{m_PreloadDoneMutex};
     if(false == m_PreloadDoneFlag){
+      // Wait until the stages stopped.
       m_WaitStop.wait(lck3);
 
-      m_PreloadDistance = m_CurrentDistance;
-      std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
       m_PreloadDoneFlag = true;
+      m_PreloadDistance = m_CurrentDistance;
+      //std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
     }
-  }
-  {
-    std::lock_guard<std::mutex> lck3{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = false;
   }
 }

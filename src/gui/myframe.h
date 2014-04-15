@@ -226,7 +226,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void updateForce();
 
     /**
-     * @brief Sets the m_ExperimentRunningFlag false if experiment is finished.
+     * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
      */
     void checkFinishedExperiment();
 
