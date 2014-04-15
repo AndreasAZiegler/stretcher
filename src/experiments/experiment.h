@@ -36,9 +36,11 @@ class Experiment
      * @enum Event
      * @brief Defines the events which can occur for the AutoStretch FSM.
      */
-    enum Event{evStart,         /**< AutoStretch should start */
+    enum Event{evStart,         /**< Experiment should start */
                evUpdate,        /**< New measured value */
-               evStop};         /**< AutoStretch should stop */
+               evStop,					/**< Experiment should stop */
+               evDistanceUpdate,/**< New distance value */
+               evForceUpdate};	/**< New force value */
 
   protected:
     /**

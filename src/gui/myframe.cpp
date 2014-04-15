@@ -12,6 +12,7 @@
 #include "myfileoutput_base.h"
 #include "../experiments/preload.h"
 #include "../experiments/conditioning.h"
+#include "../experiments/ramp2failure.h"
 
 #include <iostream>
 
@@ -80,6 +81,9 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_ConditioningSpeedPercent, MyFrame::OnConditioningSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_ConditioningSpeedMm, MyFrame::OnConditioningSpeedMmChanged)
   EVT_BUTTON(ID_ConditioningSendToProtocol, MyFrame::OnConditioningSendToProtocol)
+  EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedPercent, MyFrame::OnRamp2FailureSpeedPercentChanged)
+  EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedMm, MyFrame::OnRamp2FailureSpeedMmChanged)
+  EVT_BUTTON(ID_Ramp2FailureSendToProtocol, MyFrame::OnRamp2FailureSendToProtocol)
 wxEND_EVENT_TABLE()
 
 /**
@@ -96,7 +100,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceUnit(wxT(" kPa")),
     m_ClampingDistance(150),
     m_PreloadDistance(0),
-    m_ForceOrStress(Experiment::StressOrForce::Force),
+    m_StressOrForce(Experiment::StressOrForce::Force),
     m_CurrentExperiment(NULL),
     m_Area(0),
     m_ExperimentRunningFlag(false),
@@ -126,6 +130,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ConditioningSpeedPreloadSpinCtrl->SetId(ID_ConditioningSpeedPercent);
   m_ConditioningSpeedMmSpinCtrl->SetId(ID_ConditioningSpeedMm);
   m_ConditioningSendButton->SetId(ID_ConditioningSendToProtocol);
+  m_R2FSpeedPreloadSpinCtrl->SetId(ID_Ramp2FailureSpeedPercent);
+  m_R2FSpeedMmSpinCtrl->SetId(ID_Ramp2FailureSpeedMm);
+  m_R2FSendButton->SetId(ID_Ramp2FailureSendToProtocol);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -371,13 +378,13 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
     m_ForceUnit = wxT(" kPa");
-    m_ForceOrStress = Experiment::StressOrForce::Stress;
+    m_StressOrForce = Experiment::StressOrForce::Stress;
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
     m_ForceUnit = wxT(" N");
-    m_ForceOrStress = Experiment::StressOrForce::Force;
+    m_StressOrForce = Experiment::StressOrForce::Force;
   }
 }
 
@@ -486,8 +493,11 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
  */
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   // Return if an experiment is currently running
-  if(true == m_ExperimentRunningFlag){
-    return;
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
   }
 
   if(true == m_PreloadCalculateCrosssectionCheckBox->IsChecked()){
@@ -501,7 +511,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     }
   }
   m_CurrentExperiment = new Preload(Experiment::ExperimentType::Preload,
-                                    m_ForceOrStress,
+                                    m_StressOrForce,
                                     m_StageFrame,
                                     m_ForceSensorMessageHandler,
                                     &m_Wait,
@@ -509,8 +519,15 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                     m_PreloadLimitSpinCtrl->GetValue(),
                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
                                     m_Area);
-  m_PreloadDoneFlag = false;
-  m_ExperimentRunningFlag = true;
+
+  {
+    std::lock_guard<std::mutex> lck{m_PreloadDoneMutex};
+    m_PreloadDoneFlag = false;
+  }
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
   std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
   t1.join();
 
@@ -525,7 +542,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event){
- double speedmm = m_ClampingDistance * (m_ConditioningSpeedPreloadSpinCtrl->GetValue() / 100);
+ double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_ConditioningSpeedPreloadSpinCtrl->GetValue() / 100);
  m_ConditioningSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
@@ -534,7 +551,7 @@ void MyFrame::OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_ConditioningSpeedMmSpinCtrl->GetValue() / m_ClampingDistance * 100/*%*/;
+  double speedpercent = m_ConditioningSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
   m_ConditioningSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
@@ -544,8 +561,11 @@ void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
  */
 void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
   // Return if an experiment is currently running
-  if(true == m_ExperimentRunningFlag){
-    return;
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
   }
 
   Conditioning::DistanceOrStressForce distanceOrStressForce;
@@ -568,7 +588,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
   //delete m_CurrentExperiment;
   m_CurrentExperiment = new Conditioning(Experiment::ExperimentType::Conditioning,
                                          distanceOrStressForce,
-                                         m_ForceOrStress,
+                                         m_StressOrForce,
                                          m_CurrentDistance,
                                          m_StageFrame,
                                          m_LinearStagesMessageHandlers,
@@ -581,8 +601,90 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          m_ConditioningSpeedMmSpinCtrl->GetValue(),
                                          m_Area, m_PreloadDistance);
 
-  m_ExperimentRunningFlag = true;
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Conditioning::Event::evStart);
+  t1.join();
+
+  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
+
+  return;
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in percent in ramp 2 failure.
+ * @param event Occuring event
+ */
+void MyFrame::OnRamp2FailureSpeedPercentChanged(wxSpinDoubleEvent& event){
+  double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_R2FSpeedPreloadSpinCtrl->GetValue() / 100.0);
+  m_R2FSpeedMmSpinCtrl->SetValue(speedmm);
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in mm in ramp 2 failure.
+ * @param event Occuring event
+ */
+void MyFrame::OnRamp2FailureSpeedMmChanged(wxSpinDoubleEvent& event){
+  double speedpercent = m_R2FSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
+  m_R2FSpeedPreloadSpinCtrl->SetValue(speedpercent);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in ramp 2 failure.
+ * @param event Occuring event
+ */
+void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
+
+  Ramp2Failure::BehaviorAfterFailure behavior = Ramp2Failure::BehaviorAfterFailure::PreloadPos;
+  switch(m_R2FAfterFailureRadioBox->GetSelection()){
+    case 0:
+      behavior = Ramp2Failure::BehaviorAfterFailure::PreloadPos;
+      break;
+
+    case 1:
+      behavior = Ramp2Failure::BehaviorAfterFailure::Stop;
+      break;
+
+    case 2:
+      behavior = Ramp2Failure::BehaviorAfterFailure::GoTo;
+      break;
+  }
+
+  long distanceafterfailure = 0;
+  if(0 == m_R2FGoToRadioBox->GetSelection()){
+    distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() /0.00009921875/*mm per micro step*/;
+  }else if(1 == m_R2FGoToRadioBox->GetSelection()){
+    distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
+  }
+
+  m_CurrentExperiment = new Ramp2Failure(Experiment::ExperimentType::Ramp2Failure,
+                                         m_StressOrForce,
+                                         m_StageFrame,
+                                         m_LinearStagesMessageHandlers,
+                                         m_ForceSensorMessageHandler,
+                                         &m_Wait,
+                                         &m_WaitMutex,
+                                         behavior,
+                                         m_R2FSpeedMmSpinCtrl->GetValue(),
+                                         m_R2FDropBStopSpinCtrl->GetValue(),
+                                         m_Area,
+                                         m_PreloadDistance,
+                                         distanceafterfailure);
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Ramp2Failure::Event::evStart);
   t1.join();
 
   m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
@@ -634,6 +736,10 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
   }
   std::lock_guard<std::mutex> lck(m_WaitMutex);
   m_Wait.notify_all();
+
+  if(NULL != m_CurrentExperiment){
+    m_CurrentExperiment = NULL;
+  }
 }
 
 /**
@@ -660,11 +766,11 @@ void MyFrame::updateForce(){
  */
 void MyFrame::checkFinishedExperiment(){
   std::unique_lock<std::mutex> lck1(m_WaitMutex);
+  std::unique_lock<std::mutex> lck3(m_WaitStopMutex);
   m_Wait.wait(lck1);
   {
     std::lock_guard<std::mutex> lck2{m_PreloadDoneMutex};
     if(false == m_PreloadDoneFlag){
-      std::unique_lock<std::mutex> lck3(m_WaitStopMutex);
       m_WaitStop.wait(lck3);
 
       m_PreloadDistance = m_CurrentDistance;

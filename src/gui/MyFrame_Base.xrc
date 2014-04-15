@@ -71,7 +71,7 @@
 													<border>5</border>
 													<object class="wxStaticText" name="m_InitializeWarningStaticText">
 														<style>wxALIGN_CENTRE</style>
-														<label>Be sure that nothing is mounted before hitting the button &quot;Home motors&quot;.</label>
+														<label>Be sure that nothing is mounted before hitting the button &quot;Home stages&quot;.</label>
 														<wrap>-1</wrap>
 													</object>
 												</object>
@@ -675,7 +675,7 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxSpinCtrlDouble" name="m_R2FSpeedPreloadSpinCtrl">
-																			<value>6</value>
+																			<value>0</value>
 																			<min>0</min>
 																			<max>1000</max>
 																		</object>
@@ -727,7 +727,7 @@
 															<object class="wxSpinCtrlDouble" name="m_R2FDropBStopSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>100</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -762,7 +762,7 @@
 															<object class="wxSpinCtrlDouble" name="m_R2FGoToSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>153</max>
 															</object>
 														</object>
 														<object class="sizeritem">

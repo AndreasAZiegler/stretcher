@@ -180,6 +180,24 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnConditioningSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the speed value in percent in ramp 2 failure.
+     * @param event Occuring event
+     */
+    void OnRamp2FailureSpeedPercentChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user changes the speed value in mm in ramp 2 failure.
+     * @param event Occuring event
+     */
+    void OnRamp2FailureSpeedMmChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in ramp 2 failure.
+     * @param event Occuring event
+     */
+    void OnRamp2FailureSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -233,7 +251,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::condition_variable m_WaitStop;					/**< Wait condition variable to wait to record the preload position until stop answer received. */
     std::mutex m_WaitStopMutex;									/**< Mutex for m_WaitStop */
 
-    Experiment::StressOrForce m_ForceOrStress;	/**< Indicates if experiment is force or stress based */
+    Experiment::StressOrForce m_StressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
     long m_ClampingDistance;										/**< Clamping distance */
@@ -264,7 +282,10 @@ enum
   ID_PreloadSendToProtocol = 18,
   ID_ConditioningSpeedPercent = 19,
   ID_ConditioningSpeedMm = 20,
-  ID_ConditioningSendToProtocol = 21
+  ID_ConditioningSendToProtocol = 21,
+  ID_Ramp2FailureSpeedPercent = 22,
+  ID_Ramp2FailureSpeedMm = 23,
+  ID_Ramp2FailureSendToProtocol = 24
 };
 
 #endif // MYFRAME_H

@@ -47,7 +47,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  std::condition_variable *wait,
                  std::mutex *mutex,
-                 double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance);
+                 double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance);
 
     ~Conditioning();
 
@@ -103,7 +103,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @brief FSM of the conditioning experiment
      * @param event Occuring event
      */
-    void process(Experiment::Event event);
+    virtual void process(Experiment::Event event);
 
     /**
      * @brief Abstract method which will be calles by the message handlers to update the values
@@ -116,7 +116,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
 
     /**
      * @enum State
-     * @brief Defines the states of the AutoStretch FSM.
+     * @brief Defines the states of the Conditioning FSM.
      */
     enum State{stopState,       /**< Stop state */
                runState,       	/**< Run state */
@@ -130,7 +130,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
 
     int m_Cycles;																														/**< Number of cycles */
     int m_CurrentCycle;																											/**< Number of the current cycle */
-    double m_PreloadDistance;																								/**< Preload distance of the stage frame */
+    long m_PreloadDistance;																									/**< Preload distance of the stage frame */
     double m_SpeedInPercent;																								/**< Speed in %preload/sec */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
     DistanceOrStressForce m_DistanceOrStressForceLimit;											/**< Indicates if experiment is distance or stress/force based */
@@ -140,8 +140,8 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     double m_Area;																													/**< Area of the sample in um^2 */
 
 
-    std::condition_variable *m_Wait;
-    std::mutex *m_WaitMutex;
+    std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
+    std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
 
     //ExperimentValues * m_experimentvalues;
 

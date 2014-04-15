@@ -26,7 +26,7 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
                             ForceSensorMessageHandler *forcesensormessagehandler,
                             std::condition_variable *wait,
                             std::mutex *mutex,
-                            double stressForceLimit, int cycles, double distanceLimit, double speedInMM, double area, double preloaddistance)
+                            double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance)
   : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, currentdistance),
     m_DistanceOrStressForceLimit(distanceOrStressForce),
     m_StageFrame(stageframe),
@@ -195,7 +195,7 @@ void Conditioning::process(Experiment::Event event){
             m_CurrentDirection = Direction::Stop;
             //m_StageFrame->stop();
             std::lock_guard<std::mutex> lck(*m_WaitMutex);
-            m_Wait->notify_one();
+            m_Wait->notify_all();
           }else{
             //std::cout << "Another cycle." << std::endl;
             m_CurrentCycle++;
@@ -226,10 +226,10 @@ void Conditioning::process(Experiment::Event event){
                 }
               }
             }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
-              if((m_CurrentDistance - m_DistanceLimit) > m_ForceStressThreshold){
+              if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
                 m_CurrentDirection = Direction::Forwards;
                 m_StageFrame->moveForward(m_SpeedInMm);
-              }else if((m_DistanceLimit - m_CurrentDistance) > m_ForceStressThreshold){
+              }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
                 m_CurrentDirection = Direction::Backwards;
                 m_StageFrame->moveBackward(m_SpeedInMm);
               }
