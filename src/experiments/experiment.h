@@ -28,8 +28,8 @@ class Experiment
      * @brief Force or stress
      */
     enum class StressOrForce{
-      Force = 0,
-      Stress = 1
+      Stress = 0,
+      Force = 1
     };
 
     /**

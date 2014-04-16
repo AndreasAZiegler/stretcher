@@ -14,6 +14,7 @@
 #include "../experiments/conditioning.h"
 #include "../experiments/ramp2failure.h"
 #include "../experiments/relaxation.h"
+#include "../experiments/creep.h"
 
 #include <iostream>
 
@@ -86,6 +87,9 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedMm, MyFrame::OnRamp2FailureSpeedMmChanged)
   EVT_BUTTON(ID_Ramp2FailureSendToProtocol, MyFrame::OnRamp2FailureSendToProtocol)
   EVT_BUTTON(ID_RelaxationSendToProtocol, MyFrame::OnRelexationSendToProtocol)
+  EVT_SPINCTRLDOUBLE(ID_CreepSpeedPercent, MyFrame::OnCreepSpeedPercentChanged)
+  EVT_SPINCTRLDOUBLE(ID_CreepSpeedMm, MyFrame::OnCreepSpeedMmChanged)
+  EVT_BUTTON(ID_CreepSendToProtocol, MyFrame::OnCreepSendToProtocol)
 wxEND_EVENT_TABLE()
 
 /**
@@ -136,6 +140,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_R2FSpeedMmSpinCtrl->SetId(ID_Ramp2FailureSpeedMm);
   m_R2FSendButton->SetId(ID_Ramp2FailureSendToProtocol);
   m_RelaxationSendButton->SetId(ID_RelaxationSendToProtocol);
+  m_CreepSpeedPreloadSpinCtrl->SetId(ID_CreepSpeedPercent);
+  m_CreepSpeedMmSpinCtrl->SetId(ID_CreepSpeedMm);
+  m_CreepSendButton->SetId(ID_CreepSendToProtocol);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -380,12 +387,14 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
+    m_CreepSensitivityStaticText->SetLabelText("Sensitivity [kPa]");
     m_ForceUnit = wxT(" kPa");
     m_StressOrForce = Experiment::StressOrForce::Stress;
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
+    m_CreepSensitivityStaticText->SetLabelText("Sensitivity [N]");
     m_ForceUnit = wxT(" N");
     m_StressOrForce = Experiment::StressOrForce::Force;
   }
@@ -739,6 +748,62 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
     m_ExperimentRunningFlag = true;
   }
   std::thread t1(&Experiment::process, m_CurrentExperiment, Relaxation::Event::evStart);
+  t1.join();
+
+  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
+
+  return;
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in percent in creep.
+ * @param event Occuring event
+ */
+void MyFrame::OnCreepSpeedPercentChanged(wxSpinDoubleEvent& event){
+  double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_CreepSpeedPreloadSpinCtrl->GetValue() / 100.0);
+  m_CreepSpeedMmSpinCtrl->SetValue(speedmm);
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the speed value in mm in creep.
+ * @param event Occuring event
+ */
+void MyFrame::OnCreepSpeedMmChanged(wxSpinDoubleEvent& event){
+  double speedpercent = m_CreepSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
+  m_CreepSpeedPreloadSpinCtrl->SetValue(speedpercent);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in creep.
+ * @param event Occuring event
+ */
+void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
+
+  m_CurrentExperiment = new Creep(Experiment::ExperimentType::Creep,
+                                  m_StressOrForce,
+                                  m_StageFrame,
+                                  m_LinearStagesMessageHandlers,
+                                  m_ForceSensorMessageHandler,
+                                  &m_Wait,
+                                  &m_WaitMutex,
+                                  m_CreepHoldForceStressSpinCtrl->GetValue(),
+                                  m_CreepHoldTimeSpinCtrl->GetValue(),
+                                  m_CreepSensitivitySpinCtrl->GetValue(),
+                                  m_CreepSpeedMmSpinCtrl->GetValue(),
+                                  m_Area);
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Creep::Event::evStart);
   t1.join();
 
   m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);

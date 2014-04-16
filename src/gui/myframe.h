@@ -204,6 +204,24 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnRelexationSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the speed value in percent in creep.
+     * @param event Occuring event
+     */
+    void OnCreepSpeedPercentChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user changes the speed value in mm in creep.
+     * @param event Occuring event
+     */
+    void OnCreepSpeedMmChanged(wxSpinDoubleEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in creep.
+     * @param event Occuring event
+     */
+    void OnCreepSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -292,7 +310,10 @@ enum
   ID_Ramp2FailureSpeedPercent = 22,
   ID_Ramp2FailureSpeedMm = 23,
   ID_Ramp2FailureSendToProtocol = 24,
-  ID_RelaxationSendToProtocol = 25
+  ID_RelaxationSendToProtocol = 25,
+  ID_CreepSpeedPercent = 26,
+  ID_CreepSpeedMm = 27,
+  ID_CreepSendToProtocol = 28
 };
 
 #endif // MYFRAME_H

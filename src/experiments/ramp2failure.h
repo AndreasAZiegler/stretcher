@@ -44,10 +44,6 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
 
     ~Ramp2Failure();
 
-		/**
-		 * @return bool
-		 * @param  percent
-		 */
     /**
      * @brief Sets the speed in percent of preload.
      * @param percent Speed in percen of preload.

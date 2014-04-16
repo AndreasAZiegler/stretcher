@@ -37,7 +37,8 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
      * @param steps The amount of steps.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Relaxation(Experiment::ExperimentType type, StressOrForce stressOrForce,
+    Relaxation(Experiment::ExperimentType type,
+               StressOrForce stressOrForce,
                long currentdistance,
                StageFrame *stageframe,
                std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
@@ -100,12 +101,6 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
      * @param type Type of value.
      */
     virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
-
-    /**
-     * @brief Makes a pause of the amount of sec.
-     * @param sec Duration of the pause in sec.
-     */
-    void pause(int sec);
 
 	private:
 

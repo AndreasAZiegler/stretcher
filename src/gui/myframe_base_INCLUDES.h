@@ -37,9 +37,6 @@ m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
  wxButton* wxID_R2FOK;
  wxButton* wxID_R2FCANCEL;
 
- wxButton* wxID_R2FOK;
- wxButton* wxID_R2FCANCEL;
-
  wxButton* wxID_RelaxationOK;
  wxButton* wxID_RelaxationCANCEL;
 
@@ -49,8 +46,11 @@ m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
  wxButton* wxID_FatigueOK;
  wxButton* wxID_FatigueCANCEL;
 
- wxID_PreloadOK = XRCCTRL(*this,"wxID_OK",wxButton);
- wxID_PreloadCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
+ wxButton* wxID_ChamberStretchOK;
+ wxButton* wxID_ChamberStretchCANCEL;
+
+  wxID_PreloadOK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_PreloadCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
 
   wxID_ConditioningOK = XRCCTRL(*this,"wxID_OK",wxButton);
   wxID_ConditioningCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
@@ -66,3 +66,6 @@ m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
 
   wxID_FatigueOK = XRCCTRL(*this,"wxID_OK",wxButton);
   wxID_FatigueCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
+
+  wxID_ChamberStretchOK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_ChamberStretchCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);

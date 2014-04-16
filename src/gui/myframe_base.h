@@ -104,6 +104,8 @@ protected:
  wxSpinCtrlDouble* m_CreepHoldForceStressSpinCtrl;
  wxStaticText* m_CreepHoldTimeStaticText;
  wxSpinCtrlDouble* m_CreepHoldTimeSpinCtrl;
+ wxStaticText* m_CreepSensitivityStaticText;
+ wxSpinCtrlDouble* m_CreepSensitivitySpinCtrl;
  wxButton* m_CreepCancelButton;
  wxButton* m_CreepSendButton;
  wxPanel* m_FatiguePanel;
@@ -123,9 +125,9 @@ protected:
  wxButton* m_FatigueCancelButton;
  wxButton* m_FatigueSendButton;
  wxPanel* m_ChamberStretchPanel;
+wxFlexGridSizer* m_ChamberStretchSizer1;
  wxRadioBox* m_ChamberStretchMeasurementRadioBox;
  wxPanel* m_ChamberStretchGelPanel;
- wxFlexGridSizer* m_ChamberStretchSizer1;
  wxStaticText* m_ChamberStretchEmodLeftStaticText;
  wxSpinCtrlDouble* m_ChamberStretchEmodLeftSpinCtrl;
  wxStaticText* m_ChamberStretchEmodRightStaticText;
@@ -277,6 +279,8 @@ private:
   m_CreepHoldForceStressSpinCtrl = XRCCTRL(*this,"m_CreepHoldForceStressSpinCtrl",wxSpinCtrlDouble);
   m_CreepHoldTimeStaticText = XRCCTRL(*this,"m_CreepHoldTimeStaticText",wxStaticText);
   m_CreepHoldTimeSpinCtrl = XRCCTRL(*this,"m_CreepHoldTimeSpinCtrl",wxSpinCtrlDouble);
+  m_CreepSensitivityStaticText = XRCCTRL(*this,"m_CreepSensitivityStaticText",wxStaticText);
+  m_CreepSensitivitySpinCtrl = XRCCTRL(*this,"m_CreepSensitivitySpinCtrl",wxSpinCtrlDouble);
   m_CreepCancelButton = XRCCTRL(*this,"m_CreepCancelButton",wxButton);
   m_CreepSendButton = XRCCTRL(*this,"m_CreepSendButton",wxButton);
   m_FatiguePanel = XRCCTRL(*this,"m_FatiguePanel",wxPanel);

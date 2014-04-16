@@ -161,11 +161,3 @@ void Relaxation::updateValues(long value, UpdatedValuesReceiver::ValueType type)
 
   process(Event::evUpdate);
 }
-
-/**
- * @brief Makes a pause of the amount of sec.
- * @param sec Duration of the pause in sec.
- */
-void Relaxation::pause(int sec){
-
-}

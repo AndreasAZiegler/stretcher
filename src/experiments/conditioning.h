@@ -139,7 +139,6 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     long m_DistanceLimit;																										/**< Distance limit value */
     double m_Area;																													/**< Area of the sample in um^2 */
 
-
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
 
