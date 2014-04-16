@@ -34,13 +34,13 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_Wait(wait),
     m_WaitMutex(mutex),
+    m_CurrentState(State::stopState),
     m_Cycles(cycles),
     m_StressForceLimit(stressForceLimit * 1000),
     m_DistanceLimit(distanceLimit),
     m_SpeedInMm(speedInMM),
     m_Area(area * 0.000000000001/*um^2*/),
     m_PreloadDistance(preloaddistance),
-    m_CurrentState(State::stopState),
     m_CurrentCycle(0)
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);

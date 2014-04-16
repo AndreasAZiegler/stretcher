@@ -20,6 +20,8 @@ Preload::Preload(Experiment::ExperimentType type,
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  std::condition_variable *wait,
                  std::mutex *mutex,
+                 bool *stagesstopped,
+                 std::mutex *stagesstoppedmutex,
                  double stressForceLimit,
                  double speedInMM,
                  double area)
@@ -28,10 +30,12 @@ Preload::Preload(Experiment::ExperimentType type,
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_Wait(wait),
     m_WaitMutex(mutex),
+    m_CurrentState(State::stopState),
+    m_StagesStoppedFlag(stagesstopped),
+    m_StagesStoppedMutex(stagesstoppedmutex),
     m_ForceStressLimit(stressForceLimit),
     m_SpeedInMM(speedInMM),
-    m_Area(area * 0.000000000001/*um^2*/),
-    m_CurrentState(State::stopState)
+    m_Area(area * 0.000000000001/*um^2*/)
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
@@ -106,6 +110,10 @@ void Preload::process(Event e){
 
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
+        {
+          std::unique_lock<std::mutex> lck(*m_StagesStoppedMutex);
+          *m_StagesStoppedFlag = false;
+        }
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_one();
@@ -132,6 +140,10 @@ void Preload::process(Event e){
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
               m_CurrentState = stopState;
               m_CurrentDirection = Direction::Stop;
+              {
+                std::unique_lock<std::mutex> lck(*m_StagesStoppedMutex);
+                *m_StagesStoppedFlag = false;
+              }
               m_StageFrame->stop();
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_one();
@@ -157,6 +169,10 @@ void Preload::process(Event e){
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
               m_CurrentState = stopState;
               m_CurrentDirection = Direction::Stop;
+              {
+                std::unique_lock<std::mutex> lck(*m_StagesStoppedMutex);
+                *m_StagesStoppedFlag = false;
+              }
               m_StageFrame->stop();
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_one();

@@ -198,8 +198,8 @@ void StageFrame::stopped(){
     m_AmStopped = 0;
 
     {
-      std::lock_guard<std::mutex> lck(*m_WaitStopMutex);
-      m_WaitStop->notify_all();
+      std::lock_guard<std::mutex> lck(*m_StagesStoppedMutex);
+      *m_StagesStoppedFlag = true;
     }
   }
 }

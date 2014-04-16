@@ -201,7 +201,7 @@ void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, Stage
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 
   // Registers stop wait conditional variable and mutex.
-  m_StageFrame->registerWaitStop(&m_WaitStop, &m_WaitStopMutex);
+  m_StageFrame->registerStagesStopped(&m_StagesStoppedFlag, &m_StagesStoppedMutex);
 }
 
 /**
@@ -516,6 +516,8 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                     m_ForceSensorMessageHandler,
                                     &m_Wait,
                                     &m_WaitMutex,
+                                    &m_StagesStoppedFlag,
+                                    &m_StagesStoppedMutex,
                                     m_PreloadLimitSpinCtrl->GetValue(),
                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
                                     m_Area);
@@ -765,10 +767,11 @@ void MyFrame::updateForce(){
  * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
  */
 void MyFrame::checkFinishedExperiment(){
-  std::unique_lock<std::mutex> lck1(m_WaitMutex);
-  std::unique_lock<std::mutex> lck3(m_WaitStopMutex);
-  // Wait until experiment is finised.
-  m_Wait.wait(lck1);
+  {
+    // Wait until experiment is finised.
+    std::unique_lock<std::mutex> lck1(m_WaitMutex);
+    m_Wait.wait(lck1);
+  }
   {
     std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
     m_ExperimentRunningFlag = false;
@@ -777,11 +780,17 @@ void MyFrame::checkFinishedExperiment(){
     std::lock_guard<std::mutex> lck2{m_PreloadDoneMutex};
     if(false == m_PreloadDoneFlag){
       // Wait until the stages stopped.
-      m_WaitStop.wait(lck3);
+      {
+        bool tmp = false;
+        while(false == tmp){
+          std::unique_lock<std::mutex> lck3(m_StagesStoppedMutex);
+          tmp = m_StagesStoppedFlag;
+        }
+      }
 
       m_PreloadDoneFlag = true;
       m_PreloadDistance = m_CurrentDistance;
-      //std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
+      std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
     }
   }
 }

@@ -248,8 +248,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_Area;															/**< Area of the sample */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
-    std::condition_variable m_WaitStop;					/**< Wait condition variable to wait to record the preload position until stop answer received. */
-    std::mutex m_WaitStopMutex;									/**< Mutex for m_WaitStop */
+    bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
+    std::mutex m_StagesStoppedMutex;					/**< Mutex for m_StagesStoppedFlag */
 
     Experiment::StressOrForce m_StressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */

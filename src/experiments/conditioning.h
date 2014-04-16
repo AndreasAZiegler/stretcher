@@ -103,7 +103,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @brief FSM of the conditioning experiment
      * @param event Occuring event
      */
-    virtual void process(Experiment::Event event);
+    void process(Experiment::Event event);
 
     /**
      * @brief Abstract method which will be calles by the message handlers to update the values

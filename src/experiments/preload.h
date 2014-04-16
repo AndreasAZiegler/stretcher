@@ -32,6 +32,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             ForceSensorMessageHandler *forcesensormessagehandler,
             std::condition_variable *wait,
             std::mutex *mutex,
+            bool *stagesstopped,
+            std::mutex *stagesstoppedmutex,
             double stressForceLimit, double speedInMM, double area);
 
     ~Preload();
@@ -102,6 +104,9 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
     std::condition_variable *m_Wait;
     std::mutex *m_WaitMutex;
+
+    bool *m_StagesStoppedFlag;
+    std::mutex *m_StagesStoppedMutex;
 
 };
 

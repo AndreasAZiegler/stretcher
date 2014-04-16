@@ -34,9 +34,9 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @param waitcond Pointer to the wait condition variable.
      * @param mutex Mutex for the wait stop.
      */
-    void registerWaitStop(std::condition_variable *waitcond, std::mutex *mutex){
-      m_WaitStop = waitcond;
-      m_WaitStopMutex = mutex;
+    void registerStagesStopped(bool *stagesstopped, std::mutex *mutex){
+      m_StagesStoppedFlag = stagesstopped;
+      m_StagesStoppedMutex = mutex;
     }
 
      /**
@@ -134,8 +134,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
     std::vector<long> m_CurrentPositions;							/**< Vector containing the current positions of the linear stages */
     long m_CurrentDistance;														/**< Current distance */
 
-    std::condition_variable *m_WaitStop;							/**< Wait condition variable to wait to record the preload position until stop answer received. */
-    std::mutex *m_WaitStopMutex;											/**< Mutex for m_WaitStop */
+    bool *m_StagesStoppedFlag;														/**< Flag to indicate if the stages stopped or not. */
+    std::mutex *m_StagesStoppedMutex;									/**< Mutex for m_StagesStopped */
 
     int m_AmStopped;																	/**< Number of stopped motors */
     std::mutex m_AmStoppedMutex;											/**< Mutex to protect m_AmStopped */

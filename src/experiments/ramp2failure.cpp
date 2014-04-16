@@ -29,6 +29,7 @@ Ramp2Failure::Ramp2Failure(Experiment::ExperimentType type,
     m_Wait(wait),
     m_WaitMutex(mutex),
     m_BehaviorAfterFailure(behavior),
+    m_CurrentState(State::stopState),
     m_SpeedInMm(speedInMM),
     m_DropBeforeStop(dropbeforestop),
     m_Area(area),
@@ -54,7 +55,7 @@ void Ramp2Failure::process(Event e){
   switch(m_CurrentState){
     case State::stopState:
       if(Event::evStart == e){
-        //m_StageFrame->setSpeed(m_SpeedInMm);
+        m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = State::runState;
         m_StageFrame->moveBackward(m_SpeedInMm);
       }
@@ -71,12 +72,12 @@ void Ramp2Failure::process(Event e){
         std::lock_guard<std::mutex> lck{m_ForceMutex};
         if(std::abs(m_CurrentForce) < ((m_DropBeforeStop / 100.0) * std::abs(m_MaxForce))){
           //std::cout << "std::abs(m_CurrentForce) < ((m_DropBeforeStop / 100.0) * std::abs(m_MaxForce) " << std::abs(m_CurrentForce) << " " << ((m_DropBeforeStop / 100.0) * std::abs(m_MaxForce)) << std::endl;
-          std::cout << "R2F Percent reached, m_BehaviorAfterFailure: " << static_cast<int>(m_BehaviorAfterFailure) << std::endl;
+          //std::cout << "R2F Percent reached, m_BehaviorAfterFailure: " << static_cast<int>(m_BehaviorAfterFailure) << std::endl;
           switch(m_BehaviorAfterFailure){
             case BehaviorAfterFailure::PreloadPos:
               m_CurrentState = State::goBackState;
               m_StageFrame->gotoStepsDistance(m_PreloadDistance);
-              std::cout << "R2F go back." << std::endl;
+              //std::cout << "R2F go back." << std::endl;
               break;
 
             case BehaviorAfterFailure::Stop:
