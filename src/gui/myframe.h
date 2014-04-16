@@ -198,6 +198,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnRamp2FailureSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in relexation.
+     * @param event Occuring event
+     */
+    void OnRelexationSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -285,7 +291,8 @@ enum
   ID_ConditioningSendToProtocol = 21,
   ID_Ramp2FailureSpeedPercent = 22,
   ID_Ramp2FailureSpeedMm = 23,
-  ID_Ramp2FailureSendToProtocol = 24
+  ID_Ramp2FailureSendToProtocol = 24,
+  ID_RelaxationSendToProtocol = 25
 };
 
 #endif // MYFRAME_H

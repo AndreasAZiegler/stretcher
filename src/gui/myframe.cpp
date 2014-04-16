@@ -13,6 +13,7 @@
 #include "../experiments/preload.h"
 #include "../experiments/conditioning.h"
 #include "../experiments/ramp2failure.h"
+#include "../experiments/relaxation.h"
 
 #include <iostream>
 
@@ -84,6 +85,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedPercent, MyFrame::OnRamp2FailureSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedMm, MyFrame::OnRamp2FailureSpeedMmChanged)
   EVT_BUTTON(ID_Ramp2FailureSendToProtocol, MyFrame::OnRamp2FailureSendToProtocol)
+  EVT_BUTTON(ID_RelaxationSendToProtocol, MyFrame::OnRelexationSendToProtocol)
 wxEND_EVENT_TABLE()
 
 /**
@@ -133,6 +135,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_R2FSpeedPreloadSpinCtrl->SetId(ID_Ramp2FailureSpeedPercent);
   m_R2FSpeedMmSpinCtrl->SetId(ID_Ramp2FailureSpeedMm);
   m_R2FSendButton->SetId(ID_Ramp2FailureSendToProtocol);
+  m_RelaxationSendButton->SetId(ID_RelaxationSendToProtocol);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -664,7 +667,7 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
 
   long distanceafterfailure = 0;
   if(0 == m_R2FGoToRadioBox->GetSelection()){
-    distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() /0.00009921875/*mm per micro step*/;
+    distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   }else if(1 == m_R2FGoToRadioBox->GetSelection()){
     distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) /*+ 1.0*/) * m_PreloadDistance;
   }
@@ -693,6 +696,56 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
   m_ExperimentRunningThread->detach();
 
   return;
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in relexation.
+ * @param event Occuring event
+ */
+void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
+
+  long distance = 0;
+  switch(m_RelaxationRampRadioBox->GetSelection()){
+    case 0:
+      distance = m_RelaxationRampSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+      break;
+
+    case 1:
+      distance = (m_RelaxationRampSpinCtrl->GetValue() / 100) * m_PreloadDistance;
+      break;
+  }
+
+  m_CurrentExperiment = new Relaxation(Experiment::ExperimentType::Relaxation,
+                                       m_StressOrForce,
+                                       m_CurrentDistance,
+                                       m_StageFrame,
+                                       m_LinearStagesMessageHandlers,
+                                       m_ForceSensorMessageHandler,
+                                       &m_Wait,
+                                       &m_WaitMutex,
+                                       distance,
+                                       m_RelaxationPauseSpinCtrl->GetValue(),
+                                       m_RelaxationStepsSpinCtrl->GetValue(),
+                                       m_PreloadDistance);
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Relaxation::Event::evStart);
+  t1.join();
+
+  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
+
+  return;
+
 }
 
 /**
