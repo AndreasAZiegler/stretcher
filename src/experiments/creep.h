@@ -10,10 +10,28 @@
 
 //#include "ExperimentValues.h"
 
+/**
+ * @brief Class representing the creep experiment.
+ */
 class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
 	public:
 
+    /**
+     * @brief Initializes all the needed variables.
+     * @param type Type of the experiment.
+     * @param stressOrForce Indicates if the experiment is stress or force based.
+     * @param stageframe Pointer to the stage frame object.
+     * @param linearstagemessagehandlers Pointer to th message handlers of the linear stages.
+     * @param forcesensormessagehandler Pointer to the force sensor message handler.
+     * @param wait Wait condition.
+     * @param mutex Mutex for wait condition.
+     * @param holdstressforce The hold stress/force value.
+     * @param holdtime The hold time.
+     * @param sensitivity The sensitivity of the hold stress/force.
+     * @param speedinmm Speed in mm/s.
+     * @param area Value of the area.
+     */
     Creep(Experiment::ExperimentType type,
           StressOrForce stressOrForce,
           StageFrame *stageframe,
@@ -22,15 +40,10 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
           std::condition_variable *wait,
           std::mutex *mutex, long holdstressforce, double holdtime, double sensitivity, double speedinmm, double area);
 
-    ~Creep();
-
     /**
-     * @brief Sets the speed in percent of preload.
-     * @param percent Speed in percen of preload.
+     * @brief Destructor
      */
-    void setSpeedInPercent(double percent){
-      m_SpeedInPercent = percent;
-    }
+    ~Creep();
 
     /**
      * @brief Sets the speed in mm/s.
@@ -99,19 +112,18 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
 
     State m_CurrentState;																										/**< Current state of the preload FSM */
 
-		double m_SpeedInPercent;
-		double m_SpeedInMm;
-    Experiment::StressOrForce m_HoldStressOrForce;
-    long m_HoldStressForce;
-    long m_Sensitivity;
+    double m_SpeedInMm;																											/**< The speed in mm/sec. */
+    Experiment::StressOrForce m_HoldStressOrForce;													/**< Indicates if the experiment is stress or force based. */
+    long m_HoldStressForce;																									/**< Hold stress/force value. */
+    long m_Sensitivity;																											/**< The sensitivity for the stress/force value. */
     double m_Area;																													/**< Area of the sample in um^2 */
 
-    double m_HoldTime;
-    bool m_HoldValueReachedFlag;
-    bool m_EndFlag;
-    std::mutex m_EndMutex;
+    double m_HoldTime;																											/**< The hold time in sec. */
+    bool m_HoldValueReachedFlag;																						/**< Indicates if the hold value was reached the first time. */
+    bool m_EndFlag;																													/**< Indicates if the experiment was stopped by the hold time timer. */
+    std::mutex m_EndMutex;																									/**< Mutex to protect m_EndFlag. */
 
-    std::thread *m_WaitingThread;
+    std::thread *m_WaitingThread;																						/**< Thread for the hold time timer method. */
 
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
