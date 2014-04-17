@@ -222,6 +222,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnCreepSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in fatigue.
+     * @param event Occuring event
+     */
+    void OnFatigueSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -313,7 +319,8 @@ enum
   ID_RelaxationSendToProtocol = 25,
   ID_CreepSpeedPercent = 26,
   ID_CreepSpeedMm = 27,
-  ID_CreepSendToProtocol = 28
+  ID_CreepSendToProtocol = 28,
+  ID_FatigueSendToProtocol = 29
 };
 
 #endif // MYFRAME_H

@@ -15,6 +15,7 @@
 #include "../experiments/ramp2failure.h"
 #include "../experiments/relaxation.h"
 #include "../experiments/creep.h"
+#include "../experiments/fatiguetesting.h"
 
 #include <iostream>
 
@@ -90,6 +91,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_CreepSpeedPercent, MyFrame::OnCreepSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_CreepSpeedMm, MyFrame::OnCreepSpeedMmChanged)
   EVT_BUTTON(ID_CreepSendToProtocol, MyFrame::OnCreepSendToProtocol)
+  EVT_BUTTON(ID_FatigueSendToProtocol, MyFrame::OnFatigueSendToProtocol)
 wxEND_EVENT_TABLE()
 
 /**
@@ -143,6 +145,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_CreepSpeedPreloadSpinCtrl->SetId(ID_CreepSpeedPercent);
   m_CreepSpeedMmSpinCtrl->SetId(ID_CreepSpeedMm);
   m_CreepSendButton->SetId(ID_CreepSendToProtocol);
+  m_FatigueSendButton->SetId(ID_FatigueSendToProtocol);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -804,6 +807,57 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
     m_ExperimentRunningFlag = true;
   }
   std::thread t1(&Experiment::process, m_CurrentExperiment, Creep::Event::evStart);
+  t1.join();
+
+  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
+
+  return;
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in fatigue.
+ * @param event Occuring event
+ */
+void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
+
+  long amplitude = 0;
+  switch(m_FatigueAmplitudeRadioBox->GetSelection()){
+    case 0:
+      amplitude = m_FatigueAmplitudeSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+      break;
+
+    case 1:
+      amplitude = (m_FatigueAmplitudeSpinCtrl->GetValue() / 100.0) * m_PreloadDistance;
+      break;
+  }
+
+  m_CurrentExperiment = new FatigueTesting(Experiment::ExperimentType::FatigueTesting,
+                                           m_StressOrForce,
+                                           m_StageFrame,
+                                           m_LinearStagesMessageHandlers,
+                                           m_ForceSensorMessageHandler,
+                                           &m_Wait,
+                                           &m_WaitMutex,
+                                           m_FatigueCyclesSpinCtrl->GetValue(),
+                                           m_FatigueTotalTimeSpinCtrl->GetValue(),
+                                           amplitude,
+                                           m_FatigueRestTimeSpinCtrl->GetValue(),
+                                           m_FatigueFrequencySpinCtrl->GetValue(),
+                                           m_PreloadDistance,
+                                           m_CurrentDistance);
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
+  std::thread t1(&Experiment::process, m_CurrentExperiment, FatigueTesting::Event::evStart);
   t1.join();
 
   m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);

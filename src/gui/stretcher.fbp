@@ -6601,7 +6601,7 @@
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
                                             <property name="label">E:Creep</property>
-                                            <property name="select">1</property>
+                                            <property name="select">0</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
@@ -7962,7 +7962,7 @@
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
                                             <property name="label">E:Fatigue Testing</property>
-                                            <property name="select">0</property>
+                                            <property name="select">1</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
@@ -8191,7 +8191,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -8361,7 +8361,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -8531,7 +8531,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -8874,7 +8874,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -9044,7 +9044,7 @@
                                                                     <property name="hidden">0</property>
                                                                     <property name="id">wxID_ANY</property>
                                                                     <property name="initial">0</property>
-                                                                    <property name="max">10</property>
+                                                                    <property name="max">1000</property>
                                                                     <property name="max_size"></property>
                                                                     <property name="maximize_button">0</property>
                                                                     <property name="maximum_size"></property>
@@ -9407,7 +9407,7 @@
                                         </object>
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
-                                            <property name="label">Chamber stretch</property>
+                                            <property name="label">E:Chamber stretch</property>
                                             <property name="select">0</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>

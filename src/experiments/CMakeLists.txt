@@ -6,6 +6,7 @@ set(SOURCE
         ./experiments/ramp2failure.cpp
         ./experiments/relaxation.cpp
         ./experiments/creep.cpp
+        ./experiments/fatiguetesting.cpp
         PARENT_SCOPE
 )
 
@@ -17,5 +18,6 @@ set(HEADERS
         ./experiments/ramp2failure.h
         ./experiments/relaxation.h
         ./experiments/creep.h
+        ./experiments/fatiguetesting.h
         PARENT_SCOPE
 )

@@ -1230,7 +1230,7 @@
 																<style>wxSP_ARROW_KEYS</style>
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -1249,7 +1249,7 @@
 															<object class="wxSpinCtrlDouble" name="m_FatigueTotalTimeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -1268,7 +1268,7 @@
 															<object class="wxSpinCtrlDouble" name="m_FatigueAmplitudeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -1311,7 +1311,7 @@
 															<object class="wxSpinCtrlDouble" name="m_FatigueRestTimeSpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -1330,7 +1330,7 @@
 															<object class="wxSpinCtrlDouble" name="m_FatigueFrequencySpinCtrl">
 																<value>0</value>
 																<min>0</min>
-																<max>10</max>
+																<max>1000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
