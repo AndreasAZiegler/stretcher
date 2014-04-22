@@ -23,7 +23,8 @@ FatigueTesting::FatigueTesting(Experiment::ExperimentType type,
     m_Frequency(frequency),
     m_PreloadDistance(preloaddistance),
     m_CurrentCycle(0),
-    m_SpeedInMm(frequency * totaltime*60 * (amplitude*0.00009921875/*mm per micro step*/) / (totaltime*60 - resttime))
+    m_SpeedInMm(frequency * totaltime*60 * (amplitude*0.00009921875/*mm per micro step*/) / (totaltime*60 - resttime)),
+    m_DecreaseSpeedFlag(false)
 {
   m_CurrentDirection = Direction::Stop;
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -51,15 +52,15 @@ void FatigueTesting::process(Event event){
 
         // If force/stress based
         if((m_CurrentDistance - m_AmplitudeInDistance) > m_DistanceThreshold){
-          std::cout << "m_CurrentDistance - m_AmplitudeInDistance: " << m_CurrentDistance - m_AmplitudeInDistance << std::endl;
+          //std::cout << "m_CurrentDistance - m_AmplitudeInDistance: " << m_CurrentDistance - m_AmplitudeInDistance << std::endl;
           m_CurrentDirection = Direction::Forwards;
           m_StageFrame->moveForward(m_SpeedInMm);
-          std::cout << "Fatigue testing moveForward" << std::endl;
+          //std::cout << "Fatigue testing moveForward" << std::endl;
         }else if((m_AmplitudeInDistance - m_CurrentDistance) > m_DistanceThreshold){
-          std::cout << "m_AmplitudeInDistance - m_CurrentDistance : " << m_AmplitudeInDistance - m_CurrentDistance << std::endl;
+          //std::cout << "m_AmplitudeInDistance - m_CurrentDistance : " << m_AmplitudeInDistance - m_CurrentDistance << std::endl;
           m_CurrentDirection = Direction::Backwards;
           m_StageFrame->moveBackward(m_SpeedInMm);
-          std::cout << "Fatigue testing moveBackward" << std::endl;
+          //std::cout << "Fatigue testing moveBackward" << std::endl;
         }
       }
 
@@ -77,22 +78,38 @@ void FatigueTesting::process(Event event){
         m_Wait->notify_one();
       }
       if(evUpdate == event){
-        std::cout << "m_CurrentDistance - m_AmplitudeInDistance: " << m_CurrentDistance << " - " << m_AmplitudeInDistance << std::endl;
+        //std::cout << "m_CurrentDistance - m_AmplitudeInDistance: " << m_CurrentDistance << " - " << m_AmplitudeInDistance << std::endl;
+        // Reduce speed to a tenth if stages are close to the turn point.
+        if((m_CurrentDistance - m_AmplitudeInDistance) < (200 * m_DistanceThreshold)){
+          if(false == m_DecreaseSpeedFlag){
+            m_DecreaseSpeedFlag = true;
+            m_StageFrame->setSpeed(m_SpeedInMm/10);
+          }
+        }
+        // Reduce speed to a tenth if stages are close to the turn point.
+        else if((m_AmplitudeInDistance - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+          if(false == m_DecreaseSpeedFlag){
+            m_DecreaseSpeedFlag = true;
+            m_StageFrame->setSpeed(m_SpeedInMm/10);
+          }
+        }
         if((m_CurrentDistance - m_AmplitudeInDistance) > m_DistanceThreshold){
           if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
             m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward(m_SpeedInMm);
+            m_StageFrame->moveForward();
             std::cout << "Fatigue testing moveForward" << std::endl;
           }
         }else if((m_AmplitudeInDistance - m_CurrentDistance) > m_DistanceThreshold){
           if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
             m_CurrentDirection = Direction::Backwards;
-            m_StageFrame->moveBackward(m_SpeedInMm);
-            std::cout << "Fatigue testing moveBackward" << std::endl;
+            m_StageFrame->moveBackward();
+            //std::cout << "Fatigue testing moveBackward" << std::endl;
           }
         }else{
           m_CurrentState = State::goBackState;
+          m_StageFrame->setSpeed(m_SpeedInMm);
           m_StageFrame->gotoStepsDistance(m_PreloadDistance);
+          //std::cout << "Fatigue testing go back to preload." << std::endl;
         }
       }
       break;
@@ -129,8 +146,10 @@ void FatigueTesting::process(Event event){
 
             if((m_CurrentDistance - m_AmplitudeInDistance) > m_DistanceThreshold){
               m_CurrentDirection = Direction::Forwards;
+              m_DecreaseSpeedFlag = false;
               m_StageFrame->moveForward(m_SpeedInMm);
             }else if((m_AmplitudeInDistance - m_CurrentDistance) > m_DistanceThreshold){
+              m_DecreaseSpeedFlag = false;
               m_CurrentDirection = Direction::Backwards;
               m_StageFrame->moveBackward(m_SpeedInMm);
             }

@@ -105,6 +105,7 @@ class FatigueTesting : virtual public Experiment, virtual public UpdatedValuesRe
 		double m_Frequency;
     long m_PreloadDistance;																									/**< Preload distance of the stage frame */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
+    bool m_DecreaseSpeedFlag;
 
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
