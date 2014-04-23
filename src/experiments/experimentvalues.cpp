@@ -102,6 +102,8 @@ void ExperimentValues::updateValues(long value, UpdatedValuesReceiver::ValueType
         }
         m_MyFrame->updateGraphFromExperimentValues();
       }
+    }else{
+      std::cout << "ExperimentValues stress/force: " << m_StressForceValues.size() << " distance: " << m_DistanceValues.size() << std::endl;
     }
   }
 }

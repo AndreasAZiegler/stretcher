@@ -178,6 +178,20 @@ void Conditioning::process(Experiment::Event event){
             }
           }
         }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+
+          if((m_CurrentDistance - m_AmplitudeInDistance) < (200 * m_DistanceThreshold)){
+            if(false == m_DecreaseSpeedFlag){
+              m_DecreaseSpeedFlag = true;
+              m_StageFrame->setSpeed(m_SpeedInMm/10);
+            }
+          }
+          // Reduce speed to a tenth if stages are close to the turn point.
+          else if((m_AmplitudeInDistance - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+            if(false == m_DecreaseSpeedFlag){
+              m_DecreaseSpeedFlag = true;
+              m_StageFrame->setSpeed(m_SpeedInMm/10);
+            }
+          }
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Forwards;

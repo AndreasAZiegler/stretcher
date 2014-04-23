@@ -85,6 +85,7 @@ void ForceSensorMessageHandler::receiver(void){
       }
     }
 
+    // If the whole message is received.
     if(answerLen > 4){
 
       //for(int i = 0; i < (static_cast<int>(answerLen) - 4); ++i) {
