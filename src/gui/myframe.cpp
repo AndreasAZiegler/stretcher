@@ -19,36 +19,6 @@
 
 #include <iostream>
 
-// MyLissajoux
-
-class MyLissajoux : public mpFXY
-{
-    double m_rad;
-    int    m_idx;
-public:
-    MyLissajoux(double rad) : mpFXY( wxT("Lissajoux")) { m_rad=rad; m_idx=0; m_drawOutsideMargins = false;}
-    virtual bool GetNextXY( double & x, double & y )
-    {
-        if (m_idx < 360)
-        {
-            x = m_rad * cos(m_idx / 6.283185*360);
-            y = m_rad * sin(m_idx / 6.283185*360*3);
-            m_idx++;
-            return TRUE;
-        }
-        else
-        {
-            return FALSE;
-        }
-    }
-    virtual void Rewind() { m_idx=0; }
-    virtual double GetMinX() { return -m_rad; }
-    virtual double GetMaxX() { return  m_rad; }
-    virtual double GetMinY() { return -m_rad; }
-    virtual double GetMaxY() { return  m_rad; }
-};
-
-
 //-----------------------------------------------------------------------------
 // Regular resources (the non-XRC kind).
 //-----------------------------------------------------------------------------
@@ -116,7 +86,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_Area(0),
     m_ExperimentRunningFlag(false),
     m_PreloadDoneFlag(false),
-    m_MeasurementValuesRecordingFlag(false)
+    m_MeasurementValuesRecordingFlag(false),
+    m_CurrentForceUpdateDelay(0),
+    m_VectorLayer(_("Vector"))
 {
   SetIcon(wxICON(sample));
 
@@ -155,6 +127,16 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
+
+  {
+    std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
+    m_VectorLayer.SetContinuity(true);
+    wxPen vectorpen(*wxBLUE, 2, wxSOLID);
+    m_VectorLayer.SetPen(vectorpen);
+    m_VectorLayer.SetDrawOutsideMargins(false);
+  }
+
+  m_Graph->AddLayer(&m_VectorLayer);
 
   //---------------------------- Test Data for Graph
   mpLayer* l;
@@ -260,6 +242,9 @@ MyFrame::~MyFrame(){
   // Stop force sensor receiver thread
   (m_ForceSensor->getMessageHandler())->setExitFlag(false);
 
+  // Remove vector from graph.
+  m_Graph->DelLayer(&m_VectorLayer);
+
   if(NULL != m_Graph){
     delete m_Graph;
   }
@@ -285,7 +270,12 @@ void MyFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type){
       break;
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = value;
-      CallAfter(&MyFrame::updateForce);
+
+      m_CurrentForceUpdateDelay++;
+      if(20 <= m_CurrentForceUpdateDelay){
+        m_CurrentForceUpdateDelay = 0;
+        CallAfter(&MyFrame::updateForce);
+      }
       break;
   }
 }
@@ -543,7 +533,9 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                     m_StressOrForce,
                                     m_StageFrame,
                                     m_ForceSensorMessageHandler,
-                                    m_Graph,
+                                    &m_VectorLayer,
+                                    &m_VectorLayerMutex,
+                                    this,
                                     &m_Wait,
                                     &m_WaitMutex,
                                     &m_StagesStoppedFlag,
@@ -624,7 +616,9 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          m_StageFrame,
                                          m_LinearStagesMessageHandlers,
                                          m_ForceSensorMessageHandler,
-                                         m_Graph,
+                                         &m_VectorLayer,
+                                         &m_VectorLayerMutex,
+                                         this,
                                          &m_Wait,
                                          &m_WaitMutex,
                                          m_ConditioningStressForceLimitSpinCtrl->GetValue(),
@@ -711,7 +705,9 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
                                          m_StageFrame,
                                          m_LinearStagesMessageHandlers,
                                          m_ForceSensorMessageHandler,
-                                         m_Graph,
+                                         &m_VectorLayer,
+                                         &m_VectorLayerMutex,
+                                         this,
                                          &m_Wait,
                                          &m_WaitMutex,
                                          behavior,
@@ -768,7 +764,9 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
                                        m_StageFrame,
                                        m_LinearStagesMessageHandlers,
                                        m_ForceSensorMessageHandler,
-                                       m_Graph,
+                                       &m_VectorLayer,
+                                       &m_VectorLayerMutex,
+                                       this,
                                        &m_Wait,
                                        &m_WaitMutex,
                                        distance,
@@ -830,7 +828,9 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
                                   m_StageFrame,
                                   m_LinearStagesMessageHandlers,
                                   m_ForceSensorMessageHandler,
-                                  m_Graph,
+                                  &m_VectorLayer,
+                                  &m_VectorLayerMutex,
+                                  this,
                                   &m_Wait,
                                   &m_WaitMutex,
                                   m_CreepHoldForceStressSpinCtrl->GetValue(),
@@ -885,7 +885,9 @@ void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
                                            m_StageFrame,
                                            m_LinearStagesMessageHandlers,
                                            m_ForceSensorMessageHandler,
-                                           m_Graph,
+                                           &m_VectorLayer,
+                                           &m_VectorLayerMutex,
+                                           this,
                                            &m_Wait,
                                            &m_WaitMutex,
                                            m_FatigueCyclesSpinCtrl->GetValue(),
@@ -968,7 +970,9 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
                                              m_StageFrame,
                                              m_LinearStagesMessageHandlers,
                                              m_ForceSensorMessageHandler,
-                                             m_Graph,
+                                             &m_VectorLayer,
+                                             &m_VectorLayerMutex,
+                                             this,
                                              &m_Wait,
                                              &m_WaitMutex,
                                              m_ChamberStretchCyclesSpinCtrl1->GetValue(),
@@ -1060,7 +1064,12 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
       m_CurrentExperimentValues->stopMeasurement();
     }
   }
-  m_CurrentExperimentValues->removeGraph();
+  //m_Graph->DelLayer(&m_VectorLayer);
+  {
+    std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
+    m_VectorLayer.Clear();
+  }
+  m_Graph->Fit();
   //delete m_CurrentExperimentValues;
 }
 
@@ -1081,6 +1090,22 @@ void MyFrame::updateForce(){
   wxString tmp;
   tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   m_ForceStaticText->SetLabel(tmp);
+}
+
+/**
+ * @brief MyFrame::updateGraphFromExperimentValues
+ * @param vector
+ */
+void MyFrame::updateGraphFromExperimentValues(){
+  CallAfter(&MyFrame::updateGraph);
+}
+
+/**
+ * @brief Updates the graph in the GUI.
+ */
+void MyFrame::updateGraph(){
+  m_Graph->Fit();
+  //std::cout << "ExperimentVaues graph fitted." << std::endl;
 }
 
 /**

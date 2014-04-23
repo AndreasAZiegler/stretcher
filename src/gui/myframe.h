@@ -60,6 +60,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
 
     /**
+     * @brief Executes updateGraph() from the main threa.
+     */
+    void updateGraphFromExperimentValues(void);
+
+    /**
      * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
      * 				sets digits for the wxSpinCtrlDouble.
      */
@@ -275,11 +280,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void updateForce();
 
     /**
+     * @brief Updates the graph in the GUI.
+     */
+    void updateGraph();
+
+    /**
      * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
      */
     void checkFinishedExperiment();
 
     mpWindow* m_Graph;													/**< Pointer to the graph */
+    mpFXYVector m_VectorLayer;									/**< Vector layer for the graph */
+    std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
@@ -305,6 +317,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
 
     Experiment::StressOrForce m_StressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
+    int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
     long m_ClampingDistance;										/**< Clamping distance */
     long m_PreloadDistance;											/**< Preload distance */

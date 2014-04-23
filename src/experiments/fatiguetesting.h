@@ -36,7 +36,7 @@ class FatigueTesting : virtual public Experiment, virtual public UpdatedValuesRe
                    StageFrame *stageframe,
                    std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                    ForceSensorMessageHandler *forcesensormessagehandler,
-                   mpWindow *graph,
+                   mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe,
                    std::condition_variable *wait,
                    std::mutex *mutex,
                    int cycles, double totaltime, long amplitude, double resttime, double frequency, double area, long preloaddistance, long currentdistance);

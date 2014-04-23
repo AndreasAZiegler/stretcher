@@ -36,7 +36,7 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
                  Experiment::StressOrForce stressOrForce,
                  StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-                 ForceSensorMessageHandler *forcesensormessagehandler, mpWindow *graph,
+                 ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe,
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  BehaviorAfterFailure behavior,

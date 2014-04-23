@@ -1,4 +1,6 @@
 #include <iostream>
+#include <wx/event.h>
+#include "../gui/myframe.h"
 #include "experimentvalues.h"
 
 /**
@@ -12,14 +14,18 @@
 ExperimentValues::ExperimentValues(StressOrForce stressOrForce,
                                    StageFrame *stageframe,
                                    ForceSensorMessageHandler *forcesensormessagehandler,
-                                   mpWindow *graph,
+                                   mpFXYVector *vector,
+                                   std::mutex *vectoraccessmutex,
+                                   MyFrame *myframe,
                                    double diameter)
   : m_StressOrForce(stressOrForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
-    m_Graph(graph),
+    m_VectorLayer(vector),
+    m_VectorLayerMutex(vectoraccessmutex),
+    m_MyFrame(myframe),
     m_Diameter(diameter),
-    m_VectorLayer{new mpFXYVector(_("Vector"))}
+    m_DisplayGraphDelay(0)
 {
 }
 
@@ -29,8 +35,6 @@ ExperimentValues::ExperimentValues(StressOrForce stressOrForce,
 void ExperimentValues::startMeasurement(void){
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
-
-  m_Graph->AddLayer(m_VectorLayer);
 }
 
 /**
@@ -45,7 +49,6 @@ void ExperimentValues::stopMeasurement(void){
  * @brief Removes the current graph.
  */
 void ExperimentValues::removeGraph(void){
-  m_Graph->DelLayer(m_VectorLayer);
 }
 
 /**
@@ -56,7 +59,7 @@ ExperimentValues::~ExperimentValues(){
 }
 
 /**
- * @brief Method which will be calles by the message handlers to update the values.
+ * @brief Method which will be calles by the message handlers to update the values. (CallAfter() asynchronously call the updateGraph method)
  * @param value Position of linear stage 1 or 2 or the force.
  * @param type Type of value.
  */
@@ -77,7 +80,10 @@ void ExperimentValues::updateValues(long value, UpdatedValuesReceiver::ValueType
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
-      m_DistanceValues.push_back(value * 0.00009921875/*mm per micro step*/);
+        {
+          std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
+          m_DistanceValues.push_back(value * 0.00009921875/*mm per micro step*/);
+        }
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
@@ -86,14 +92,16 @@ void ExperimentValues::updateValues(long value, UpdatedValuesReceiver::ValueType
   {
     std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
     if(m_StressForceValues.size() == m_DistanceValues.size()){
-      m_VectorLayer->SetData(m_DistanceValues, m_StressForceValues);
-      m_VectorLayer->SetContinuity(true);
-      wxPen vectorpen(*wxBLUE, 2, wxSOLID);
-      m_VectorLayer->SetPen(vectorpen);
-      m_VectorLayer->SetDrawOutsideMargins(false);
+      m_DisplayGraphDelay++;
+      if(5 <= m_DisplayGraphDelay){
+        m_DisplayGraphDelay = 0;
 
-      m_Graph->Fit();
-      //std::cout << "ExperimentVaues graph fitted." << std::endl;
+        {
+          std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
+          m_VectorLayer->SetData(m_DistanceValues, m_StressForceValues);
+        }
+        m_MyFrame->updateGraphFromExperimentValues();
+      }
     }
   }
 }

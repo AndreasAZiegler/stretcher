@@ -42,7 +42,9 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
                long currentdistance,
                StageFrame *stageframe,
                std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-               ForceSensorMessageHandler *forcesensormessagehandler, mpWindow *graph,
+               ForceSensorMessageHandler *forcesensormessagehandler,
+               mpFXYVector *vector,
+               std::mutex *vectoraccessmutex, MyFrame *myframe,
                std::condition_variable *wait,
                std::mutex *mutex,
                long distance, double pause, int steps, double area, long preloaddistance);

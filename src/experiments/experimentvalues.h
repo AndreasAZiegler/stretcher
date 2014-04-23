@@ -7,6 +7,9 @@
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
 
+// Forward declaration
+class MyFrame;
+
 /**
  * @brief Class representing the experiment values.
  */
@@ -33,7 +36,9 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     ExperimentValues(StressOrForce stressOrForce,
                      StageFrame *stageframe,
                      ForceSensorMessageHandler *forcesensormessagehandler,
-                     mpWindow *graph,
+                     mpFXYVector *vector,
+                     std::mutex *vectoraccessmutex,
+                     MyFrame *myframe,
                      double diameter);
 
     /**
@@ -103,17 +108,24 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      */
     virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
 
+    /**
+     * @brief Updates the graph in the GUI.
+     */
+    void updateGraph(void);
+
 	private:
 
     StressOrForce m_StressOrForce;
     StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
-    mpWindow* m_Graph;																											/**< Pointer to the graph */
-    mpFXYVector* m_VectorLayer;
+    mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
+    std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
+    MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     std::vector<double> m_StressForceValues;
     std::vector<double> m_DistanceValues;
     std::mutex m_AccessValuesMutex;
 		double m_Diameter;
+    int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
 
 };
 

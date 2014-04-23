@@ -9,7 +9,9 @@ Experiment::Experiment(Experiment::ExperimentType type,
                        Experiment::StressOrForce stressOrForce,
                        StageFrame *stageframe,
                        ForceSensorMessageHandler *forcesensormessagehandler,
-                       mpWindow *graph,
+                       mpFXYVector *vector,
+                       std::mutex *vectoraccessmutex,
+                       MyFrame *myframe,
                        Direction direction,
                        double forcesStressThreshold,
                        double distanceThreshold, double area, long currentdistance)
@@ -23,7 +25,13 @@ Experiment::Experiment(Experiment::ExperimentType type,
     m_CurrentForce(0),
     m_CurrentPositions{0, 0},
     m_CurrentDistance(currentdistance),
-    m_ExperimentValues{new ExperimentValues(static_cast<ExperimentValues::StressOrForce>(stressOrForce), stageframe, forcesensormessagehandler, graph, area)}
+    m_ExperimentValues{new ExperimentValues(static_cast<ExperimentValues::StressOrForce>(stressOrForce),
+                                            stageframe,
+                                            forcesensormessagehandler,
+                                            vector,
+                                            vectoraccessmutex,
+                                            myframe,
+                                            area)}
 {
 }
 

@@ -67,7 +67,8 @@ class Experiment
                Experiment::StressOrForce stressOrForce,
                StageFrame* stageframe,
                ForceSensorMessageHandler* forcesensormessagehandler,
-               mpWindow *graph,
+               mpFXYVector *vector,
+               std::mutex *vectoraccessmutex, MyFrame *myframe,
                Experiment::Direction direction,
                double forcesStressThreshold, double distanceThreshold,
                double area, long currentdistance = 0);

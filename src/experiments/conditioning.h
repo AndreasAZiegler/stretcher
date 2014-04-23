@@ -45,7 +45,8 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                  ForceSensorMessageHandler *forcesensormessagehandler,
-                 mpWindow *graph,
+                 mpFXYVector *vector,
+                 std::mutex *vectoraccessmutex, MyFrame *myframe,
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance);
