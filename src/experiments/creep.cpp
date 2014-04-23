@@ -1,4 +1,5 @@
 #include <iostream>
+#include <mathplot.h>
 #include "creep.h"
 
 /**
@@ -21,10 +22,11 @@ Creep::Creep(Experiment::ExperimentType type,
              StageFrame *stageframe,
              std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
              ForceSensorMessageHandler *forcesensormessagehandler,
+             mpWindow *graph,
              std::condition_variable *wait,
              std::mutex *mutex,
              long holdstressforce, double holdtime, double sensitivity, double speedinmm, double area)
-  : Experiment(type, stressOrForce, Direction::Stop, sensitivity*1000/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+  : Experiment(type, stressOrForce, stageframe, forcesensormessagehandler, graph, Direction::Stop, sensitivity*1000/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, area),
     m_HoldStressOrForce(stressOrForce),
     m_StageFrame(stageframe),
     m_LinearStageMessageHanders(linearstagemessagehandlers),

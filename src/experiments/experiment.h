@@ -4,6 +4,10 @@
 
 // Includes
 #include <vector>
+#include <mathplot.h>
+#include "../hardware/stageframe.h"
+#include "../hardware/forcesensormessagehandler.h"
+#include "experimentvalues.h"
 
 /**
  * @brief Base class for all the experiments.
@@ -21,7 +25,9 @@ class Experiment
       Ramp2Failure = 2,
       Relaxation = 3,
       Creep = 4,
-      FatigueTesting = 4
+      FatigueTesting = 5,
+      ChamberStretchGel = 6,
+      ChamberStretchCells = 7
     };
 
     /**
@@ -58,10 +64,18 @@ class Experiment
      * @param forceOrStress Force or stress.
      */
     Experiment(Experiment::ExperimentType type,
-               Experiment::StressOrForce forceOrStress,
+               Experiment::StressOrForce stressOrForce,
+               StageFrame* stageframe,
+               ForceSensorMessageHandler* forcesensormessagehandler,
+               mpWindow *graph,
                Experiment::Direction direction,
                double forcesStressThreshold, double distanceThreshold,
-               long currentdistance = 0);
+               double area, long currentdistance = 0);
+
+    /**
+     * @brief Destructor
+     */
+    virtual ~Experiment();
 
     /**
      * @brief FSM of the experiment
@@ -78,11 +92,24 @@ class Experiment
     }
 
     /**
+     * @brief Returns a pointer to the experiment values.
+     * @return A pointer to the experiment values.
+     * @todo throw exception if pointer is NULL.
+     */
+    ExperimentValues* getExperimentValues(void){
+      if(NULL != m_ExperimentValues){
+        return(m_ExperimentValues);
+      }else{
+        return(NULL);
+      }
+    }
+
+    /**
      * @brief Defines if experiment is force or stress based.
      * @param forceOrStress
      */
-    void setForceOrStress(StressOrForce forceOrStress){
-      m_StressOrForce = forceOrStress;
+    void setStressOrForce(StressOrForce stressOrForce){
+      m_StressOrForce = stressOrForce;
     }
 
     /**
@@ -96,6 +123,9 @@ class Experiment
 
   protected:
 
+    StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
+    ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
+
     double m_ForceStressThreshold;							/**< Threshold for the comparison */
     double m_DistanceThreshold;									/**< Threshold for the coparison of distances */
     Direction m_CurrentDirection;								/**< The current direction */
@@ -106,6 +136,8 @@ class Experiment
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
+
+    ExperimentValues *m_ExperimentValues;				/**< Pointer to the experiment values */
 
 };
 

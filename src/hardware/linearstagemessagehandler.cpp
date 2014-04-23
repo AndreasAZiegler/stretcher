@@ -64,38 +64,53 @@ void LinearStageMessageHandler::handler(char *message){
     case ANSWER_CURRENT_POSITION:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
-      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (*i)(m_CurrentPosition, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+          (*i)(m_CurrentPosition, m_Type);
+        }
       }
       break;
     case MESSAGE_CURRENT_POSITION:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
-      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (*i)(m_CurrentPosition, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+          (*i)(m_CurrentPosition, m_Type);
+        }
       }
       break;
     case ANSWER_GO_HOME:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
-      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (*i)(m_CurrentPosition, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+          (*i)(m_CurrentPosition, m_Type);
+        }
       }
       break;
     case ANSWER_MOVE_ABSOLUT:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
       //std::cout << "ANSWER_MOVE_ABSOLUT m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
-      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (*i)(m_CurrentPosition, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+          (*i)(m_CurrentPosition, m_Type);
+        }
       }
       break;
     case ANSWER_MOVE_RELATIVE:
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
       //std::cout << "ANSWER_MOVE_RELATIVE m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
-      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (*i)(m_CurrentPosition, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+          (*i)(m_CurrentPosition, m_Type);
+        }
       }
       break;
     case ANSWER_SET_SPEED:
@@ -106,8 +121,11 @@ void LinearStageMessageHandler::handler(char *message){
       // Notify updated distance
       m_CurrentPosition = calculatePosition(&message[1]);
       //std::cout << "ANSWER_MOTOR_STOP m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
-      for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-        (*i)(m_CurrentPosition, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+          (*i)(m_CurrentPosition, m_Type);
+        }
       }
       m_StageFrame->stopped();
       break;

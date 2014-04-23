@@ -1,16 +1,35 @@
 #include <iostream>
 #include <thread>
+#include <mathplot.h>
 #include "fatiguetesting.h"
 
+/**
+ * @brief Initializes all the needed variables.
+ * @param type Type of the experiment.
+ * @param stressOrForce Indicates if the experiment is stress or force based.
+ * @param stageframe Pointer to the stage frame object.
+ * @param linearstagemessagehandlers Pointer to th message handlers of the linear stages.
+ * @param forcesensormessagehandler Pointer to the force sensor message handler.
+ * @param wait Wait condition.
+ * @param mutex Mutex for wait condition.
+ * @param cycles The number of cycles.
+ * @param totaltime The total time for the experiment.
+ * @param amplitude The amplitude in mm or %preload distance.
+ * @param resttime The rest time after every cycle.
+ * @param frequency The frequency in [cycles/sec].
+ * @param preloaddistance The preload distance.
+ * @param currentdistance The current distance.
+ */
 FatigueTesting::FatigueTesting(Experiment::ExperimentType type,
                                StressOrForce stressOrForce,
                                StageFrame *stageframe,
                                std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                                ForceSensorMessageHandler *forcesensormessagehandler,
+                               mpWindow *graph,
                                std::condition_variable *wait,
                                std::mutex *mutex,
-                               int cycles, double totaltime, long amplitude, double resttime, double frequency, long preloaddistance, long currentdistance)
-  : Experiment(type, stressOrForce, Experiment::Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, currentdistance),
+                               int cycles, double totaltime, long amplitude, double resttime, double frequency, double area, long preloaddistance, long currentdistance)
+  : Experiment(type, stressOrForce, stageframe, forcesensormessagehandler, graph, Experiment::Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, area, currentdistance),
     m_StageFrame(stageframe),
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_ForceSensorMessageHandler(forcesensormessagehandler),

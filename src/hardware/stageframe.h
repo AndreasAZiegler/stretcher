@@ -121,6 +121,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
 
     std::vector<LinearStage*> *m_LinearStages;
     std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers;
+    std::mutex m_AccessListMutex;											/**< Protect list */
 
     const double MM_PER_MS;               						/**< milimeter per microstep */
 

@@ -1,6 +1,7 @@
 set(SOURCE
 	${SOURCE}
         ./experiments/experiment.cpp
+        ./experiments/experimentvalues.cpp
         ./experiments/preload.cpp
         ./experiments/conditioning.cpp
         ./experiments/ramp2failure.cpp
@@ -13,6 +14,7 @@ set(SOURCE
 set(HEADERS
 	${HEADERS}
         ./experiments/experiment.h
+        ./experiments/experimentvalues.h
         ./experiments/preload.h
         ./experiments/conditioning.h
         ./experiments/ramp2failure.h

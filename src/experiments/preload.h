@@ -29,7 +29,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     Preload(Experiment::ExperimentType type,
             Experiment::StressOrForce forceOrStress,
             StageFrame *stageframe,
-            ForceSensorMessageHandler *forcesensormessagehandler,
+            ForceSensorMessageHandler *forcesensormessagehandler, mpWindow *graph,
             std::condition_variable *wait,
             std::mutex *mutex,
             bool *stagesstopped,

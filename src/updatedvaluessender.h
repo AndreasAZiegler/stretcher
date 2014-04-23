@@ -3,6 +3,7 @@
 
 // Includes
 #include <functional>
+#include <mutex>
 #include <list>
 #include <updatedvaluesreceiver.h>
 
@@ -17,6 +18,8 @@ class UpdatedValuesSender
 {
   public:
     UpdatedValuesSender();
+
+    virtual ~UpdatedValuesSender();
 
     /**
      * @brief Registers the update methods, which will be called, when the value changes.
@@ -34,6 +37,8 @@ class UpdatedValuesSender
 
   protected:
     std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>> m_UpdateMethodList;	/**< List containing struct with pointers to the MyFrame object and the update method*/
+
+    std::mutex m_AccessListMutex;				/**< Protect list */
 };
 
 #endif // UPDATEDVALUESSENDER_H

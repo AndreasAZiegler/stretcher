@@ -1,4 +1,5 @@
 #include <iostream>
+#include <mathplot.h>
 #include "ramp2failure.h"
 
 /**
@@ -18,11 +19,12 @@ Ramp2Failure::Ramp2Failure(Experiment::ExperimentType type,
                            StageFrame *stageframe,
                            std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                            ForceSensorMessageHandler *forcesensormessagehandler,
+                           mpWindow *graph,
                            std::condition_variable *wait,
                            std::mutex *mutex,
                            BehaviorAfterFailure behavior,
                            double speedInMM, double dropbeforestop, double area, long preloaddistance, long distanceafterfailure)
-  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+  : Experiment(type, stressOrForce, stageframe, forcesensormessagehandler, graph, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, area),
     m_StageFrame(stageframe),
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_ForceSensorMessageHandler(forcesensormessagehandler),

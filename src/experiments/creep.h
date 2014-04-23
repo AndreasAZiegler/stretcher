@@ -36,7 +36,7 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
           StressOrForce stressOrForce,
           StageFrame *stageframe,
           std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-          ForceSensorMessageHandler *forcesensormessagehandler,
+          ForceSensorMessageHandler *forcesensormessagehandler, mpWindow *graph,
           std::condition_variable *wait,
           std::mutex *mutex, long holdstressforce, double holdtime, double sensitivity, double speedinmm, double area);
 

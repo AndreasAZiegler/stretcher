@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <mathplot.h>
 #include "relaxation.h"
 
 
@@ -25,10 +26,11 @@ Relaxation::Relaxation(Experiment::ExperimentType type,
                        StageFrame *stageframe,
                        std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                        ForceSensorMessageHandler *forcesensormessagehandler,
+                       mpWindow *graph,
                        std::condition_variable *wait,
                        std::mutex *mutex,
-                       long distance, double pause, int steps, long preloaddistance)
-  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, currentdistance),
+                       long distance, double pause, int steps, double area, long preloaddistance)
+  : Experiment(type, stressOrForce, stageframe, forcesensormessagehandler, graph, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, area, currentdistance),
     m_StageFrame(stageframe),
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_ForceSensorMessageHandler(forcesensormessagehandler),

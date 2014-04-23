@@ -1391,7 +1391,7 @@
 										</object>
 									</object>
 									<object class="notebookpage">
-										<label>Chamber stretch</label>
+										<label>E:Chamber stretch</label>
 										<selected>0</selected>
 										<object class="wxPanel" name="m_ChamberStretchPanel">
 											<style>wxTAB_TRAVERSAL</style>
@@ -1446,7 +1446,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchEmodLeftSpinCtrl">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1465,7 +1465,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchEmodRightSpinCtrl">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1483,8 +1483,8 @@
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchStrainSpinCtrl">
 																	<value>0</value>
-																	<min>0</min>
-																	<max>10</max>
+																	<min>-1000</min>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1503,7 +1503,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchFreqSpinCtrl">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1521,8 +1521,8 @@
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchAmplSpinCtrl">
 																	<value>0</value>
-																	<min>0</min>
-																	<max>10</max>
+																	<min>-1000</min>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1605,7 +1605,7 @@
 																<object class="wxSpinCtrl" name="m_ChamberStretchCyclesSpinCtrl1">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1624,7 +1624,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchTotalTimeSpinCtrl1">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1643,7 +1643,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchAmplitudeSpinCtrl1">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1686,7 +1686,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchRestTimeSpinCtrl1">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1705,7 +1705,7 @@
 																<object class="wxSpinCtrlDouble" name="m_ChamberStretchFrequencySpinCtrl1">
 																	<value>0</value>
 																	<min>0</min>
-																	<max>10</max>
+																	<max>1000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -2197,7 +2197,7 @@
 						<option>0</option>
 						<flag>wxALL</flag>
 						<border>5</border>
-						<object class="wxSpinCtrlDouble" name="m_SamplingFrequencyForceSpinCtrl">
+						<object class="wxSpinCtrl" name="m_SamplingFrequencyForceSpinCtrl">
 							<style>wxSP_ARROW_KEYS</style>
 							<value>0</value>
 							<min>0</min>

@@ -3,3 +3,7 @@
 UpdatedValuesReceiver::UpdatedValuesReceiver()
 {
 }
+
+UpdatedValuesReceiver::~UpdatedValuesReceiver(){
+
+}

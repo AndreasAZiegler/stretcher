@@ -18,6 +18,7 @@ Preload::Preload(Experiment::ExperimentType type,
                  Experiment::StressOrForce forceOrStress,
                  StageFrame *stageframe,
                  ForceSensorMessageHandler *forcesensormessagehandler,
+                 mpWindow *graph,
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  bool *stagesstopped,
@@ -25,7 +26,7 @@ Preload::Preload(Experiment::ExperimentType type,
                  double stressForceLimit,
                  double speedInMM,
                  double area)
-  : Experiment(type, forceOrStress, Direction::Stop, 0.3/*stress force threshold*/, 0.01/*distance threshold*/),
+  : Experiment(type, forceOrStress, stageframe, forcesensormessagehandler, graph, Direction::Stop, 0.3/*stress force threshold*/, 0.01/*distance threshold*/, area),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_Wait(wait),
@@ -41,8 +42,10 @@ Preload::Preload(Experiment::ExperimentType type,
 }
 
 Preload::~Preload(){
-  std::cout << "Preload destructor." << std::endl;
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
+  // Delete the experiment values because we don't need them for the preloading.
+  delete m_ExperimentValues;
+  std::cout << "Preload destructor finished." << std::endl;
 }
 
 /**

@@ -37,6 +37,7 @@ void StageFrame::registerLinearStages(std::vector<LinearStage*> *linearstages){
  */
 //void MessageHandler::registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass){
 std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator StageFrame::registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass){
+  std::lock_guard<std::mutex> lck{m_AccessListMutex};
   return(m_UpdateMethodList.insert(m_UpdateMethodList.end(), std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2)));
 }
 
@@ -45,6 +46,7 @@ std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator
  */
 void StageFrame::unregisterUpdateMethod(std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator id){
   //m_UpdateMethodList.remove(std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2));
+  std::lock_guard<std::mutex> lck{m_AccessListMutex};
   m_UpdateMethodList.erase(id);
 }
 
@@ -67,8 +69,11 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
           m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
                                std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
           // notify
-          for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-            (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
+          {
+            std::lock_guard<std::mutex> lck{m_AccessListMutex};
+            for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+              (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
+            }
           }
           //std::cout << "Stage frame notification!" << std::endl;
         }else{
@@ -88,8 +93,11 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
           m_Pos1ChangedFlag = false;
           m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
                                std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
-          for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
-            (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
+          {
+            std::lock_guard<std::mutex> lck{m_AccessListMutex};
+            for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+              (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
+            }
           }
           //std::cout << "Stage frame notification!" << std::endl;
         }else{

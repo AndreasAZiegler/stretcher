@@ -22,6 +22,8 @@ class UpdatedValuesReceiver
 
     UpdatedValuesReceiver();
 
+    virtual ~UpdatedValuesReceiver();
+
     /**
      * @brief Abstract method which will be calles by the message handlers to update the values
      * @param value Position of linear stage 1 or 2 or the force

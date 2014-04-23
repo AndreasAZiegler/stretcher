@@ -6,17 +6,30 @@
  * @param forceOrStress Force or stress.
  */
 Experiment::Experiment(Experiment::ExperimentType type,
-                       Experiment::StressOrForce forceOrStress,
+                       Experiment::StressOrForce stressOrForce,
+                       StageFrame *stageframe,
+                       ForceSensorMessageHandler *forcesensormessagehandler,
+                       mpWindow *graph,
                        Direction direction,
                        double forcesStressThreshold,
-                       double distanceThreshold, long currentdistance)
+                       double distanceThreshold, double area, long currentdistance)
   : m_ExperimentType(type),
-    m_StressOrForce(forceOrStress),
+    m_StressOrForce(stressOrForce),
+    m_StageFrame(stageframe),
+    m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_CurrentDirection(direction),
     m_ForceStressThreshold(forcesStressThreshold),
     m_DistanceThreshold(distanceThreshold),
     m_CurrentForce(0),
     m_CurrentPositions{0, 0},
-    m_CurrentDistance(currentdistance)
+    m_CurrentDistance(currentdistance),
+    m_ExperimentValues{new ExperimentValues(static_cast<ExperimentValues::StressOrForce>(stressOrForce), stageframe, forcesensormessagehandler, graph, area)}
 {
+}
+
+/**
+ * @brief Destructor
+ */
+Experiment::~Experiment(){
+
 }

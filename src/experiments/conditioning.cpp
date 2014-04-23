@@ -11,6 +11,7 @@
  * @param stageframe Pointer to the stage frame object.
  * @param linearstagemessagehandlers Pointer to th message handlers of the linear stages.
  * @param forcesensormessagehandler Pointer to the force sensor message handler.
+ * @param graph Pointer to the graph.
  * @param wait Wait condition.
  * @param mutex Mutex for wait condition.
  * @param stressForceLimit Stress or force limit value.
@@ -24,13 +25,12 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
                             long currentdistance,
                             StageFrame *stageframe, std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
                             ForceSensorMessageHandler *forcesensormessagehandler,
+                            mpWindow *graph,
                             std::condition_variable *wait,
                             std::mutex *mutex,
                             double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance)
-  : Experiment(type, stressOrForce, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, currentdistance),
+  : Experiment(type, stressOrForce, stageframe, forcesensormessagehandler, graph, Direction::Stop, 300/*stress force threshold*/, 0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/, area, currentdistance),
     m_DistanceOrStressForceLimit(distanceOrStressForce),
-    m_StageFrame(stageframe),
-    m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_Wait(wait),
     m_WaitMutex(mutex),
@@ -50,6 +50,8 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
 Conditioning::~Conditioning(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+
+  std::cout << "Conditioning destructor finished." << std::endl;
 }
 
 /**
@@ -90,12 +92,12 @@ void Conditioning::process(Experiment::Event event){
           }
         }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
-            std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
+            //std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_SpeedInMm);
             std::cout << "Conditioning moveForward" << std::endl;
           }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
-            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_DistanceLimit - m_CurrentDistance << std::endl;
+            //std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_DistanceLimit - m_CurrentDistance << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMm);
             std::cout << "Conditioning moveBackward" << std::endl;

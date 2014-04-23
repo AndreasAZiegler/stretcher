@@ -98,8 +98,11 @@ void ForceSensorMessageHandler::receiver(void){
 
       m_CurrentForce = (measforce - m_ZeroValue) / m_ScalingFactor;
       //std::cout << "PressureSensor force: " << m_CurrentForce << " at pos: " << syncPos << std::endl;
-      for(auto j = m_UpdateMethodList.begin(); j != m_UpdateMethodList.end(); ++j){
-        (*j)(m_CurrentForce, m_Type);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessListMutex};
+        for(auto j = m_UpdateMethodList.begin(); j != m_UpdateMethodList.end(); ++j){
+          (*j)(m_CurrentForce, m_Type);
+        }
       }
         //}
       //}

@@ -13,6 +13,7 @@
 #include "./hardware/stageframe.h"
 #include "./hardware/forcesensor.h"
 #include "./experiments/experiment.h"
+#include "./experiments/experimentvalues.h"
 
 /**
  * @brief The Main Frame class
@@ -228,6 +229,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnFatigueSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes from gel to cells or vica versa in chamber stretch.
+     * @param event Occuring event
+     */
+    void OnChamberGelCells(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in chamber stretch.
+     * @param event Occuring event
+     */
+    void OnChamberStretchSendToProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -244,6 +257,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnMotorStop(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the clear graph button.
+     * @param event Occuring event
+     */
+    void OnClearGraph(wxCommandEvent& event);
 
     /**
      * @brief Calculates the distance and print the value in the GUI.
@@ -270,16 +289,19 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
     Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
+    ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
     std::thread *m_ExperimentRunningThread;			/**< Pointer to the experiment running check thread */
     bool m_ExperimentRunningFlag;								/**< Flag which indicates if an experiment is running */
     std::mutex m_ExperimentRunningMutex;				/**< Mutex to protect m_ExperimentRunningFlag */
     bool m_PreloadDoneFlag;											/**< Indicates if preloading is done */
     std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
+    bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
+    std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     double m_Area;															/**< Area of the sample */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
     bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
-    std::mutex m_StagesStoppedMutex;					/**< Mutex for m_StagesStoppedFlag */
+    std::mutex m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
 
     Experiment::StressOrForce m_StressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
@@ -320,7 +342,10 @@ enum
   ID_CreepSpeedPercent = 26,
   ID_CreepSpeedMm = 27,
   ID_CreepSendToProtocol = 28,
-  ID_FatigueSendToProtocol = 29
+  ID_FatigueSendToProtocol = 29,
+  ID_ChamberStretchGelOrCell = 30,
+  ID_ChamberStretchSendToProtocol = 31,
+  ID_ClearGraph = 32
 };
 
 #endif // MYFRAME_H

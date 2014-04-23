@@ -4,12 +4,11 @@
 
 // Includes
 #include <condition_variable>
+#include <mathplot.h>
 #include "experiment.h"
 #include "../updatedvaluesreceiver.h"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensor.h"
-
-//#include "ExperimentValues.h"
 
 class Conditioning : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
@@ -31,6 +30,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @param stageframe Pointer to the stage frame object.
      * @param linearstagemessagehandlers Pointer to th message handlers of the linear stages.
      * @param forcesensormessagehandler Pointer to the force sensor message handler.
+     * @param graph Pointer to the graph.
      * @param wait Wait condition.
      * @param mutex Mutex for wait condition.
      * @param stressForceLimit Stress or force limit value.
@@ -45,6 +45,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                  ForceSensorMessageHandler *forcesensormessagehandler,
+                 mpWindow *graph,
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance);
@@ -122,8 +123,6 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                runState,       	/**< Run state */
                goBackState};		/**< Go back state */
 
-    StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
-    ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
     std::vector<LinearStageMessageHandler*> *m_LinearStageMessageHanders;		/**< Pointer to the vector which contains the pointer to the message handler of the liner stages */
 
     State m_CurrentState;																										/**< Current state of the preload FSM */
@@ -141,8 +140,6 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
 
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
-
-    //ExperimentValues * m_experimentvalues;
 
 };
 
