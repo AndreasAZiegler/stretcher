@@ -115,15 +115,15 @@ class FatigueTesting : virtual public Experiment, virtual public UpdatedValuesRe
 
     State m_CurrentState;																										/**< Current state of the preload FSM */
 
-		int m_Cycles;
-    int m_CurrentCycle;
-		double m_TotalTime;
-		double m_AmplitudeInDistance;
-		double m_RestTime;
-		double m_Frequency;
+    int m_Cycles;																														/**< Number of cycles */
+    int m_CurrentCycle;																											/**< Number of the current cycle */
+    double m_TotalTime;																											/**< Total time of the experiment */
+    double m_AmplitudeInDistance;																						/**< Amplitude in distance */
+    double m_RestTime;																											/**< Rest time after each cycle in sec. */
+    double m_Frequency;																											/**< Frequency in cycles/sec. */
     long m_PreloadDistance;																									/**< Preload distance of the stage frame */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
-    bool m_DecreaseSpeedFlag;
+    bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
 
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */

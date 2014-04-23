@@ -54,7 +54,8 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
     m_SpeedInMm(speedInMM),
     m_Area(area * 0.000000000001/*um^2*/),
     m_PreloadDistance(preloaddistance),
-    m_CurrentCycle(0)
+    m_CurrentCycle(0),
+    m_DecreaseSpeedFlag(false)
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -179,14 +180,14 @@ void Conditioning::process(Experiment::Event event){
           }
         }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
 
-          if((m_CurrentDistance - m_AmplitudeInDistance) < (200 * m_DistanceThreshold)){
+          if((m_CurrentDistance - m_DistanceLimit) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
               m_DecreaseSpeedFlag = true;
               m_StageFrame->setSpeed(m_SpeedInMm/10);
             }
           }
           // Reduce speed to a tenth if stages are close to the turn point.
-          else if((m_AmplitudeInDistance - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+          else if((m_DistanceLimit - m_CurrentDistance) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
               m_DecreaseSpeedFlag = true;
               m_StageFrame->setSpeed(m_SpeedInMm/10);
@@ -195,15 +196,16 @@ void Conditioning::process(Experiment::Event event){
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward(m_SpeedInMm);
+              m_StageFrame->moveForward();
             }
           }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward(m_SpeedInMm);
+              m_StageFrame->moveBackward();
             }
           }else{
             m_CurrentState = goBackState;
+            m_StageFrame->setSpeed(m_SpeedInMm);
             //m_StageFrame->stop();
             m_StageFrame->gotoStepsDistance(m_PreloadDistance);
           }
@@ -256,9 +258,11 @@ void Conditioning::process(Experiment::Event event){
               }
             }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
               if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
+                m_DecreaseSpeedFlag = false;
                 m_CurrentDirection = Direction::Forwards;
                 m_StageFrame->moveForward(m_SpeedInMm);
               }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
+                m_DecreaseSpeedFlag = false;
                 m_CurrentDirection = Direction::Backwards;
                 m_StageFrame->moveBackward(m_SpeedInMm);
               }

@@ -130,6 +130,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
 
     int m_Cycles;																														/**< Number of cycles */
     int m_CurrentCycle;																											/**< Number of the current cycle */
+    bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     long m_PreloadDistance;																									/**< Preload distance of the stage frame */
     double m_SpeedInPercent;																								/**< Speed in %preload/sec */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
