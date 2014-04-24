@@ -102,7 +102,7 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
+    virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
 	private:
 

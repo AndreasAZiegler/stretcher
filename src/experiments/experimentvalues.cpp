@@ -63,18 +63,18 @@ ExperimentValues::~ExperimentValues(){
  * @param value Position of linear stage 1 or 2 or the force.
  * @param type Type of value.
  */
-void ExperimentValues::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+void ExperimentValues::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       if(StressOrForce::Stress == m_StressOrForce){
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back((value / 10000.0) / m_Diameter);
+          m_StressForceValues.push_back((measurementValue.value / 10000.0) / m_Diameter);
         }
       }else{
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back(value / 10000.0);
+          m_StressForceValues.push_back(measurementValue.value / 10000.0);
         }
       }
       break;
@@ -82,7 +82,7 @@ void ExperimentValues::updateValues(long value, UpdatedValuesReceiver::ValueType
     case UpdatedValuesReceiver::ValueType::Distance:
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_DistanceValues.push_back(value * 0.00009921875/*mm per micro step*/);
+          m_DistanceValues.push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         }
       //std::cout << "Conditioning distance update." << std::endl;
       break;

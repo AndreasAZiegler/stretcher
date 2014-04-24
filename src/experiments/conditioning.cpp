@@ -279,14 +279,14 @@ void Conditioning::process(Experiment::Event event){
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void Conditioning::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+void Conditioning::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
-      m_CurrentForce = value;
+      m_CurrentForce = measurementValue.value;
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
-      m_CurrentDistance = value;
+      m_CurrentDistance = measurementValue.value;
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }

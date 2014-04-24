@@ -12,8 +12,8 @@ class LinearStage;
 class LinearStageMessageHandler;
 
 // Method pointer typedef
-typedef void (UpdatedValuesReceiver::*updateValue)(long, UpdatedValuesReceiver::ValueType);
-typedef std::function<void(long, UpdatedValuesReceiver::ValueType)> mp;
+typedef void (UpdatedValuesReceiver::*updateValue)(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType);
+typedef std::function<void(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType)> mp;
 
 /**
  * @brief Represents the two linear stages as a stage frame.
@@ -45,19 +45,19 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @param updateClass Pointer to the object, to which the method belongs.
      * @return Id of the callback method.
      */
-    std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass);
+    std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass);
 
     /**
      * @brief Unregisters the update methods, which will be called, when the value changes.
      * @param id Id of the callback method
      */
-    void unregisterUpdateMethod(std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator id);
+    void unregisterUpdateMethod(std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator id);
     /**
      * @brief Abstract method which will be calles by the message handlers to update the values
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    void updateValues(long value, UpdatedValuesReceiver::ValueType type);
+    void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
      * @brief Sets the speed of the linear stage.
@@ -132,8 +132,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
     bool m_Pos2ChangedFlag;														/**< Indicates an updated position 2 if true */
     std::mutex m_PosChangedMutex;											/**< Mutex to protect m_PosXChangedFlag */
 
-    std::vector<long> m_CurrentPositions;							/**< Vector containing the current positions of the linear stages */
-    long m_CurrentDistance;														/**< Current distance */
+    std::vector<MeasurementValue> m_CurrentPositions;	/**< Vector containing structs of the current positions of the linear stages and their time stamps */
+    MeasurementValue m_CurrentDistance;								/**< Struct containing the current distance and its time stamp */
 
     bool *m_StagesStoppedFlag;														/**< Flag to indicate if the stages stopped or not. */
     std::mutex *m_StagesStoppedMutex;									/**< Mutex for m_StagesStopped */

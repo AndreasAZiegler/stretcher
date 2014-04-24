@@ -57,7 +57,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param value The position of a stage or a force.
      * @param type	Defines the type of the value (position of stage 1, 2 or force)
      */
-    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
+    virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
      * @brief Executes updateGraph() from the main threa.

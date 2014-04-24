@@ -9,8 +9,8 @@ StageFrame::StageFrame()
     MM_PER_MS(0.00009921875),
     m_Pos1ChangedFlag(false),
     m_Pos2ChangedFlag(false),
-    m_CurrentPositions{0, 0},
-    m_CurrentDistance(0),
+    //m_CurrentPositions{{0,0}, {0,0}},
+    //m_CurrentDistance{0,0},
     m_AmStopped(0)
 {
 }
@@ -36,7 +36,7 @@ void StageFrame::registerLinearStages(std::vector<LinearStage*> *linearstages){
  * @return Id of the callback method.
  */
 //void MessageHandler::registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass){
-std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator StageFrame::registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass){
+std::list<std::function<void(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator StageFrame::registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass){
   std::lock_guard<std::mutex> lck{m_AccessListMutex};
   return(m_UpdateMethodList.insert(m_UpdateMethodList.end(), std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2)));
 }
@@ -44,7 +44,7 @@ std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator
 /**
  * @brief Unregisters the update methods, which will be called, when the value changes.
  */
-void StageFrame::unregisterUpdateMethod(std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator id){
+void StageFrame::unregisterUpdateMethod(std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator id){
   //m_UpdateMethodList.remove(std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2));
   std::lock_guard<std::mutex> lck{m_AccessListMutex};
   m_UpdateMethodList.erase(id);
@@ -55,19 +55,19 @@ void StageFrame::unregisterUpdateMethod(std::list<std::function<void(long, Updat
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Pos1:
       //std::cout << "Stage frame pos 1 update" << std::endl;
-      m_CurrentPositions[0] = value;
+      m_CurrentPositions[0].value = measurementValue.value;
       //std::cout << "m_CurrentPositions[0]: " << m_CurrentPositions[0] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos2ChangedFlag){
           m_Pos1ChangedFlag = false;
           m_Pos2ChangedFlag = false;
-          m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
-                               std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+          m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
+                                     std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
           // notify
           {
             std::lock_guard<std::mutex> lck{m_AccessListMutex};
@@ -84,15 +84,15 @@ void StageFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type)
 
     case UpdatedValuesReceiver::ValueType::Pos2:
       //std::cout << "Stage frame pos 2 update" << std::endl;
-      m_CurrentPositions[1] = value;
+      m_CurrentPositions[1] = measurementValue;
       //std::cout << "m_CurrentPositions[1]: " << m_CurrentPositions[1] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos1ChangedFlag){
           m_Pos2ChangedFlag = false;
           m_Pos1ChangedFlag = false;
-          m_CurrentDistance = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
-                               std::abs(771029 - m_CurrentPositions[1]));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+          m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
+                                     std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
           {
             std::lock_guard<std::mutex> lck{m_AccessListMutex};
             for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -213,7 +213,7 @@ void StageFrame::stopped(){
 }
 
 long StageFrame::getCurrentDistance(void){
-  return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0]) +
-         std::abs(771029 /*max. position*/ - m_CurrentPositions[1]) +
+  return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
+         std::abs(771029 /*max. position*/ - m_CurrentPositions[1].value) +
          m_ZeroDistance);
 }

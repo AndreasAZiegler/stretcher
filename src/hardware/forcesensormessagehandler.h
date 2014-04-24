@@ -42,13 +42,13 @@ class ForceSensorMessageHandler : virtual public MessageHandler
      * @brief Returns the latest position of the linear stage
      * @return latest position of the linear stage.
      */
-    int getCurrentForce(){
+    MeasurementValue getCurrentForce(){
       return(m_CurrentForce);
     }
 
   private:
 
-    long m_CurrentForce;
+    MeasurementValue m_CurrentForce;							/**< Struct containing the current force value and its time stamp. */
 
     double m_ScalingFactor;                  			/**< Sensor scaling factor */
     double m_ZeroValue;                      			/**< Zero value */

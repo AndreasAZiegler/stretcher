@@ -73,9 +73,9 @@ void Preload::setArea(double x, double y){
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void Preload::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   if(UpdatedValuesReceiver::ValueType::Force == type){
-    m_CurrentForce = value / 10000.0;
+    m_CurrentForce = measurementValue.value / 10000.0;
 
     process(Event::evUpdate);
   }

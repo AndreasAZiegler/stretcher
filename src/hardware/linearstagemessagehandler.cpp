@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <chrono>
 #include "linearstagemessagehandler.h"
 
 using namespace std;
@@ -9,8 +10,8 @@ using namespace std;
  * @param serialport Pointer to the serial port.
  */
 LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex)
-  : MessageHandler(serialport, type, readingSerialInterfaceMutex),
-    m_CurrentPosition(0)
+  : MessageHandler(serialport, type, readingSerialInterfaceMutex)//,
+    //m_CurrentPosition(0)
 {
 }
 
@@ -63,7 +64,8 @@ void LinearStageMessageHandler::handler(char *message){
 
     case ANSWER_CURRENT_POSITION:
       // Notify updated distance
-      m_CurrentPosition = calculatePosition(&message[1]);
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};
         for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -73,7 +75,8 @@ void LinearStageMessageHandler::handler(char *message){
       break;
     case MESSAGE_CURRENT_POSITION:
       // Notify updated distance
-      m_CurrentPosition = calculatePosition(&message[1]);
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};
         for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -83,7 +86,8 @@ void LinearStageMessageHandler::handler(char *message){
       break;
     case ANSWER_GO_HOME:
       // Notify updated distance
-      m_CurrentPosition = calculatePosition(&message[1]);
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};
         for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -93,7 +97,8 @@ void LinearStageMessageHandler::handler(char *message){
       break;
     case ANSWER_MOVE_ABSOLUT:
       // Notify updated distance
-      m_CurrentPosition = calculatePosition(&message[1]);
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
       //std::cout << "ANSWER_MOVE_ABSOLUT m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};
@@ -104,7 +109,8 @@ void LinearStageMessageHandler::handler(char *message){
       break;
     case ANSWER_MOVE_RELATIVE:
       // Notify updated distance
-      m_CurrentPosition = calculatePosition(&message[1]);
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
       //std::cout << "ANSWER_MOVE_RELATIVE m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};
@@ -119,7 +125,8 @@ void LinearStageMessageHandler::handler(char *message){
       break;
     case ANSWER_MOTOR_STOP:
       // Notify updated distance
-      m_CurrentPosition = calculatePosition(&message[1]);
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
       //std::cout << "ANSWER_MOTOR_STOP m_CurrentPosition: " << m_CurrentPosition * 0.00009921875 << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};

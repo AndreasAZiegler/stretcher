@@ -165,21 +165,21 @@ void Ramp2Failure::setPercentPreload(double percent){
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void Ramp2Failure::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+void Ramp2Failure::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       {
         std::lock_guard<std::mutex> lck{m_ForceMutex};
-        m_CurrentForce = value;
-        if(std::abs(value) > std::abs(m_MaxForce)){
-          m_MaxForce = value;
+        m_CurrentForce = measurementValue.value;
+        if(std::abs(measurementValue.value) > std::abs(m_MaxForce)){
+          m_MaxForce = measurementValue.value;
         }
       }
       process(Event::evForceUpdate);
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
-      m_CurrentDistance = value;
+      m_CurrentDistance = measurementValue.value;
       process(Event::evDistanceUpdate);
       break;
   }

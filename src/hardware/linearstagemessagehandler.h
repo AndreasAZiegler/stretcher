@@ -48,7 +48,7 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @brief Returns the latest position of the linear stage
      * @return latest position of the linear stage.
      */
-    int getCurrentPosition(){
+    MeasurementValue getCurrentPosition(){
       return(m_CurrentPosition);
     }
 
@@ -70,7 +70,7 @@ class LinearStageMessageHandler : virtual public MessageHandler
      */
     long calculatePosition(char* message);
 
-    long m_CurrentPosition;														/**< Current position */
+    MeasurementValue m_CurrentPosition;								/**< Struct containing the current position and its time stamp */
 
     StageFrame *m_StageFrame;													/**< Pointer to the stage frame object */
 

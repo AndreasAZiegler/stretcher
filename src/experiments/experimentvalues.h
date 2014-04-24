@@ -106,7 +106,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param value Position of linear stage 1 or 2 or the force.
      * @param type Type of value.
      */
-    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
+    virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
      * @brief Updates the graph in the GUI.

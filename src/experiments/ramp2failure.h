@@ -71,7 +71,7 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    virtual void updateValues(long value, UpdatedValuesReceiver::ValueType type);
+    virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
      * @brief Sets the percentage of max force which will stop the experiment when it is reached.

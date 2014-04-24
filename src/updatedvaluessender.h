@@ -5,18 +5,21 @@
 #include <functional>
 #include <mutex>
 #include <list>
+#include <chrono>
+#include <updatedvalues.h>
 #include <updatedvaluesreceiver.h>
 
 // Method pointer typedef
-typedef void (UpdatedValuesReceiver::*updateValue)(long, UpdatedValuesReceiver::ValueType);
-typedef std::function<void(long, UpdatedValuesReceiver::ValueType)> mp;
+typedef void (UpdatedValuesReceiver::*updateValue)(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType);
+typedef std::function<void(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType)> mp;
 
 /**
  * @brief Abstract class used as an interface, that the message handlers can use the updateValue() method of the receiver in a standard way.
  */
-class UpdatedValuesSender
+class UpdatedValuesSender : virtual public UpdatedValues
 {
   public:
+
     UpdatedValuesSender();
 
     virtual ~UpdatedValuesSender();
@@ -27,16 +30,16 @@ class UpdatedValuesSender
      * @param updateClass Pointer to the object, to which the method belongs.
      * @return Id of the callback method.
      */
-    std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass);
+    std::list<std::function<void(UpdatedValuesReceiver::MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass);
 
     /**
      * @brief Unregisters the update methods, which will be called, when the value changes.
      * @param id Id of the callback method
      */
-    void unregisterUpdateMethod(std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator id);
+    void unregisterUpdateMethod(std::list<std::function<void(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator id);
 
   protected:
-    std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>> m_UpdateMethodList;	/**< List containing struct with pointers to the MyFrame object and the update method*/
+    std::list<std::function<void(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType)>> m_UpdateMethodList;	/**< List containing struct with pointers to the MyFrame object and the update method*/
 
     std::mutex m_AccessListMutex;				/**< Protect list */
 };

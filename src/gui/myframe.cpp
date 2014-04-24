@@ -262,14 +262,14 @@ MyFrame::~MyFrame(){
  * @param value The position of a stage or a force.
  * @param type	Defines the type of the value (position of stage 1, 2 or force)
  */
-void MyFrame::updateValues(long value, UpdatedValuesReceiver::ValueType type){
+void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Distance:
-      m_CurrentDistance = value;
+      m_CurrentDistance = measurementValue.value;
       CallAfter(&MyFrame::updateDistance);
       break;
     case UpdatedValuesReceiver::ValueType::Force:
-      m_CurrentForce = value;
+      m_CurrentForce = measurementValue.value;
 
       m_CurrentForceUpdateDelay++;
       if(20 <= m_CurrentForceUpdateDelay){
