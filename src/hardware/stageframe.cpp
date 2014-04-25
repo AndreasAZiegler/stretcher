@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "stageframe.h"
 #include "linearstage.h"
 #include "linearstagemessagehandler.h"
@@ -9,7 +10,7 @@ StageFrame::StageFrame()
     MM_PER_MS(0.00009921875),
     m_Pos1ChangedFlag(false),
     m_Pos2ChangedFlag(false),
-    //m_CurrentPositions{{0,0}, {0,0}},
+    m_CurrentPositions(2),
     //m_CurrentDistance{0,0},
     m_AmStopped(0)
 {
@@ -60,12 +61,15 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
     case UpdatedValuesReceiver::ValueType::Pos1:
       //std::cout << "Stage frame pos 1 update" << std::endl;
       m_CurrentPositions[0].value = measurementValue.value;
+      m_CurrentPositions[0].timestamp = measurementValue.timestamp;
       //std::cout << "m_CurrentPositions[0]: " << m_CurrentPositions[0] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos2ChangedFlag){
           m_Pos1ChangedFlag = false;
           m_Pos2ChangedFlag = false;
+          //std::cout << "Stage frame time difference: " << std::chrono::duration_cast<std::chrono::microseconds>(m_CurrentPositions[0].timestamp - m_CurrentPositions[1].timestamp).count() << " msec" << std::endl;
+          m_CurrentDistance.timestamp = m_CurrentPositions[0].timestamp;
           m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
                                      std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
           // notify
@@ -84,13 +88,16 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
 
     case UpdatedValuesReceiver::ValueType::Pos2:
       //std::cout << "Stage frame pos 2 update" << std::endl;
-      m_CurrentPositions[1] = measurementValue;
+      m_CurrentPositions[1].value = measurementValue.value;
+      m_CurrentPositions[1].timestamp = measurementValue.timestamp;
       //std::cout << "m_CurrentPositions[1]: " << m_CurrentPositions[1] << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_PosChangedMutex};
         if(m_Pos1ChangedFlag){
           m_Pos2ChangedFlag = false;
           m_Pos1ChangedFlag = false;
+          //std::cout << "Stage frame time difference: " << std::chrono::duration_cast<std::chrono::microseconds>(m_CurrentPositions[1].timestamp - m_CurrentPositions[0].timestamp).count() << " msec" << std::endl;
+          m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
           m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
                                      std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
           {

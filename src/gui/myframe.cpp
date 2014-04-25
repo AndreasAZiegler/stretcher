@@ -9,7 +9,7 @@
 #include "myframe.h"
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
-#include "myfileoutput_base.h"
+#include "myfileoutput.h"
 #include "../experiments/preload.h"
 #include "../experiments/conditioning.h"
 #include "../experiments/ramp2failure.h"
@@ -64,6 +64,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_FatigueSendToProtocol, MyFrame::OnFatigueSendToProtocol)
   EVT_RADIOBOX(ID_ChamberStretchGelOrCell, MyFrame::OnChamberGelCells)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
+  EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
 wxEND_EVENT_TABLE()
 
 /**
@@ -124,10 +125,12 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_FatigueSendButton->SetId(ID_FatigueSendToProtocol);
   m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberStretchGelOrCell);
   m_GraphClearButton->SetId(ID_ClearGraph);
+  m_GraphExportCSVButton->SetId(ID_ExportCSV);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
 
+  // Define layer for the graph
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_VectorLayer.SetContinuity(true);
@@ -136,57 +139,16 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_VectorLayer.SetDrawOutsideMargins(false);
   }
 
+  // Add layer to graph.
   m_Graph->AddLayer(&m_VectorLayer);
-
-  //---------------------------- Test Data for Graph
-  mpLayer* l;
-
-  // Create a mpFXYVector layer
-  mpFXYVector* vectorLayer = new mpFXYVector(_("Vector"));
-  // Create two vectors for x,y and fill them with data
-  std::vector<double> vectorx, vectory;
-  double xcoord;
-  for (unsigned int p = 0; p < 100; p++) {
-    xcoord = ((double)p-50.0)*5.0;
-    vectorx.push_back(xcoord);
-    vectory.push_back(0.0001*pow(xcoord, 3));
-  }
-  vectorLayer->SetData(vectorx, vectory);
-  vectorLayer->SetContinuity(true);
-  wxPen vectorpen(*wxBLUE, 2, wxSOLID);
-  vectorLayer->SetPen(vectorpen);
-  vectorLayer->SetDrawOutsideMargins(false);
-
-
-  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  mpScaleX* xaxis = new mpScaleX(wxT("X"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  mpScaleY* yaxis = new mpScaleY(wxT("Y"), mpALIGN_LEFT, true);
-  xaxis->SetFont(graphFont);
-  yaxis->SetFont(graphFont);
-  xaxis->SetDrawOutsideMargins(false);
-  yaxis->SetDrawOutsideMargins(false);
-
-  m_Graph->SetMargins(20, 20, 30, 50);
-  m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(xaxis);
-  m_Graph->AddLayer(yaxis);
-  //m_Graph->AddLayer( l = new MyLissajoux( 125.0 ) );
-  //m_Graph->AddLayer(     vectorLayer );
-  //m_Graph->AddLayer(     new mpText(wxT("mpText sample"), 10, 10) );
-  wxBrush hatch(wxColour(200,200,200), wxSOLID);
-  wxBrush hatch2(wxColour(163,208,212), wxSOLID);
-  mpInfoLegend* leg;
-  //m_Graph->AddLayer( leg = new mpInfoLegend(wxRect(200,20,40,40), wxTRANSPARENT_BRUSH)); //&hatch2));
-  //leg->SetVisible(true);
-
-  wxPen mypen(*wxRED, 5, wxSOLID);
-  //l->SetPen( mypen);
-  //----------------------------
 
   // Add graph to window
   m_Graph->Fit();
   m_GraphSizer1->Insert(0, m_Graph, 0, wxEXPAND);
   m_GraphPanel->Layout();
+
+  // Load file path
+  m_StoragePath = m_Settings->getStoragePath();
 
   }
 
@@ -332,6 +294,14 @@ void MyFrame::startup(void){
 }
 
 /**
+ * @brief Updates the storage path from the GUI.
+ * @param path Path as a std::string
+ */
+void MyFrame::updateStoragePath(std::string path){
+  m_StoragePath = path;
+}
+
+/**
  * @brief Method wich will be executed, when the software will be closed by the user.
  * @param event Occuring event
  */
@@ -363,7 +333,7 @@ void MyFrame::OnPortsSettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
-	MyFileOutput_Base *fileOutput = new MyFileOutput_Base(this);
+  MyFileOutput *fileOutput = new MyFileOutput(this, m_Settings, m_StoragePath);
 	fileOutput->Show();
 }
 
@@ -1050,6 +1020,14 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
   if(NULL != m_CurrentExperiment){
     m_CurrentExperiment = NULL;
   }
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the export csv button.
+ * @param event Occuring event
+ */
+void MyFrame::OnExportCSV(wxCommandEvent& event){
+
 }
 
 /**

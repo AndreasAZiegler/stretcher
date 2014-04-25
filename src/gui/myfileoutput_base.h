@@ -5,25 +5,26 @@
 #ifndef __myfileoutput_base_h__
 #define __myfileoutput_base_h__
 
-#include <wx/xrc/xmlres.h>
+// Includes
+#include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/filepicker.h>
-#include <wx/button.h>
+#include <wx/xrc/xmlres.h>
 
 class MyFileOutput_Base : public wxDialog {
 protected:
  wxStaticText* m_FileOutputNameStaticText;
- wxFilePickerCtrl* m_FileOutputNameFilePicker;
- wxButton* wxID_OK;
- wxButton* wxID_CANCEL;
+ wxDirPickerCtrl* m_FileOutputNameDirPicker;
+ wxButton* wxID_FileOutputOK;
+ wxButton* wxID_FileOutputCANCEL;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
   wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFileOutput_Base"), wxT("wxDialog"));
   m_FileOutputNameStaticText = XRCCTRL(*this,"m_FileOutputNameStaticText",wxStaticText);
-  m_FileOutputNameFilePicker = XRCCTRL(*this,"m_FileOutputNameFilePicker",wxFilePickerCtrl);
-  wxID_OK = XRCCTRL(*this,"wxID_OK",wxButton);
-  wxID_CANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
+  m_FileOutputNameDirPicker = XRCCTRL(*this,"m_FileOutputNameDirPicker",wxDirPickerCtrl);
+  wxID_FileOutputOK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_FileOutputCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
  }
 public:
 MyFileOutput_Base(wxWindow *parent=NULL){
@@ -31,5 +32,6 @@ MyFileOutput_Base(wxWindow *parent=NULL){
  }
 };
 
-//void InitXmlResource();
+void 
+InitXmlResource();
 #endif

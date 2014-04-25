@@ -63,18 +63,20 @@ ExperimentValues::~ExperimentValues(){
  * @param value Position of linear stage 1 or 2 or the force.
  * @param type Type of value.
  */
-void ExperimentValues::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
+void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       if(StressOrForce::Stress == m_StressOrForce){
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back((measurementValue.value / 10000.0) / m_Diameter);
+          m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Diameter, measurementValue.timestamp));
+          m_GraphStressForceValues.push_back((measurementValue.value / 10000.0) / m_Diameter);
         }
       }else{
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back(measurementValue.value / 10000.0);
+          m_StressForceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
+          m_GraphStressForceValues.push_back(measurementValue.value / 10000.0);
         }
       }
       break;
@@ -82,28 +84,39 @@ void ExperimentValues::updateValues(MeasurementValue measurementValue, UpdatedVa
     case UpdatedValuesReceiver::ValueType::Distance:
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_DistanceValues.push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+          m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
+          m_GraphDistanceValues.push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         }
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
-  //std::cout << "m_StressForceValue has a size of: " << m_StressForceValues.size() << " m_DistanceValues has a size of: " << m_DistanceValues.size() << std::endl;
 
   {
-    std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-    if(m_StressForceValues.size() == m_DistanceValues.size()){
-      m_DisplayGraphDelay++;
-      if(5 <= m_DisplayGraphDelay){
-        m_DisplayGraphDelay = 0;
+    m_DisplayGraphDelay++;
+    if(5 <= m_DisplayGraphDelay){
+      m_DisplayGraphDelay = 0;
 
-        {
-          std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
-          m_VectorLayer->SetData(m_DistanceValues, m_StressForceValues);
+      std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
+      if(m_GraphStressForceValues.size() == m_GraphDistanceValues.size()){
+        std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
+        m_VectorLayer->SetData(m_GraphDistanceValues, m_GraphStressForceValues);
+      }else{
+        //std::cout << "ExperimentValues stress/force: " << m_GraphStressForceValues.size() << " distance: " << m_GraphDistanceValues.size() << std::endl;
+        if(m_GraphStressForceValues.size() > m_GraphDistanceValues.size()){
+          m_GraphStressForceValues.resize(m_GraphDistanceValues.size());
+        }else{
+          m_GraphDistanceValues.resize(m_GraphStressForceValues.size());
         }
-        m_MyFrame->updateGraphFromExperimentValues();
+        m_VectorLayer->SetData(m_GraphDistanceValues, m_GraphStressForceValues);
       }
-    }else{
-      std::cout << "ExperimentValues stress/force: " << m_StressForceValues.size() << " distance: " << m_DistanceValues.size() << std::endl;
+      m_MyFrame->updateGraphFromExperimentValues();
     }
   }
+}
+
+/**
+ * @brief Exports the measurement data to a .csv file.
+ */
+void ExperimentValues::exportCSV(void){
+
 }

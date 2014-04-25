@@ -33,7 +33,7 @@
 						<flag>wxALIGN_CENTER|wxALL</flag>
 						<border>5</border>
 						<object class="wxStaticText" name="m_FileOutputNameStaticText">
-							<label>Filename:</label>
+							<label>Path:</label>
 							<wrap>-1</wrap>
 						</object>
 					</object>
@@ -41,11 +41,10 @@
 						<option>0</option>
 						<flag>wxALL</flag>
 						<border>5</border>
-						<object class="wxFilePickerCtrl" name="m_FileOutputNameFilePicker">
+						<object class="wxDirPickerCtrl" name="m_FileOutputNameDirPicker">
 							<value></value>
-							<message>Select a file</message>
-							<wildcard>*.*</wildcard>
-							<style>wxFLP_DEFAULT_STYLE</style>
+							<message>Select a folder</message>
+							<style>wxDIRP_DEFAULT_STYLE</style>
 						</object>
 					</object>
 				</object>

@@ -43,7 +43,7 @@ class MyPorts : public MyPorts_Base
 
 enum
 {
-  ID_PortsOK = 10,
+  ID_PortsOK = 34
 };
 
 #endif // MYPORTS_H

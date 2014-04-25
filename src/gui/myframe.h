@@ -70,6 +70,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void startup(void);
 
+    /**
+     * @brief Updates the storage path from the GUI.
+     * @param path Path as a std::string
+     */
+    void updateStoragePath(std::string path);
+
   private:
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
@@ -264,6 +270,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMotorStop(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the export csv button.
+     * @param event Occuring event
+     */
+    void OnExportCSV(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
      * @param event Occuring event
      */
@@ -322,6 +334,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     long m_ClampingDistance;										/**< Clamping distance */
     long m_PreloadDistance;											/**< Preload distance */
 
+    std::string m_StoragePath;									/**< Path were the measurement values will be saved as a std::string. */
+
     wxDECLARE_EVENT_TABLE();
 };
 
@@ -358,7 +372,8 @@ enum
   ID_FatigueSendToProtocol = 29,
   ID_ChamberStretchGelOrCell = 30,
   ID_ChamberStretchSendToProtocol = 31,
-  ID_ClearGraph = 32
+  ID_ClearGraph = 32,
+  ID_ExportCSV = 33
 };
 
 #endif // MYFRAME_H

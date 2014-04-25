@@ -73,17 +73,21 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Add new stress of force value to the vector.
      * @param force Stress or force value.
      */
+    /*
     void newStressForceValue(double force){
       m_StressForceValues.push_back(force);
     }
+    */
 
     /**
      * @brief Add new distance value to the vector.
      * @param distance Distance value.
      */
+    /*
     void newDistanceValue(double distance){
       m_DistanceValues.push_back(distance);
     }
+    */
 
     /**
      * @brief Sets the diameter of the sample.
@@ -106,14 +110,36 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param value Position of linear stage 1 or 2 or the force.
      * @param type Type of value.
      */
-    virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
+    virtual void updateValues(UpdatedValues::MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
-     * @brief Updates the graph in the GUI.
+     * @brief Exports the measurement data to a .csv file.
      */
-    void updateGraph(void);
+    void exportCSV(void);
 
 	private:
+    /**
+     * @brief Struct for the measurement values containing the values and the time stamp.
+     */
+    struct MeasurementValue{
+      MeasurementValue(double v, std::chrono::high_resolution_clock::time_point ts){
+        value = v;
+        timestamp = ts;
+      }
+
+      MeasurementValue(const MeasurementValue& mv){
+        value = mv.value;
+        timestamp = mv.timestamp;
+      }
+
+      MeasurementValue(MeasurementValue& mv){
+        value = mv.value;
+        timestamp = mv.timestamp;
+      }
+
+      double value;
+      std::chrono::high_resolution_clock::time_point timestamp;
+    };
 
     StressOrForce m_StressOrForce;
     StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
@@ -121,8 +147,10 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
-    std::vector<double> m_StressForceValues;
-    std::vector<double> m_DistanceValues;
+    std::vector<ExperimentValues::MeasurementValue> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
+    std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
+    std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
+    std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
     std::mutex m_AccessValuesMutex;
 		double m_Diameter;
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
