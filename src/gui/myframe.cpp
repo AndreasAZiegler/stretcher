@@ -138,51 +138,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   m_Graph->AddLayer(&m_VectorLayer);
 
-  //---------------------------- Test Data for Graph
-  mpLayer* l;
-
-  // Create a mpFXYVector layer
-  mpFXYVector* vectorLayer = new mpFXYVector(_("Vector"));
-  // Create two vectors for x,y and fill them with data
-  std::vector<double> vectorx, vectory;
-  double xcoord;
-  for (unsigned int p = 0; p < 100; p++) {
-    xcoord = ((double)p-50.0)*5.0;
-    vectorx.push_back(xcoord);
-    vectory.push_back(0.0001*pow(xcoord, 3));
-  }
-  vectorLayer->SetData(vectorx, vectory);
-  vectorLayer->SetContinuity(true);
-  wxPen vectorpen(*wxBLUE, 2, wxSOLID);
-  vectorLayer->SetPen(vectorpen);
-  vectorLayer->SetDrawOutsideMargins(false);
-
-
-  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  mpScaleX* xaxis = new mpScaleX(wxT("X"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  mpScaleY* yaxis = new mpScaleY(wxT("Y"), mpALIGN_LEFT, true);
-  xaxis->SetFont(graphFont);
-  yaxis->SetFont(graphFont);
-  xaxis->SetDrawOutsideMargins(false);
-  yaxis->SetDrawOutsideMargins(false);
-
-  m_Graph->SetMargins(20, 20, 30, 50);
-  m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(xaxis);
-  m_Graph->AddLayer(yaxis);
-  //m_Graph->AddLayer( l = new MyLissajoux( 125.0 ) );
-  //m_Graph->AddLayer(     vectorLayer );
-  //m_Graph->AddLayer(     new mpText(wxT("mpText sample"), 10, 10) );
-  wxBrush hatch(wxColour(200,200,200), wxSOLID);
-  wxBrush hatch2(wxColour(163,208,212), wxSOLID);
-  mpInfoLegend* leg;
-  //m_Graph->AddLayer( leg = new mpInfoLegend(wxRect(200,20,40,40), wxTRANSPARENT_BRUSH)); //&hatch2));
-  //leg->SetVisible(true);
-
-  wxPen mypen(*wxRED, 5, wxSOLID);
-  //l->SetPen( mypen);
-  //----------------------------
-
   // Add graph to window
   m_Graph->Fit();
   m_GraphSizer1->Insert(0, m_Graph, 0, wxEXPAND);
@@ -194,7 +149,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
  * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
  * @param linearstage Pointer to the vector containing the linear motors.
  */
-void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, StageFrame *stageframe){
+void MyFrame::registerLinearStage(std::vector<LinearStage*> *linearstage, StageFrame *stageframe){
   m_LinearStages = linearstage;
   m_StageFrame = stageframe;
 
@@ -254,6 +209,13 @@ MyFrame::~MyFrame(){
   if(NULL != m_CurrentExperimentValues){
     delete m_CurrentExperimentValues;
   }
+
+  for(auto x : *m_LinearStages){
+    delete x;
+  }
+
+  delete m_ForceSensor;
+  delete m_ExperimentRunningThread;
 }
 
 /**
