@@ -156,7 +156,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
  * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
  * @param linearstage Pointer to the vector containing the linear motors.
  */
-void MyFrame::registerLinearStage(std::vector<LinearStage *> *linearstage, StageFrame *stageframe){
+void MyFrame::registerLinearStage(std::vector<LinearStage*> *linearstage, StageFrame *stageframe){
   m_LinearStages = linearstage;
   m_StageFrame = stageframe;
 
@@ -216,6 +216,13 @@ MyFrame::~MyFrame(){
   if(NULL != m_CurrentExperimentValues){
     delete m_CurrentExperimentValues;
   }
+
+  for(auto x : *m_LinearStages){
+    delete x;
+  }
+
+  delete m_ForceSensor;
+  delete m_ExperimentRunningThread;
 }
 
 /**
