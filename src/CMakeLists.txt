@@ -60,6 +60,13 @@ if(LIBCONFIG_FOUND)
   set(EXTERN_LIBS ${EXTERN_LIBS} ${LIBCONFIG_LIBRARY})
 endif(LIBCONFIG_FOUND)
 
+# Add gperftools for analyzing
+find_package(Gperftools)
+if(GPERFTOOLS_FOUND)
+  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${GPERFTOOLS_INCLUDE_DIR})
+  set(EXTERN_LIBS ${EXTERN_LIBS} ${GPERFTOOLS_LIBRARIES})
+  message( STATUS "Gperftools included.")
+endif(GPERFTOOLS_FOUND)
 
 #set_target_properties(libgpPanel PROPERTIES LINKER_LANGUAGE C)
 #install(TARGETS libwxctb DESTINATION ../build)

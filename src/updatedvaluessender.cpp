@@ -16,8 +16,10 @@ UpdatedValuesSender::~UpdatedValuesSender(){
  */
 //void MessageHandler::registerUpdateMethod(updateValue updateMethod, UpdateValues *updateClass){
 std::list<std::function<void(long, UpdatedValuesReceiver::ValueType)>>::iterator UpdatedValuesSender::registerUpdateMethod(updateValue updateMethod, UpdatedValuesReceiver *updateClass){
+  // Save the return of bin temporary to avoid memory leaks.
+  auto tmp = std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2);
   std::lock_guard<std::mutex> lck{m_AccessListMutex};
-  return(m_UpdateMethodList.insert(m_UpdateMethodList.end(), std::bind(updateMethod, updateClass, std::placeholders::_1, std::placeholders::_2)));
+  return(m_UpdateMethodList.insert(m_UpdateMethodList.end(), tmp));
 }
 
 /**
