@@ -20,7 +20,7 @@
  * @param preloaddistance The preload distance.
  * @param currentdistance The current distance.
  */
-FatigueTesting::FatigueTesting(Experiment::ExperimentType type,
+FatigueTesting::FatigueTesting(ExperimentType type,
                                StressOrForce stressOrForce,
                                StageFrame *stageframe,
                                std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
@@ -28,6 +28,7 @@ FatigueTesting::FatigueTesting(Experiment::ExperimentType type,
                                mpFXYVector *vector,
                                std::mutex *vectoraccessmutex,
                                MyFrame *myframe,
+                               std::string path,
                                std::condition_variable *wait,
                                std::mutex *mutex,
                                int cycles, double totaltime, long amplitude, double resttime, double frequency, double area, long preloaddistance, long currentdistance)
@@ -38,6 +39,7 @@ FatigueTesting::FatigueTesting(Experiment::ExperimentType type,
                vector,
                vectoraccessmutex,
                myframe,
+               path,
                Experiment::Direction::Stop,
                300/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
@@ -81,6 +83,7 @@ void FatigueTesting::process(Event event){
       if(Experiment::Event::evStart == event){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
+        m_ExperimentValues->setStartPoint();
 
         // If force/stress based
         if((m_CurrentDistance - m_AmplitudeInDistance) > m_DistanceThreshold){

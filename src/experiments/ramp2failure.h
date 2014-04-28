@@ -32,11 +32,11 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
      * @param area Value of the area.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Ramp2Failure(Experiment::ExperimentType type,
-                 Experiment::StressOrForce stressOrForce,
+    Ramp2Failure(ExperimentType type,
+                 StressOrForce stressOrForce,
                  StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-                 ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe,
+                 ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  BehaviorAfterFailure behavior,

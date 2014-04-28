@@ -17,7 +17,7 @@
  * @param speedinmm Speed in mm/s.
  * @param area Value of the area.
  */
-Creep::Creep(Experiment::ExperimentType type,
+Creep::Creep(ExperimentType type,
              StressOrForce stressOrForce,
              StageFrame *stageframe,
              std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
@@ -25,6 +25,7 @@ Creep::Creep(Experiment::ExperimentType type,
              mpFXYVector *vector,
              std::mutex *vectoraccessmutex,
              MyFrame *myframe,
+             std::string path,
              std::condition_variable *wait,
              std::mutex *mutex,
              long holdstressforce, double holdtime, double sensitivity, double speedinmm, double area)
@@ -35,6 +36,7 @@ Creep::Creep(Experiment::ExperimentType type,
                vector,
                vectoraccessmutex,
                myframe,
+               path,
                Direction::Stop,
                sensitivity*1000/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
@@ -77,9 +79,10 @@ void Creep::process(Event e){
       if(Experiment::Event::evStart == e){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
+        m_ExperimentValues->setStartPoint();
 
         // If force based
-        if(Experiment::StressOrForce::Force == m_HoldStressOrForce){
+        if(StressOrForce::Force == m_HoldStressOrForce){
           if((m_CurrentForce - m_HoldStressForce) > m_ForceStressThreshold){ // If current force is too high.
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
@@ -89,7 +92,7 @@ void Creep::process(Event e){
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMm);
           }
-        }else if(Experiment::StressOrForce::Stress == m_HoldStressOrForce){ // If stress based
+        }else if(StressOrForce::Stress == m_HoldStressOrForce){ // If stress based
           if((m_CurrentForce/m_Area - m_HoldStressForce) > m_ForceStressThreshold){ // If current stress is too high.
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
@@ -122,7 +125,7 @@ void Creep::process(Event e){
         if(false == m_EndFlag){
 
           // If force based
-          if(Experiment::StressOrForce::Force == m_HoldStressOrForce){
+          if(StressOrForce::Force == m_HoldStressOrForce){
             //std::cout << "(m_CurrentForce - m_HoldForce) > m_ForceStressThreshold " << (m_CurrentForce - m_HoldStressForce) << " " << m_ForceStressThreshold << std::endl;
             if((m_CurrentForce - m_HoldStressForce) > m_ForceStressThreshold){ // If current force is too high.
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
@@ -149,7 +152,7 @@ void Creep::process(Event e){
               m_StageFrame->stop();
                 std::cout << "Creep update." << std::endl;
             }
-          }else if(Experiment::StressOrForce::Stress == m_HoldStressOrForce){ // If stress based
+          }else if(StressOrForce::Stress == m_HoldStressOrForce){ // If stress based
             //std::cout << "(m_CurrentForce - m_HoldForce) > m_ForceStressThreshold " << (m_CurrentForce - m_HoldStressForce) << " " << m_ForceStressThreshold << std::endl;
             if((m_CurrentForce/m_Area - m_HoldStressForce) > m_ForceStressThreshold){ // If current stress is to high.
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;

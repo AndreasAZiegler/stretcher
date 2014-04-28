@@ -5,13 +5,14 @@
  * @param type Type of experiment.
  * @param forceOrStress Force or stress.
  */
-Experiment::Experiment(Experiment::ExperimentType type,
-                       Experiment::StressOrForce stressOrForce,
+Experiment::Experiment(ExperimentType type,
+                       StressOrForce stressOrForce,
                        StageFrame *stageframe,
                        ForceSensorMessageHandler *forcesensormessagehandler,
                        mpFXYVector *vector,
                        std::mutex *vectoraccessmutex,
                        MyFrame *myframe,
+                       std::string path,
                        Direction direction,
                        double forcesStressThreshold,
                        double distanceThreshold, double area, long currentdistance)
@@ -25,12 +26,14 @@ Experiment::Experiment(Experiment::ExperimentType type,
     m_CurrentForce(0),
     m_CurrentPositions{0, 0},
     m_CurrentDistance(currentdistance),
-    m_ExperimentValues{new ExperimentValues(static_cast<ExperimentValues::StressOrForce>(stressOrForce),
+    m_ExperimentValues{new ExperimentValues(type,
+                                            stressOrForce,
                                             stageframe,
                                             forcesensormessagehandler,
                                             vector,
                                             vectoraccessmutex,
                                             myframe,
+                                            path,
                                             area)}
 {
 }

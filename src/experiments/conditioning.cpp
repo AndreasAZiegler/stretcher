@@ -19,18 +19,19 @@
  * @param area Value of the area.
  * @param preloaddistance Preload distance of the stage frame.
  */
-Conditioning::Conditioning(Experiment::ExperimentType type,
-                            Conditioning::DistanceOrStressForce distanceOrStressForce,
-                            Experiment::StressOrForce stressOrForce,
-                            long currentdistance,
-                            StageFrame *stageframe, std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
-                            ForceSensorMessageHandler *forcesensormessagehandler,
-                            mpFXYVector *vector,
-                            std::mutex *vectoraccessmutex,
-                            MyFrame *myframe,
-                            std::condition_variable *wait,
-                            std::mutex *mutex,
-                            double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance)
+Conditioning::Conditioning(ExperimentType type,
+                           DistanceOrStressForce distanceOrStressForce,
+                           StressOrForce stressOrForce,
+                           long currentdistance,
+                           StageFrame *stageframe, std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
+                           ForceSensorMessageHandler *forcesensormessagehandler,
+                           mpFXYVector *vector,
+                           std::mutex *vectoraccessmutex,
+                           MyFrame *myframe,
+                           std::string path,
+                           std::condition_variable *wait,
+                           std::mutex *mutex,
+                           double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance)
   : Experiment(type,
                stressOrForce,
                stageframe,
@@ -38,6 +39,7 @@ Conditioning::Conditioning(Experiment::ExperimentType type,
                vector,
                vectoraccessmutex,
                myframe,
+               path,
                Direction::Stop,
                300/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
@@ -78,11 +80,12 @@ void Conditioning::process(Experiment::Event event){
       if(Experiment::Event::evStart == event){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
+        m_ExperimentValues->setStartPoint();
 
         // If force/stress based
         if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
           // If force based
-          if(Experiment::StressOrForce::Force == m_StressOrForce){
+          if(StressOrForce::Force == m_StressOrForce){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
               m_CurrentDirection = Direction::Backwards;
@@ -92,7 +95,7 @@ void Conditioning::process(Experiment::Event event){
               m_CurrentDirection = Direction::Forwards;
               m_StageFrame->moveForward(m_SpeedInMm);
             }
-          }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
+          }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
             if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
               m_CurrentDirection = Direction::Backwards;
@@ -136,7 +139,7 @@ void Conditioning::process(Experiment::Event event){
         // If stress/force based
         if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
           // If force based
-          if(Experiment::StressOrForce::Force == m_StressOrForce){
+          if(StressOrForce::Force == m_StressOrForce){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
@@ -157,7 +160,7 @@ void Conditioning::process(Experiment::Event event){
               //std::cout << "Go to preload distance" << std::endl;
               m_StageFrame->gotoStepsDistance(m_PreloadDistance);
             }
-          }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
+          }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
             if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
@@ -235,7 +238,7 @@ void Conditioning::process(Experiment::Event event){
             // If force/stress based
             if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
               // If force based
-              if(Experiment::StressOrForce::Force == m_StressOrForce){
+              if(StressOrForce::Force == m_StressOrForce){
                 if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
                   //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
                   m_CurrentDirection = Direction::Forwards;
@@ -245,7 +248,7 @@ void Conditioning::process(Experiment::Event event){
                   m_CurrentDirection = Direction::Backwards;
                   m_StageFrame->moveBackward(m_SpeedInMm);
                 }
-              }else if(Experiment::StressOrForce::Stress == m_StressOrForce){ // If stress based
+              }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
                 if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
                   //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
                   m_CurrentDirection = Direction::Forwards;

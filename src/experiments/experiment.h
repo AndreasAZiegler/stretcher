@@ -7,6 +7,7 @@
 #include <mathplot.h>
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
+#include "experimentdefinitions.h"
 #include "experimentvalues.h"
 
 /**
@@ -15,28 +16,6 @@
 class Experiment
 {
   public:
-
-    /**
-     * @brief Defines the experiment types.
-     */
-    enum class ExperimentType{
-      Preload = 0,
-      Conditioning = 1,
-      Ramp2Failure = 2,
-      Relaxation = 3,
-      Creep = 4,
-      FatigueTesting = 5,
-      ChamberStretchGel = 6,
-      ChamberStretchCells = 7
-    };
-
-    /**
-     * @brief Force or stress
-     */
-    enum class StressOrForce{
-      Stress = 0,
-      Force = 1
-    };
 
     /**
      * @enum Event
@@ -63,12 +42,14 @@ class Experiment
      * @param type Type of experiment.
      * @param forceOrStress Force or stress.
      */
-    Experiment(Experiment::ExperimentType type,
-               Experiment::StressOrForce stressOrForce,
+    Experiment(ExperimentType type,
+               StressOrForce stressOrForce,
                StageFrame* stageframe,
                ForceSensorMessageHandler* forcesensormessagehandler,
                mpFXYVector *vector,
-               std::mutex *vectoraccessmutex, MyFrame *myframe,
+               std::mutex *vectoraccessmutex,
+               MyFrame *myframe,
+               std::string path,
                Experiment::Direction direction,
                double forcesStressThreshold, double distanceThreshold,
                double area, long currentdistance = 0);

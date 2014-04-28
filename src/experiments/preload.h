@@ -26,10 +26,10 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @param speedInMM Speed in mm/s.
      * @param area Value of the area.
      */
-    Preload(Experiment::ExperimentType type,
-            Experiment::StressOrForce forceOrStress,
+    Preload(ExperimentType type,
+            StressOrForce forceOrStress,
             StageFrame *stageframe,
-            ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe,
+            ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
             std::condition_variable *wait,
             std::mutex *mutex,
             bool *stagesstopped,

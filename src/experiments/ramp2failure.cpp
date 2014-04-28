@@ -14,14 +14,15 @@
  * @param area Value of the area.
  * @param preloaddistance Preload distance of the stage frame.
  */
-Ramp2Failure::Ramp2Failure(Experiment::ExperimentType type,
-                           Experiment::StressOrForce stressOrForce,
+Ramp2Failure::Ramp2Failure(ExperimentType type,
+                           StressOrForce stressOrForce,
                            StageFrame *stageframe,
                            std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                            ForceSensorMessageHandler *forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
                            MyFrame *myframe,
+                           std::string path,
                            std::condition_variable *wait,
                            std::mutex *mutex,
                            BehaviorAfterFailure behavior,
@@ -33,6 +34,7 @@ Ramp2Failure::Ramp2Failure(Experiment::ExperimentType type,
                vector,
                vectoraccessmutex,
                myframe,
+               path,
                Direction::Stop,
                300/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
@@ -71,6 +73,7 @@ void Ramp2Failure::process(Event e){
       if(Event::evStart == e){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = State::runState;
+        m_ExperimentValues->setStartPoint();
         m_StageFrame->moveBackward(m_SpeedInMm);
       }
       break;

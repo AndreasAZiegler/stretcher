@@ -37,14 +37,14 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
      * @param steps The amount of steps.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Relaxation(Experiment::ExperimentType type,
+    Relaxation(ExperimentType type,
                StressOrForce stressOrForce,
                long currentdistance,
                StageFrame *stageframe,
                std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                ForceSensorMessageHandler *forcesensormessagehandler,
                mpFXYVector *vector,
-               std::mutex *vectoraccessmutex, MyFrame *myframe,
+               std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
                std::condition_variable *wait,
                std::mutex *mutex,
                long distance, double pause, int steps, double area, long preloaddistance);

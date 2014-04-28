@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <chrono>
 #include <wx/event.h>
 #include "../gui/myframe.h"
 #include "experimentvalues.h"
@@ -11,19 +13,23 @@
  * @param graph Pointer to the graph object.
  * @param diameter The diameter of the sample.
  */
-ExperimentValues::ExperimentValues(StressOrForce stressOrForce,
+ExperimentValues::ExperimentValues(ExperimentType experimenttype,
+                                   StressOrForce stressOrForce,
                                    StageFrame *stageframe,
                                    ForceSensorMessageHandler *forcesensormessagehandler,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
                                    MyFrame *myframe,
+                                   std::string path,
                                    double diameter)
-  : m_StressOrForce(stressOrForce),
+  : m_ExperimentType(experimenttype),
+    m_StressOrForce(stressOrForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_VectorLayer(vector),
     m_VectorLayerMutex(vectoraccessmutex),
     m_MyFrame(myframe),
+    m_StoragePath(path),
     m_Diameter(diameter),
     m_DisplayGraphDelay(0)
 {
@@ -35,6 +41,13 @@ ExperimentValues::ExperimentValues(StressOrForce stressOrForce,
 void ExperimentValues::startMeasurement(void){
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+}
+
+/**
+ * @brief Sets the experiment start time point.
+ */
+void ExperimentValues::setStartPoint(void){
+  m_StartTimePoint = std::chrono::high_resolution_clock::now();
 }
 
 /**
@@ -118,5 +131,87 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
  * @brief Exports the measurement data to a .csv file.
  */
 void ExperimentValues::exportCSV(void){
+  // Creating file name
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
+  std::cout << mbstr << std::endl;
+  std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
+  std::cout << pathAndFilename << std::endl;
+
+  // Correct the vector size if needed.
+  if(m_StressForceValues.size() > m_DistanceValues.size()){
+    m_StressForceValues.resize(m_DistanceValues.size());
+  }else{
+    m_DistanceValues.resize(m_StressForceValues.size());
+  }
+
+  std::ofstream file(pathAndFilename);
+  //std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+  if(false == file.is_open()){
+    std::cerr << "Couldn't open file" << std::endl;
+    throw "Couldn't open file";
+  }
+  file << "Experiment: " <<  experimentTypeToString() << "Date/Time: " << std::string(mbstr) << std::endl << std::endl;
+
+  std::string stressforce;
+  if(StressOrForce::Stress == m_StressOrForce){
+    stressforce = "kPa";
+  }else{
+    stressforce = "N";
+  }
+
+  file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << stressforce << "; Time stamp for stress/force in micro seconds" << std::endl;
+
+
+  for(int i = 0; i < m_StressForceValues.size(); ++i){
+    file << m_DistanceValues[i].value << std::string(";")
+         << std::chrono::duration_cast<std::chrono::milliseconds>(m_DistanceValues[i].timestamp - m_StartTimePoint).count() << ";"
+         << m_StressForceValues[i].value << ";"
+         << std::chrono::duration_cast<std::chrono::milliseconds>(m_StressForceValues[i].timestamp - m_StartTimePoint).count() << std::endl;
+  }
+
+  file.close();
+}
+
+/**
+ * @brief Returns the current experiment type as a string.
+ * @return The current experiment type as a string.
+ */
+std::string ExperimentValues::experimentTypeToString(){
+  switch(m_ExperimentType){
+    case ExperimentType::Preload:
+      return("Preload");
+      break;
+
+    case ExperimentType::Conditioning:
+      return("Conditioning");
+      break;
+
+    case ExperimentType::Ramp2Failure:
+      return("Ramp2Failure");
+      break;
+
+    case ExperimentType::Relaxation:
+      return("Relaxation");
+      break;
+
+    case ExperimentType::Creep:
+      return("Creep");
+      break;
+
+    case ExperimentType::FatigueTesting:
+      return("FatigueTesting");
+      break;
+
+    case ExperimentType::ChamberStretchCells:
+      return("ChamberStretch Cells");
+      break;
+
+    case ExperimentType::ChamberStretchGel:
+      return("ChamberStretch Gel");
+      break;
+  }
 
 }

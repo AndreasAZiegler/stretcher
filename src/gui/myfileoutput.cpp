@@ -12,7 +12,7 @@ MyFileOutput::MyFileOutput(MyFrame *myframe, Settings *settings, std::string pat
     m_Path(path)
 {
   wxID_FileOutputOK->SetId(ID_FileOutputOK);
-  m_FileOutputNameDirPicker->SetPath(m_Path);
+  //m_FileOutputNameDirPicker->SetPath(m_Path);
 }
 
 /**
@@ -20,6 +20,9 @@ MyFileOutput::MyFileOutput(MyFrame *myframe, Settings *settings, std::string pat
  * @param event Occuring event
  */
 void MyFileOutput::OnOK(wxCommandEvent &event){
+  //std::cout << m_FileOutputNameDirPicker->GetPath().ToStdString() << std::endl;
   m_Settings->setStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
   m_MyFrame->updateStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
+
+  Close();
 }

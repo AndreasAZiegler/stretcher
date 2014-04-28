@@ -2,7 +2,9 @@
 #ifndef EXPERIMENTVALUES_H
 #define EXPERIMENTVALUES_H
 #include <vector>
+#include <chrono>
 #include <mathplot.h>
+#include "experimentdefinitions.h"
 #include "../updatedvaluesreceiver.h"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
@@ -18,14 +20,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 	public:
 
     /**
-     * @brief Force or stress
-     */
-    enum class StressOrForce{
-      Stress = 0,
-      Force = 1
-    };
-
-    /**
      * @brief Initializes all the needed variables.
      * @param stressOrForce Indicates if the experiment is stress or force based.
      * @param stageframe Pointer to the stage frame object.
@@ -33,12 +27,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param graph Pointer to the graph object.
      * @param diameter The diameter of the sample.
      */
-    ExperimentValues(StressOrForce stressOrForce,
+    ExperimentValues(ExperimentType experimenttype, StressOrForce stressOrForce,
                      StageFrame *stageframe,
                      ForceSensorMessageHandler *forcesensormessagehandler,
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
                      MyFrame *myframe,
+                     std::string path,
                      double diameter);
 
     /**
@@ -50,6 +45,11 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Registers the update methods to receive the measurement values.
      */
     void startMeasurement(void);
+
+    /**
+     * @brief Sets the experiment start time point.
+     */
+    void setStartPoint(void);
 
     /**
      * @brief Unregister the update method.
@@ -117,11 +117,21 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      */
     void exportCSV(void);
 
+    /**
+     * @brief Returns the current experiment type as a string.
+     * @return The current experiment type as a string.
+     */
+    std::string experimentTypeToString();
+
 	private:
     /**
      * @brief Struct for the measurement values containing the values and the time stamp.
      */
     struct MeasurementValue{
+      MeasurementValue(){
+        value = 0;
+      }
+
       MeasurementValue(double v, std::chrono::high_resolution_clock::time_point ts){
         value = v;
         timestamp = ts;
@@ -141,19 +151,22 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
       std::chrono::high_resolution_clock::time_point timestamp;
     };
 
-    StressOrForce m_StressOrForce;
+    ExperimentType m_ExperimentType;																				/**< Type of the experiment */
+    StressOrForce m_StressOrForce;																					/**< Indicates if the experiment is stress or force based */
     StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
+    std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::vector<ExperimentValues::MeasurementValue> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
     std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
     std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
-    std::mutex m_AccessValuesMutex;
-		double m_Diameter;
+    std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
+    double m_Diameter;																											/**< Diameter size of the sample. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
+    std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 
 };
 

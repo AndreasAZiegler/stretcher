@@ -20,8 +20,8 @@
  * @param steps The amount of steps.
  * @param preloaddistance Preload distance of the stage frame.
  */
-Relaxation::Relaxation(Experiment::ExperimentType type,
-                       Experiment::StressOrForce stressOrForce,
+Relaxation::Relaxation(ExperimentType type,
+                       StressOrForce stressOrForce,
                        long currentdistance,
                        StageFrame *stageframe,
                        std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
@@ -29,6 +29,7 @@ Relaxation::Relaxation(Experiment::ExperimentType type,
                        mpFXYVector *vector,
                        std::mutex *vectoraccessmutex,
                        MyFrame *myframe,
+                       std::string path,
                        std::condition_variable *wait,
                        std::mutex *mutex,
                        long distance, double pause, int steps, double area, long preloaddistance)
@@ -39,6 +40,7 @@ Relaxation::Relaxation(Experiment::ExperimentType type,
                vector,
                vectoraccessmutex,
                myframe,
+               path,
                Direction::Stop,
                300/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
@@ -79,6 +81,7 @@ void Relaxation::process(Experiment::Event e){
       if(Experiment::Event::evStart == e){
         //m_StageFrame->setSpeed();
         m_CurrentState = State::runState;
+        m_ExperimentValues->setStartPoint();
 
         m_StageFrame->gotoStepsDistance(m_PreloadDistance + m_DistanceLimit);
         std::cout << "Relaxation started, mPrlealoadDistance: " << m_PreloadDistance << " m_DistanceLimit: " << m_DistanceLimit << std::endl;

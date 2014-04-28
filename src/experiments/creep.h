@@ -32,11 +32,15 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @param speedinmm Speed in mm/s.
      * @param area Value of the area.
      */
-    Creep(Experiment::ExperimentType type,
+    Creep(ExperimentType type,
           StressOrForce stressOrForce,
           StageFrame *stageframe,
           std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-          ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe,
+          ForceSensorMessageHandler *forcesensormessagehandler,
+          mpFXYVector *vector,
+          std::mutex *vectoraccessmutex,
+          MyFrame *myframe,
+          std::string path,
           std::condition_variable *wait,
           std::mutex *mutex, long holdstressforce, double holdtime, double sensitivity, double speedinmm, double area);
 
@@ -57,7 +61,7 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @brief Defines if experiment's hold value is stress or force based.
      * @param stressOrForce Stress or force based.
      */
-    void setHoldStressOrForce(Experiment::StressOrForce stressOrForce){
+    void setHoldStressOrForce(StressOrForce stressOrForce){
       m_HoldStressOrForce = stressOrForce;
     }
 
@@ -113,7 +117,7 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
     State m_CurrentState;																										/**< Current state of the preload FSM */
 
     double m_SpeedInMm;																											/**< The speed in mm/sec. */
-    Experiment::StressOrForce m_HoldStressOrForce;													/**< Indicates if the experiment is stress or force based. */
+    StressOrForce m_HoldStressOrForce;																			/**< Indicates if the experiment is stress or force based. */
     long m_HoldStressForce;																									/**< Hold stress/force value. */
     long m_Sensitivity;																											/**< The sensitivity for the stress/force value. */
     double m_Area;																													/**< Area of the sample in um^2 */

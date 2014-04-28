@@ -13,6 +13,7 @@ set(SOURCE
 
 set(HEADERS
 	${HEADERS}
+        ./experiments/experimentdefinitions.h
         ./experiments/experiment.h
         ./experiments/experimentvalues.h
         ./experiments/preload.h

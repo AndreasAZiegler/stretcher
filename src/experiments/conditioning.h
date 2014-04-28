@@ -38,15 +38,17 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @param area Value of the area.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Conditioning(Experiment::ExperimentType type,
-                 Conditioning::DistanceOrStressForce distanceOrStressForce,
-                 Experiment::StressOrForce forceOrStress,
+    Conditioning(ExperimentType type,
+                 DistanceOrStressForce distanceOrStressForce,
+                 StressOrForce forceOrStress,
                  long currentdistance,
                  StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  mpFXYVector *vector,
-                 std::mutex *vectoraccessmutex, MyFrame *myframe,
+                 std::mutex *vectoraccessmutex,
+                 MyFrame *myframe,
+                 std::string path,
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance);
@@ -81,7 +83,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @brief Defines the experiment force or stress based.
      * @param stressOrForceLimit Force or stress based.
      */
-    void setStressOrForceLimit(Experiment::StressOrForce stressOrForceLimit){
+    void setStressOrForceLimit(StressOrForce stressOrForceLimit){
       m_StressOrForceLimit = stressOrForceLimit;
     }
 
@@ -135,7 +137,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     double m_SpeedInPercent;																								/**< Speed in %preload/sec */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
     DistanceOrStressForce m_DistanceOrStressForceLimit;											/**< Indicates if experiment is distance or stress/force based */
-    Experiment::StressOrForce m_StressOrForceLimit;													/**< Indicates if experiment is stress or force based */
+    StressOrForce m_StressOrForceLimit;																			/**< Indicates if experiment is stress or force based */
     long m_StressForceLimit;																								/**< Stress or force limit value */
     long m_DistanceLimit;																										/**< Distance limit value */
     double m_Area;																													/**< Area of the sample in um^2 */

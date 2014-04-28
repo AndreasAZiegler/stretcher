@@ -81,7 +81,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceUnit(wxT(" kPa")),
     m_ClampingDistance(150),
     m_PreloadDistance(0),
-    m_StressOrForce(Experiment::StressOrForce::Force),
+    m_StressOrForce(StressOrForce::Force),
     m_CurrentExperiment(NULL),
     m_CurrentExperimentValues(NULL),
     m_Area(0),
@@ -141,6 +141,20 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   // Add layer to graph.
   m_Graph->AddLayer(&m_VectorLayer);
+
+  // Add axis.
+  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+  mpScaleX* xaxis = new mpScaleX(wxT("X"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+  mpScaleY* yaxis = new mpScaleY(wxT("Y"), mpALIGN_LEFT, true);
+  xaxis->SetFont(graphFont);
+  yaxis->SetFont(graphFont);
+  xaxis->SetDrawOutsideMargins(false);
+  yaxis->SetDrawOutsideMargins(false);
+
+  m_Graph->SetMargins(20, 20, 30, 50);
+  m_Graph->EnableMousePanZoom(true);
+  m_Graph->AddLayer(xaxis);
+  m_Graph->AddLayer(yaxis);
 
   // Add graph to window
   m_Graph->Fit();
@@ -373,14 +387,14 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [kPa]");
     m_ForceUnit = wxT(" kPa");
-    m_StressOrForce = Experiment::StressOrForce::Stress;
+    m_StressOrForce = StressOrForce::Stress;
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [N]");
     m_ForceUnit = wxT(" N");
-    m_StressOrForce = Experiment::StressOrForce::Force;
+    m_StressOrForce = StressOrForce::Force;
   }
 }
 
@@ -506,13 +520,14 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
         break;
     }
   }
-  m_CurrentExperiment = new Preload(Experiment::ExperimentType::Preload,
+  m_CurrentExperiment = new Preload(ExperimentType::Preload,
                                     m_StressOrForce,
                                     m_StageFrame,
                                     m_ForceSensorMessageHandler,
                                     &m_VectorLayer,
                                     &m_VectorLayerMutex,
                                     this,
+                                    m_StoragePath,
                                     &m_Wait,
                                     &m_WaitMutex,
                                     &m_StagesStoppedFlag,
@@ -586,7 +601,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
       break;
   }
 
-  m_CurrentExperiment = new Conditioning(Experiment::ExperimentType::Conditioning,
+  m_CurrentExperiment = new Conditioning(ExperimentType::Conditioning,
                                          distanceOrStressForce,
                                          m_StressOrForce,
                                          m_CurrentDistance,
@@ -596,6 +611,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          &m_VectorLayer,
                                          &m_VectorLayerMutex,
                                          this,
+                                         m_StoragePath,
                                          &m_Wait,
                                          &m_WaitMutex,
                                          m_ConditioningStressForceLimitSpinCtrl->GetValue(),
@@ -677,7 +693,7 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
     distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) /*+ 1.0*/) * m_PreloadDistance;
   }
 
-  m_CurrentExperiment = new Ramp2Failure(Experiment::ExperimentType::Ramp2Failure,
+  m_CurrentExperiment = new Ramp2Failure(ExperimentType::Ramp2Failure,
                                          m_StressOrForce,
                                          m_StageFrame,
                                          m_LinearStagesMessageHandlers,
@@ -685,6 +701,7 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
                                          &m_VectorLayer,
                                          &m_VectorLayerMutex,
                                          this,
+                                         m_StoragePath,
                                          &m_Wait,
                                          &m_WaitMutex,
                                          behavior,
@@ -735,7 +752,7 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
       break;
   }
 
-  m_CurrentExperiment = new Relaxation(Experiment::ExperimentType::Relaxation,
+  m_CurrentExperiment = new Relaxation(ExperimentType::Relaxation,
                                        m_StressOrForce,
                                        m_CurrentDistance,
                                        m_StageFrame,
@@ -744,6 +761,7 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
                                        &m_VectorLayer,
                                        &m_VectorLayerMutex,
                                        this,
+                                       m_StoragePath,
                                        &m_Wait,
                                        &m_WaitMutex,
                                        distance,
@@ -800,7 +818,7 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
     }
   }
 
-  m_CurrentExperiment = new Creep(Experiment::ExperimentType::Creep,
+  m_CurrentExperiment = new Creep(ExperimentType::Creep,
                                   m_StressOrForce,
                                   m_StageFrame,
                                   m_LinearStagesMessageHandlers,
@@ -808,6 +826,7 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
                                   &m_VectorLayer,
                                   &m_VectorLayerMutex,
                                   this,
+                                  m_StoragePath,
                                   &m_Wait,
                                   &m_WaitMutex,
                                   m_CreepHoldForceStressSpinCtrl->GetValue(),
@@ -857,7 +876,7 @@ void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
       break;
   }
 
-  m_CurrentExperiment = new FatigueTesting(Experiment::ExperimentType::FatigueTesting,
+  m_CurrentExperiment = new FatigueTesting(ExperimentType::FatigueTesting,
                                            m_StressOrForce,
                                            m_StageFrame,
                                            m_LinearStagesMessageHandlers,
@@ -865,6 +884,7 @@ void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
                                            &m_VectorLayer,
                                            &m_VectorLayerMutex,
                                            this,
+                                           m_StoragePath,
                                            &m_Wait,
                                            &m_WaitMutex,
                                            m_FatigueCyclesSpinCtrl->GetValue(),
@@ -942,7 +962,7 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
         amplitude = (m_ChamberStretchAmplitudeSpinCtrl1->GetValue() / 100.0) * m_PreloadDistance;
         break;
     }
-    m_CurrentExperiment = new FatigueTesting(Experiment::ExperimentType::ChamberStretchGel,
+    m_CurrentExperiment = new FatigueTesting(ExperimentType::ChamberStretchGel,
                                              m_StressOrForce,
                                              m_StageFrame,
                                              m_LinearStagesMessageHandlers,
@@ -950,6 +970,7 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
                                              &m_VectorLayer,
                                              &m_VectorLayerMutex,
                                              this,
+                                             m_StoragePath,
                                              &m_Wait,
                                              &m_WaitMutex,
                                              m_ChamberStretchCyclesSpinCtrl1->GetValue(),
@@ -1034,7 +1055,7 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
-
+  m_CurrentExperimentValues->exportCSV();
 }
 
 /**
