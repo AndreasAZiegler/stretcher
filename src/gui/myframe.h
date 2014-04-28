@@ -331,7 +331,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     long m_CurrentForce;												/**< Current force */
     int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
-    long m_ClampingDistance;										/**< Clamping distance */
+    double m_ClampingDistance;									/**< Clamping distance */
     long m_PreloadDistance;											/**< Preload distance */
 
     std::string m_StoragePath;									/**< Path were the measurement values will be saved as a std::string. */
