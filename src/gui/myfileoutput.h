@@ -2,6 +2,7 @@
 #define MYFILEOUTPUT_H
 
 // Includes
+#include <wx/window.h>
 #include "myfileoutput_base.h"
 #include "../settings.h"
 #include "myframe.h"

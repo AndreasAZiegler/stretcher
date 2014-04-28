@@ -354,7 +354,7 @@ void MyFrame::OnPortsSettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
-  MyFileOutput *fileOutput = new MyFileOutput(this, m_Settings, m_StoragePath);
+  MyFileOutput *fileOutput = new MyFileOutput(this, m_Settings, m_StoragePath, this);
 	fileOutput->Show();
 }
 

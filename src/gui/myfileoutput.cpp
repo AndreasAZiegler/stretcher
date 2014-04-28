@@ -1,3 +1,4 @@
+#include <wx/wx.h>
 #include "myfileoutput.h"
 
 wxBEGIN_EVENT_TABLE(MyFileOutput, MyFileOutput_Base)
@@ -24,5 +25,5 @@ void MyFileOutput::OnOK(wxCommandEvent &event){
   m_Settings->setStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
   m_MyFrame->updateStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
 
-  Close();
+  Close(true);
 }

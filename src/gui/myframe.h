@@ -373,7 +373,8 @@ enum
   ID_ChamberStretchGelOrCell = 30,
   ID_ChamberStretchSendToProtocol = 31,
   ID_ClearGraph = 32,
-  ID_ExportCSV = 33
+  ID_ExportCSV = 33,
+  ID_TEMP = 36
 };
 
 #endif // MYFRAME_H
