@@ -238,8 +238,10 @@ class Settings
      * @param Storage place as a string
      * @return true if sucessfull, false otherwise.
      */
-    void setStoragePath(std::string storagePath){
-      m_StoragePath = storagePath;
+    void setStoragePath(const wchar_t *storagePath){
+      char tmp[sizeof(storagePath)];
+      wcstombs(tmp, storagePath, sizeof(storagePath));
+      m_StoragePath = tmp;
     }
 
   private:
@@ -266,6 +268,7 @@ class Settings
     libconfig::Setting* m_ForceSensorMeasureEndValueSetting;	/**< The setting for the measure end value of the force sensor */
     libconfig::Setting* m_ForceSensorZeroValueSetting;				/**< The setting for the zero value of the force sensor */
 
+    libconfig::Setting* m_MeasurementValuesSettings;					/**< The settings for the measurement values. */
     libconfig::Setting* m_StoragePathSetting;									/**< The settings for the storage path */
 
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */

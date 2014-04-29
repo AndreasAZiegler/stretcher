@@ -21,8 +21,10 @@ MyFileOutput::MyFileOutput(MyFrame *myframe, Settings *settings, std::string pat
  * @param event Occuring event
  */
 void MyFileOutput::OnOK(wxCommandEvent &event){
+  //const wxScopedCharBuffer p(m_FileOutputNameDirPicker->GetPath());
+  //const char *  p = m_FileOutputNameDirPicker->GetPath().ToUTF8();
   std::cout << m_FileOutputNameDirPicker->GetPath().ToStdString() << std::endl;
-  m_Settings->setStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
+  m_Settings->setStoragePath(m_FileOutputNameDirPicker->GetPath().wc_str());
   m_MyFrame->updateStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
 
   Close(true);

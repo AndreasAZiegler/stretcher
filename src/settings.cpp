@@ -38,6 +38,7 @@ Settings::Settings()
     m_ForceSensorInputSensitivity(1.0),
     m_ForceSensorMeasureEndValue(1597.83),
     m_ForceSensorZeroValue(8388608.0),
+    m_MeasurementValuesSettings(NULL),
     m_StoragePath(std::string("/home"))
 {
   readSettings();
@@ -72,12 +73,22 @@ bool Settings::readSettings ()
     m_RootSettings = &m_CurrentConfig.getRoot();
     //m_RootSettings.reset(&m_CurrentConfig.getRoot());
 
+    // Read the settings for the measurement values.
+    try{
+      m_MeasurementValuesSettings = &m_RootSettings->operator []("MeasurementValues");
+      m_MeasurementValuesSettings->lookupValue("StoragePath", m_StoragePath);
+    }catch(const SettingNotFoundException &nfex){
+      std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
+    }
+
+    /*
     // Read the storage path
     try{
       m_RootSettings->lookupValue("StoragePath", m_StoragePath);
     }catch(const SettingNotFoundException &nfex){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
+    */
 
     // Read the settings for linear stage 1
     try{
@@ -129,6 +140,22 @@ bool Settings::writeSettings(){
     m_RootSettings = &m_CurrentConfig.getRoot();
   }
 
+  // Write the settings for measurement values
+  if(m_RootSettings->exists("MeasurementValues")){
+    m_MeasurementValuesSettings = &m_RootSettings->operator []("MeasurementValues");
+  }else{
+    m_MeasurementValuesSettings = &m_RootSettings->add("MeasurementValues", Setting::TypeGroup);
+  }
+
+  // Writing storage path setting for measurement values
+  if(m_MeasurementValuesSettings->exists("StoragePath")){
+    m_StoragePathSetting = &m_MeasurementValuesSettings->operator []("StoragePath");
+    *m_StoragePathSetting = m_StoragePath;
+  }else{
+    m_MeasurementValuesSettings->add("StoragePath", Setting::TypeString) = m_StoragePath;
+  }
+
+  /*
   // Write the storage path
   if(m_RootSettings->exists("StoragePath")){
     m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
@@ -141,6 +168,7 @@ bool Settings::writeSettings(){
     //m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
     std::cout << "Settings: Add StoragePath: " << m_StoragePath << std::endl;
   }
+  */
 
   // Write the settings for linear motor 1
   if(m_RootSettings->exists("LinearMotor1")){
