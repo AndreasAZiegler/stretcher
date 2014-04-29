@@ -38,7 +38,7 @@ Settings::Settings()
     m_ForceSensorInputSensitivity(1.0),
     m_ForceSensorMeasureEndValue(1597.83),
     m_ForceSensorZeroValue(8388608.0),
-    m_StoragePath("/home")
+    m_StoragePath(std::string("/home"))
 {
   readSettings();
 }
@@ -133,8 +133,13 @@ bool Settings::writeSettings(){
   if(m_RootSettings->exists("StoragePath")){
     m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
     *m_StoragePathSetting = m_StoragePath;
+    //*m_StoragePathSetting = std::string("/home/andreasziegler/Documents");
+    std::cout << "Settings: StoragePath: " << m_StoragePath << " " << m_StoragePathSetting << std::endl;
   }else{
     m_RootSettings->add("StoragePath", Setting::TypeString) = m_StoragePath;
+    //m_RootSettings->add("StoragePath", Setting::TypeString) = std::string("/home/andreasziegler/Documents");
+    //m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
+    std::cout << "Settings: Add StoragePath: " << m_StoragePath << std::endl;
   }
 
   // Write the settings for linear motor 1

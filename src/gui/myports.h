@@ -32,7 +32,7 @@ class MyPorts : public MyPorts_Base
      */
     void OnOK(wxCommandEvent& event);
 
-    const char* choiceToString(int i);
+    std::string choiceToString(int i);
 
     Settings *m_Settings;												/**< Pointer to the Settings object. */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stage objects */

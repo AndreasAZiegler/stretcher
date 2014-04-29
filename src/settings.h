@@ -140,7 +140,7 @@ class Settings
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
      */
-    void setLinMot1ComPort(const char* comPort){
+    void setLinMot1ComPort(std::string comPort){
       m_LinMot1ComPort = comPort;
     }
 
@@ -157,7 +157,7 @@ class Settings
      * @param comPort com port as a string.
      * @return true if sucessfull, false otherwise.
      */
-    void setLinMot2ComPort(const char* comPort){
+    void setLinMot2ComPort(std::string comPort){
       m_LinMot2ComPort = comPort;
     }
 
@@ -173,7 +173,7 @@ class Settings
      * @brief Set the com port for the force sensor.
      * @param comPort com port as a string.
      */
-    void setForceSensorComPort(const char* comPort){
+    void setForceSensorComPort(std::string comPort){
       m_ForceSensorComPort = comPort;
     }
 

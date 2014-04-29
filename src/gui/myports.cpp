@@ -47,22 +47,22 @@ void MyPorts::OnOK(wxCommandEvent &event){
 
 }
 
-const char* MyPorts::choiceToString(int i){
+std::string MyPorts::choiceToString(int i){
   switch(i){
     case 0:
-      return("/dev/ttyUSB0");
+      return(std::string("/dev/ttyUSB0"));
       break;
     case 1:
-      return("/dev/ttyUSB1");
+      return(std::string("/dev/ttyUSB1"));
       break;
     case 2:
-      return("/dev/ttyUSB2");
+      return(std::string("/dev/ttyUSB2"));
       break;
     case 3:
-      return("/dev/ttyUSB3");
+      return(std::string("/dev/ttyUSB3"));
       break;
     case 4:
-      return("/dev/ttyUSB4");
+      return(std::string("/dev/ttyUSB4"));
       break;
   }
 }
