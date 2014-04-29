@@ -133,7 +133,7 @@ class Settings
      * @return Storage place as a string.
      */
     std::string getStoragePath(){
-      return(m_StoragePath);
+      return(m_MeasurementValuesStoragePath);
     }
 
     /**
@@ -239,13 +239,13 @@ class Settings
      * @return true if sucessfull, false otherwise.
      */
     void setStoragePath(std::string storagePath){
-      m_StoragePath = storagePath;
+      m_MeasurementValuesStoragePath = storagePath;
     }
 
   private:
 
     libconfig::Config m_CurrentConfig;												/**< Current configuration */
-    const char *s_ConfigurationFileName;											/**< The file name for the configuration file */
+    //const char *s_ConfigurationFileName;											/**< The file name for the configuration file */
 
     libconfig::Setting* m_RootSettings;												/**< The root settings */
 
@@ -266,7 +266,9 @@ class Settings
     libconfig::Setting* m_ForceSensorMeasureEndValueSetting;	/**< The setting for the measure end value of the force sensor */
     libconfig::Setting* m_ForceSensorZeroValueSetting;				/**< The setting for the zero value of the force sensor */
 
-    libconfig::Setting* m_StoragePathSetting;									/**< The settings for the storage path */
+    libconfig::Setting* m_StoragePathsSetting;								/**< The settings for the storage path */
+    libconfig::Setting* m_ConfigurationStoragePathSetting;		/**< Storage path for the configuration file */
+    libconfig::Setting* m_MeasurementValuesStoragePathSetting;/**< Storage path for the measurement values */
 
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;															/**< The com port for the second linear stage motor */
@@ -282,7 +284,8 @@ class Settings
     double m_ForceSensorMeasureEndValue;											/**< The measure end value for the force sensor */
     double m_ForceSensorZeroValue;														/**< The zero value for the force sensor */
 
-    std::string m_StoragePath;																/**< Folder where the images and the data will be saved */
+    std::string m_ConfigurationStoragePath;										/**< Folder where the configuration file will be saved */
+    std::string m_MeasurementValuesStoragePath;								/**< Folder where the images and the data will be saved */
 
 };
 

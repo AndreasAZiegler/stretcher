@@ -15,7 +15,8 @@ using namespace libconfig;
  * @brief Load settings if file exists.
  */
 Settings::Settings()
-  : s_ConfigurationFileName("config.cfg"),
+  : //s_ConfigurationFileName("config.cfg"),
+    m_ConfigurationStoragePath("config.cfg"),
     m_RootSettings(NULL),
     m_LinMot1Settings(NULL),
     m_LinMot2Settings(NULL),
@@ -25,7 +26,9 @@ Settings::Settings()
     m_LinMot1BaudRateSetting(NULL),
     m_LinMot2BaudRateSetting(NULL),
     m_ForceSensorComPortSetting(NULL),
-    m_StoragePathSetting(NULL),
+    m_StoragePathsSetting(NULL),
+    m_ConfigurationStoragePathSetting(NULL),
+    m_MeasurementValuesStoragePathSetting(NULL),
     m_LinMot1ComPort("/dev/ttyUSB0"),
     m_LinMot2ComPort("/dev/ttyUSB1"),
     m_LinMot1BaudRate(115200),
@@ -38,7 +41,7 @@ Settings::Settings()
     m_ForceSensorInputSensitivity(1.0),
     m_ForceSensorMeasureEndValue(1597.83),
     m_ForceSensorZeroValue(8388608.0),
-    m_StoragePath(std::string("/home"))
+    m_MeasurementValuesStoragePath(std::string("/home"))
 {
   readSettings();
 }
@@ -54,12 +57,13 @@ Settings::~Settings(){
 bool Settings::readSettings ()
 {
   // Check if file exists
-  if(FILE *file = fopen(s_ConfigurationFileName, "r")){
+  //if(FILE *file = fopen(s_ConfigurationFileName, "r")){
+  if(FILE *file = fopen(m_ConfigurationStoragePath.c_str(), "r")){
     fclose(file);
 
     // Open the configuration file.
     try{
-      m_CurrentConfig.readFile(s_ConfigurationFileName);
+      m_CurrentConfig.readFile(m_ConfigurationStoragePath.c_str());
     }catch(const FileIOException &fioex){
       std::cerr << "I/O error while reading configuration file." << std::endl;
       return(false);
@@ -72,9 +76,11 @@ bool Settings::readSettings ()
     m_RootSettings = &m_CurrentConfig.getRoot();
     //m_RootSettings.reset(&m_CurrentConfig.getRoot());
 
-    // Read the storage path
+    // Read the settings for storage paths.
     try{
-      m_RootSettings->lookupValue("StoragePath", m_StoragePath);
+      m_StoragePathsSetting = &m_RootSettings->operator []("StoragePaths");
+      m_StoragePathsSetting->lookupValue("ConfigurationStoragePath", m_ConfigurationStoragePath);
+      m_StoragePathsSetting->lookupValue("MeasurementStoragePath", m_MeasurementValuesStoragePath);
     }catch(const SettingNotFoundException &nfex){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
@@ -129,6 +135,30 @@ bool Settings::writeSettings(){
     m_RootSettings = &m_CurrentConfig.getRoot();
   }
 
+  // Write the settings for storage paths
+  if(m_RootSettings->exists("StoragePaths")){
+    m_StoragePathsSetting = &m_RootSettings->operator []("StoragePaths");
+  }else{
+    m_StoragePathsSetting = &m_RootSettings->add("StoragePaths", Setting::TypeGroup);
+  }
+
+  // Writing configuration file storage path setting for storage paths
+  if(m_StoragePathsSetting->exists("ConfigurationStoragePath")){
+    m_ConfigurationStoragePathSetting = &m_StoragePathsSetting->operator []("ConfigurationStoragePath");
+    *m_ConfigurationStoragePathSetting = m_ConfigurationStoragePath;
+  }else{
+    m_StoragePathsSetting->add("ConfigurationStoragePath", Setting::TypeString) = m_ConfigurationStoragePath;
+  }
+
+  // Writing measurement values storage path setting for storage paths
+  if(m_StoragePathsSetting->exists("MeasurementStoragePath")){
+    m_MeasurementValuesStoragePathSetting = &m_StoragePathsSetting->operator []("MeasurementStoragePath");
+    *m_MeasurementValuesStoragePathSetting = m_MeasurementValuesStoragePath;
+  }else{
+    m_StoragePathsSetting->add("MeasurementStoragePath", Setting::TypeString) = m_MeasurementValuesStoragePath;
+  }
+
+  /*
   // Write the storage path
   if(m_RootSettings->exists("StoragePath")){
     m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
@@ -141,6 +171,7 @@ bool Settings::writeSettings(){
     //m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
     std::cout << "Settings: Add StoragePath: " << m_StoragePath << std::endl;
   }
+  */
 
   // Write the settings for linear motor 1
   if(m_RootSettings->exists("LinearMotor1")){
@@ -260,8 +291,9 @@ bool Settings::writeSettings(){
 
   // Finally try to write the configuration to the file.
   try{
-    m_CurrentConfig.writeFile(s_ConfigurationFileName);
-    std::cerr << "Configuration successfully written to: " << s_ConfigurationFileName << std::endl;
+    //m_CurrentConfig.writeFile(s_ConfigurationFileName);
+    m_CurrentConfig.writeFile(m_ConfigurationStoragePath.c_str());
+    std::cerr << "Configuration successfully written to: " << m_ConfigurationStoragePath << std::endl;
   }catch(const FileIOException &fioex){
     return(false);
   }
