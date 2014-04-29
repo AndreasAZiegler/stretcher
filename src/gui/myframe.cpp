@@ -278,9 +278,11 @@ void MyFrame::startup(void){
   m_ChamberStretchCellsPanel->Show(false);
 
   // Hide distance limit options
+  /*
   m_ConditioningDistanceLimitStaticText->Show(false);
   m_ConditioningDistanceLimitSpinCtrl->Show(false);
   m_ConditioningDisctanceLimitRadioBox->Show(false);
+  */
 
   // Hide Go to options
   m_R2FGoToSpinCtrl->Show(false);
@@ -403,12 +405,14 @@ void MyFrame::OnUnit(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnDistanceLimit(wxCommandEvent& event){
+  /*
   m_ConditioningDistanceLimitStaticText->Show(true);
   m_ConditioningDistanceLimitSpinCtrl->Show(true);
   m_ConditioningDisctanceLimitRadioBox->Show(true);
 
   m_ConditioningStressForceLimitStaticText->Show(false);
   m_ConditioningStressForceLimitSpinCtrl->Show(false);
+  */
 }
 
 /**
@@ -416,12 +420,14 @@ void MyFrame::OnDistanceLimit(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnStressLimit(wxCommandEvent& event){
+  /*
   m_ConditioningStressForceLimitStaticText->Show(true);
   m_ConditioningStressForceLimitSpinCtrl->Show(true);
 
   m_ConditioningDistanceLimitStaticText->Show(false);
   m_ConditioningDistanceLimitSpinCtrl->Show(false);
   m_ConditioningDisctanceLimitRadioBox->Show(false);
+  */
 }
 
 /**
@@ -710,6 +716,9 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
                                          m_Area,
                                          m_PreloadDistance,
                                          distanceafterfailure);
+
+  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
     m_ExperimentRunningFlag = true;
@@ -769,6 +778,9 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
                                        m_RelaxationStepsSpinCtrl->GetValue(),
                                        m_Area,
                                        m_PreloadDistance);
+
+  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
     m_ExperimentRunningFlag = true;
@@ -834,6 +846,9 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
                                   m_CreepSensitivitySpinCtrl->GetValue(),
                                   m_CreepSpeedMmSpinCtrl->GetValue(),
                                   m_Area);
+
+  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
     m_ExperimentRunningFlag = true;
@@ -895,6 +910,9 @@ void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
                                            m_Area,
                                            m_PreloadDistance,
                                            m_CurrentDistance);
+
+  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
     m_ExperimentRunningFlag = true;
@@ -981,6 +999,8 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
                                              m_Area,
                                              m_PreloadDistance,
                                              m_CurrentDistance);
+
+    m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
 
     {
       std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
@@ -1074,6 +1094,7 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_VectorLayer.Clear();
+    std::cout << "MyFrame cleared graph." << std::endl;
   }
   m_Graph->Fit();
   //delete m_CurrentExperimentValues;
