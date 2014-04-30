@@ -122,7 +122,7 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
     double m_DropBeforeStop;																								/**< Percentage of maximal force */
     BehaviorAfterFailure m_BehaviorAfterFailure;														/**< Indicates what happens after the experiment */
     long m_DistanceAfterFailure;																						/**< Distance after experiment if desired */
-    int m_CurrentState;																											/**< Current state of the FSM */
+    State m_CurrentState;																										/**< Current state of the FSM */
     long m_PreloadDistance;																									/**< Preload distance of the stage frame */
     double m_Area;																													/**< Area of the sample in um^2 */
     long m_MaxForce;																												/**< Maximal measured force */

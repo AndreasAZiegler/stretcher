@@ -73,7 +73,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @param forceStress Force or stress limit.
      */
     void setForceStressLimit (double forceStress){
-      m_ForceStressLimit = forceStress;
+      m_StressForceLimit = forceStress;
     }
 
     /**
@@ -96,7 +96,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
     State m_CurrentState;																		/**< Current state of the preload FSM */
 
-    double m_ForceStressLimit;															/**< Stress or force limit value */
+    double m_StressForceLimit;															/**< Stress or force limit value */
     double m_Area;																					/**< Area needed for stress calculation */
     double m_SpeedInMM;																			/**< Speed in mm/sec */
     double m_SpeedInPercent;																/**< Speed in percent of clamping distance / sec */
