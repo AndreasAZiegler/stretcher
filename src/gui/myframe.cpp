@@ -84,6 +84,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_StressOrForce(StressOrForce::Force),
     m_CurrentExperiment(NULL),
     m_CurrentExperimentValues(NULL),
+    m_StageMaxLimit(0),
+    m_StageMinLimit(0),
+    m_ForceMaxLimit(0),
+    m_ForceMinLimit(0),
     m_Area(0),
     m_ExperimentRunningFlag(false),
     m_PreloadDoneFlag(false),
@@ -1019,6 +1023,20 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
 
     return;
   }
+}
+
+/**
+ * @brief Method wich will be executed, when the user sets the limits.
+ * @param event Occuring event
+ */
+void MyFrame::OnSetLimits(wxCommandEvent& event){
+  m_StageMaxLimit = 0;
+  m_StageMinLimit = 0;
+  m_ForceMaxLimit = 0;
+  m_ForceMinLimit = 0;
+
+  m_LinearStages->at(0)->setMaxLimit(m_StageMaxLimit);
+  m_LinearStages->at(1)->setMaxLimit(m_StageMaxLimit);
 }
 
 /**

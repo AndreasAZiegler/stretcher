@@ -37,6 +37,18 @@ class LinearStage : public SerialInterface
     }
 
     /**
+     * @brief Sets the maximum position of the stages.
+     * @param limit Upper limit.
+     */
+    void setMaxLimit(long limit);
+
+    /**
+     * @brief Sets the minimum position of the stages.
+     * @param limit Lower limit.
+     */
+    void setMinLimit(long limit);
+
+    /**
      * @brief Sends linear stage to the home positin.
      */
     void home();
@@ -107,6 +119,8 @@ class LinearStage : public SerialInterface
 
     // Defined commands for the Zaber linear motors.
     const char *STAGE_DEVICE_MODE;										/**< Command to get the device mode */
+    const char *STAGE_SET_MAXIMUM_POSITION;						/**< Command to set the maximum position */
+    const char *STAGE_SET_MINIMUM_POSITION;						/**< Command to set the minimum position */
     const char *STAGE_SET_MOVE_TRACKING_PERIOD;				/**< Command to set the move tracking period */
     const char *STAGE_RESET;													/**< Command to reset the motor */
     const char *STAGE_RETURN_CURRENT_POSITION;				/**< Command to get the current position */

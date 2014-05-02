@@ -252,6 +252,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnChamberStretchSendToProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user sets the limits.
+     * @param event Occuring event
+     */
+    void OnSetLimits(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -308,6 +314,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
     StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
+    long m_StageMaxLimit;												/**< The maximal position for the stages */
+    long m_StageMinLimit;												/**< The minimal position for the stages */
+    long m_ForceMaxLimit;												/**< The maximal allowed force. */
+    long m_ForceMinLimit;												/**< The minimal allowed force. */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
@@ -374,7 +384,7 @@ enum
   ID_ChamberStretchSendToProtocol = 31,
   ID_ClearGraph = 32,
   ID_ExportCSV = 33,
-  ID_TEMP = 36
+  ID_SetLimits = 36
 };
 
 #endif // MYFRAME_H

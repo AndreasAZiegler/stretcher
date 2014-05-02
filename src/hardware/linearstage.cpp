@@ -31,6 +31,8 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int bau
     mStartUpFlag(true)
     */
       STAGE_DEVICE_MODE("\x00\x028"),
+      STAGE_SET_MAXIMUM_POSITION("\0x00\x02c"),
+      STAGE_SET_MINIMUM_POSITION("\0x00\x06a"),
       STAGE_SET_MOVE_TRACKING_PERIOD("\x00\x075"),
       STAGE_RESET("\x00\x00"),
       STAGE_RETURN_CURRENT_POSITION("\x00\x03c"),
@@ -143,6 +145,44 @@ void LinearStage::setMoveTrackingPeriod(void){
   char *settings = transformDecToText(10/*ms*/);
   //char *settings = transformDecToText(50/*ms*/);
   memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
+  memcpy(command+2, settings, 1);
+  memcpy(buffer, command, 6);
+
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Sets the maximum position of the stages.
+ * @param limit Upper limit.
+ */
+void LinearStage::setMaxLimit(long limit){
+  char buffer[6];
+  char command[6] = "";
+
+  char *settings = transformDecToText(limit);
+  memcpy(command, STAGE_SET_MAXIMUM_POSITION, 2);
+  memcpy(command+2, settings, 1);
+  memcpy(buffer, command, 6);
+
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Sets the minimum position of the stages.
+ * @param limit Lower limit.
+ */
+void LinearStage::setMinLimit(long limit){
+  char buffer[6];
+  char command[6] = "";
+
+  char *settings = transformDecToText(limit);
+  memcpy(command, STAGE_SET_MINIMUM_POSITION, 2);
   memcpy(command+2, settings, 1);
   memcpy(buffer, command, 6);
 
