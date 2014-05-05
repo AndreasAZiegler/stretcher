@@ -48,6 +48,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
   EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
   EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
+  EVT_BUTTON(ID_SetLimits, MyFrame::OnSetLimits)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
@@ -112,6 +113,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
+  m_ClampingPositionLimitSetButton->SetId(ID_SetLimits);
   m_ClampingPositionButton->SetId((ID_ClampingGoTo));
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
   m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
@@ -1030,13 +1032,15 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnSetLimits(wxCommandEvent& event){
-  m_StageMaxLimit = 0;
-  m_StageMinLimit = 0;
-  m_ForceMaxLimit = 0;
-  m_ForceMinLimit = 0;
+  m_StageMaxLimit = m_ClampingPositionLimitMaxDistanceSpinCtrl->GetValue();
+  m_StageMinLimit = m_ClampingPositionLimitMinDistanceSpinCtrl->GetValue();
+  m_ForceMaxLimit = m_ClampingPositionLimitMaxForceSpinCtrl->GetValue();
+  m_ForceMinLimit = m_ClampingPositionLimitMinForceSpinCtrl->GetValue();
 
-  m_LinearStages->at(0)->setMaxLimit(m_StageMaxLimit);
-  m_LinearStages->at(1)->setMaxLimit(m_StageMaxLimit);
+  m_StageFrame->setMaxLimit(m_StageMinLimit);
+  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
+  m_StageFrame->setMinLimit(m_StageMaxLimit);
+  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
 }
 
 /**

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include <chrono>
 #include "stageframe.h"
 #include "linearstage.h"
@@ -227,4 +228,34 @@ long StageFrame::getCurrentDistance(void){
   return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
          std::abs(771029 /*max. position*/ - m_CurrentPositions[1].value) +
          m_ZeroDistance);
+}
+
+/**
+ * @brief Sets the maximum position of the stages.
+ * @param limit Upper limit.
+ */
+void StageFrame::setMaxLimit(long limit){
+  long dist = (limit/MM_PER_MS);
+  long position = (771029 /*max. position*/ - (dist / 2));
+  //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
+
+  (m_LinearStages->at(0))->setMaxLimit(position);
+  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(10)));
+  (m_LinearStages->at(1))->setMaxLimit(position);
+  //std::cout << "StageFrame max limit position: " << position << std::endl;
+}
+
+/**
+ * @brief Sets the minimum position of the stages.
+ * @param limit Lower limit.
+ */
+void StageFrame::setMinLimit(long limit){
+  long dist = (limit/MM_PER_MS);
+  long position = (771029 /*max. position*/ - (dist / 2));
+  //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
+
+  (m_LinearStages->at(0))->setMinLimit(position);
+  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(10)));
+  (m_LinearStages->at(1))->setMinLimit(position);
+  //std::cout << "StageFrame min limit position: " << position << std::endl;
 }

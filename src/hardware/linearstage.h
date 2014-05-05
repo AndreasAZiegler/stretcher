@@ -138,7 +138,7 @@ class LinearStage : public SerialInterface
     //const float DecIncSpeed;              				/**< Amount of speed to increase/decrease */
 
     double m_Stepsize;			     				    					/**< Stepsize of the stepper motor in millimeters */
-    char mbytedata[4];
+    char m_ByteData[4];
     //int mOscstate;							          //!< Current state of the oscillation
     //double mAmplitude;						        //!< Amplitude of the oscillation
     //bool mStoprequest;						        //!< stopflag for the oscillation

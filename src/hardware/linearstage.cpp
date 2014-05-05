@@ -1,5 +1,6 @@
 
 // Includes
+#include <iostream>
 #include "linearstage.h"
 #include "../../include/ctb-0.13/serport.h"
 
@@ -31,8 +32,8 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int bau
     mStartUpFlag(true)
     */
       STAGE_DEVICE_MODE("\x00\x028"),
-      STAGE_SET_MAXIMUM_POSITION("\0x00\x02c"),
-      STAGE_SET_MINIMUM_POSITION("\0x00\x06a"),
+      STAGE_SET_MAXIMUM_POSITION("\x00\x02c"),
+      STAGE_SET_MINIMUM_POSITION("\x00\x06a"),
       STAGE_SET_MOVE_TRACKING_PERIOD("\x00\x075"),
       STAGE_RESET("\x00\x00"),
       STAGE_RETURN_CURRENT_POSITION("\x00\x03c"),
@@ -145,7 +146,7 @@ void LinearStage::setMoveTrackingPeriod(void){
   char *settings = transformDecToText(10/*ms*/);
   //char *settings = transformDecToText(50/*ms*/);
   memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
-  memcpy(command+2, settings, 1);
+  memcpy(command+2, settings, 4);
   memcpy(buffer, command, 6);
 
   {
@@ -161,16 +162,30 @@ void LinearStage::setMoveTrackingPeriod(void){
 void LinearStage::setMaxLimit(long limit){
   char buffer[6];
   char command[6] = "";
+  char *settings;
 
-  char *settings = transformDecToText(limit);
   memcpy(command, STAGE_SET_MAXIMUM_POSITION, 2);
-  memcpy(command+2, settings, 1);
+  /*
+  char tmp[2];
+  memcpy(tmp, STAGE_SET_MAXIMUM_POSITION, 2);
+  std::cout << "LinearStage STAGE_SET_MAXIMUM_POSTITION 0x" << hex << static_cast<int>(tmp[0]) << " " << static_cast<int>(tmp[1]) << dec << std::endl;
+  */
+  settings = transformDecToText(limit);
+  memcpy(command+2, settings, 4);
   memcpy(buffer, command, 6);
 
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
+  /*
+  std::cout << "LinearStage set max limit: 0x" << hex << static_cast<int>(buffer[0]) << " "
+                                                      << static_cast<int>(buffer[1]) << " "
+                                                      << static_cast<int>(buffer[2]) << " "
+                                                      << static_cast<int>(buffer[3]) << " "
+                                                      << static_cast<int>(buffer[4]) << " "
+                                                      << static_cast<int>(buffer[5]) << dec << std::endl;
+                                                      */
 }
 
 /**
@@ -180,10 +195,11 @@ void LinearStage::setMaxLimit(long limit){
 void LinearStage::setMinLimit(long limit){
   char buffer[6];
   char command[6] = "";
+  char *settings;
 
-  char *settings = transformDecToText(limit);
   memcpy(command, STAGE_SET_MINIMUM_POSITION, 2);
-  memcpy(command+2, settings, 1);
+  settings = transformDecToText(limit);
+  memcpy(command+2, settings, 4);
   memcpy(buffer, command, 6);
 
   {
@@ -317,7 +333,7 @@ void LinearStage::moveSteps(long steps){
   memcpy(buffer,command , 6);
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
-    m_SerialPort.Writev(buffer, 6, 50/*ms*/);
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
 }
 
@@ -335,9 +351,8 @@ void LinearStage::moveToAbsolute(long position){
   memcpy(buffer,command , 6);
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
-    m_SerialPort.Writev(buffer, 6, 50/*ms*/);
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
-
 }
 
 /**
@@ -349,20 +364,20 @@ char* LinearStage::transformDecToText(int dec){
   char bytes[4];
   unsigned int decnumber;
   decnumber=dec;
-  if (decnumber<0) {
-    decnumber=decnumber+(256*256*256*256);
+  if (decnumber < 0) {
+    decnumber = decnumber + (256*256*256*256);
   }
 
-  bytes[3]=decnumber/(256*256*256);
-  decnumber=decnumber-256*256*256*bytes[3];
+  bytes[3] = decnumber / (256*256*256);
+  decnumber = decnumber - 256*256*256*bytes[3];
 
-  bytes[2] =decnumber/(256*256);
-  decnumber=decnumber-256*256*bytes[2];
+  bytes[2] = decnumber/(256*256);
+  decnumber = decnumber - 256*256*bytes[2];
 
-  bytes[1] =decnumber/256;
-  decnumber=decnumber-256*bytes[1];
+  bytes[1] = decnumber / 256;
+  decnumber = decnumber - 256*bytes[1];
 
-  bytes[0] =decnumber;
-  memcpy(mbytedata,bytes,4);
-  return(mbytedata);
+  bytes[0] = decnumber;
+  memcpy(m_ByteData, bytes, 4);
+  return(m_ByteData);
 }
