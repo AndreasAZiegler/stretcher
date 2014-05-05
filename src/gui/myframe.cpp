@@ -144,17 +144,17 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  mpScaleX* xaxis = new mpScaleX(wxT("X"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  mpScaleY* yaxis = new mpScaleY(wxT("Y"), mpALIGN_LEFT, true);
-  xaxis->SetFont(graphFont);
-  yaxis->SetFont(graphFont);
-  xaxis->SetDrawOutsideMargins(false);
-  yaxis->SetDrawOutsideMargins(false);
+  m_XAxis = new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+  m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+  m_XAxis->SetFont(graphFont);
+  m_YAxis->SetFont(graphFont);
+  m_XAxis->SetDrawOutsideMargins(false);
+  m_YAxis->SetDrawOutsideMargins(false);
 
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(xaxis);
-  m_Graph->AddLayer(yaxis);
+  m_Graph->AddLayer(m_XAxis);
+  m_Graph->AddLayer(m_YAxis);
 
   // Add graph to window
   m_Graph->Fit();
@@ -219,11 +219,23 @@ MyFrame::~MyFrame(){
   (m_ForceSensor->getMessageHandler())->setExitFlag(false);
 
   // Remove vector from graph.
-  m_Graph->DelLayer(&m_VectorLayer);
+  //m_Graph->DelLayer(&m_VectorLayer);
+
+  // Remove all layers and destroy the objects.
+  m_Graph->DelAllLayers(true);
 
   if(NULL != m_Graph){
     delete m_Graph;
   }
+  /*
+  if(NULL != m_XAxis){
+    delete m_XAxis;
+  }
+  if(NULL != m_YAxis){
+    delete m_YAxis;
+  }
+  */
+
   if(NULL != m_CurrentExperiment){
     delete m_CurrentExperiment;
   }
@@ -389,6 +401,13 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [kPa]");
     m_ForceUnit = wxT(" kPa");
+
+    m_Graph->DelLayer(m_YAxis);
+    delete m_YAxis;
+    m_YAxis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
+    m_Graph->AddLayer(m_YAxis);
+    m_Graph->Fit();
+
     m_StressOrForce = StressOrForce::Stress;
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
@@ -396,6 +415,13 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [N]");
     m_ForceUnit = wxT(" N");
+
+    m_Graph->DelLayer(m_YAxis);
+    delete m_YAxis;
+    m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+    m_Graph->AddLayer(m_YAxis);
+    m_Graph->Fit();
+
     m_StressOrForce = StressOrForce::Force;
   }
 }

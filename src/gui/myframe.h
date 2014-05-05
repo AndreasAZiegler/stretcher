@@ -301,9 +301,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void checkFinishedExperiment();
 
-    mpWindow* m_Graph;													/**< Pointer to the graph */
+    mpWindow *m_Graph;													/**< Pointer to the graph */
     mpFXYVector m_VectorLayer;									/**< Vector layer for the graph */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
+    mpScaleX *m_XAxis;													/**< Pointer to the X axis */
+    mpScaleY *m_YAxis;													/**< Pointer to the Y axis */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
