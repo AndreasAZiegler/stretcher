@@ -136,6 +136,13 @@ void LinearStageMessageHandler::handler(char *message){
       }
       m_StageFrame->stopped();
       break;
+    case ANSWER_RETURN_STORED_POSITION:
+      m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      m_CurrentPosition.value = calculatePosition(&message[1]);
+      // Forwards the returned stored position to the stage frame.
+      m_StageFrame->returnStoredPosition(m_CurrentPosition, m_Type);
+      std::cout << "LinearStageMessageHandler: " << static_cast<int>(m_Type) << " stored position is: " << m_CurrentPosition.value * 0.00009921875 << std::endl;
+      break;
   }
 }
 

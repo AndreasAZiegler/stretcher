@@ -60,6 +60,12 @@ class StageFrame : virtual public UpdatedValuesReceiver
     void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
+     * @brief Takes the stored poition as current position and sets the current stage position.
+     * @param position The stored position.
+     */
+    void returnStoredPosition(MeasurementValue measurementValue, ValueType type);
+
+    /**
      * @brief Sets the speed of the linear stage.
      * @param speedinmm Speed in mm/s
      */

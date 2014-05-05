@@ -374,7 +374,7 @@ enum
   ID_ChamberStretchSendToProtocol = 31,
   ID_ClearGraph = 32,
   ID_ExportCSV = 33,
-  ID_TEMP = 36
+  ID_TEMP = 37,
 };
 
 #endif // MYFRAME_H

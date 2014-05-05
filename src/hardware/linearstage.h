@@ -26,6 +26,9 @@ class LinearStage : public SerialInterface
      */
     void configure();
 
+    /**
+     * @brief Sends the command that the stages store their current position.
+     */
     ~LinearStage();
 
     /**
@@ -53,12 +56,14 @@ class LinearStage : public SerialInterface
     void stop();
 
     /**
-     * @brief Moves the stage forward at constant speed
+     * @brief Moves the stage forwards at constant speed
+     * @param speedinmm Speed in mm/sec.
      */
     void moveForward(double speedinmm = 0);
 
     /**
-     * @brief Moves the stage backward at constant speed
+     * @brief Moves the stage backwards at constant speed
+     * @param speedinmm Speed in mm/sec.
      */
     void moveBackward(double speedinmm = 0);
 
@@ -73,6 +78,12 @@ class LinearStage : public SerialInterface
      * @param position Absolute stage position.
      */
     void moveToAbsolute(long position);
+
+    /**
+     * @brief Sets the current position.
+     * @param position The current position.
+     */
+    void setCurrentPosition(long position);
 
    private:
 
@@ -99,6 +110,16 @@ class LinearStage : public SerialInterface
     void setMoveTrackingPeriod(void);
 
     /**
+     * @brief Stores the current position in the non-volatile memory of the stage.
+     */
+    void storeCurrentPosition(void);
+
+    /**
+     * @brief Loads the in the stage stored position.
+     */
+    void loadStoredPosition(void);
+
+    /**
      * @brief Transforms a decimal number to a char* variable.
      * @param dec Number in the decimal number system.
      * @return The number as a char* variable.
@@ -118,6 +139,9 @@ class LinearStage : public SerialInterface
     const char *STAGE_SET_ACCELERATION;								/**< Command to set the motor acceleration */
     const char *STAGE_MOVE_AT_CONSTANT_SPEED;					/**< Command to let the motor move at constant speed */
     const char *STAGE_STOP;														/**< Command to stop the motor */
+    const char *STAGE_STORE_CURRENT_POSITION;					/**< Command to store the current position. */
+    const char *STAGE_RETURN_STORED_POSITION;					/**< Command to get the stored position. */
+    const char *STAGE_SET_CURRENT_POSITION;						/**< Command to set the current position. */
 
     const double MM_PER_MS;               						/**< milimeter per microstep */
 

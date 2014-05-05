@@ -1,5 +1,7 @@
 
 // Includes
+#include <iostream>
+#include <thread>
 #include "linearstage.h"
 #include "../../include/ctb-0.13/serport.h"
 
@@ -42,6 +44,9 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int bau
       STAGE_SET_ACCELERATION("\x00\x02b"),
       STAGE_MOVE_AT_CONSTANT_SPEED("\x00\x016"), //: QObject(parent)
       STAGE_STOP("\x00\x017"),
+      STAGE_STORE_CURRENT_POSITION("\x00\x010"),
+      STAGE_RETURN_STORED_POSITION("\x00\x011"),
+      STAGE_SET_CURRENT_POSITION("\x00\x02d"),
       MM_PER_MS(0.00009921875)
 {
 }
@@ -50,6 +55,10 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int bau
  * @brief Sets the device mode, the move tracking period and the speed of the linear stage.
  */
 void LinearStage::configure(){
+  /**
+   * @todo Move loadStoredPosition() to method which will be called, when the user decided to take the last position as reference.
+   */
+  loadStoredPosition();
   setDeviceMode();
   setMoveTrackingPeriod();
   setHomeSpeed(10/*mm/s*/);
@@ -57,8 +66,12 @@ void LinearStage::configure(){
   setAcceleration(500);
 }
 
+/**
+ * @brief Sends the command that the stages store their current position.
+ */
 LinearStage::~LinearStage()
 {
+  storeCurrentPosition();
 }
 
 /**
@@ -143,7 +156,60 @@ void LinearStage::setMoveTrackingPeriod(void){
   char *settings = transformDecToText(10/*ms*/);
   //char *settings = transformDecToText(50/*ms*/);
   memcpy(command, STAGE_SET_MOVE_TRACKING_PERIOD, 2);
-  memcpy(command+2, settings, 1);
+  memcpy(command+2, settings, 4);
+  memcpy(buffer, command, 6);
+
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Stores the current position in the non-volatile memory of the stage.
+ */
+void LinearStage::storeCurrentPosition(void){
+  char buffer[6];
+  char command[6] = "";
+
+  memcpy(command, STAGE_STORE_CURRENT_POSITION, 2);
+  memcpy(buffer, command, 6);
+
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+    // Wait 1 ms (necessary, that the stage receive the message)
+    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1)));
+  }
+}
+
+/**
+ * @brief Loads the in the stage stored position.
+ */
+void LinearStage::loadStoredPosition(void){
+  char buffer[6];
+  char command[6] = "";
+
+  memcpy(command, STAGE_RETURN_STORED_POSITION, 2);
+  memcpy(buffer, command, 6);
+
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/**
+ * @brief Sets the current position.
+ * @param position The current position.
+ */
+void LinearStage::setCurrentPosition(long position){
+  char buffer[6];
+  char command[6] = "";
+
+  char *settings = transformDecToText(position);
+  memcpy(command, STAGE_SET_CURRENT_POSITION, 2);
+  memcpy(command+2, settings, 4);
   memcpy(buffer, command, 6);
 
   {
@@ -213,6 +279,7 @@ void LinearStage::stop(){
 
 /**
  * @brief Moves the stage forwards at constant speed
+ * @param speedinmm Speed in mm/sec.
  */
 void LinearStage::moveForward(double speedinmm){
   int speed = 0;
@@ -239,6 +306,7 @@ void LinearStage::moveForward(double speedinmm){
 
 /**
  * @brief Moves the stage backwards at constant speed
+ * @param speedinmm Speed in mm/sec.
  */
 void LinearStage::moveBackward(double speedinmm){
   int speed = 0;

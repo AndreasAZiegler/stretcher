@@ -58,12 +58,40 @@
 												<vgap>0</vgap>
 												<hgap>0</hgap>
 												<growablecols>0</growablecols>
-												<growablerows>3</growablerows>
+												<growablerows>6</growablerows>
 												<object class="spacer">
 													<option>1</option>
 													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<size>0,10</size>
+												</object>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxStaticText" name="m_InitializeStaticText1">
+														<style>wxALIGN_CENTRE</style>
+														<label>Should the stored position be used as the current position.</label>
+														<wrap>-1</wrap>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxButton" name="m_InitializeLoadStoredPositionButton">
+														<label>Load stored position</label>
+														<default>0</default>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+													<border>5</border>
+													<object class="wxStaticText" name="InitializeStaticText2">
+														<label>Or</label>
+														<wrap>-1</wrap>
+													</object>
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
@@ -2137,7 +2165,7 @@
 	</object>
 	<object class="wxDialog" name="MySamplingFrequency_Base">
 		<style>wxDEFAULT_DIALOG_STYLE</style>
-		<size>322,130</size>
+		<size>382,165</size>
 		<title>Sampling Frequency</title>
 		<centered>1</centered>
 		<object class="wxFlexGridSizer">
@@ -2377,6 +2405,7 @@
 	</object>
 	<object class="wxDialog" name="MyFileOutput_Base">
 		<style>wxDEFAULT_DIALOG_STYLE</style>
+		<size>249,123</size>
 		<title>File Output</title>
 		<centered>1</centered>
 		<object class="wxFlexGridSizer">
@@ -2408,7 +2437,7 @@
 						<flag>wxALIGN_CENTER|wxALL</flag>
 						<border>5</border>
 						<object class="wxStaticText" name="m_FileOutputNameStaticText">
-							<label>Filename:</label>
+							<label>Path:</label>
 							<wrap>-1</wrap>
 						</object>
 					</object>
@@ -2416,11 +2445,10 @@
 						<option>0</option>
 						<flag>wxALL</flag>
 						<border>5</border>
-						<object class="wxFilePickerCtrl" name="m_FileOutputNameFilePicker">
+						<object class="wxDirPickerCtrl" name="m_FileOutputNameDirPicker">
 							<value></value>
-							<message>Select a file</message>
-							<wildcard>*.*</wildcard>
-							<style>wxFLP_DEFAULT_STYLE</style>
+							<message>Select a folder</message>
+							<style>wxDIRP_CHANGE_DIR|wxDIRP_DEFAULT_STYLE|wxDIRP_DIR_MUST_EXIST|wxDIRP_USE_TEXTCTRL</style>
 						</object>
 					</object>
 				</object>
@@ -2430,6 +2458,50 @@
 				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<size>0,5</size>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="wxID_OK">
+							<label>&amp;OK</label>
+						</object>
+					</object>
+					<object class="button">
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="wxID_CANCEL">
+							<label>&amp;Cancel</label>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+	<object class="wxDialog" name="MyHomeStages_Base">
+		<style>wxDEFAULT_DIALOG_STYLE</style>
+		<size>703,95</size>
+		<title></title>
+		<centered>1</centered>
+		<object class="wxFlexGridSizer">
+			<rows>4</rows>
+			<cols>0</cols>
+			<vgap>0</vgap>
+			<hgap>0</hgap>
+			<growablecols></growablecols>
+			<growablerows></growablerows>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL</flag>
+				<border>5</border>
+				<object class="wxStaticText" name="m_staticText62">
+					<label>Are you sure that nothing is mounted and/or will be destroyed when the stages go to the home position.</label>
+					<wrap>-1</wrap>
+				</object>
 			</object>
 			<object class="sizeritem">
 				<option>1</option>

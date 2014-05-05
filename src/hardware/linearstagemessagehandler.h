@@ -53,16 +53,17 @@ class LinearStageMessageHandler : virtual public MessageHandler
     }
 
   private:
-    enum { ANSWER_RESET = 0x00};											/**< Answer from the command "Reset" */
-    enum { ANSWER_SET_DEVICE_MODE = 0x28};						/**< Answer from the command "Set device mode" */
-    enum { MESSAGE_CURRENT_POSITION = 0x08};          /**< Reply only message from the motors during moving */
-    enum { ANSWER_CURRENT_POSITION = 0x3c};           /**< Answer from the command "Set Current Position" */
-    enum { ANSWER_GO_HOME = 0x01};                    /**< Answer from the command "Home" */
-    enum { ANSWER_MOVE_ABSOLUT = 0x14};               /**< Answer from the command "Move Absolute" */
-    enum { ANSWER_MOVE_RELATIVE = 0x15};              /**< Answer from the command "Move Relative" */
-    enum { ANSWER_SET_SPEED = 0x2a};                  /**< Answer from the command "Set Target Speed" */
-    enum { ANSWER_MOVE_AT_CONSTANT_SPEED = 0x16};     /**< Answer from the command "Move At Constant Speed" */
-    enum { ANSWER_MOTOR_STOP = 0x17};                 /**< Answer from the command "Stop" */
+    enum { ANSWER_RESET = 0x00 };											/**< Answer from the command "Reset" */
+    enum { ANSWER_SET_DEVICE_MODE = 0x28 };						/**< Answer from the command "Set device mode" */
+    enum { MESSAGE_CURRENT_POSITION = 0x08 };         /**< Reply only message from the motors during moving */
+    enum { ANSWER_CURRENT_POSITION = 0x3c };          /**< Answer from the command "Set Current Position" */
+    enum { ANSWER_GO_HOME = 0x01 };                   /**< Answer from the command "Home" */
+    enum { ANSWER_MOVE_ABSOLUT = 0x14 };              /**< Answer from the command "Move Absolute" */
+    enum { ANSWER_MOVE_RELATIVE = 0x15 };             /**< Answer from the command "Move Relative" */
+    enum { ANSWER_SET_SPEED = 0x2a };                 /**< Answer from the command "Set Target Speed" */
+    enum { ANSWER_MOVE_AT_CONSTANT_SPEED = 0x16 };    /**< Answer from the command "Move At Constant Speed" */
+    enum { ANSWER_MOTOR_STOP = 0x17 };                /**< Answer from the command "Stop" */
+    enum { ANSWER_RETURN_STORED_POSITION = 0x11 };
 
     /**
      * @brief Calculates the position from the receiving position data. See manual page. 7

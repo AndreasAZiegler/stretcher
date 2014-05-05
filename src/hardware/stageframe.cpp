@@ -116,6 +116,33 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
 }
 
 /**
+ * @brief Takes the stored poition as current position and sets the current stage position.
+ * @param position The stored position.
+ */
+void StageFrame::returnStoredPosition(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
+  if(UpdatedValuesReceiver::ValueType::Pos1 == type){
+    m_CurrentPositions[0].value = measurementValue.value;
+    m_CurrentPositions[0].timestamp = measurementValue.timestamp;
+    (m_LinearStages->at(0))->setCurrentPosition(measurementValue.value);
+  }else if(UpdatedValuesReceiver::ValueType::Pos2 == type){
+    m_CurrentPositions[1].value = measurementValue.value;
+    m_CurrentPositions[1].timestamp = measurementValue.timestamp;
+    (m_LinearStages->at(1))->setCurrentPosition(measurementValue.value);
+  }
+
+  m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
+  m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
+                             std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+  {
+    std::lock_guard<std::mutex> lck{m_AccessListMutex};
+    for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+      (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
+      std::cout << "Stage frame current position resetted. Current distance: " << m_CurrentDistance.value*m_Stepsize << std::endl;
+    }
+  }
+}
+
+/**
  * @brief Sets the speed of the linear stage.
  * @param speedinmm Speed in mm/s
  */

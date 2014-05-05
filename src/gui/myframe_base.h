@@ -25,6 +25,9 @@ class MyFrame_Base : public wxFrame {
 protected:
  wxNotebook* m_Experiments;
  wxPanel* m_InitializePanel;
+ wxStaticText* m_InitializeStaticText1;
+ wxButton* m_InitializeLoadStoredPositionButton;
+ wxStaticText* InitializeStaticText2;
  wxStaticText* m_InitializeWarningStaticText;
  wxButton* m_InitializeHomeMotorsButton;
  wxPanel* m_ClampingPosPanel;
@@ -125,7 +128,7 @@ protected:
  wxButton* m_FatigueCancelButton;
  wxButton* m_FatigueSendButton;
  wxPanel* m_ChamberStretchPanel;
-wxFlexGridSizer* m_ChamberStretchSizer1;
+ wxFlexGridSizer* m_ChamberStretchSizer1;
  wxRadioBox* m_ChamberStretchMeasurementRadioBox;
  wxPanel* m_ChamberStretchGelPanel;
  wxStaticText* m_ChamberStretchEmodLeftStaticText;
@@ -200,6 +203,9 @@ private:
   wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFrame_Base"), wxT("wxFrame"));
   m_Experiments = XRCCTRL(*this,"m_Experiments",wxNotebook);
   m_InitializePanel = XRCCTRL(*this,"m_InitializePanel",wxPanel);
+  m_InitializeStaticText1 = XRCCTRL(*this,"m_InitializeStaticText1",wxStaticText);
+  m_InitializeLoadStoredPositionButton = XRCCTRL(*this,"m_InitializeLoadStoredPositionButton",wxButton);
+  InitializeStaticText2 = XRCCTRL(*this,"InitializeStaticText2",wxStaticText);
   m_InitializeWarningStaticText = XRCCTRL(*this,"m_InitializeWarningStaticText",wxStaticText);
   m_InitializeHomeMotorsButton = XRCCTRL(*this,"m_InitializeHomeMotorsButton",wxButton);
   m_ClampingPosPanel = XRCCTRL(*this,"m_ClampingPosPanel",wxPanel);
