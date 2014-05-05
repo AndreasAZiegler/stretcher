@@ -5,11 +5,11 @@
 #ifndef __myports_base_h__
 #define __myports_base_h__
 
-#include <wx/xrc/xmlres.h>
-#include <wx/dialog.h>
+// Includes
 #include <wx/stattext.h>
 #include <wx/choice.h>
 #include <wx/button.h>
+#include <wx/xrc/xmlres.h>
 
 class MyPorts_Base : public wxDialog {
 protected:
@@ -40,5 +40,6 @@ MyPorts_Base(wxWindow *parent=NULL){
  }
 };
 
-//void InitXmlResource();
+void 
+InitXmlResource();
 #endif
