@@ -53,7 +53,7 @@
 										<selected>1</selected>
 										<object class="wxPanel" name="m_InitializePanel">
 											<object class="wxFlexGridSizer">
-												<rows>4</rows>
+												<rows>7</rows>
 												<cols>1</cols>
 												<vgap>0</vgap>
 												<hgap>0</hgap>
