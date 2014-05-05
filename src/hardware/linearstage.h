@@ -85,6 +85,11 @@ class LinearStage : public SerialInterface
      */
     void setCurrentPosition(long position);
 
+    /**
+     * @brief Loads the in the stage stored position.
+     */
+    void loadStoredPosition(void);
+
    private:
 
     /**
@@ -113,11 +118,6 @@ class LinearStage : public SerialInterface
      * @brief Stores the current position in the non-volatile memory of the stage.
      */
     void storeCurrentPosition(void);
-
-    /**
-     * @brief Loads the in the stage stored position.
-     */
-    void loadStoredPosition(void);
 
     /**
      * @brief Transforms a decimal number to a char* variable.

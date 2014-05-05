@@ -138,6 +138,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnChamberMeasurement(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user klicks on load stored position button.
+     * @param event Occuring event
+     */
+    void OnLoadStoredPosition(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on the home stage button.
      * @param event Occuring event
      */
@@ -374,7 +380,7 @@ enum
   ID_ChamberStretchSendToProtocol = 31,
   ID_ClearGraph = 32,
   ID_ExportCSV = 33,
-  ID_TEMP = 37,
+  ID_LoadStoredPosition = 37
 };
 
 #endif // MYFRAME_H

@@ -99,7 +99,7 @@
 													<border>5</border>
 													<object class="wxStaticText" name="m_InitializeWarningStaticText">
 														<style>wxALIGN_CENTRE</style>
-														<label>Be sure that nothing is mounted before hitting the button &quot;Home stages&quot;.</label>
+														<label>Should the stages be homed.</label>
 														<wrap>-1</wrap>
 													</object>
 												</object>

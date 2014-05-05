@@ -58,7 +58,7 @@ void LinearStage::configure(){
   /**
    * @todo Move loadStoredPosition() to method which will be called, when the user decided to take the last position as reference.
    */
-  loadStoredPosition();
+  //loadStoredPosition();
   setDeviceMode();
   setMoveTrackingPeriod();
   setHomeSpeed(10/*mm/s*/);
