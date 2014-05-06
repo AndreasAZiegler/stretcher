@@ -392,7 +392,7 @@ enum
   ID_ChamberStretchSendToProtocol = 31,
   ID_ClearGraph = 32,
   ID_ExportCSV = 33,
-  ID_SetLimits = 36
+  ID_SetLimits = 36,
   ID_LoadStoredPosition = 37
 };
 

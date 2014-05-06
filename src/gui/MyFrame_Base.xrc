@@ -174,7 +174,7 @@
 																<option>0</option>
 																<flag>wxALL</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="Am_ClampingPositionLimitMaxDistanceStaticText">
+																<object class="wxStaticText" name="m_ClampingPositionLimitMaxDistanceStaticText">
 																	<label>Maximal distance:</label>
 																	<wrap>-1</wrap>
 																</object>
@@ -194,7 +194,7 @@
 																<option>0</option>
 																<flag>wxALL</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="Am_ClampingPositionLimitMinDistanceStaticText">
+																<object class="wxStaticText" name="m_ClampingPositionLimitMinDistanceStaticText">
 																	<label>Minimal distance:</label>
 																	<wrap>-1</wrap>
 																</object>
@@ -203,7 +203,7 @@
 																<option>0</option>
 																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMinDistancem_SpinCtrl">
+																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMinDistanceSpinCtrl">
 																	<style></style>
 																	<value>0</value>
 																	<min>0</min>
@@ -214,7 +214,7 @@
 																<option>0</option>
 																<flag>wxALL</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="Am_ClampingPositionLimitMaxForceStaticText">
+																<object class="wxStaticText" name="m_ClampingPositionLimitMaxForceStaticText">
 																	<label>Maximal force:</label>
 																	<wrap>-1</wrap>
 																</object>
@@ -234,7 +234,7 @@
 																<option>0</option>
 																<flag>wxALL</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="Am_ClampingPositionLimitMinForceStaticText">
+																<object class="wxStaticText" name="m_ClampingPositionLimitMinForceStaticText">
 																	<label>Minimal force:</label>
 																	<wrap>-1</wrap>
 																</object>

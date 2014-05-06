@@ -189,6 +189,10 @@ void LinearStage::setMaxLimit(long limit){
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
+/*
  * @brief Stores the current position in the non-volatile memory of the stage.
  */
 void LinearStage::storeCurrentPosition(void){
