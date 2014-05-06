@@ -3,6 +3,7 @@
 
 /*************** Includes ************/
 #include <thread>
+#include <pugixml/pugixml.hpp>
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
