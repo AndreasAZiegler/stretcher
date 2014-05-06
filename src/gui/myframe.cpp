@@ -218,23 +218,23 @@ MyFrame::~MyFrame(){
   // Stop force sensor receiver thread
   (m_ForceSensor->getMessageHandler())->setExitFlag(false);
 
-  // Remove vector from graph.
-  //m_Graph->DelLayer(&m_VectorLayer);
+  // Remove vector, and the axis from graph.
+  m_Graph->DelLayer(&m_VectorLayer);
+  m_Graph->DelLayer(m_XAxis);
+  m_Graph->DelLayer(m_YAxis);
 
   // Remove all layers and destroy the objects.
-  m_Graph->DelAllLayers(true);
+  //m_Graph->DelAllLayers(true, false);
 
   if(NULL != m_Graph){
     delete m_Graph;
   }
-  /*
   if(NULL != m_XAxis){
     delete m_XAxis;
   }
   if(NULL != m_YAxis){
     delete m_YAxis;
   }
-  */
 
   if(NULL != m_CurrentExperiment){
     delete m_CurrentExperiment;
@@ -405,6 +405,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_Graph->DelLayer(m_YAxis);
     delete m_YAxis;
     m_YAxis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
+    wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    m_YAxis->SetFont(graphFont);
     m_Graph->AddLayer(m_YAxis);
     m_Graph->Fit();
 
@@ -419,6 +421,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_Graph->DelLayer(m_YAxis);
     delete m_YAxis;
     m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+    wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    m_YAxis->SetFont(graphFont);
     m_Graph->AddLayer(m_YAxis);
     m_Graph->Fit();
 
