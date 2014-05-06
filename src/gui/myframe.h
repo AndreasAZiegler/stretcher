@@ -4,6 +4,7 @@
 /*************** Includes ************/
 #include <thread>
 #include <wx/event.h>
+#include <pugixml/pugixml.hpp>
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
