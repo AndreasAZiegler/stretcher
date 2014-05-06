@@ -6,7 +6,6 @@
 #define __myfileoutput_base_h__
 
 // Includes
-#include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/filepicker.h>
 #include <wx/xrc/xmlres.h>
@@ -32,5 +31,5 @@ MyFileOutput_Base(wxWindow *parent=NULL){
  }
 };
 
-//void InitXmlResource();
+void InitXmlResource();
 #endif

@@ -7,6 +7,7 @@
 #include <functional>
 #include "../../include/ctb-0.13/serport.h"
 #include "myframe.h"
+#include "myhomestages.h"
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
 #include "myfileoutput.h"
@@ -46,6 +47,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
+  EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnLoadStoredPosition)
   EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
   EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnSetLimits)
@@ -112,6 +114,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
+  m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
   m_ClampingPositionLimitSetButton->SetId(ID_SetLimits);
   m_ClampingPositionButton->SetId((ID_ClampingGoTo));
@@ -497,12 +500,25 @@ void MyFrame::OnChamberMeasurement(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user klicks on load stored position button.
+ * @param event Occuring event
+ */
+void MyFrame::OnLoadStoredPosition(wxCommandEvent& event){
+  (m_LinearStages->at(0))->loadStoredPosition();
+  (m_LinearStages->at(1))->loadStoredPosition();
+}
+
+/**
  * @brief Method wich will be executed, when the user klicks on the home stage button.
  * @param event Occuring event
  */
 void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
+  /*
   (m_LinearStages->at(0))->home();
   (m_LinearStages->at(1))->home();
+  */
+  MyHomeStages *homestages = new MyHomeStages(m_LinearStages, this);
+  homestages->Show();
 }
 
 /**

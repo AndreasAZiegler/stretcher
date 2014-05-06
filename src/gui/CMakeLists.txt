@@ -3,6 +3,7 @@ set(SOURCE
         ./gui/myframe.cpp
         ./gui/myports.cpp
         ./gui/myfileoutput.cpp
+        ./gui/myhomestages.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
         ./gui/xh_mathplotxmlhandler.cpp
         PARENT_SCOPE
@@ -17,6 +18,8 @@ set(HEADERS
         ./gui/myframe.h
         ./gui/myfileoutput.h
         ./gui/myfileoutput_base.h
+        ./gui/myhomestages.h
+        ./gui/myhomestages_base.h
         ./gui/xh_wxspinctrldoublexmlhandler.h
         ./gui/xh_mathplotxmlhandler.h
         PARENT_SCOPE
