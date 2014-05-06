@@ -99,17 +99,140 @@
 										<object class="wxPanel" name="m_ClampingPosPanel">
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
-												<rows>2</rows>
+												<rows>4</rows>
 												<cols>0</cols>
 												<vgap>0</vgap>
 												<hgap>0</hgap>
-												<growablecols></growablecols>
-												<growablerows></growablerows>
+												<growablecols>0</growablecols>
+												<growablerows>3</growablerows>
 												<object class="spacer">
 													<option>1</option>
 													<flag></flag>
 													<border>5</border>
 													<size>0,10</size>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_ClampingPositionLimitPanel">
+														<style>wxSIMPLE_BORDER</style>
+														<object class="wxFlexGridSizer">
+															<rows>6</rows>
+															<cols>2</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols></growablecols>
+															<growablerows></growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_ClampingPositionLimitStaticText60">
+																	<label>Limits:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText61">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="Am_ClampingPositionLimitMaxDistanceStaticText">
+																	<label>Maximal distance:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMaxDistanceSpinCtrl">
+																	<style></style>
+																	<value>0</value>
+																	<min>0</min>
+																	<max>153</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="Am_ClampingPositionLimitMinDistanceStaticText">
+																	<label>Minimal distance:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMinDistancem_SpinCtrl">
+																	<style></style>
+																	<value>0</value>
+																	<min>0</min>
+																	<max>153</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="Am_ClampingPositionLimitMaxForceStaticText">
+																	<label>Maximal force:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMaxForceSpinCtrl">
+																	<style></style>
+																	<value>0</value>
+																	<min>-20</min>
+																	<max>20</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="Am_ClampingPositionLimitMinForceStaticText">
+																	<label>Minimal force:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMinForceSpinCtrl">
+																	<style></style>
+																	<value>0</value>
+																	<min>-20</min>
+																	<max>20</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_ClampingPositionLimitSetButton">
+																	<label>Set limits</label>
+																	<default>0</default>
+																</object>
+															</object>
+														</object>
+													</object>
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
@@ -146,6 +269,12 @@
 															</object>
 														</object>
 													</object>
+												</object>
+												<object class="spacer">
+													<option>1</option>
+													<flag>wxEXPAND</flag>
+													<border>5</border>
+													<size>0,0</size>
 												</object>
 											</object>
 										</object>
@@ -2129,325 +2258,6 @@
 									</object>
 								</object>
 							</object>
-						</object>
-					</object>
-				</object>
-			</object>
-		</object>
-	</object>
-	<object class="wxDialog" name="MySamplingFrequency_Base">
-		<style>wxDEFAULT_DIALOG_STYLE</style>
-		<size>322,130</size>
-		<title>Sampling Frequency</title>
-		<centered>1</centered>
-		<object class="wxFlexGridSizer">
-			<rows>5</rows>
-			<cols>1</cols>
-			<vgap>0</vgap>
-			<hgap>0</hgap>
-			<growablecols>0</growablecols>
-			<growablerows>4</growablerows>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,10</size>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<object class="wxFlexGridSizer">
-					<rows>2</rows>
-					<cols>2</cols>
-					<vgap>0</vgap>
-					<hgap>0</hgap>
-					<growablecols></growablecols>
-					<growablerows></growablerows>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALIGN_CENTER|wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="m_SamplingFrequencyDistanceStaticText">
-							<label>Measuring Frequency for Distance:</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxSpinCtrlDouble" name="m_SamplingFrequencyDistanceSpinCtrl">
-							<style>wxSP_ARROW_KEYS</style>
-							<value>0</value>
-							<min>0</min>
-							<max>10</max>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALIGN_CENTER|wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="m_SamplingFrequencyForceStaticText">
-							<label>Measuring Frequency for Force:</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxSpinCtrl" name="m_SamplingFrequencyForceSpinCtrl">
-							<style>wxSP_ARROW_KEYS</style>
-							<value>0</value>
-							<min>0</min>
-							<max>10</max>
-						</object>
-					</object>
-				</object>
-			</object>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,5</size>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<object class="wxStdDialogButtonSizer">
-					<object class="button">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-						<border>5</border>
-						<object class="wxButton" name="wxID_OK">
-							<label>&amp;OK</label>
-						</object>
-					</object>
-					<object class="button">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-						<border>5</border>
-						<object class="wxButton" name="wxID_CANCEL">
-							<label>&amp;Cancel</label>
-						</object>
-					</object>
-				</object>
-			</object>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,0</size>
-			</object>
-		</object>
-	</object>
-	<object class="wxDialog" name="MyPorts_Base">
-		<style>wxDEFAULT_DIALOG_STYLE</style>
-		<title>Ports</title>
-		<centered>1</centered>
-		<object class="wxFlexGridSizer">
-			<rows>4</rows>
-			<cols>0</cols>
-			<vgap>0</vgap>
-			<hgap>0</hgap>
-			<growablecols>0</growablecols>
-			<growablerows>3</growablerows>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,10</size>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<object class="wxFlexGridSizer">
-					<rows>3</rows>
-					<cols>2</cols>
-					<vgap>0</vgap>
-					<hgap>0</hgap>
-					<growablecols></growablecols>
-					<growablerows></growablerows>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALIGN_CENTER|wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="m_PortsMotor1StaticText">
-							<label>Motor 1:</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxChoice" name="m_PortsMotor1Choice">
-							<selection>0</selection>
-							<content>
-								<item>ttyUSB0</item>
-								<item>ttyUSB1</item>
-								<item>ttyUSB2</item>
-								<item>ttyUSB3</item>
-								<item>ttyUSB4</item>
-								<item>ttyUSB5</item>
-							</content>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALIGN_CENTER|wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="m_PortsMotor2StaticText">
-							<label>Motor 2:</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxChoice" name="m_PortsMotor2Choice">
-							<selection>1</selection>
-							<content>
-								<item>ttyUSB0</item>
-								<item>ttyUSB1</item>
-								<item>ttyUSB2</item>
-								<item>ttyUSB3</item>
-								<item>ttyUSB4</item>
-								<item>ttyUSB5</item>
-							</content>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALIGN_CENTER|wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="m_PortsForceStaticText">
-							<label>Force Sensor:</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxChoice" name="m_PortsForceChoice">
-							<selection>2</selection>
-							<content>
-								<item>ttyUSB0</item>
-								<item>ttyUSB1</item>
-								<item>ttyUSB2</item>
-								<item>ttyUSB3</item>
-								<item>ttyUSB4</item>
-								<item>ttyUSB5</item>
-							</content>
-						</object>
-					</object>
-				</object>
-			</object>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,5</size>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<object class="wxStdDialogButtonSizer">
-					<object class="button">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-						<border>5</border>
-						<object class="wxButton" name="wxID_OK">
-							<label>&amp;OK</label>
-						</object>
-					</object>
-					<object class="button">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-						<border>5</border>
-						<object class="wxButton" name="wxID_CANCEL">
-							<label>&amp;Cancel</label>
-						</object>
-					</object>
-				</object>
-			</object>
-		</object>
-	</object>
-	<object class="wxDialog" name="MyFileOutput_Base">
-		<style>wxDEFAULT_DIALOG_STYLE</style>
-		<title>File Output</title>
-		<centered>1</centered>
-		<object class="wxFlexGridSizer">
-			<rows>4</rows>
-			<cols>0</cols>
-			<vgap>0</vgap>
-			<hgap>0</hgap>
-			<growablecols>0</growablecols>
-			<growablerows>3</growablerows>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,10</size>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<object class="wxFlexGridSizer">
-					<rows>1</rows>
-					<cols>2</cols>
-					<vgap>0</vgap>
-					<hgap>0</hgap>
-					<growablecols></growablecols>
-					<growablerows></growablerows>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALIGN_CENTER|wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="m_FileOutputNameStaticText">
-							<label>Filename:</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxFilePickerCtrl" name="m_FileOutputNameFilePicker">
-							<value></value>
-							<message>Select a file</message>
-							<wildcard>*.*</wildcard>
-							<style>wxFLP_DEFAULT_STYLE</style>
-						</object>
-					</object>
-				</object>
-			</object>
-			<object class="spacer">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<size>0,5</size>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<object class="wxStdDialogButtonSizer">
-					<object class="button">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-						<border>5</border>
-						<object class="wxButton" name="wxID_OK">
-							<label>&amp;OK</label>
-						</object>
-					</object>
-					<object class="button">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-						<border>5</border>
-						<object class="wxButton" name="wxID_CANCEL">
-							<label>&amp;Cancel</label>
 						</object>
 					</object>
 				</object>
