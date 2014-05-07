@@ -1,16 +1,19 @@
 set(SOURCE
 	${SOURCE}
+        ./gui/mybutton.cpp
         ./gui/myframe.cpp
         ./gui/myports.cpp
         ./gui/myfileoutput.cpp
         ./gui/myhomestages.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
         ./gui/xh_mathplotxmlhandler.cpp
+        ./gui/xh_wxmybuttonxmlhandler.cpp
         PARENT_SCOPE
 )
 
 set(HEADERS
 	${HEADERS}
+        ./gui/mybutton.h
         ./gui/myfileoutput_base.h
         ./gui/myframe_base.h
         ./gui/myports_base.h
@@ -22,5 +25,6 @@ set(HEADERS
         ./gui/myhomestages_base.h
         ./gui/xh_wxspinctrldoublexmlhandler.h
         ./gui/xh_mathplotxmlhandler.h
+        ./gui/xh_wxmybuttonxmlhandler.h
         PARENT_SCOPE
 )

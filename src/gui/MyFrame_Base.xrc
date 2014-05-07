@@ -51,7 +51,7 @@
 									<object class="notebookpage">
 										<label>Initialize</label>
 										<selected>1</selected>
-										<object class="wxPanel" name="m_InitializePanel">
+										<object class="wxPanel" name="m_InitializePanel1">
 											<object class="wxFlexGridSizer">
 												<rows>7</rows>
 												<cols>1</cols>
@@ -59,64 +59,147 @@
 												<hgap>0</hgap>
 												<growablecols>0</growablecols>
 												<growablerows>6</growablerows>
-												<object class="spacer">
-													<option>1</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<size>0,10</size>
-												</object>
-												<object class="sizeritem">
-													<option>0</option>
-													<flag>wxALL|wxEXPAND</flag>
-													<border>5</border>
-													<object class="wxStaticText" name="m_InitializeStaticText1">
-														<style>wxALIGN_CENTRE</style>
-														<label>Should the stored position be used as the current position.</label>
-														<wrap>-1</wrap>
-													</object>
-												</object>
-												<object class="sizeritem">
-													<option>0</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<object class="wxButton" name="m_InitializeLoadStoredPositionButton">
-														<label>Load stored position</label>
-														<default>0</default>
-													</object>
-												</object>
-												<object class="sizeritem">
-													<option>0</option>
-													<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-													<border>5</border>
-													<object class="wxStaticText" name="InitializeStaticText2">
-														<label>Or</label>
-														<wrap>-1</wrap>
-													</object>
-												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxALL|wxEXPAND</flag>
+													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
-													<object class="wxStaticText" name="m_InitializeWarningStaticText">
-														<style>wxALIGN_CENTRE</style>
-														<label>Should the stages be homed.</label>
-														<wrap>-1</wrap>
+													<object class="wxPanel" name="m_InitializePanel21">
+														<style>wxSIMPLE_BORDER</style>
+														<object class="wxFlexGridSizer">
+															<rows>7</rows>
+															<cols>1</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols>0</growablecols>
+															<growablerows>6</growablerows>
+															<object class="spacer">
+																<option>1</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<size>0,10</size>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL|wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_InitializeStaticText1">
+																	<style>wxALIGN_CENTRE</style>
+																	<label>Should the stored position be used as the current position.</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_InitializeLoadStoredPositionButton">
+																	<label>Load stored position</label>
+																	<default>0</default>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_InitializeStaticText2">
+																	<label>Or</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>1</option>
+																<flag>wxALL|wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_InitializeWarningStaticText">
+																	<style>wxALIGN_CENTRE</style>
+																	<label>Should the stages be homed.</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_InitializeHomeMotorsButton">
+																	<label>Home stages</label>
+																	<default>0</default>
+																</object>
+															</object>
+															<object class="spacer">
+																<option>1</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<size>0,0</size>
+															</object>
+														</object>
 													</object>
 												</object>
 												<object class="sizeritem">
-													<option>0</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<object class="wxButton" name="m_InitializeHomeMotorsButton">
-														<label>Home stages</label>
-														<default>0</default>
-													</object>
-												</object>
-												<object class="spacer">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
-													<size>0,0</size>
+													<object class="wxPanel" name="m_InitializePanel22">
+														<style>wxSIMPLE_BORDER</style>
+														<object class="wxFlexGridSizer">
+															<rows>2</rows>
+															<cols>1</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols>0</growablecols>
+															<growablerows></growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_InitializeMoveStaticText">
+																	<label>Move the stage to the calibration length manually and set the calibration lenght.</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>1</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxFlexGridSizer">
+																	<rows>0</rows>
+																	<cols>3</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>2</growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeCalibrationLengthStaticText">
+																			<label>Calibration length [mm]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_InitializeCalibrationLengthSpinCtrl">
+																			<style></style>
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_InitializeCalibrationLengthButton">
+																			<label>Set length</label>
+																			<default>0</default>
+																		</object>
+																	</object>
+																</object>
+															</object>
+														</object>
+													</object>
 												</object>
 											</object>
 										</object>
@@ -175,7 +258,7 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_ClampingPositionLimitMaxDistanceStaticText">
-																	<label>Maximal distance:</label>
+																	<label>Maximal distance [mm]:</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -184,7 +267,6 @@
 																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMaxDistanceSpinCtrl">
-																	<style></style>
 																	<value>0</value>
 																	<min>0</min>
 																	<max>153</max>
@@ -195,7 +277,7 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_ClampingPositionLimitMinDistanceStaticText">
-																	<label>Minimal distance:</label>
+																	<label>Minimal distance [mm]:</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -204,7 +286,6 @@
 																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMinDistanceSpinCtrl">
-																	<style></style>
 																	<value>0</value>
 																	<min>0</min>
 																	<max>153</max>
@@ -215,7 +296,7 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_ClampingPositionLimitMaxForceStaticText">
-																	<label>Maximal force:</label>
+																	<label>Maximal force [N]:</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -224,7 +305,6 @@
 																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMaxForceSpinCtrl">
-																	<style></style>
 																	<value>0</value>
 																	<min>-20</min>
 																	<max>20</max>
@@ -235,7 +315,7 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_ClampingPositionLimitMinForceStaticText">
-																	<label>Minimal force:</label>
+																	<label>Minimal force [N]:</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -244,7 +324,6 @@
 																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_ClampingPositionLimitMinForceSpinCtrl">
-																	<style></style>
 																	<value>0</value>
 																	<min>-20</min>
 																	<max>20</max>
@@ -1935,7 +2014,7 @@
 										<option>1</option>
 										<flag>wxALIGN_BOTTOM|wxALL</flag>
 										<border>5</border>
-										<object class="wxButton" name="m_DecreaseDistanceButton">
+										<object class="wxMyButton" name="m_DecreaseDistanceButton">
 											<label>--&gt; &lt;--</label>
 											<default>0</default>
 										</object>
@@ -1944,7 +2023,7 @@
 										<option>1</option>
 										<flag>wxALIGN_BOTTOM|wxALL</flag>
 										<border>5</border>
-										<object class="wxButton" name="m_IncreaseDistanceButton">
+										<object class="wxMyButton" name="m_IncreaseDistanceButton">
 											<label>&lt;-- --&gt;</label>
 											<default>0</default>
 										</object>

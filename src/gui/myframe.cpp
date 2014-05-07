@@ -44,6 +44,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_RADIOBUTTON(ID_StressLimit, MyFrame::OnStressLimit)
   EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
   EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
+  EVT_LEFT_DOWN(MyFrame::OnMotorDecreaseDistanceStart)
   EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
@@ -1103,6 +1104,16 @@ void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
       m_ClampingPositionSpinCtrl->SetValue(m_ClampingDistance);
     }
   }
+}
+
+/**
+ * @brief OnMotorDecreaseDistanceStart
+ * @param event
+ * @todo Implementation
+ */
+void MyFrame::OnMotorDecreaseDistanceStart(wxMouseEvent& event){
+  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  event.Skip();
 }
 
 /**

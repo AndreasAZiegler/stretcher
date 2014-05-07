@@ -9,6 +9,7 @@
 #include "main.h"
 #include "./gui/xh_wxspinctrldoublexmlhandler.h"
 #include "./gui/xh_mathplotxmlhandler.h"
+#include "./gui/xh_wxmybuttonxmlhandler.h"
 #include <wx/spinctrl.h>
 #include "updatedvaluesreceiver.h"
 
@@ -28,6 +29,7 @@ bool MyApp::OnInit(){
   //  wxXmlResource::AddHandler(new wxIconXmlHandler);
   wxXmlResource::Get()->AddHandler(new wxSpinCtrlDoubleXmlHandler);
   wxXmlResource::Get()->AddHandler(new mpWindowXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxMyButtonXmlHandler);
   wxXmlResource::Get()->InitAllHandlers();
   // Load all xrc files from the subfolder gui.
   if(false == wxXmlResource::Get()->LoadAllFiles("gui")){

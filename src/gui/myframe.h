@@ -3,6 +3,7 @@
 
 /*************** Includes ************/
 #include <thread>
+#include <wx/event.h>
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
@@ -268,6 +269,13 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnMotorDecreaseDistance(wxCommandEvent& event);
+
+    /**
+     * @brief OnMotorDecreaseDistanceStart
+     * @param event
+     * @todo Implementation
+     */
+    void OnMotorDecreaseDistanceStart(wxMouseEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user klicks on the increase distance button.

@@ -9,6 +9,7 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/button.h>
+#include "mybutton.h"
 #include <wx/spinctrl.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
@@ -24,12 +25,18 @@
 class MyFrame_Base : public wxFrame {
 protected:
  wxNotebook* m_Experiments;
- wxPanel* m_InitializePanel;
+ wxPanel* m_InitializePanel1;
+ wxPanel* m_InitializePanel21;
  wxStaticText* m_InitializeStaticText1;
  wxButton* m_InitializeLoadStoredPositionButton;
- wxStaticText* InitializeStaticText2;
+ wxStaticText* m_InitializeStaticText2;
  wxStaticText* m_InitializeWarningStaticText;
  wxButton* m_InitializeHomeMotorsButton;
+ wxPanel* m_InitializePanel22;
+ wxStaticText* m_InitializeMoveStaticText;
+ wxStaticText* m_InitializeCalibrationLengthStaticText;
+ wxSpinCtrlDouble* m_InitializeCalibrationLengthSpinCtrl;
+ wxButton* m_InitializeCalibrationLengthButton;
  wxPanel* m_ClampingPosPanel;
  wxPanel* m_ClampingPositionLimitPanel;
  wxStaticText* m_ClampingPositionLimitStaticText60;
@@ -174,8 +181,8 @@ protected:
  wxCheckBox* m_ChamberStretchLoopCheckBox1;
  wxButton* m_ChamberStretchCancelButton;
  wxButton* m_ChamberStretchSendButton;
- wxButton* m_DecreaseDistanceButton;
- wxButton* m_IncreaseDistanceButton;
+ wxMyButton* m_DecreaseDistanceButton;
+ wxMyButton* m_IncreaseDistanceButton;
  wxButton* m_StopButton;
  wxStaticText* m_ForceStaticText;
  wxStaticText* m_DistanceStaticText;
@@ -204,22 +211,28 @@ protected:
  wxListCtrl* m_ResultListCtrl;
  wxButton* m_ResultSaveButton;
  wxPanel* m_GraphPanel;
- wxBoxSizer* m_GraphSizer1;
- wxBoxSizer* m_GraphSizer2;
  wxButton* m_GraphExportCSVButton;
  wxButton* m_GraphExportPNGButton;
  wxButton* m_GraphClearButton;
+ wxBoxSizer* m_GraphSizer1;
+ wxBoxSizer* m_GraphSizer2;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
   wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFrame_Base"), wxT("wxFrame"));
   m_Experiments = XRCCTRL(*this,"m_Experiments",wxNotebook);
-  m_InitializePanel = XRCCTRL(*this,"m_InitializePanel",wxPanel);
+  m_InitializePanel1 = XRCCTRL(*this,"m_InitializePanel1",wxPanel);
+  m_InitializePanel21 = XRCCTRL(*this,"m_InitializePanel21",wxPanel);
   m_InitializeStaticText1 = XRCCTRL(*this,"m_InitializeStaticText1",wxStaticText);
   m_InitializeLoadStoredPositionButton = XRCCTRL(*this,"m_InitializeLoadStoredPositionButton",wxButton);
-  InitializeStaticText2 = XRCCTRL(*this,"InitializeStaticText2",wxStaticText);
+  m_InitializeStaticText2 = XRCCTRL(*this,"m_InitializeStaticText2",wxStaticText);
   m_InitializeWarningStaticText = XRCCTRL(*this,"m_InitializeWarningStaticText",wxStaticText);
   m_InitializeHomeMotorsButton = XRCCTRL(*this,"m_InitializeHomeMotorsButton",wxButton);
+  m_InitializePanel22 = XRCCTRL(*this,"m_InitializePanel22",wxPanel);
+  m_InitializeMoveStaticText = XRCCTRL(*this,"m_InitializeMoveStaticText",wxStaticText);
+  m_InitializeCalibrationLengthStaticText = XRCCTRL(*this,"m_InitializeCalibrationLengthStaticText",wxStaticText);
+  m_InitializeCalibrationLengthSpinCtrl = XRCCTRL(*this,"m_InitializeCalibrationLengthSpinCtrl",wxSpinCtrlDouble);
+  m_InitializeCalibrationLengthButton = XRCCTRL(*this,"m_InitializeCalibrationLengthButton",wxButton);
   m_ClampingPosPanel = XRCCTRL(*this,"m_ClampingPosPanel",wxPanel);
   m_ClampingPositionLimitPanel = XRCCTRL(*this,"m_ClampingPositionLimitPanel",wxPanel);
   m_ClampingPositionLimitStaticText60 = XRCCTRL(*this,"m_ClampingPositionLimitStaticText60",wxStaticText);
@@ -364,8 +377,8 @@ private:
   m_ChamberStretchCancelButton = XRCCTRL(*this,"m_ChamberStretchCancelButton",wxButton);
   m_ChamberStretchSendButton = XRCCTRL(*this,"m_ChamberStretchSendButton",wxButton);
   m_ChamberStretchSizer1 = static_cast<wxFlexGridSizer*>(m_ChamberStretchGelPanel->GetContainingSizer());
-  m_DecreaseDistanceButton = XRCCTRL(*this,"m_DecreaseDistanceButton",wxButton);
-  m_IncreaseDistanceButton = XRCCTRL(*this,"m_IncreaseDistanceButton",wxButton);
+  m_DecreaseDistanceButton = XRCCTRL(*this,"m_DecreaseDistanceButton",wxMyButton);
+  m_IncreaseDistanceButton = XRCCTRL(*this,"m_IncreaseDistanceButton",wxMyButton);
   m_StopButton = XRCCTRL(*this,"m_StopButton",wxButton);
   m_ForceStaticText = XRCCTRL(*this,"m_ForceStaticText",wxStaticText);
   m_DistanceStaticText = XRCCTRL(*this,"m_DistanceStaticText",wxStaticText);
