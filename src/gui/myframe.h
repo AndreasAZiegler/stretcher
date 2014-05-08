@@ -169,6 +169,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnHomeLinearStages(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the set length button.
+     * @param event Occuring event
+     */
+    void OnSetCalibrationLength(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user changes the clamping position value.
      * @param event Occuring event
      */
@@ -381,37 +387,42 @@ enum
 	ID_SamplingFrequency = 1,
 	ID_Ports = 2,
 	ID_FileOutput = 3,
-	ID_Unit = 5,
-	ID_DistanceLimit = 6,
-	ID_StressLimit = 7,
-  ID_GoTo = 8,
-  ID_ChamberMeasurement = 9,
-  ID_MotorDecreaseDistance = 10,
-  ID_MotorIncreaseDistance = 11,
-  ID_MotorStop = 12,
-  ID_HomeStages = 13,
-  ID_ClampingPosValue = 14,
-  ID_ClampingGoTo = 15,
-  ID_PreloadSpeedPercent = 16,
-  ID_PreloadSpeedMm = 17,
-  ID_PreloadSendToProtocol = 18,
-  ID_ConditioningSpeedPercent = 19,
-  ID_ConditioningSpeedMm = 20,
-  ID_ConditioningSendToProtocol = 21,
-  ID_Ramp2FailureSpeedPercent = 22,
-  ID_Ramp2FailureSpeedMm = 23,
-  ID_Ramp2FailureSendToProtocol = 24,
-  ID_RelaxationSendToProtocol = 25,
-  ID_CreepSpeedPercent = 26,
-  ID_CreepSpeedMm = 27,
-  ID_CreepSendToProtocol = 28,
-  ID_FatigueSendToProtocol = 29,
-  ID_ChamberStretchGelOrCell = 30,
-  ID_ChamberStretchSendToProtocol = 31,
-  ID_ClearGraph = 32,
-  ID_ExportCSV = 33,
-  ID_SetLimits = 36,
-  ID_LoadStoredPosition = 37
+  ID_Unit = 4,
+  ID_DistanceLimit = 5,
+  ID_StressLimit = 6,
+  ID_GoTo = 7,
+  ID_ChamberMeasurement = 8,
+  ID_MotorDecreaseDistance = 9,
+  ID_MotorIncreaseDistance = 10,
+  ID_MotorStop = 11,
+  ID_HomeStages = 12,
+  ID_SetCalibrationLength = 13,
+  ID_LoadLimitSet1 = 14,
+  ID_LoadLimitSet2 = 15,
+  ID_LoadLimitSet3 = 16,
+  ID_LoadLimitSet4 = 17,
+  ID_ClampingPosValue = 18,
+  ID_ClampingGoTo = 19,
+  ID_PreloadSpeedPercent = 20,
+  ID_PreloadSpeedMm = 21,
+  ID_PreloadSendToProtocol = 22,
+  ID_ConditioningSpeedPercent = 23,
+  ID_ConditioningSpeedMm = 24,
+  ID_ConditioningSendToProtocol = 25,
+  ID_Ramp2FailureSpeedPercent = 26,
+  ID_Ramp2FailureSpeedMm = 27,
+  ID_Ramp2FailureSendToProtocol = 28,
+  ID_RelaxationSendToProtocol = 29,
+  ID_CreepSpeedPercent = 30,
+  ID_CreepSpeedMm = 31,
+  ID_CreepSendToProtocol = 32,
+  ID_FatigueSendToProtocol = 33,
+  ID_ChamberStretchGelOrCell = 34,
+  ID_ChamberStretchSendToProtocol = 35,
+  ID_ClearGraph = 36,
+  ID_ExportCSV = 37,
+  ID_SetLimits = 38,
+  ID_LoadStoredPosition = 39
 };
 
 #endif // MYFRAME_H

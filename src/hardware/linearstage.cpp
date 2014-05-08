@@ -17,7 +17,6 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int bau
       m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
       m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
       m_CurrentSpeed(0),
-      m_ZeroDistance(0),
     /*
     mExpectedMessagesFlag(0),
     mOldPositionFlag(true),
@@ -192,6 +191,26 @@ void LinearStage::setMaxLimit(long limit){
   }
 }
 
+/**
+ * @brief Sets the minimum position of the stages.
+ * @param limit Lower limit.
+ */
+void LinearStage::setMinLimit(long limit){
+  char buffer[6];
+  char command[6] = "";
+  char *settings;
+
+  memcpy(command, STAGE_SET_MINIMUM_POSITION, 2);
+  settings = transformDecToText(limit);
+  memcpy(command+2, settings, 4);
+  memcpy(buffer, command, 6);
+
+  {
+    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
+    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+  }
+}
+
 /*
  * @brief Stores the current position in the non-volatile memory of the stage.
  */
@@ -232,26 +251,6 @@ void LinearStage::loadStoredPosition(void){
                                                       << static_cast<int>(buffer[4]) << " "
                                                       << static_cast<int>(buffer[5]) << dec << std::endl;
                                                       */
-}
-
-/**
- * @brief Sets the minimum position of the stages.
- * @param limit Lower limit.
- */
-void LinearStage::setMinLimit(long limit){
-  char buffer[6];
-  char command[6] = "";
-  char *settings;
-
-  memcpy(command, STAGE_SET_MINIMUM_POSITION, 2);
-  settings = transformDecToText(limit);
-  memcpy(command+2, settings, 4);
-  memcpy(buffer, command, 6);
-
-  {
-    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
-    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
-  }
 }
 
 /**

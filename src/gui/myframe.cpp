@@ -46,6 +46,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   //EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
+  EVT_BUTTON(ID_SetCalibrationLength, MyFrame::OnSetCalibrationLength)
   EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnLoadStoredPosition)
   EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
   EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
@@ -117,6 +118,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
+  m_InitializeCalibrationLengthButton->SetId(ID_SetCalibrationLength);
   m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
   m_ClampingPositionLimitSetButton->SetId(ID_SetLimits);
@@ -203,6 +205,10 @@ void MyFrame::registerLinearStage(std::vector<LinearStage*> *linearstage, StageF
 
   // Registers stop wait conditional variable and mutex.
   m_StageFrame->registerStagesStopped(&m_StagesStoppedFlag, &m_StagesStoppedMutex);
+
+  // Reset limit
+  m_StageFrame->setMaxDistanceLimit(153);
+  m_StageFrame->setMinDistanceLimit(0);
 }
 
 /**
@@ -509,6 +515,16 @@ void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
   */
   MyHomeStages *homestages = new MyHomeStages(m_LinearStages, this);
   homestages->Show();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the set length button.
+ * @param event Occuring event
+ */
+void MyFrame::OnSetCalibrationLength(wxCommandEvent& event){
+  m_StageFrame->setZeroDistance();
+  m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
 }
 
 /**
@@ -1065,9 +1081,9 @@ void MyFrame::OnSetLimits(wxCommandEvent& event){
   m_ForceMaxLimit = m_ClampingPositionLimitMaxForceSpinCtrl->GetValue();
   m_ForceMinLimit = m_ClampingPositionLimitMinForceSpinCtrl->GetValue();
 
-  m_StageFrame->setMaxLimit(m_StageMinLimit);
+  m_StageFrame->setMaxDistanceLimit(m_StageMaxLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-  m_StageFrame->setMinLimit(m_StageMaxLimit);
+  m_StageFrame->setMinDistanceLimit(m_StageMinLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
 }
 

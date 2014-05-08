@@ -169,7 +169,6 @@ class LinearStage : public SerialInterface
     //int mLMtimerID;							          //!< Timer ID of the oscillation timer
     int m_CurrentSpeed;         			           			/**< The current speed */
     //int m_CurrentPosMotor[2];   			           /**< Position of the two motors */
-    double m_ZeroDistance;		    			             /**< Distance when the motors are on max position (resulting in smallest distance) */
     //bool mOldPositionFlag;                /**< Flag to indicate that the current "old" position is still up to date */
     //bool mMoveFinishedFlag;               /**< Flag to indicate, that the motors finished moving */
     //bool mPositionPendingFlag;            /**< Indicate that a RETURN_CURRENT_POSITION command is executed but the answer not yet arrived */

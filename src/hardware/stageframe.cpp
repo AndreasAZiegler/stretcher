@@ -72,7 +72,7 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
           //std::cout << "Stage frame time difference: " << std::chrono::duration_cast<std::chrono::microseconds>(m_CurrentPositions[0].timestamp - m_CurrentPositions[1].timestamp).count() << " msec" << std::endl;
           m_CurrentDistance.timestamp = m_CurrentPositions[0].timestamp;
           m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                                     std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+                                     std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
           // notify
           {
             std::lock_guard<std::mutex> lck{m_AccessListMutex};
@@ -100,7 +100,7 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
           //std::cout << "Stage frame time difference: " << std::chrono::duration_cast<std::chrono::milliseconds>(m_CurrentPositions[1].timestamp - m_CurrentPositions[0].timestamp).count() << " msec" << std::endl;
           m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
           m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                                     std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+                                     std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
           {
             std::lock_guard<std::mutex> lck{m_AccessListMutex};
             for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -133,7 +133,7 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
 
   m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                             std::abs(771029 - m_CurrentPositions[1].value));// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+                             std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);//  ; //134173 /*microsteps=6.39mm offset */; // notify
   {
     std::lock_guard<std::mutex> lck{m_AccessListMutex};
     for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -190,7 +190,7 @@ void StageFrame::gotoMMDistance(int mmDistance){
   long dist = (mmDistance/MM_PER_MS);
   //long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
   //long amSteps = (m_CurrentDistance - dist) / 2;
-  long position = (771029 /*max. position*/ - (dist / 2));
+  long position = (771029 /*max. position*/ + m_ZeroDistance - (dist / 2));
   /*
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
@@ -206,7 +206,7 @@ void StageFrame::gotoMMDistance(int mmDistance){
  */
 void StageFrame::gotoStepsDistance(long stepsDistance){
   //long amSteps = (m_CurrentDistance - stepsDistance) / 2;
-  long position = (771029 /*max. position*/ - (stepsDistance / 2));
+  long position = (771029 /*max. position*/ + m_ZeroDistance - (stepsDistance / 2));
   /*
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
@@ -253,7 +253,7 @@ void StageFrame::stopped(){
 
 long StageFrame::getCurrentDistance(void){
   return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-         std::abs(771029 /*max. position*/ - m_CurrentPositions[1].value) +
+         std::abs(771029 /*max. position*/ - m_CurrentPositions[1].value) -
          m_ZeroDistance);
 }
 
@@ -261,14 +261,14 @@ long StageFrame::getCurrentDistance(void){
  * @brief Sets the maximum position of the stages.
  * @param limit Upper limit.
  */
-void StageFrame::setMaxLimit(long limit){
+void StageFrame::setMaxDistanceLimit(long limit){
   long dist = (limit/MM_PER_MS);
-  long position = (771029 /*max. position*/ - (dist / 2));
+  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
-  (m_LinearStages->at(0))->setMaxLimit(position);
+  (m_LinearStages->at(0))->setMinLimit(position);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(10)));
-  (m_LinearStages->at(1))->setMaxLimit(position);
+  (m_LinearStages->at(1))->setMinLimit(position);
   //std::cout << "StageFrame max limit position: " << position << std::endl;
 }
 
@@ -276,13 +276,30 @@ void StageFrame::setMaxLimit(long limit){
  * @brief Sets the minimum position of the stages.
  * @param limit Lower limit.
  */
-void StageFrame::setMinLimit(long limit){
+void StageFrame::setMinDistanceLimit(long limit){
   long dist = (limit/MM_PER_MS);
-  long position = (771029 /*max. position*/ - (dist / 2));
+  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
-  (m_LinearStages->at(0))->setMinLimit(position);
+  (m_LinearStages->at(0))->setMaxLimit(position);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(10)));
-  (m_LinearStages->at(1))->setMinLimit(position);
+  (m_LinearStages->at(1))->setMaxLimit(position);
   //std::cout << "StageFrame min limit position: " << position << std::endl;
+}
+
+/**
+ * @brief Sets the zero distance.
+ * @param distance Distance in microsteps.
+ */
+void StageFrame::setZeroDistance(){
+  m_ZeroDistance = m_CurrentDistance.value;
+
+  m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
+                             std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+  {
+    std::lock_guard<std::mutex> lck{m_AccessListMutex};
+    for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
+      (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
+    }
+  }
 }

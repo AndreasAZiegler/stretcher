@@ -121,13 +121,19 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @brief Sets the maximum position of the stages.
      * @param limit Upper limit.
      */
-    void setMaxLimit(long limit);
+    void setMaxDistanceLimit(long limit);
 
     /**
      * @brief Sets the minimum position of the stages.
      * @param limit Lower limit.
      */
-    void setMinLimit(long limit);
+    void setMinDistanceLimit(long limit);
+
+    /**
+     * @brief Sets the zero distance.
+     * @param distance Distance in microsteps.
+     */
+    void setZeroDistance();
 
   private:
 
@@ -137,8 +143,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
      */
     long getCurrentDistance(void);
 
-    std::vector<LinearStage*> *m_LinearStages;
-    std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers;
+    std::vector<LinearStage*> *m_LinearStages;				/**< Pointer to a vector containing the pointers to the linear stages. */
+    std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers; /**< Vector containing the pointers to the linear stage message handlers. */
     std::mutex m_AccessListMutex;											/**< Protect list */
 
     const double MM_PER_MS;               						/**< milimeter per microstep */
@@ -153,7 +159,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
     std::vector<MeasurementValue> m_CurrentPositions;	/**< Vector containing structs of the current positions of the linear stages and their time stamps */
     MeasurementValue m_CurrentDistance;								/**< Struct containing the current distance and its time stamp */
 
-    bool *m_StagesStoppedFlag;														/**< Flag to indicate if the stages stopped or not. */
+    bool *m_StagesStoppedFlag;												/**< Flag to indicate if the stages stopped or not. */
     std::mutex *m_StagesStoppedMutex;									/**< Mutex for m_StagesStopped */
 
     int m_AmStopped;																	/**< Number of stopped motors */
