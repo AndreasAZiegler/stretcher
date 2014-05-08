@@ -1146,7 +1146,7 @@ void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
-  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->moveForward(4/*mm/s*/);
   event.Skip();
 }
@@ -1156,7 +1156,7 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
-  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->stop();
   event.Skip();
 }
@@ -1166,7 +1166,7 @@ void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
-  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->moveBackward(4/*mm/s*/);
   event.Skip();
 }
@@ -1176,7 +1176,7 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
-  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->stop();
   event.Skip();
 }
