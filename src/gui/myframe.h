@@ -77,6 +77,30 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void updateStoragePath(std::string path);
 
+    /**
+     * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
+     * @param event Occuring event
+     */
+    void OnMotorDecreaseDistanceStart(wxCommandEvent &event);
+
+    /**
+     * @brief Method wich will be executed, when the decrease stage distance button is released.
+     * @param event Occuring event
+     */
+    void OnMotorDecreaseDistanceStop(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the increase stage distance button is pushed down.
+     * @param event Occuring event
+     */
+    void OnMotorIncreaseDistanceStart(wxCommandEvent &event);
+
+    /**
+     * @brief Method wich will be executed, when the increase stage distance button is released.
+     * @param event Occuring event
+     */
+    void OnMotorIncreaseDistanceStop(wxCommandEvent& event);
+
   private:
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
@@ -269,13 +293,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnMotorDecreaseDistance(wxCommandEvent& event);
-
-    /**
-     * @brief OnMotorDecreaseDistanceStart
-     * @param event
-     * @todo Implementation
-     */
-    void OnMotorDecreaseDistanceStart(wxMouseEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user klicks on the increase distance button.

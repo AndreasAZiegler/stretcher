@@ -3,6 +3,7 @@
 #include <wx/menu.h>
 #include <wx/checkbox.h>
 #include <wx/image.h>
+#include "mybutton.h"
 #include <mutex>
 #include <functional>
 #include "../../include/ctb-0.13/serport.h"
@@ -43,9 +44,8 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_RADIOBUTTON(ID_DistanceLimit, MyFrame::OnDistanceLimit)
   EVT_RADIOBUTTON(ID_StressLimit, MyFrame::OnStressLimit)
   EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
-  EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
-  EVT_LEFT_DOWN(MyFrame::OnMotorDecreaseDistanceStart)
-  EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
+  //EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
+  //EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
   EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnLoadStoredPosition)
@@ -70,6 +70,10 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
 wxEND_EVENT_TABLE()
+
+// Costum event definitions
+wxDEFINE_EVENT(EVT_MYBUTTON_DOWN, wxCommandEvent);
+wxDEFINE_EVENT(EVT_MYBUTTON_UP, wxCommandEvent);
 
 /**
  * @brief Constructor of the main frame. Sets the icon.
@@ -99,6 +103,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForceUpdateDelay(0),
     m_VectorLayer(_("Vector"))
 {
+
   SetIcon(wxICON(sample));
 
   // Set the required ID's
@@ -136,6 +141,18 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberStretchGelOrCell);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
+
+  // Register the main frame at the two custom buttons
+  m_DecreaseDistanceButton->registerMyFrame(this);
+  m_IncreaseDistanceButton->registerMyFrame(this);
+
+  // Bind custom buttons events
+  Bind(EVT_MYBUTTON_DOWN, &MyFrame::OnMotorDecreaseDistanceStart, this, ID_MotorDecreaseDistance);
+  //m_DecreaseDistanceButton->Bind(EVT_MYBUTTON_DOWN, &MyFrame::OnMotorDecreaseDistanceStart, this, ID_MotorDecreaseDistance);
+  Bind(EVT_MYBUTTON_UP, &MyFrame::OnMotorDecreaseDistanceStop, this, ID_MotorDecreaseDistance);
+  //m_DecreaseDistanceButton->Bind(EVT_MYBUTTON_UP, &MyFrame::OnMotorDecreaseDistanceStop, this, ID_MotorDecreaseDistance);
+  Bind(EVT_MYBUTTON_DOWN, &MyFrame::OnMotorIncreaseDistanceStart, this, ID_MotorIncreaseDistance);
+  Bind(EVT_MYBUTTON_UP, &MyFrame::OnMotorIncreaseDistanceStop, this, ID_MotorIncreaseDistance);
 
   // Create graph
   m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
@@ -1095,6 +1112,7 @@ void MyFrame::OnSetLimits(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
+  std::cout << "MyFrame decrease distance" << std::endl;
   if(NULL != m_LinearStages){
     m_StageFrame->moveMM(0.25);
 
@@ -1107,20 +1125,11 @@ void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
 }
 
 /**
- * @brief OnMotorDecreaseDistanceStart
- * @param event
- * @todo Implementation
- */
-void MyFrame::OnMotorDecreaseDistanceStart(wxMouseEvent& event){
-  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-  event.Skip();
-}
-
-/**
  * @brief Method wich will be executed, when the user klicks on the increase distance button.
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
+  std::cout << "MyFrame increase distance" << std::endl;
   if(NULL != m_LinearStages){
     m_StageFrame->moveMM(-0.25);
   }
@@ -1130,6 +1139,46 @@ void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
     m_ClampingDistance += (2 * 0.25);
     m_ClampingPositionSpinCtrl->SetValue(m_ClampingDistance);
   }
+}
+
+/**
+ * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
+  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  m_StageFrame->moveForward(4/*mm/s*/);
+  event.Skip();
+}
+
+/**
+ * @brief Method wich will be executed, when the decrease stage distance button is released.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
+  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  m_StageFrame->stop();
+  event.Skip();
+}
+
+/**
+ * @brief Method wich will be executed, when the increase stage distance button is pushed down.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
+  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  m_StageFrame->moveBackward(4/*mm/s*/);
+  event.Skip();
+}
+
+/**
+ * @brief Method wich will be executed, when the increase stage distance button is released.
+ * @param event Occuring event
+ */
+void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
+  std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
+  m_StageFrame->stop();
+  event.Skip();
 }
 
 /**
