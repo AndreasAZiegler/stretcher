@@ -127,12 +127,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnFileOutputSettings(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user activates the calculate diameter settings.
-     * @param event Occuring event
-     */
-    void OnCalculateDiameter(wxCommandEvent& event);
-
-    /**
      * @brief Method wich will be executed, when the user changes unit.
      * @param event Occuring event
      */
@@ -387,7 +381,6 @@ enum
 	ID_SamplingFrequency = 1,
 	ID_Ports = 2,
 	ID_FileOutput = 3,
-	ID_CalculateDiameter = 4,
 	ID_Unit = 5,
 	ID_DistanceLimit = 6,
 	ID_StressLimit = 7,

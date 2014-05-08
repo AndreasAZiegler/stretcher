@@ -152,7 +152,7 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_InitializeMoveStaticText">
-																	<label>Move the stage to the calibration length manually and set the calibration lenght.</label>
+																	<label>Mount the clamps and move the stage to the calibration length manually and set the calibration lenght.</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -181,7 +181,6 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxSpinCtrlDouble" name="m_InitializeCalibrationLengthSpinCtrl">
-																			<style></style>
 																			<value>0</value>
 																			<min>0</min>
 																			<max>10</max>
@@ -426,66 +425,24 @@
 													<object class="wxPanel" name="m_PreloadCalculateDiameterPanel">
 														<style>wxSIMPLE_BORDER</style>
 														<object class="wxBoxSizer">
-															<orient>wxVERTICAL</orient>
+															<orient>wxHORIZONTAL</orient>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALL</flag>
+																<flag>wxALIGN_CENTER|wxALL</flag>
 																<border>5</border>
-																<object class="wxCheckBox" name="m_PreloadCalculateCrosssectionCheckBox">
-																	<label>Calculate crosssection</label>
-																	<checked>0</checked>
+																<object class="wxStaticText" name="m_PreloadCrossSectionStaticText">
+																	<label>Cross section area [um2]:</label>
+																	<wrap>-1</wrap>
 																</object>
 															</object>
 															<object class="sizeritem">
-																<option>1</option>
-																<flag>wxEXPAND</flag>
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
 																<border>5</border>
-																<object class="wxBoxSizer">
-																	<orient>wxHORIZONTAL</orient>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxStaticText" name="m_PreloadYStaticText">
-																			<label>y [um]:</label>
-																			<wrap>-1</wrap>
-																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxSpinCtrlDouble" name="m_PreloadYSpinCtrl">
-																			<value>0</value>
-																			<min>0</min>
-																			<max>10000</max>
-																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALL</flag>
-																		<border>5</border>
-																		<object class="wxRadioBox" name="m_PreloadXRadioBox">
-																			<style>wxRA_SPECIFY_ROWS</style>
-																			<label>x</label>
-																			<selection>0</selection>
-																			<content>
-																				<item>% of y</item>
-																				<item>define</item>
-																			</content>
-																			<dimension>1</dimension>
-																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxSpinCtrlDouble" name="m_PreloadXSpinCtrl">
-																			<value>0</value>
-																			<min>0</min>
-																			<max>10000</max>
-																		</object>
-																	</object>
+																<object class="wxSpinCtrlDouble" name="m_PreloadCrossSectionSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10000</max>
 																</object>
 															</object>
 														</object>

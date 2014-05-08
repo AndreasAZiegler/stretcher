@@ -37,8 +37,6 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
   EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
-  EVT_MENU(XRCID("m_PreloadCalculateDiameterCheckBox"), MyFrame::OnCalculateDiameter)
-  EVT_CHECKBOX(ID_CalculateDiameter, MyFrame::OnCalculateDiameter)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
   EVT_RADIOBOX(ID_ChamberMeasurement, MyFrame::OnChamberMeasurement)
   EVT_RADIOBUTTON(ID_DistanceLimit, MyFrame::OnDistanceLimit)
@@ -107,7 +105,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   SetIcon(wxICON(sample));
 
   // Set the required ID's
-  m_PreloadCalculateCrosssectionCheckBox->SetId(ID_CalculateDiameter);
   wxString str;
   str << m_ClampingPositionSpinCtrl->GetValue();
   m_ClampingPositionSpinCtrl->SetValue(str + " mm");
@@ -307,12 +304,6 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
  * 				sets digits for the wxSpinCtrlDouble.
  */
 void MyFrame::startup(void){
-	// Hide calculate diameter options
-	m_PreloadYStaticText->Show(false);
-	m_PreloadYSpinCtrl->Show(false);
-	m_PreloadXRadioBox->Show(false);
-	m_PreloadXSpinCtrl->Show(false);
-
   // Hide cells panel in Chamber stretch
   m_ChamberStretchCellsPanel->Show(false);
 
@@ -329,8 +320,7 @@ void MyFrame::startup(void){
 
   // Set digits for the wxSpinCtrlDouble
   m_ClampingPositionSpinCtrl->SetDigits(2);
-  m_PreloadYSpinCtrl->SetDigits(2);
-  m_PreloadXSpinCtrl->SetDigits(2);
+  m_PreloadCrossSectionSpinCtrl->SetDigits(2);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
@@ -397,24 +387,6 @@ void MyFrame::OnPortsSettings(wxCommandEvent& event){
 void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
   MyFileOutput *fileOutput = new MyFileOutput(this, m_Settings, m_StoragePath, this);
 	fileOutput->Show();
-}
-
-/**
- * @brief Method wich will be executed, when the user activates the calculate diameter settings.
- * @param event Occuring event
- */
-void MyFrame::OnCalculateDiameter(wxCommandEvent& event){
-	if(!m_PreloadYStaticText->IsShown()){
-		m_PreloadYStaticText->Show(true);
-		m_PreloadYSpinCtrl->Show(true);
-		m_PreloadXRadioBox->Show(true);
-		m_PreloadXSpinCtrl->Show(true);
-	}else{
-		m_PreloadYStaticText->Show(false);
-		m_PreloadYSpinCtrl->Show(false);
-		m_PreloadXRadioBox->Show(false);
-		m_PreloadXSpinCtrl->Show(false);
-	}
 }
 
 /**
@@ -586,16 +558,8 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     }
   }
 
-  if(true == m_PreloadCalculateCrosssectionCheckBox->IsChecked()){
-    switch(m_PreloadXRadioBox->GetSelection()){
-      case 0:
-        m_Area = (m_PreloadYSpinCtrl->GetValue()) * (1 + m_PreloadXSpinCtrl->GetValue() / 100);
-        break;
-      case 1:
-        m_Area = m_PreloadYSpinCtrl->GetValue() * m_PreloadXSpinCtrl->GetValue();
-        break;
-    }
-  }
+  m_Area = m_PreloadCrossSectionSpinCtrl->GetValue();
+
   m_CurrentExperiment = new Preload(ExperimentType::Preload,
                                     m_StressOrForce,
                                     m_StageFrame,

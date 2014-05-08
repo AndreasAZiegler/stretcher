@@ -56,11 +56,8 @@ protected:
  wxPanel* m_PreloadPanel;
  wxRadioBox* m_PreloadUnitRadioBox;
  wxPanel* m_PreloadCalculateDiameterPanel;
- wxCheckBox* m_PreloadCalculateCrosssectionCheckBox;
- wxStaticText* m_PreloadYStaticText;
- wxSpinCtrlDouble* m_PreloadYSpinCtrl;
- wxRadioBox* m_PreloadXRadioBox;
- wxSpinCtrlDouble* m_PreloadXSpinCtrl;
+ wxStaticText* m_PreloadCrossSectionStaticText;
+ wxSpinCtrlDouble* m_PreloadCrossSectionSpinCtrl;
  wxStaticText* m_PreloadLimitStaticText;
  wxSpinCtrlDouble* m_PreloadLimitSpinCtrl;
  wxStaticText* m_PreloadSpeedStaticText;
@@ -211,11 +208,11 @@ protected:
  wxListCtrl* m_ResultListCtrl;
  wxButton* m_ResultSaveButton;
  wxPanel* m_GraphPanel;
+ wxBoxSizer* m_GraphSizer1;
+ wxBoxSizer* m_GraphSizer2;
  wxButton* m_GraphExportCSVButton;
  wxButton* m_GraphExportPNGButton;
  wxButton* m_GraphClearButton;
- wxBoxSizer* m_GraphSizer1;
- wxBoxSizer* m_GraphSizer2;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -252,11 +249,8 @@ private:
   m_PreloadPanel = XRCCTRL(*this,"m_PreloadPanel",wxPanel);
   m_PreloadUnitRadioBox = XRCCTRL(*this,"m_PreloadUnitRadioBox",wxRadioBox);
   m_PreloadCalculateDiameterPanel = XRCCTRL(*this,"m_PreloadCalculateDiameterPanel",wxPanel);
-  m_PreloadCalculateCrosssectionCheckBox = XRCCTRL(*this,"m_PreloadCalculateCrosssectionCheckBox",wxCheckBox);
-  m_PreloadYStaticText = XRCCTRL(*this,"m_PreloadYStaticText",wxStaticText);
-  m_PreloadYSpinCtrl = XRCCTRL(*this,"m_PreloadYSpinCtrl",wxSpinCtrlDouble);
-  m_PreloadXRadioBox = XRCCTRL(*this,"m_PreloadXRadioBox",wxRadioBox);
-  m_PreloadXSpinCtrl = XRCCTRL(*this,"m_PreloadXSpinCtrl",wxSpinCtrlDouble);
+  m_PreloadCrossSectionStaticText = XRCCTRL(*this,"m_PreloadCrossSectionStaticText",wxStaticText);
+  m_PreloadCrossSectionSpinCtrl = XRCCTRL(*this,"m_PreloadCrossSectionSpinCtrl",wxSpinCtrlDouble);
   m_PreloadLimitStaticText = XRCCTRL(*this,"m_PreloadLimitStaticText",wxStaticText);
   m_PreloadLimitSpinCtrl = XRCCTRL(*this,"m_PreloadLimitSpinCtrl",wxSpinCtrlDouble);
   m_PreloadSpeedStaticText = XRCCTRL(*this,"m_PreloadSpeedStaticText",wxStaticText);

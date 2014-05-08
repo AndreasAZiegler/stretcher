@@ -2,6 +2,7 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/button.h>
+#include "mybutton.h"
 #include <wx/spinctrl.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
@@ -15,6 +16,9 @@
 #include <wx/xrc/xmlres.h>
 
 wxFlexGridSizer* m_ChamberStretchSizer1;
+
+ wxMyButton* m_DecreaseDistanceButton;
+ wxMyButton* m_IncreaseDistanceButton;
 
 wxBoxSizer* m_GraphSizer1;
 wxBoxSizer* m_GraphSizer2;
