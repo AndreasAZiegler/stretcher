@@ -70,6 +70,14 @@ Creep::~Creep(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+std::vector<Experiment::PreviewValue> Creep::getPreview(void){
+
+}
+
+/**
  * @brief FSM of the Creep experiment
  * @param event Occuring event
  */
@@ -79,7 +87,7 @@ void Creep::process(Event e){
       if(Experiment::Event::evStart == e){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         // If force based
         if(StressOrForce::Force == m_HoldStressOrForce){

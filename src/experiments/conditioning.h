@@ -14,14 +14,6 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
 {
   public:
 
-    /**
-     * @brief Indicates whether the experiment is distance or stress/force based.
-     */
-    enum class DistanceOrStressForce{
-      Distance = 0,
-      StressForce = 1
-    };
-
    /**
      * @brief Initializes all the needed variables
      * @param type Type of the experiment.
@@ -54,6 +46,12 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance);
 
     ~Conditioning();
+
+    /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual std::vector<Experiment::PreviewValue> getPreview(void);
 
     /**
      * @brief Sets the number of cycles.

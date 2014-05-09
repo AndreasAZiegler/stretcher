@@ -20,7 +20,6 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
                                    MyFrame *myframe,
-                                   std::string path,
                                    double diameter)
   : m_ExperimentType(experimenttype),
     m_StressOrForce(stressOrForce),
@@ -29,7 +28,6 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
     m_VectorLayer(vector),
     m_VectorLayerMutex(vectoraccessmutex),
     m_MyFrame(myframe),
-    m_StoragePath(path),
     m_Diameter(diameter),
     m_DisplayGraphDelay(0)
 {
@@ -44,13 +42,6 @@ void ExperimentValues::startMeasurement(void){
 }
 
 /**
- * @brief Sets the experiment start time point.
- */
-void ExperimentValues::setStartPoint(void){
-  m_StartTimePoint = std::chrono::high_resolution_clock::now();
-}
-
-/**
  * @brief Unregister the update method.
  */
 void ExperimentValues::stopMeasurement(void){
@@ -60,6 +51,7 @@ void ExperimentValues::stopMeasurement(void){
 
 /**
  * @brief Removes the current graph.
+ * @todo Remove method.
  */
 void ExperimentValues::removeGraph(void){
 }
@@ -128,51 +120,19 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
 }
 
 /**
- * @brief Exports the measurement data to a .csv file.
+ * @brief Returns a pointer to the vector containing the stress/force values.
+ * @return Pointer to the vector.
  */
-void ExperimentValues::exportCSV(void){
-  // Creating file name
-  std::time_t time = std::time(NULL);
-  char mbstr[100];
-  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-  std::cout << mbstr << std::endl;
-  std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
-  std::cout << pathAndFilename << std::endl;
+std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getStressForceValues(void){
+  return(&m_StressForceValues);
+}
 
-  // Correct the vector size if needed.
-  if(m_StressForceValues.size() > m_DistanceValues.size()){
-    m_StressForceValues.resize(m_DistanceValues.size());
-  }else{
-    m_DistanceValues.resize(m_StressForceValues.size());
-  }
-
-  std::ofstream file(pathAndFilename);
-  //std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
-  if(false == file.is_open()){
-    std::cerr << "Couldn't open file" << std::endl;
-    throw "Couldn't open file";
-  }
-  file << "Experiment: " <<  experimentTypeToString() << "Date/Time: " << std::string(mbstr) << std::endl << std::endl;
-
-  std::string stressforce;
-  if(StressOrForce::Stress == m_StressOrForce){
-    stressforce = "kPa";
-  }else{
-    stressforce = "N";
-  }
-
-  file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << stressforce << "; Time stamp for stress/force in micro seconds" << std::endl;
-
-
-  for(int i = 0; i < m_StressForceValues.size(); ++i){
-    file << m_DistanceValues[i].value << std::string(";")
-         << std::chrono::duration_cast<std::chrono::milliseconds>(m_DistanceValues[i].timestamp - m_StartTimePoint).count() << ";"
-         << m_StressForceValues[i].value << ";"
-         << std::chrono::duration_cast<std::chrono::milliseconds>(m_StressForceValues[i].timestamp - m_StartTimePoint).count() << std::endl;
-  }
-
-  file.close();
+/**
+ * @brief Returns a pointer to the vector containing the distance values.
+ * @return Pointer to the vector.
+ */
+std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getDistanceValues(void){
+  return(&m_DistanceValues);
 }
 
 /**
@@ -213,5 +173,17 @@ std::string ExperimentValues::experimentTypeToString(){
       return("ChamberStretch Gel");
       break;
   }
+}
 
+/**
+ * @brief Export the measurement unit (stress/force)
+ * @return The unit as std::string.
+ */
+std::string ExperimentValues::getStressOrForce(void){
+  std::string stressforce;
+  if(StressOrForce::Stress == m_StressOrForce){
+    stressforce = "kPa";
+  }else{
+    stressforce = "N";
+  }
 }

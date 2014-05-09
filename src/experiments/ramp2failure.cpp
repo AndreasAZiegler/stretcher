@@ -64,6 +64,14 @@ Ramp2Failure::~Ramp2Failure(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+std::vector<Experiment::PreviewValue> Ramp2Failure::getPreview(void){
+
+}
+
+/**
  * @brief FSM of the Ramp2Failure experiment
  * @param event Occuring event
  */
@@ -73,7 +81,7 @@ void Ramp2Failure::process(Event e){
       if(Event::evStart == e){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = State::runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
         m_StageFrame->moveBackward(m_SpeedInMm);
       }
       break;

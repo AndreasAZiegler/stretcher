@@ -74,6 +74,14 @@ FatigueTesting::~FatigueTesting(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+std::vector<Experiment::PreviewValue> FatigueTesting::getPreview(void){
+
+}
+
+/**
  * @brief FSM of the fatigue experiment
  * @param event Occuring event
  */
@@ -83,7 +91,7 @@ void FatigueTesting::process(Event event){
       if(Experiment::Event::evStart == event){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         // If force/stress based
         if((m_CurrentDistance - m_AmplitudeInDistance) > m_DistanceThreshold){

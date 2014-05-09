@@ -45,6 +45,12 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
     ~Ramp2Failure();
 
     /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual std::vector<Experiment::PreviewValue> getPreview(void);
+
+    /**
      * @brief Sets the speed in percent of preload.
      * @param percent Speed in percen of preload.
      */

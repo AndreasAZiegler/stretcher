@@ -27,6 +27,23 @@ class Experiment
                evDistanceUpdate,/**< New distance value */
                evForceUpdate};	/**< New force value */
 
+    /**
+     * @brief Indicates whether the experiment is distance or stress/force based.
+     */
+    enum class DistanceOrStressForce{
+      Distance = 0,
+      StressForce = 1
+    };
+
+    /**
+     * @brief The PreviewValue struct
+     */
+    struct PreviewValue{
+       int timepoint;
+       DistanceOrStressForce distanceOrForce;
+       int value;
+    };
+
   protected:
     /**
      * @enum Direction
@@ -58,6 +75,12 @@ class Experiment
      * @brief Destructor
      */
     virtual ~Experiment();
+
+    /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual std::vector<PreviewValue> getPreview(void) = 0;
 
     /**
      * @brief FSM of the experiment
@@ -119,6 +142,9 @@ class Experiment
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
 
+    /**
+     * @todo Move the inherited experiment values classes in the corresponding experiment classes.
+     */
     ExperimentValues *m_ExperimentValues;				/**< Pointer to the experiment values */
 
 };

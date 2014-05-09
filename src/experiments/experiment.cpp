@@ -33,7 +33,6 @@ Experiment::Experiment(ExperimentType type,
                                             vector,
                                             vectoraccessmutex,
                                             myframe,
-                                            path,
                                             area)}
 {
 }

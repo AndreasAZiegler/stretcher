@@ -71,6 +71,14 @@ Conditioning::~Conditioning(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+std::vector<Experiment::PreviewValue> Conditioning::getPreview(void){
+
+}
+
+/**
  * @brief FSM of the conditioning experiment
  * @param event Occuring event
  */
@@ -80,7 +88,7 @@ void Conditioning::process(Experiment::Event event){
       if(Experiment::Event::evStart == event){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         // If force/stress based
         if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){

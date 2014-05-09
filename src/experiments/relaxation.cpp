@@ -72,6 +72,14 @@ Relaxation::~Relaxation(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+std::vector<Experiment::PreviewValue> Relaxation::getPreview(void){
+
+}
+
+/**
  * @brief FSM of the conditioning experiment
  * @param event Occuring event
  */
@@ -81,7 +89,7 @@ void Relaxation::process(Experiment::Event e){
       if(Experiment::Event::evStart == e){
         //m_StageFrame->setSpeed();
         m_CurrentState = State::runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         m_StageFrame->gotoStepsDistance(m_PreloadDistance + m_DistanceLimit);
         std::cout << "Relaxation started, mPrlealoadDistance: " << m_PreloadDistance << " m_DistanceLimit: " << m_DistanceLimit << std::endl;

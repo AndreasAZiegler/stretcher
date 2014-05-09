@@ -62,6 +62,14 @@ Preload::~Preload(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+std::vector<Experiment::PreviewValue> Preload::getPreview(void){
+
+}
+
+/**
  * @brief Sets the area.
  * @param x Length in x direction.
  * @param y Length in y direction.
@@ -94,7 +102,7 @@ void Preload::process(Event e){
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_SpeedInMM);
         m_CurrentState = runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         // If force based
         if(StressOrForce::Force == m_StressOrForce){

@@ -29,7 +29,11 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     Preload(ExperimentType type,
             StressOrForce forceOrStress,
             StageFrame *stageframe,
-            ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
+            ForceSensorMessageHandler *forcesensormessagehandler,
+            mpFXYVector *vector,
+            std::mutex *vectoraccessmutex,
+            MyFrame *myframe,
+            std::string path,
             std::condition_variable *wait,
             std::mutex *mutex,
             bool *stagesstopped,
@@ -37,6 +41,12 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             double stressForceLimit, double speedInMM, double area);
 
     ~Preload();
+
+    /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual std::vector<Experiment::PreviewValue> getPreview(void);
 
     /**
      * @brief FSM of the experiment
