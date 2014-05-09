@@ -137,6 +137,166 @@ class Settings
     }
 
     /**
+     * @brief Returns the name of set 1.
+     * @return Name as a string.
+     */
+    std::string getSet1Name(){
+      return(m_Set1Name);
+    }
+
+    /**
+     * @brief Returns the max distance of set 1.
+     * @return Max distance
+     */
+    int getSet1MaxDistance(){
+      return(m_Set1MaxDistance);
+    }
+
+    /**
+     * @brief Returns the min distance of set 1.
+     * @return Min distance
+     */
+    int getSet1MinDistance(){
+      return(m_Set1MinDistance);
+    }
+
+    /**
+     * @brief Returns the max force of set 1.
+     * @return Max force
+     */
+    int getSet1MaxForce(){
+      return(m_Set1MaxForce);
+    }
+
+    /**
+     * @brief Returns the min force of set 1.
+     * @return Min force
+     */
+    int getSet1MinForce(){
+      return(m_Set1MinForce);
+    }
+
+    /**
+     * @brief Returns the name of set 2.
+     * @return Name as a string.
+     */
+    std::string getSet2Name(){
+      return(m_Set2Name);
+    }
+
+    /**
+     * @brief Returns the max distance of set 2.
+     * @return Max distance
+     */
+    int getSet2MaxDistance(){
+      return(m_Set2MaxDistance);
+    }
+
+    /**
+     * @brief Returns the min distance of set 2.
+     * @return Min distance
+     */
+    int getSet2MinDistance(){
+      return(m_Set2MinDistance);
+    }
+
+    /**
+     * @brief Returns the max force of set 2.
+     * @return Max force
+     */
+    int getSet2MaxForce(){
+      return(m_Set2MaxForce);
+    }
+
+    /**
+     * @brief Returns the min force of set 2.
+     * @return Min force
+     */
+    int getSet2MinForce(){
+      return(m_Set2MinForce);
+    }
+
+    /**
+     * @brief Returns the name of set 3.
+     * @return Name as a string.
+     */
+    std::string getSet3Name(){
+      return(m_Set3Name);
+    }
+
+    /**
+     * @brief Returns the max distance of set 3.
+     * @return Max distance
+     */
+    int getSet3MaxDistance(){
+      return(m_Set3MaxDistance);
+    }
+
+    /**
+     * @brief Returns the min distance of set 3.
+     * @return Min distance
+     */
+    int getSet3MinDistance(){
+      return(m_Set3MinDistance);
+    }
+
+    /**
+     * @brief Returns the max force of set 3.
+     * @return Max force
+     */
+    int getSet3MaxForce(){
+      return(m_Set3MaxForce);
+    }
+
+    /**
+     * @brief Returns the min force of set 3.
+     * @return Min force
+     */
+    int getSet3MinForce(){
+      return(m_Set3MinForce);
+    }
+
+    /**
+     * @brief Returns the name of set 4.
+     * @return Name as a string.
+     */
+    std::string getSet4Name(){
+      return(m_Set4Name);
+    }
+
+    /**
+     * @brief Returns the max distance of set 4.
+     * @return Max distance
+     */
+    int getSet4MaxDistance(){
+      return(m_Set4MaxDistance);
+    }
+
+    /**
+     * @brief Returns the min distance of set 4.
+     * @return Min distance
+     */
+    int getSet4MinDistance(){
+      return(m_Set4MinDistance);
+    }
+
+    /**
+     * @brief Returns the max force of set 4.
+     * @return Max force
+     */
+    int getSet4MaxForce(){
+      return(m_Set4MaxForce);
+    }
+
+    /**
+     * @brief Returns the min force of set 4.
+     * @return Min force
+     */
+    int getSet4MinForce(){
+      return(m_Set4MinForce);
+    }
+
+    /**
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
      */
@@ -270,6 +430,34 @@ class Settings
     libconfig::Setting* m_ConfigurationStoragePathSetting;		/**< Storage path for the configuration file */
     libconfig::Setting* m_MeasurementValuesStoragePathSetting;/**< Storage path for the measurement values */
 
+    libconfig::Setting* m_Set1Settings;
+    libconfig::Setting* m_Set1NameSettings;
+    libconfig::Setting* m_Set1MaxDistanceSettings;
+    libconfig::Setting* m_Set1MinDistanceSettings;
+    libconfig::Setting* m_Set1MaxForceSettings;
+    libconfig::Setting* m_Set1MinForceSettings;
+
+    libconfig::Setting* m_Set2Settings;
+    libconfig::Setting* m_Set2NameSettings;
+    libconfig::Setting* m_Set2MaxDistanceSettings;
+    libconfig::Setting* m_Set2MinDistanceSettings;
+    libconfig::Setting* m_Set2MaxForceSettings;
+    libconfig::Setting* m_Set2MinForceSettings;
+
+    libconfig::Setting* m_Set3Settings;
+    libconfig::Setting* m_Set3NameSettings;
+    libconfig::Setting* m_Set3MaxDistanceSettings;
+    libconfig::Setting* m_Set3MinDistanceSettings;
+    libconfig::Setting* m_Set3MaxForceSettings;
+    libconfig::Setting* m_Set3MinForceSettings;
+
+    libconfig::Setting* m_Set4Settings;
+    libconfig::Setting* m_Set4NameSettings;
+    libconfig::Setting* m_Set4MaxDistanceSettings;
+    libconfig::Setting* m_Set4MinDistanceSettings;
+    libconfig::Setting* m_Set4MaxForceSettings;
+    libconfig::Setting* m_Set4MinForceSettings;
+
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;															/**< The com port for the second linear stage motor */
     int m_LinMot1BaudRate;																		/**< The baud rate for the first linear stage motor */
@@ -286,6 +474,30 @@ class Settings
 
     std::string m_ConfigurationStoragePath;										/**< Folder where the configuration file will be saved */
     std::string m_MeasurementValuesStoragePath;								/**< Folder where the images and the data will be saved */
+
+    std::string m_Set1Name;
+    int m_Set1MaxDistance;
+    int m_Set1MinDistance;
+    int m_Set1MaxForce;
+    int m_Set1MinForce;
+
+    std::string m_Set2Name;
+    int m_Set2MaxDistance;
+    int m_Set2MinDistance;
+    int m_Set2MaxForce;
+    int m_Set2MinForce;
+
+    std::string m_Set3Name;
+    int m_Set3MaxDistance;
+    int m_Set3MinDistance;
+    int m_Set3MaxForce;
+    int m_Set3MinForce;
+
+    std::string m_Set4Name;
+    int m_Set4MaxDistance;
+    int m_Set4MinDistance;
+    int m_Set4MaxForce;
+    int m_Set4MinForce;
 
 };
 

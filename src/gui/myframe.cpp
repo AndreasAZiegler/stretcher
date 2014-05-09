@@ -45,12 +45,16 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   //EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
   //EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
-  EVT_BUTTON(ID_HomeStages, MyFrame::OnHomeLinearStages)
-  EVT_BUTTON(ID_SetCalibrationLength, MyFrame::OnSetCalibrationLength)
-  EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnLoadStoredPosition)
+  EVT_BUTTON(ID_HomeStages, MyFrame::OnInitializeHomeLinearStages)
+  EVT_BUTTON(ID_SetZeroLength, MyFrame::OnInitializeSetZeroLength)
+  EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnInitializeLoadStoredPosition)
+  EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnClampingPosLoadSet1)
+  EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnClampingPosLoadSet2)
+  EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnClampingPosLoadSet3)
+  EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnClampingPosLoadSet4)
   EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
   EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
-  EVT_BUTTON(ID_SetLimits, MyFrame::OnSetLimits)
+  EVT_BUTTON(ID_SetLimits, MyFrame::OnClampingPosSetLimits)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
@@ -118,8 +122,12 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
-  m_InitializeCalibrationLengthButton->SetId(ID_SetCalibrationLength);
+  m_InitializeCalibrationLengthButton->SetId(ID_SetZeroLength);
   m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
+  m_ClampingPositionLimitSet1Button->SetId(ID_LoadLimitSet1);
+  m_ClampingPositionLimitSet2Button->SetId(ID_LoadLimitSet2);
+  m_ClampingPositionLimitSet3Button->SetId(ID_LoadLimitSet3);
+  m_ClampingPositionLimitSet4Button->SetId(ID_LoadLimitSet4);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
   m_ClampingPositionLimitSetButton->SetId(ID_SetLimits);
   m_ClampingPositionButton->SetId((ID_ClampingGoTo));
@@ -319,6 +327,15 @@ void MyFrame::startup(void){
   m_ConditioningDistanceLimitSpinCtrl->Show(false);
   m_ConditioningDisctanceLimitRadioBox->Show(false);
   */
+  // Change the limit set butten names
+  const wxString label1 = "Load " + m_Settings->getSet1Name() + " limits";
+  m_ClampingPositionLimitSet1Button->SetLabelText(label1);
+  const wxString label2 = "Load " + m_Settings->getSet2Name() + " limits";
+  m_ClampingPositionLimitSet2Button->SetLabelText(label2);
+  const wxString label3 = "Load " + m_Settings->getSet3Name() + " limits";
+  m_ClampingPositionLimitSet3Button->SetLabelText(label3);
+  const wxString label4 = "Load " + m_Settings->getSet4Name() + " limits";
+  m_ClampingPositionLimitSet4Button->SetLabelText(label4);
 
   // Hide Go to options
   m_R2FGoToSpinCtrl->Show(false);
@@ -499,7 +516,7 @@ void MyFrame::OnChamberMeasurement(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user klicks on load stored position button.
  * @param event Occuring event
  */
-void MyFrame::OnLoadStoredPosition(wxCommandEvent& event){
+void MyFrame::OnInitializeLoadStoredPosition(wxCommandEvent& event){
   (m_LinearStages->at(0))->loadStoredPosition();
   (m_LinearStages->at(1))->loadStoredPosition();
 }
@@ -508,7 +525,7 @@ void MyFrame::OnLoadStoredPosition(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user klicks on the home stage button.
  * @param event Occuring event
  */
-void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
+void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
   /*
   (m_LinearStages->at(0))->home();
   (m_LinearStages->at(1))->home();
@@ -521,10 +538,54 @@ void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user clicks on the set length button.
  * @param event Occuring event
  */
-void MyFrame::OnSetCalibrationLength(wxCommandEvent& event){
+void MyFrame::OnInitializeSetZeroLength(wxCommandEvent& event){
   m_StageFrame->setZeroDistance();
   m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+}
+
+/**
+ * @brief Loads limit set 1 from the configuration.
+ * @param event Occuring event
+ */
+void MyFrame::OnClampingPosLoadSet1(wxCommandEvent& event){
+  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet1MaxDistance());
+  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet1MinDistance());
+  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet1MaxForce());
+  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet1MinForce());
+}
+
+/**
+ * @brief Loads limit set 2 from the configuration.
+ * @param event Occuring event
+ */
+void MyFrame::OnClampingPosLoadSet2(wxCommandEvent& event){
+  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet2MaxDistance());
+  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet2MinDistance());
+  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet2MaxForce());
+  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet2MinForce());
+}
+
+/**
+ * @brief Loads limit set 3 from the configuration.
+ * @param event Occuring event
+ */
+void MyFrame::OnClampingPosLoadSet3(wxCommandEvent& event){
+  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet3MaxDistance());
+  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet3MinDistance());
+  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet3MaxForce());
+  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet3MinForce());
+}
+
+/**
+ * @brief Loads limit set 4 from the configuration.
+ * @param event Occuring event
+ */
+void MyFrame::OnClampingPosLoadSet4(wxCommandEvent& event){
+  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet4MaxDistance());
+  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet4MinDistance());
+  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet4MaxForce());
+  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet4MinForce());
 }
 
 /**
@@ -1075,7 +1136,7 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user sets the limits.
  * @param event Occuring event
  */
-void MyFrame::OnSetLimits(wxCommandEvent& event){
+void MyFrame::OnClampingPosSetLimits(wxCommandEvent& event){
   m_StageMaxLimit = m_ClampingPositionLimitMaxDistanceSpinCtrl->GetValue();
   m_StageMinLimit = m_ClampingPositionLimitMinDistanceSpinCtrl->GetValue();
   m_ForceMaxLimit = m_ClampingPositionLimitMaxForceSpinCtrl->GetValue();

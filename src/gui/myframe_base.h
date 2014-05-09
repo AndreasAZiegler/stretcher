@@ -42,16 +42,16 @@ protected:
  wxStaticText* m_staticText71;
  wxStaticText* m_ClampingPositionLimitMaxDistanceStaticText;
  wxSpinCtrlDouble* m_ClampingPositionLimitMaxDistanceSpinCtrl;
- wxButton* m_button40;
+ wxButton* m_ClampingPositionLimitSet1Button;
  wxStaticText* m_ClampingPositionLimitMinDistanceStaticText;
  wxSpinCtrlDouble* m_ClampingPositionLimitMinDistanceSpinCtrl;
- wxButton* m_button41;
+ wxButton* m_ClampingPositionLimitSet2Button;
  wxStaticText* m_ClampingPositionLimitMaxForceStaticText;
  wxSpinCtrlDouble* m_ClampingPositionLimitMaxForceSpinCtrl;
- wxButton* m_button42;
+ wxButton* m_ClampingPositionLimitSet3Button;
  wxStaticText* m_ClampingPositionLimitMinForceStaticText;
  wxSpinCtrlDouble* m_ClampingPositionLimitMinForceSpinCtrl;
- wxButton* m_button43;
+ wxButton* m_ClampingPositionLimitSet4Button;
  wxButton* m_ClampingPositionLimitSetButton;
  wxStaticText* m_ClampingPositionStaticText;
  wxSpinCtrlDouble* m_ClampingPositionSpinCtrl;
@@ -238,16 +238,16 @@ private:
   m_staticText71 = XRCCTRL(*this,"m_staticText71",wxStaticText);
   m_ClampingPositionLimitMaxDistanceStaticText = XRCCTRL(*this,"m_ClampingPositionLimitMaxDistanceStaticText",wxStaticText);
   m_ClampingPositionLimitMaxDistanceSpinCtrl = XRCCTRL(*this,"m_ClampingPositionLimitMaxDistanceSpinCtrl",wxSpinCtrlDouble);
-  m_button40 = XRCCTRL(*this,"m_button40",wxButton);
+  m_ClampingPositionLimitSet1Button = XRCCTRL(*this,"m_ClampingPositionLimitSet1Button",wxButton);
   m_ClampingPositionLimitMinDistanceStaticText = XRCCTRL(*this,"m_ClampingPositionLimitMinDistanceStaticText",wxStaticText);
   m_ClampingPositionLimitMinDistanceSpinCtrl = XRCCTRL(*this,"m_ClampingPositionLimitMinDistanceSpinCtrl",wxSpinCtrlDouble);
-  m_button41 = XRCCTRL(*this,"m_button41",wxButton);
+  m_ClampingPositionLimitSet2Button = XRCCTRL(*this,"m_ClampingPositionLimitSet2Button",wxButton);
   m_ClampingPositionLimitMaxForceStaticText = XRCCTRL(*this,"m_ClampingPositionLimitMaxForceStaticText",wxStaticText);
   m_ClampingPositionLimitMaxForceSpinCtrl = XRCCTRL(*this,"m_ClampingPositionLimitMaxForceSpinCtrl",wxSpinCtrlDouble);
-  m_button42 = XRCCTRL(*this,"m_button42",wxButton);
+  m_ClampingPositionLimitSet3Button = XRCCTRL(*this,"m_ClampingPositionLimitSet3Button",wxButton);
   m_ClampingPositionLimitMinForceStaticText = XRCCTRL(*this,"m_ClampingPositionLimitMinForceStaticText",wxStaticText);
   m_ClampingPositionLimitMinForceSpinCtrl = XRCCTRL(*this,"m_ClampingPositionLimitMinForceSpinCtrl",wxSpinCtrlDouble);
-  m_button43 = XRCCTRL(*this,"m_button43",wxButton);
+  m_ClampingPositionLimitSet4Button = XRCCTRL(*this,"m_ClampingPositionLimitSet4Button",wxButton);
   m_ClampingPositionLimitSetButton = XRCCTRL(*this,"m_ClampingPositionLimitSetButton",wxButton);
   m_ClampingPositionStaticText = XRCCTRL(*this,"m_ClampingPositionStaticText",wxStaticText);
   m_ClampingPositionSpinCtrl = XRCCTRL(*this,"m_ClampingPositionSpinCtrl",wxSpinCtrlDouble);
@@ -419,6 +419,5 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void 
-InitXmlResource();
+void InitXmlResource();
 #endif

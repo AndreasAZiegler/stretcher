@@ -160,19 +160,49 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Method wich will be executed, when the user klicks on load stored position button.
      * @param event Occuring event
      */
-    void OnLoadStoredPosition(wxCommandEvent& event);
+    void OnInitializeLoadStoredPosition(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user klicks on the home stage button.
      * @param event Occuring event
      */
-    void OnHomeLinearStages(wxCommandEvent& event);
+    void OnInitializeHomeLinearStages(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the set length button.
      * @param event Occuring event
      */
-    void OnSetCalibrationLength(wxCommandEvent& event);
+    void OnInitializeSetZeroLength(wxCommandEvent& event);
+
+    /**
+     * @brief Loads limit set 1 from the configuration.
+     * @param event Occuring event
+     */
+    void OnClampingPosLoadSet1(wxCommandEvent& event);
+
+    /**
+     * @brief Loads limit set 2 from the configuration.
+     * @param event Occuring event
+     */
+    void OnClampingPosLoadSet2(wxCommandEvent& event);
+
+    /**
+     * @brief Loads limit set 3 from the configuration.
+     * @param event Occuring event
+     */
+    void OnClampingPosLoadSet3(wxCommandEvent& event);
+
+    /**
+     * @brief Loads limit set 4 from the configuration.
+     * @param event Occuring event
+     */
+    void OnClampingPosLoadSet4(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user sets the limits.
+     * @param event Occuring event
+     */
+    void OnClampingPosSetLimits(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the clamping position value.
@@ -283,12 +313,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnChamberStretchSendToProtocol(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user sets the limits.
-     * @param event Occuring event
-     */
-    void OnSetLimits(wxCommandEvent& event);
-
-    /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
      * @param event Occuring event
      */
@@ -396,7 +420,7 @@ enum
   ID_MotorIncreaseDistance = 10,
   ID_MotorStop = 11,
   ID_HomeStages = 12,
-  ID_SetCalibrationLength = 13,
+  ID_SetZeroLength = 13,
   ID_LoadLimitSet1 = 14,
   ID_LoadLimitSet2 = 15,
   ID_LoadLimitSet3 = 16,

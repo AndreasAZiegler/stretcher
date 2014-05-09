@@ -190,7 +190,7 @@ void StageFrame::gotoMMDistance(int mmDistance){
   long dist = (mmDistance/MM_PER_MS);
   //long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
   //long amSteps = (m_CurrentDistance - dist) / 2;
-  long position = (771029 /*max. position*/ + m_ZeroDistance - (dist / 2));
+  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
   /*
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
@@ -206,7 +206,7 @@ void StageFrame::gotoMMDistance(int mmDistance){
  */
 void StageFrame::gotoStepsDistance(long stepsDistance){
   //long amSteps = (m_CurrentDistance - stepsDistance) / 2;
-  long position = (771029 /*max. position*/ + m_ZeroDistance - (stepsDistance / 2));
+  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (stepsDistance / 2));
   /*
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);

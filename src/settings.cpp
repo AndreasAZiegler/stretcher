@@ -41,7 +41,27 @@ Settings::Settings()
     m_ForceSensorInputSensitivity(1.0),
     m_ForceSensorMeasureEndValue(1597.83),
     m_ForceSensorZeroValue(8388608.0),
-    m_MeasurementValuesStoragePath(std::string("/home"))
+    m_MeasurementValuesStoragePath(std::string("/home")),
+    m_Set1Name(std::string("")),
+    m_Set1MaxDistance(0),
+    m_Set1MinDistance(0),
+    m_Set1MaxForce(0),
+    m_Set1MinForce(0),
+    m_Set2Name(std::string("")),
+    m_Set2MaxDistance(0),
+    m_Set2MinDistance(0),
+    m_Set2MaxForce(0),
+    m_Set2MinForce(0),
+    m_Set3Name(std::string("")),
+    m_Set3MaxDistance(0),
+    m_Set3MinDistance(0),
+    m_Set3MaxForce(0),
+    m_Set3MinForce(0),
+    m_Set4Name(std::string("")),
+    m_Set4MaxDistance(0),
+    m_Set4MinDistance(0),
+    m_Set4MaxForce(0),
+    m_Set4MinForce(0)
 {
   readSettings();
 }
@@ -119,6 +139,58 @@ bool Settings::readSettings ()
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
 
+    // Read the settings for the limit set 1
+    try{
+      m_Set1Settings = &m_RootSettings->operator []("Set1");
+
+      m_Set1Settings->lookupValue("Name", m_Set1Name);
+      m_Set1Settings->lookupValue("MaxDistance", m_Set1MaxDistance);
+      m_Set1Settings->lookupValue("MinDistance", m_Set1MinDistance);
+      m_Set1Settings->lookupValue("MaxForce", m_Set1MaxForce);
+      m_Set1Settings->lookupValue("MinForce", m_Set1MinForce);
+    }catch(const SettingNotFoundException &nfex){
+      std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
+    }
+
+    // Read the settings for the limit set 2
+    try{
+      m_Set2Settings = &m_RootSettings->operator []("Set2");
+
+      m_Set2Settings->lookupValue("Name", m_Set2Name);
+      m_Set2Settings->lookupValue("MaxDistance", m_Set2MaxDistance);
+      m_Set2Settings->lookupValue("MinDistance", m_Set2MinDistance);
+      m_Set2Settings->lookupValue("MaxForce", m_Set2MaxForce);
+      m_Set2Settings->lookupValue("MinForce", m_Set2MinForce);
+    }catch(const SettingNotFoundException &nfex){
+      std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
+    }
+
+    // Read the settings for the limit set 3
+    try{
+      m_Set3Settings = &m_RootSettings->operator []("Set3");
+
+      m_Set3Settings->lookupValue("Name", m_Set3Name);
+      m_Set3Settings->lookupValue("MaxDistance", m_Set3MaxDistance);
+      m_Set3Settings->lookupValue("MinDistance", m_Set3MinDistance);
+      m_Set3Settings->lookupValue("MaxForce", m_Set3MaxForce);
+      m_Set3Settings->lookupValue("MinForce", m_Set3MinForce);
+    }catch(const SettingNotFoundException &nfex){
+      std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
+    }
+
+    // Read the settings for the limit set 4
+    try{
+      m_Set4Settings = &m_RootSettings->operator []("Set4");
+
+      m_Set4Settings->lookupValue("Name", m_Set4Name);
+      m_Set4Settings->lookupValue("MaxDistance", m_Set4MaxDistance);
+      m_Set4Settings->lookupValue("MinDistance", m_Set4MinDistance);
+      m_Set4Settings->lookupValue("MaxForce", m_Set4MaxForce);
+      m_Set4Settings->lookupValue("MinForce", m_Set4MinForce);
+    }catch(const SettingNotFoundException &nfex){
+      std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
+    }
+
     return(true);
   }
 
@@ -157,21 +229,6 @@ bool Settings::writeSettings(){
   }else{
     m_StoragePathsSetting->add("MeasurementStoragePath", Setting::TypeString) = m_MeasurementValuesStoragePath;
   }
-
-  /*
-  // Write the storage path
-  if(m_RootSettings->exists("StoragePath")){
-    m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
-    *m_StoragePathSetting = m_StoragePath;
-    //*m_StoragePathSetting = std::string("/home/andreasziegler/Documents");
-    std::cout << "Settings: StoragePath: " << m_StoragePath << " " << m_StoragePathSetting << std::endl;
-  }else{
-    m_RootSettings->add("StoragePath", Setting::TypeString) = m_StoragePath;
-    //m_RootSettings->add("StoragePath", Setting::TypeString) = std::string("/home/andreasziegler/Documents");
-    //m_StoragePathSetting = &m_RootSettings->operator []("StoragePath");
-    std::cout << "Settings: Add StoragePath: " << m_StoragePath << std::endl;
-  }
-  */
 
   // Write the settings for linear motor 1
   if(m_RootSettings->exists("LinearMotor1")){
@@ -287,6 +344,194 @@ bool Settings::writeSettings(){
     *m_ForceSensorZeroValueSetting = m_ForceSensorZeroValue;
   }else{
     m_ForceSensorSettings->add("ZeroValue", Setting::TypeFloat) = m_ForceSensorZeroValue;
+  }
+
+  // Writing the settings for the limit 1 settings
+  if(m_RootSettings->exists("Set1")){
+    m_Set1Settings = &m_RootSettings->operator []("Set1");
+  }else{
+    m_Set1Settings = &m_RootSettings->add("Set1", Setting::TypeGroup);
+  }
+
+  // Writing name setting for limit set 1
+  if(m_Set1Settings->exists("Name")){
+    m_Set1NameSettings = &m_Set1Settings->operator []("Name");
+    *m_Set1NameSettings = m_Set1Name;
+  }else{
+    m_Set1Settings->add("Name", Setting::TypeString) = m_Set1Name;
+  }
+
+  // Writing max distance setting for limit set 1
+  if(m_Set1Settings->exists("MaxDistance")){
+    m_Set1MaxDistanceSettings = &m_Set1Settings->operator []("MaxDistance");
+    *m_Set1MaxDistanceSettings = m_Set1MaxDistance;
+  }else{
+    m_Set1Settings->add("MaxDistance", Setting::TypeInt) = m_Set1MaxDistance;
+  }
+
+  // Writing min distance setting for limit set 1
+  if(m_Set1Settings->exists("MinDistance")){
+    m_Set1MinDistanceSettings = &m_Set1Settings->operator []("MinDistance");
+    *m_Set1MinDistanceSettings = m_Set1MinDistance;
+  }else{
+    m_Set1Settings->add("MinDistance", Setting::TypeInt) = m_Set1MinDistance;
+  }
+
+  // Writing max force setting for limit set 1
+  if(m_Set1Settings->exists("MaxForce")){
+    m_Set1MaxForceSettings = &m_Set1Settings->operator []("MaxForce");
+    *m_Set1MaxForceSettings = m_Set1MaxForce;
+  }else{
+    m_Set1Settings->add("MaxForce", Setting::TypeInt) = m_Set1MaxForce;
+  }
+
+  // Writing min force setting for limit set 1
+  if(m_Set1Settings->exists("MinForce")){
+    m_Set1MinForceSettings = &m_Set1Settings->operator []("MinForce");
+    *m_Set1MinForceSettings = m_Set1MinForce;
+  }else{
+    m_Set1Settings->add("MinForce", Setting::TypeInt) = m_Set1MinForce;
+  }
+
+  // Writing the settings for the limit 2 settings
+  if(m_RootSettings->exists("Set2")){
+    m_Set2Settings = &m_RootSettings->operator []("Set2");
+  }else{
+    m_Set2Settings = &m_RootSettings->add("Set2", Setting::TypeGroup);
+  }
+
+  // Writing name setting for limit set 2
+  if(m_Set2Settings->exists("Name")){
+    m_Set2NameSettings = &m_Set2Settings->operator []("Name");
+    *m_Set2NameSettings = m_Set2Name;
+  }else{
+    m_Set2Settings->add("Name", Setting::TypeString) = m_Set2Name;
+  }
+
+  // Writing max distance setting for limit set 2
+  if(m_Set2Settings->exists("MaxDistance")){
+    m_Set2MaxDistanceSettings = &m_Set2Settings->operator []("MaxDistance");
+    *m_Set2MaxDistanceSettings = m_Set2MaxDistance;
+  }else{
+    m_Set2Settings->add("MaxDistance", Setting::TypeInt) = m_Set2MaxDistance;
+  }
+
+  // Writing min distance setting for limit set 2
+  if(m_Set2Settings->exists("MinDistance")){
+    m_Set2MinDistanceSettings = &m_Set2Settings->operator []("MinDistance");
+    *m_Set2MinDistanceSettings = m_Set2MinDistance;
+  }else{
+    m_Set2Settings->add("MinDistance", Setting::TypeInt) = m_Set2MinDistance;
+  }
+
+  // Writing max force setting for limit set 2
+  if(m_Set2Settings->exists("MaxForce")){
+    m_Set2MaxForceSettings = &m_Set2Settings->operator []("MaxForce");
+    *m_Set2MaxForceSettings = m_Set2MaxForce;
+  }else{
+    m_Set2Settings->add("MaxForce", Setting::TypeInt) = m_Set2MaxForce;
+  }
+
+  // Writing min force setting for limit set 2
+  if(m_Set2Settings->exists("MinForce")){
+    m_Set2MinForceSettings = &m_Set2Settings->operator []("MinForce");
+    *m_Set2MinForceSettings = m_Set2MinForce;
+  }else{
+    m_Set2Settings->add("MinForce", Setting::TypeInt) = m_Set2MinForce;
+  }
+
+  // Writing the settings for the limit 3 settings
+  if(m_RootSettings->exists("Set3")){
+    m_Set3Settings = &m_RootSettings->operator []("Set3");
+  }else{
+    m_Set3Settings = &m_RootSettings->add("Set3", Setting::TypeGroup);
+  }
+
+  // Writing name setting for limit set 3
+  if(m_Set3Settings->exists("Name")){
+    m_Set3NameSettings = &m_Set3Settings->operator []("Name");
+    *m_Set3NameSettings = m_Set3Name;
+  }else{
+    m_Set3Settings->add("Name", Setting::TypeString) = m_Set3Name;
+  }
+
+  // Writing max distance setting for limit set 3
+  if(m_Set3Settings->exists("MaxDistance")){
+    m_Set3MaxDistanceSettings = &m_Set3Settings->operator []("MaxDistance");
+    *m_Set3MaxDistanceSettings = m_Set3MaxDistance;
+  }else{
+    m_Set3Settings->add("MaxDistance", Setting::TypeInt) = m_Set3MaxDistance;
+  }
+
+  // Writing min distance setting for limit set 3
+  if(m_Set3Settings->exists("MinDistance")){
+    m_Set3MinDistanceSettings = &m_Set3Settings->operator []("MinDistance");
+    *m_Set3MinDistanceSettings = m_Set3MinDistance;
+  }else{
+    m_Set3Settings->add("MinDistance", Setting::TypeInt) = m_Set3MinDistance;
+  }
+
+  // Writing max force setting for limit set 3
+  if(m_Set3Settings->exists("MaxForce")){
+    m_Set3MaxForceSettings = &m_Set3Settings->operator []("MaxForce");
+    *m_Set3MaxForceSettings = m_Set3MaxForce;
+  }else{
+    m_Set3Settings->add("MaxForce", Setting::TypeInt) = m_Set3MaxForce;
+  }
+
+  // Writing min force setting for limit set 3
+  if(m_Set3Settings->exists("MinForce")){
+    m_Set3MinForceSettings = &m_Set3Settings->operator []("MinForce");
+    *m_Set3MinForceSettings = m_Set3MinForce;
+  }else{
+    m_Set3Settings->add("MinForce", Setting::TypeInt) = m_Set3MinForce;
+  }
+
+  // Writing the settings for the limit 4 settings
+  if(m_RootSettings->exists("Set4")){
+    m_Set4Settings = &m_RootSettings->operator []("Set4");
+  }else{
+    m_Set4Settings = &m_RootSettings->add("Set4", Setting::TypeGroup);
+  }
+
+  // Writing name setting for limit set 4
+  if(m_Set4Settings->exists("Name")){
+    m_Set4NameSettings = &m_Set4Settings->operator []("Name");
+    *m_Set4NameSettings = m_Set4Name;
+  }else{
+    m_Set4Settings->add("Name", Setting::TypeString) = m_Set4Name;
+  }
+
+  // Writing max distance setting for limit set 4
+  if(m_Set4Settings->exists("MaxDistance")){
+    m_Set4MaxDistanceSettings = &m_Set4Settings->operator []("MaxDistance");
+    *m_Set4MaxDistanceSettings = m_Set4MaxDistance;
+  }else{
+    m_Set4Settings->add("MaxDistance", Setting::TypeInt) = m_Set4MaxDistance;
+  }
+
+  // Writing min distance setting for limit set 4
+  if(m_Set4Settings->exists("MinDistance")){
+    m_Set4MinDistanceSettings = &m_Set4Settings->operator []("MinDistance");
+    *m_Set4MinDistanceSettings = m_Set4MinDistance;
+  }else{
+    m_Set4Settings->add("MinDistance", Setting::TypeInt) = m_Set4MinDistance;
+  }
+
+  // Writing max force setting for limit set 4
+  if(m_Set4Settings->exists("MaxForce")){
+    m_Set4MaxForceSettings = &m_Set4Settings->operator []("MaxForce");
+    *m_Set4MaxForceSettings = m_Set4MaxForce;
+  }else{
+    m_Set4Settings->add("MaxForce", Setting::TypeInt) = m_Set4MaxForce;
+  }
+
+  // Writing min force setting for limit set 4
+  if(m_Set4Settings->exists("MinForce")){
+    m_Set4MinForceSettings = &m_Set4Settings->operator []("MinForce");
+    *m_Set4MinForceSettings = m_Set4MinForce;
+  }else{
+    m_Set4Settings->add("MinForce", Setting::TypeInt) = m_Set4MinForce;
   }
 
   // Finally try to write the configuration to the file.
