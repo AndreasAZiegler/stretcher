@@ -158,14 +158,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::string experimentTypeToString();
 
     /**
-     * @brief Returns true if the export should be disabled, false otherwise.
-     * @return Boolean value.
-     */
-    bool isExportDisabled(void){
-      return(m_DisableExportFlag);
-    }
-
-    /**
      * @brief Export the measurement unit (stress/force)
      * @return The unit as std::string.
      */
@@ -187,7 +179,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     double m_Diameter;																											/**< Diameter size of the sample. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
-    bool m_DisableExportFlag;																								/**< Flag that indicates if the export should be disabled. */
 
 };
 

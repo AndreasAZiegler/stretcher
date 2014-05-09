@@ -15,6 +15,13 @@ Protocols::Protocols(wxListBox *listbox,
 }
 
 /**
+ * @brief Create the preview vector and display it in the graph.
+ */
+void Protocols::makePreview(void){
+
+}
+
+/**
  * @brief Moves the experiment from the current position to the one before.
  * @param experimentPosition The current experiment position.
  */
@@ -48,7 +55,7 @@ void Protocols::setStartPoint(void){
 /**
  * @brief Exports the measurement data to a .csv file.
  */
-void Protocols::exportCSV(void){
+void Protocols::exportCSV(std::vector<bool> *disableexport){
   // Creating file name
   std::time_t time = std::time(NULL);
   char mbstr[100];
@@ -73,7 +80,7 @@ void Protocols::exportCSV(void){
 
   // Printing the experiment settings.
   for(int i = 0; i < m_ExperimentValues.size(); ++i){
-    if(false == m_ExperimentValues[i]->isExportDisabled()){
+    if(false == disableexport->operator [](i)){
       //file << m_ExperimentValues[i]->getExperimentSettings();
     }
   }
@@ -83,7 +90,7 @@ void Protocols::exportCSV(void){
   file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in micro seconds" << std::endl;
 
   for(int i = 0; i < m_ExperimentValues.size(); ++i){
-    if(false == m_ExperimentValues[i]->isExportDisabled()){
+    if(false == disableexport->operator [](i)){
 
       // Get the pointer to the vectors containing the measurement values.
       std::vector<ExperimentValues::MeasurementValue>* stressForceValues = m_ExperimentValues[i]->getStressForceValues();
@@ -107,6 +114,8 @@ void Protocols::exportCSV(void){
   }
 
   file.close();
+
+  delete disableexport;
   /*
 /**
  * @brief Returns the experiment settings as a std::string.
