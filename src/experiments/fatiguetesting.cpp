@@ -77,7 +77,7 @@ FatigueTesting::~FatigueTesting(){
  * @brief Returns a vector containing the points required to cread a preview graph.
  * @return Vector containing the preview points.
  */
-std::vector<Experiment::PreviewValue> FatigueTesting::getPreview(void){
+void FatigueTesting::getPreview(std::vector<PreviewValue> &previewvalue){
 
 }
 

@@ -54,6 +54,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     ~MyFrame();
 
     /**
+     * @brief Prepares the graph to show the experiment values.
+     */
+    void showValuesGraph(void);
+
+    /**
      * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
      * 				thread. (CallAfter() asynchronously call the updateDistance method)
      * @param value The position of a stage or a force.
@@ -62,9 +67,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
-     * @brief Executes updateGraph() from the main threa.
+     * @brief Method which will be called from the class ExperimentValues to update the graph. Executes updateGraph() from the main thread.
      */
     void updateGraphFromExperimentValues(void);
+
+    /**
+     * @brief Method which will be called from the class Protocols to create the preview graph. Executes createPreviewGraph() from the main thread.
+     */
+    void showPreviewGraph(void);
 
     /**
      * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
@@ -356,7 +366,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     /**
      * @brief Updates the graph in the GUI.
      */
-    void updateGraph();
+    void updateGraph(void);
+
+    /**
+     * @brief Creates the preview graph.
+     */
+    void createPreviewGraph(void);
 
     /**
      * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
@@ -365,9 +380,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
 
     mpWindow *m_Graph;													/**< Pointer to the graph */
     mpFXYVector m_VectorLayer;									/**< Vector layer for the graph */
+    mpFXYVector m_StressForcePreviewVector;
+    mpFXYVector m_DistancePreviewVector;
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     mpScaleX *m_XAxis;													/**< Pointer to the X axis */
-    mpScaleY *m_YAxis;													/**< Pointer to the Y axis */
+    mpScaleY *m_Y1Axis;													/**< Pointer to the left Y axis */
+    mpScaleY *m_Y2Axis;													/**< Pointer to the right Y axis */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */

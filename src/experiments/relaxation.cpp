@@ -75,7 +75,7 @@ Relaxation::~Relaxation(){
  * @brief Returns a vector containing the points required to cread a preview graph.
  * @return Vector containing the preview points.
  */
-std::vector<Experiment::PreviewValue> Relaxation::getPreview(void){
+void Relaxation::getPreview(std::vector<PreviewValue> &previewvalue){
 
 }
 

@@ -73,7 +73,7 @@ Creep::~Creep(){
  * @brief Returns a vector containing the points required to cread a preview graph.
  * @return Vector containing the preview points.
  */
-std::vector<Experiment::PreviewValue> Creep::getPreview(void){
+void Creep::getPreview(std::vector<Experiment::PreviewValue>& previewvalue){
 
 }
 

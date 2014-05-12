@@ -3,6 +3,7 @@
 
 // Includes
 #include <wx/listbox.h>
+#include <mathplot.h>
 #include "../gui/myframe.h"
 #include "experiments/experiment.h"
 
@@ -75,10 +76,16 @@ class Protocols
 
   private:
     MyFrame *m_MyFrame;
-    mpFXYVector *m_Vector;
+    mpFXYVector *m_PreviewVector1;
+    mpFXYVector *m_PreviewVector2;
     wxListBox *m_ListBox;
     std::vector<Experiment*> m_Experiments;
     std::vector<ExperimentValues*> m_ExperimentValues;
+    std::vector<Experiment::PreviewValue> m_PreviewValues;
+    std::vector<double> m_StressForcePreviewValues;
+    std::vector<double> m_DistancePreviewValues;
+    std::vector<double> m_StressForceTimePreviewValues;
+    std::vector<double> m_DistanceTimePreviewValues;
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 };

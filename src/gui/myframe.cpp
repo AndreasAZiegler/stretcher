@@ -168,27 +168,16 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_VectorLayer.SetContinuity(true);
+    m_StressForcePreviewVector.SetContinuity(true);
+    m_DistancePreviewVector.SetContinuity(true);
     wxPen vectorpen(*wxBLUE, 2, wxSOLID);
     m_VectorLayer.SetPen(vectorpen);
+    m_StressForcePreviewVector.SetPen(vectorpen);
+    m_DistancePreviewVector.SetPen(vectorpen);
     m_VectorLayer.SetDrawOutsideMargins(false);
+    m_StressForcePreviewVector.SetDrawOutsideMargins(false);
+    m_DistancePreviewVector.SetDrawOutsideMargins(false);
   }
-
-  // Add layer to graph.
-  m_Graph->AddLayer(&m_VectorLayer);
-
-  // Add axis.
-  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  m_XAxis = new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
-  m_XAxis->SetFont(graphFont);
-  m_YAxis->SetFont(graphFont);
-  m_XAxis->SetDrawOutsideMargins(false);
-  m_YAxis->SetDrawOutsideMargins(false);
-
-  m_Graph->SetMargins(20, 20, 30, 50);
-  m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(m_XAxis);
-  m_Graph->AddLayer(m_YAxis);
 
   // Add graph to window
   m_Graph->Fit();
@@ -259,7 +248,7 @@ MyFrame::~MyFrame(){
   // Remove vector, and the axis from graph.
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(m_XAxis);
-  m_Graph->DelLayer(m_YAxis);
+  m_Graph->DelLayer(m_Y1Axis);
 
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
@@ -270,8 +259,8 @@ MyFrame::~MyFrame(){
   if(NULL != m_XAxis){
     delete m_XAxis;
   }
-  if(NULL != m_YAxis){
-    delete m_YAxis;
+  if(NULL != m_Y1Axis){
+    delete m_Y1Axis;
   }
 
   if(NULL != m_CurrentExperiment){
@@ -424,12 +413,12 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [kPa]");
     m_ForceUnit = wxT(" kPa");
 
-    m_Graph->DelLayer(m_YAxis);
-    delete m_YAxis;
-    m_YAxis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
+    m_Graph->DelLayer(m_Y1Axis);
+    delete m_Y1Axis;
+    m_Y1Axis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_YAxis->SetFont(graphFont);
-    m_Graph->AddLayer(m_YAxis);
+    m_Y1Axis->SetFont(graphFont);
+    m_Graph->AddLayer(m_Y1Axis);
     m_Graph->Fit();
 
     m_StressOrForce = StressOrForce::Stress;
@@ -440,12 +429,12 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [N]");
     m_ForceUnit = wxT(" N");
 
-    m_Graph->DelLayer(m_YAxis);
-    delete m_YAxis;
-    m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+    m_Graph->DelLayer(m_Y1Axis);
+    delete m_Y1Axis;
+    m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_YAxis->SetFont(graphFont);
-    m_Graph->AddLayer(m_YAxis);
+    m_Y1Axis->SetFont(graphFont);
+    m_Graph->AddLayer(m_Y1Axis);
     m_Graph->Fit();
 
     m_StressOrForce = StressOrForce::Force;
@@ -1289,19 +1278,103 @@ void MyFrame::updateForce(){
 }
 
 /**
- * @brief MyFrame::updateGraphFromExperimentValues
- * @param vector
+ * @brief Prepares the graph to show the experiment values.
+ */
+void MyFrame::showValuesGraph(void){
+  m_Graph->DelLayer(&m_VectorLayer);
+  m_Graph->DelLayer(&m_StressForcePreviewVector);
+  m_Graph->DelLayer(&m_DistancePreviewVector);
+
+  // Add axis.
+  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+  if(NULL == m_XAxis){
+    delete m_XAxis;
+  m_XAxis = NULL;
+  }
+  if(NULL == m_Y1Axis){
+    delete m_Y1Axis;
+    m_Y1Axis = NULL;
+  }
+  if(NULL == m_Y2Axis){
+    delete m_Y2Axis;
+    m_Y2Axis = NULL;
+  }
+  m_XAxis = new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+  m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+  m_XAxis->SetFont(graphFont);
+  m_Y1Axis->SetFont(graphFont);
+  m_XAxis->SetDrawOutsideMargins(false);
+  m_Y1Axis->SetDrawOutsideMargins(false);
+
+  m_Graph->SetMargins(20, 20, 30, 50);
+  m_Graph->EnableMousePanZoom(true);
+  m_Graph->AddLayer(m_XAxis);
+  m_Graph->AddLayer(m_Y1Axis);
+  m_Graph->AddLayer(&m_VectorLayer);
+
+  m_Graph->Fit();
+}
+
+/**
+ * @brief Method which will be called from the class ExperimentValues to update the graph. Executes updateGraph() from the main thread.
  */
 void MyFrame::updateGraphFromExperimentValues(){
   CallAfter(&MyFrame::updateGraph);
 }
 
 /**
+ * @brief Method which will be called from the class Protocols to create the preview graph. Executes createPreviewGraph() from the main thread.
+ */
+void MyFrame::showPreviewGraph(){
+  CallAfter(&MyFrame::createPreviewGraph);
+}
+
+/**
  * @brief Updates the graph in the GUI.
  */
-void MyFrame::updateGraph(){
+void MyFrame::updateGraph(void){
   m_Graph->Fit();
   //std::cout << "ExperimentVaues graph fitted." << std::endl;
+}
+
+/**
+ * @brief Creates the preview graph.
+ */
+void MyFrame::createPreviewGraph(void){
+  m_Graph->DelLayer(&m_VectorLayer);
+  m_Graph->DelLayer(&m_StressForcePreviewVector);
+  m_Graph->DelLayer(&m_DistancePreviewVector);
+
+  m_Graph->AddLayer(&m_StressForcePreviewVector);
+  m_Graph->AddLayer(&m_DistancePreviewVector);
+
+  // Add axis.
+  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+  delete m_XAxis;
+  m_XAxis = NULL;
+  delete m_Y1Axis;
+  m_Y1Axis = NULL;
+  if(NULL == m_Y2Axis){
+    delete m_Y2Axis;
+    m_Y2Axis = NULL;
+  }
+  m_XAxis = new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+  m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+  m_Y2Axis = new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true);
+  m_XAxis->SetFont(graphFont);
+  m_Y1Axis->SetFont(graphFont);
+  m_XAxis->SetDrawOutsideMargins(false);
+  m_Y1Axis->SetDrawOutsideMargins(false);
+
+  m_Graph->SetMargins(20, 20, 30, 50);
+  m_Graph->EnableMousePanZoom(true);
+  m_Graph->AddLayer(m_XAxis);
+  m_Graph->AddLayer(m_Y1Axis);
+  m_Graph->AddLayer(m_Y2Axis);
+  m_Graph->AddLayer(&m_StressForcePreviewVector);
+  m_Graph->AddLayer(&m_DistancePreviewVector);
+
+  m_Graph->Fit();
 }
 
 /**

@@ -67,7 +67,7 @@ Ramp2Failure::~Ramp2Failure(){
  * @brief Returns a vector containing the points required to cread a preview graph.
  * @return Vector containing the preview points.
  */
-std::vector<Experiment::PreviewValue> Ramp2Failure::getPreview(void){
+void Ramp2Failure::getPreview(std::vector<PreviewValue> &previewvalue){
 
 }
 

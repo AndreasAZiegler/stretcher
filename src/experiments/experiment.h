@@ -80,7 +80,7 @@ class Experiment
      * @brief Returns a vector containing the points required to cread a preview graph.
      * @return Vector containing the preview points.
      */
-    virtual std::vector<PreviewValue> getPreview(void) = 0;
+    virtual void getPreview(std::vector<PreviewValue>& previewvalues) = 0;
 
     /**
      * @brief FSM of the experiment

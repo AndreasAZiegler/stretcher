@@ -9,7 +9,7 @@ Protocols::Protocols(wxListBox *listbox,
                      std::string path)
   : m_ListBox(listbox),
     m_MyFrame(myframe),
-    m_Vector(vector),
+    m_PreviewVector1(vector),
     m_StoragePath(path)
 {
 }
@@ -19,6 +19,32 @@ Protocols::Protocols(wxListBox *listbox,
  */
 void Protocols::makePreview(void){
 
+  // Collect the preview points from the single experiments.
+  for(int i = 0; i < m_Experiments.size(); ++i){
+    m_Experiments[i]->getPreview(m_PreviewValues);
+  }
+
+  // Split preview point into stressforce and distance points.
+  for(auto i : m_PreviewValues){
+    if(Experiment::DistanceOrStressForce::Distance ==  i.distanceOrForce){
+      m_DistancePreviewValues.push_back(i.value);
+      m_DistanceTimePreviewValues.push_back(i.timepoint);
+    } else if(Experiment::DistanceOrStressForce::StressForce ==  i.distanceOrForce){
+      m_StressForcePreviewValues.push_back(i.value);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    }
+  }
+
+  // Set the the vector data.
+  m_PreviewVector1->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
+  m_PreviewVector2->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
+
+  // Show preview in the graph.
+  m_MyFrame->showPreviewGraph();
+}
+
+void Protocols::runProtocol(void){
+  m_MyFrame->showValuesGraph();
 }
 
 /**

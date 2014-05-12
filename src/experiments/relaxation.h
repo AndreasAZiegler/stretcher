@@ -55,7 +55,7 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
      * @brief Returns a vector containing the points required to cread a preview graph.
      * @return Vector containing the preview points.
      */
-    virtual std::vector<Experiment::PreviewValue> getPreview(void);
+    virtual void getPreview(std::vector<Experiment::PreviewValue>& previewvalue);
 
     /**
      * @brief Sets the experiment to distance or expansion based.

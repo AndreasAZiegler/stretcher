@@ -74,7 +74,7 @@ Conditioning::~Conditioning(){
  * @brief Returns a vector containing the points required to cread a preview graph.
  * @return Vector containing the preview points.
  */
-std::vector<Experiment::PreviewValue> Conditioning::getPreview(void){
+void Conditioning::getPreview(std::vector<PreviewValue> &previewvalue){
 
 }
 
