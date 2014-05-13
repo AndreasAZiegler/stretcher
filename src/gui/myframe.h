@@ -378,6 +378,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnDeleteExperiment(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the move experiment up button.
+     * @param event Occuring event
+     */
+    void OnMoveUpExperiment(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the move experiment down button.
+     * @param event Occuring event
+     */
+    void OnMoveDownExperiment(wxCommandEvent& event);
+
+    /**
      * @brief Calculates the distance and print the value in the GUI.
      */
     void updateDistance(void);
@@ -418,7 +430,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
     Protocols *m_CurrentProtocol;								/**< Pointer to the current protocol */
-    Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
+    //Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
     //ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */

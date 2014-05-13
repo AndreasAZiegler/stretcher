@@ -74,6 +74,8 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
+  EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
+  EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
 wxEND_EVENT_TABLE()
 
 // Costum event definitions
@@ -96,7 +98,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     //m_PreloadDistance(0),
     m_StressOrForce(StressOrForce::Force),
     m_CurrentProtocol(NULL),
-    m_CurrentExperiment(NULL),
+    //m_CurrentExperiment(NULL),
     //m_CurrentExperimentValues(NULL),
     m_StageMaxLimit(0),
     m_StageMinLimit(0),
@@ -274,10 +276,10 @@ MyFrame::~MyFrame(){
     delete m_Y1Axis;
   }
 
+  /*
   if(NULL != m_CurrentExperiment){
     delete m_CurrentExperiment;
   }
-  /*
   if(NULL != m_CurrentExperimentValues){
     delete m_CurrentExperimentValues;
   }
@@ -699,7 +701,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
       break;
   }
 
-  m_CurrentExperiment = new Conditioning(ExperimentType::Conditioning,
+  std::unique_ptr<Experiment> experiment(new Conditioning(ExperimentType::Conditioning,
                                          distanceOrStressForce,
                                          m_StressOrForce,
                                          m_CurrentDistance,
@@ -716,7 +718,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          m_ConditioningCyclesSpinCtrl->GetValue(),
                                          distancelimit,
                                          m_ConditioningSpeedMmSpinCtrl->GetValue(),
-                                         m_Area);
+                                         m_Area));
 
   //m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
 
@@ -1100,9 +1102,11 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
   std::lock_guard<std::mutex> lck(m_WaitMutex);
   m_Wait.notify_all();
 
+  /*
   if(NULL != m_CurrentExperiment){
     m_CurrentExperiment = NULL;
   }
+  */
 }
 
 /**
@@ -1144,6 +1148,22 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
  */
 void MyFrame::OnDeleteExperiment(wxCommandEvent& event){
   m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the move experiment up button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
+  m_CurrentProtocol->moveExperimentUp(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the move experiment down button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
+  m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
 }
 
 /**

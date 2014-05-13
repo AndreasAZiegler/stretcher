@@ -41,8 +41,10 @@ Protocols::Protocols(wxListBox *listbox,
 Protocols::~Protocols(){
   delete m_ExperimentRunningThread;
 
+  /*
   m_Experiments.clear();
   m_ExperimentValues.clear();
+  */
 }
 
 /**
@@ -110,6 +112,14 @@ void Protocols::moveExperimentUp(int experimentPosition){
   if(0 < experimentPosition){
     std::swap(m_Experiments[experimentPosition], m_Experiments[experimentPosition - 1]);
     std::swap(m_ExperimentValues[experimentPosition], m_ExperimentValues[experimentPosition - 1]);
+
+    const wxString stringPos(m_ListBox->GetString(experimentPosition));
+    const wxString stringUp(m_ListBox->GetString(experimentPosition - 1));
+    m_ListBox->SetString(experimentPosition, stringUp);
+    m_ListBox->SetString(experimentPosition - 1, stringPos);
+
+    m_ListBox->SetSelection(experimentPosition, false);
+    m_ListBox->SetSelection(experimentPosition - 1, true);
   }
 }
 
@@ -122,6 +132,14 @@ void Protocols::moveExperimentDown(int experimentPosition){
   if(m_Experiments.size() > experimentPosition){
     std::swap(m_Experiments[experimentPosition], m_Experiments[experimentPosition + 1]);
     std::swap(m_ExperimentValues[experimentPosition], m_ExperimentValues[experimentPosition + 1]);
+
+    const wxString stringPos(m_ListBox->GetString(experimentPosition));
+    const wxString stringDown(m_ListBox->GetString(experimentPosition + 1));
+    m_ListBox->SetString(experimentPosition, stringDown);
+    m_ListBox->SetString(experimentPosition + 1, stringPos);
+
+    m_ListBox->SetSelection(experimentPosition, false);
+    m_ListBox->SetSelection(experimentPosition + 1, true);
   }
 }
 
