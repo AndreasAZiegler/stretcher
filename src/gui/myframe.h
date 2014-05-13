@@ -390,6 +390,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMoveDownExperiment(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the run protocol button.
+     * @param event Occuring event
+     */
+    void OnRunProtocol(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the stop protocol button.
+     * @param event Occuring event
+     */
+    void OnStopProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Calculates the distance and print the value in the GUI.
      */
     void updateDistance(void);

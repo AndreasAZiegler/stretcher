@@ -102,7 +102,6 @@ void Preload::process(Event e){
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_SpeedInMM);
         m_CurrentState = runState;
-        //m_ExperimentValues->setStartPoint();
 
         // If force based
         if(StressOrForce::Force == m_StressOrForce){
@@ -147,14 +146,14 @@ void Preload::process(Event e){
         // If force based
         if(StressOrForce::Force == m_StressOrForce){
           if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
               m_StageFrame->moveBackward(m_SpeedInMM);
             }
           }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
 
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
               m_CurrentDirection = Direction::Forwards;

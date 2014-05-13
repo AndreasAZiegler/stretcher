@@ -76,6 +76,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
   EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
+  EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
 wxEND_EVENT_TABLE()
 
 // Costum event definitions
@@ -635,20 +636,20 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   m_Area = m_PreloadCrossSectionSpinCtrl->GetValue();
 
   std::unique_ptr<Experiment> experiment(new Preload(ExperimentType::Preload,
-                                         m_StressOrForce,
-                                         m_StageFrame,
-                                         m_ForceSensorMessageHandler,
-                                         &m_VectorLayer,
-                                         &m_VectorLayerMutex,
-                                         this,
-                                         m_StoragePath,
-                                         &m_Wait,
-                                         &m_WaitMutex,
-                                         &m_StagesStoppedFlag,
-                                         &m_StagesStoppedMutex,
-                                         m_PreloadLimitSpinCtrl->GetValue(),
-                                         m_PreloadSpeedMmSpinCtrl->GetValue(),
-                                         m_Area));
+                                                     m_StressOrForce,
+                                                     m_StageFrame,
+                                                     m_ForceSensorMessageHandler,
+                                                     &m_VectorLayer,
+                                                     &m_VectorLayerMutex,
+                                                     this,
+                                                     m_StoragePath,
+                                                     &m_Wait,
+                                                     &m_WaitMutex,
+                                                     &m_StagesStoppedFlag,
+                                                     &m_StagesStoppedMutex,
+                                                     m_PreloadLimitSpinCtrl->GetValue(),
+                                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
+                                                     m_Area));
 
   {
     std::lock_guard<std::mutex> lck{m_PreloadDoneMutex};
@@ -1164,6 +1165,23 @@ void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
  */
 void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
   m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the run protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnRunProtocol(wxCommandEvent& event){
+  m_CurrentProtocol->runProtocol();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the stop protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnStopProtocol(wxCommandEvent& event){
+  m_CurrentProtocol->stopProtocol();
+  OnMotorStop(event);
 }
 
 /**

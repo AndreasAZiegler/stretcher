@@ -31,7 +31,8 @@ Protocols::Protocols(wxListBox *listbox,
     m_StoragePath(path),
     m_PreloadDistance(0),
     m_ExperimentRunningFlag(false),
-    m_MeasurementValuesRecordingFlag(false)
+    m_MeasurementValuesRecordingFlag(false),
+    m_CurrentExperimentNr(0)
 {
 }
 
@@ -76,9 +77,39 @@ void Protocols::makePreview(void){
   m_MyFrame->showPreviewGraph();
 }
 
+/**
+ * @brief Runs the protocol.
+ */
 void Protocols::runProtocol(void){
   m_MyFrame->showValuesGraph();
 
+  // Only continue if there are expeiments in the protocol.
+  if(0 < m_Experiments.size()){
+    // Run first experiment.
+    {
+      std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+      m_ExperimentRunningFlag = true;
+    }
+    // Set start point.
+    m_StartTimePoint = std::chrono::high_resolution_clock::now();
+    std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
+    //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
+    t1.join();
+    m_CurrentExperimentNr++;
+
+    if(NULL == m_ExperimentRunningThread){
+      delete m_ExperimentRunningThread;
+      m_ExperimentRunningThread = NULL;
+    }
+    m_ExperimentRunningThread = new std::thread(&Protocols::checkFinishedExperiment, this);
+    m_ExperimentRunningThread->detach();
+  }
+}
+
+/**
+ * @brief Process the next experiments.
+ */
+void Protocols::process(void){
   // Return if an experiment is currently running
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
@@ -86,21 +117,33 @@ void Protocols::runProtocol(void){
       return;
     }
   }
+  if(m_Experiments.size() > m_CurrentExperimentNr){
+    {
+      std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+      m_ExperimentRunningFlag = true;
+    }
+    std::thread t1(&Experiment::process, std::move(m_Experiments[m_CurrentExperimentNr]), Preload::Event::evStart);
+    //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
+    t1.join();
+    m_CurrentExperimentNr++;
 
-  // Run first experiment.
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
-  t1.join();
+    if(NULL == m_ExperimentRunningThread){
+      delete m_ExperimentRunningThread;
+      m_ExperimentRunningThread = NULL;
+    }
+    m_ExperimentRunningThread = new std::thread(&Protocols::checkFinishedExperiment, this);
+    m_ExperimentRunningThread->detach();
 
-  if(NULL == m_ExperimentRunningThread){
-    delete m_ExperimentRunningThread;
-    m_ExperimentRunningThread = NULL;
+  } else{
+    m_CurrentExperimentNr = 0;
   }
-  m_ExperimentRunningThread = new std::thread(&Protocols::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+}
+
+/**
+ * @brief Stops the protocol.
+ */
+void Protocols::stopProtocol(void){
+  m_CurrentExperimentNr = 0;
 }
 
 /**
@@ -110,14 +153,17 @@ void Protocols::runProtocol(void){
 void Protocols::moveExperimentUp(int experimentPosition){
   // Check if the poition is not the first position.
   if(0 < experimentPosition){
+    // Swap the elements in the vector.
     std::swap(m_Experiments[experimentPosition], m_Experiments[experimentPosition - 1]);
     std::swap(m_ExperimentValues[experimentPosition], m_ExperimentValues[experimentPosition - 1]);
 
+    // Swap the elements in the list box.
     const wxString stringPos(m_ListBox->GetString(experimentPosition));
     const wxString stringUp(m_ListBox->GetString(experimentPosition - 1));
     m_ListBox->SetString(experimentPosition, stringUp);
     m_ListBox->SetString(experimentPosition - 1, stringPos);
 
+    // Swap the selection in the list box.
     m_ListBox->SetSelection(experimentPosition, false);
     m_ListBox->SetSelection(experimentPosition - 1, true);
   }
@@ -130,14 +176,17 @@ void Protocols::moveExperimentUp(int experimentPosition){
 void Protocols::moveExperimentDown(int experimentPosition){
   // Check if the poition is not the last position.
   if(m_Experiments.size() > experimentPosition){
+    // Swap the elements in the vector.
     std::swap(m_Experiments[experimentPosition], m_Experiments[experimentPosition + 1]);
     std::swap(m_ExperimentValues[experimentPosition], m_ExperimentValues[experimentPosition + 1]);
 
+    // Swap the elements in the list box.
     const wxString stringPos(m_ListBox->GetString(experimentPosition));
     const wxString stringDown(m_ListBox->GetString(experimentPosition + 1));
     m_ListBox->SetString(experimentPosition, stringDown);
     m_ListBox->SetString(experimentPosition + 1, stringPos);
 
+    // Swap the selection in the list box.
     m_ListBox->SetSelection(experimentPosition, false);
     m_ListBox->SetSelection(experimentPosition + 1, true);
   }
@@ -149,9 +198,11 @@ void Protocols::moveExperimentDown(int experimentPosition){
  */
 void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
   m_Experiments.push_back(std::move(experiment));
+  // Add experiment value object.
   m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
-  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString());
 
+  // Add string in list box.
+  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString());
   m_ListBox->Append(tmp);
 }
 
@@ -160,7 +211,7 @@ void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
  * @param experimentPosition Position of the experiment.
  */
 void Protocols::removeExperiment(int experimentPosition){
-  m_Experiments[experimentPosition].reset(nullptr);
+  m_Experiments[experimentPosition].reset();
   m_Experiments.erase(m_Experiments.begin() + experimentPosition);
   m_ExperimentValues[experimentPosition].reset();
   m_ExperimentValues.erase(m_ExperimentValues.begin() + experimentPosition);
@@ -290,10 +341,12 @@ void Protocols::checkFinishedExperiment(void){
     m_Wait->wait(lck1);
   }
   {
+    // Indicate that the experiment is not longer running.
     std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
     m_ExperimentRunningFlag = false;
   }
   {
+    // If preloading is active.
     std::lock_guard<std::mutex> lck2{*m_PreloadDoneMutex};
     if(false == *m_PreloadDoneFlag){
       // Wait until the stages stopped.
@@ -306,25 +359,29 @@ void Protocols::checkFinishedExperiment(void){
       }
 
       *m_PreloadDoneFlag = true;
+      // Set preload distance.
       m_PreloadDistance = m_MyFrame->getCurrentDistance();
       std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
     }
   }
   {
+    // Stop the recording of the measurement values if it is running.
     std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
     if(true == m_MeasurementValuesRecordingFlag){
       m_MeasurementValuesRecordingFlag = false;
       m_CurrentExperimentValues->stopMeasurement();
     }
   }
-  delete m_CurrentExperiment;
-  m_CurrentExperiment = NULL;
+  process();
+  //delete m_CurrentExperiment;
+  //m_CurrentExperiment = NULL;
 }
 
 /**
  * @brief Executed by the object main frame when the clear graph button is pressed. Stops the measurement.
  */
 void Protocols::clearGraphStop(void){
+  // Stop the recording of the measurement values if it is running.
   std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
   if(true == m_MeasurementValuesRecordingFlag){
     m_MeasurementValuesRecordingFlag = false;

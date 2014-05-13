@@ -40,7 +40,17 @@ class Protocols
      */
     void makePreview(void);
 
+    /**
+     * @brief Runs the protocol.
+     */
     void runProtocol(void);
+
+    void process(void);
+
+    /**
+     * @brief Stops the protocol.
+     */
+    void stopProtocol(void);
 
     /**
      * @brief Moves the experiment from the current position to the one before.
@@ -98,8 +108,9 @@ class Protocols
     mpFXYVector *m_StressForcePreviewVector;																/**< Pointer to the vector containing the stress/force preview values. */
     mpFXYVector *m_DistancePreviewVector;																		/**< Pointer to the vector containing the distance preview values. */
     wxListBox *m_ListBox;																										/**< Pointer to the listbox object. */
-    std::vector<std::unique_ptr<Experiment>> m_Experiments;																	/**< Vector containing the pointers to the experiments. */
+    std::vector<std::shared_ptr<Experiment>> m_Experiments;									/**< Vector containing the pointers to the experiments. */
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
+    int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
     std::thread *m_ExperimentRunningThread;																	/**< Pointer to the experiment running check thread */
     std::vector<std::shared_ptr<ExperimentValues>> m_ExperimentValues;											/**< Vector containing the pointers to the experiment values. */
     std::vector<Experiment::PreviewValue> m_PreviewValues;									/**< Vector containing the preview values. */
