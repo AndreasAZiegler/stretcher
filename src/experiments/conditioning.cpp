@@ -23,7 +23,8 @@ Conditioning::Conditioning(ExperimentType type,
                            DistanceOrStressForce distanceOrStressForce,
                            StressOrForce stressOrForce,
                            long currentdistance,
-                           StageFrame *stageframe, std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
+                           StageFrame *stageframe,
+                           std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
                            ForceSensorMessageHandler *forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
@@ -31,7 +32,7 @@ Conditioning::Conditioning(ExperimentType type,
                            std::string path,
                            std::condition_variable *wait,
                            std::mutex *mutex,
-                           double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance)
+                           double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area)
   : Experiment(type,
                stressOrForce,
                stageframe,
@@ -55,12 +56,20 @@ Conditioning::Conditioning(ExperimentType type,
     m_DistanceLimit(distanceLimit),
     m_SpeedInMm(speedInMM),
     m_Area(area * 0.000000000001/*um^2*/),
-    m_PreloadDistance(preloaddistance),
+    m_PreloadDistance(0),
     m_CurrentCycle(0),
     m_DecreaseSpeedFlag(false)
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+}
+
+/**
+ * @brief Sets the preload distance.
+ * @param preloaddistance Preload distance
+ */
+void Conditioning::setPreloadDistance(long preloaddistance){
+  m_PreloadDistance = preloaddistance;
 }
 
 Conditioning::~Conditioning(){

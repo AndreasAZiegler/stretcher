@@ -57,7 +57,7 @@ Preload::Preload(ExperimentType type,
 Preload::~Preload(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   // Delete the experiment values because we don't need them for the preloading.
-  delete m_ExperimentValues;
+  //delete m_ExperimentValues;
   std::cout << "Preload destructor finished." << std::endl;
 }
 

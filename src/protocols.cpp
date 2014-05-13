@@ -1,17 +1,55 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include "../gui/myframe.h"
 #include "protocols.h"
+#include "experiments/preload.h"
 
 Protocols::Protocols(wxListBox *listbox,
                      MyFrame *myframe,
-                     mpFXYVector *vector,
+                     bool *stagesstoppedflag,
+                     std::mutex *stagesstoppedmutex,
+                     std::mutex *waitmutex,
+                     std::condition_variable *wait,
+                     bool *preloaddoneflag,
+                     std::mutex *preloaddonemutex,
+                     mpFXYVector *valuesvector,
+                     mpFXYVector *stressforcevector,
+                     mpFXYVector *distancevector,
                      std::string path)
   : m_ListBox(listbox),
     m_MyFrame(myframe),
-    m_PreviewVector1(vector),
-    m_StoragePath(path)
+    m_StagesStoppedFlag(stagesstoppedflag),
+    m_StagesStoppedMutex(stagesstoppedmutex),
+    m_WaitMutex(waitmutex),
+    m_Wait(wait),
+    m_PreloadDoneFlag(preloaddoneflag),
+    m_PreloadDoneMutex(preloaddonemutex),
+    m_ValuesVector(valuesvector),
+    m_StressForcePreviewVector(stressforcevector),
+    m_DistancePreviewVector(distancevector),
+    m_StoragePath(path),
+    m_PreloadDistance(0),
+    m_ExperimentRunningFlag(false),
+    m_MeasurementValuesRecordingFlag(false)
 {
+}
+
+/**
+ * @brief Destructor
+ */
+Protocols::~Protocols(){
+  delete m_ExperimentRunningThread;
+
+  for(auto i : m_Experiments){
+    delete i;
+  }
+  m_Experiments.clear();
+
+  for(auto i : m_ExperimentValues){
+    delete i;
+  }
+  m_ExperimentValues.clear();
 }
 
 /**
@@ -36,8 +74,8 @@ void Protocols::makePreview(void){
   }
 
   // Set the the vector data.
-  m_PreviewVector1->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
-  m_PreviewVector2->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
+  m_StressForcePreviewVector->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
+  m_DistancePreviewVector->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
 
   // Show preview in the graph.
   m_MyFrame->showPreviewGraph();
@@ -45,6 +83,29 @@ void Protocols::makePreview(void){
 
 void Protocols::runProtocol(void){
   m_MyFrame->showValuesGraph();
+
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
+
+  // Run first experiment.
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = true;
+  }
+  std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
+  t1.join();
+
+  if(NULL == m_ExperimentRunningThread){
+    delete m_ExperimentRunningThread;
+    m_ExperimentRunningThread = NULL;
+  }
+  m_ExperimentRunningThread = new std::thread(&Protocols::checkFinishedExperiment, this);
+  m_ExperimentRunningThread->detach();
 }
 
 /**
@@ -69,6 +130,31 @@ void Protocols::moveExperimentDown(int experimentPosition){
     std::swap(m_Experiments[experimentPosition], m_Experiments[experimentPosition + 1]);
     std::swap(m_ExperimentValues[experimentPosition], m_ExperimentValues[experimentPosition + 1]);
   }
+}
+
+/**
+ * @brief Adds an experiment.
+ * @param experiment Pointer to the experiment object.
+ */
+void Protocols::addExperiment(Experiment *experiment){
+  m_Experiments.push_back(experiment);
+  m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
+  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString());
+
+  m_ListBox->Append(tmp);
+}
+
+/**
+ * @brief Removes the Experiment at the desired position.
+ * @param experimentPosition Position of the experiment.
+ */
+void Protocols::removeExperiment(int experimentPosition){
+  delete m_Experiments[experimentPosition];
+  m_Experiments.erase(m_Experiments.begin() + experimentPosition);
+  delete m_ExperimentValues[experimentPosition];
+  m_ExperimentValues.erase(m_ExperimentValues.begin() + experimentPosition);
+
+  m_ListBox->Delete(experimentPosition);
 }
 
 /**
@@ -180,4 +266,57 @@ std::string ExperimentValues::getExperimentSettings(void){
 
   file.close();
   */
+}
+
+
+/**
+ * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
+ */
+void Protocols::checkFinishedExperiment(void){
+  {
+    // Wait until experiment is finised.
+    std::unique_lock<std::mutex> lck1(*m_WaitMutex);
+    m_Wait->wait(lck1);
+  }
+  {
+    std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = false;
+  }
+  {
+    std::lock_guard<std::mutex> lck2{*m_PreloadDoneMutex};
+    if(false == *m_PreloadDoneFlag){
+      // Wait until the stages stopped.
+      {
+        bool tmp = false;
+        while(false == tmp){
+          std::unique_lock<std::mutex> lck3(*m_StagesStoppedMutex);
+          tmp = *m_StagesStoppedFlag;
+        }
+      }
+
+      *m_PreloadDoneFlag = true;
+      m_PreloadDistance = m_MyFrame->getCurrentDistance();
+      std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
+    }
+  }
+  {
+    std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
+    if(true == m_MeasurementValuesRecordingFlag){
+      m_MeasurementValuesRecordingFlag = false;
+      m_CurrentExperimentValues->stopMeasurement();
+    }
+  }
+  delete m_CurrentExperiment;
+  m_CurrentExperiment = NULL;
+}
+
+/**
+ * @brief Executed by the object main frame when the clear graph button is pressed. Stops the measurement.
+ */
+void Protocols::clearGraphStop(void){
+  std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
+  if(true == m_MeasurementValuesRecordingFlag){
+    m_MeasurementValuesRecordingFlag = false;
+    m_CurrentExperimentValues->stopMeasurement();
+  }
 }

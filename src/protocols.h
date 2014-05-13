@@ -4,16 +4,32 @@
 // Includes
 #include <wx/listbox.h>
 #include <mathplot.h>
-#include "../gui/myframe.h"
+#include <thread>
 #include "experiments/experiment.h"
+
+// Forward declaration
+class MyFrame;
 
 class Protocols
 {
   public:
     Protocols(wxListBox *listbox,
               MyFrame *myframe,
-              mpFXYVector *vector,
+              bool *stagesstoppedflag,
+              std::mutex *stagesstoppedmutex,
+              std::mutex *waitmutex,
+              std::condition_variable *wait,
+              bool *preloaddoneflag,
+              std::mutex *preloaddonemutex,
+              mpFXYVector *valuesvector,
+              mpFXYVector *stressforcevector,
+              mpFXYVector *distancevector,
               std::string path);
+
+    /**
+     * @brief Destructor
+     */
+    ~Protocols();
 
     void loadProtocol(void);
 
@@ -39,24 +55,16 @@ class Protocols
     void moveExperimentDown(int experimentPosition);
 
     /**
-     * @brief Removes the Experiment at the desired position.
-     * @param experimentPosition Position of the experiment.
-     */
-    void removeExperimentDown(int experimentPosition){
-      delete m_Experiments[experimentPosition];
-      m_Experiments.erase(m_Experiments.begin() + experimentPosition);
-      delete m_ExperimentValues[experimentPosition];
-      m_ExperimentValues.erase(m_ExperimentValues.begin() + experimentPosition);
-    }
-
-    /**
      * @brief Adds an experiment.
      * @param experiment Pointer to the experiment object.
      */
-    void addExperiment(Experiment *experiment){
-      m_Experiments.push_back(experiment);
-      m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
-    }
+    void addExperiment(Experiment *experiment);
+
+    /**
+     * @brief Removes the Experiment at the desired position.
+     * @param experimentPosition Position of the experiment.
+     */
+    void removeExperiment(int experimentPosition);
 
     /**
      * @brief Sets the experiment start time point.
@@ -74,20 +82,46 @@ class Protocols
      */
     std::string experimentTypeToString();
 
+    /**
+     * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
+     */
+    void checkFinishedExperiment(void);
+
+    /**
+     * @brief Executed by the object main frame when the clear graph button is pressed. Stops the measurement.
+     */
+    void clearGraphStop(void);
+
   private:
-    MyFrame *m_MyFrame;
-    mpFXYVector *m_PreviewVector1;
-    mpFXYVector *m_PreviewVector2;
-    wxListBox *m_ListBox;
-    std::vector<Experiment*> m_Experiments;
-    std::vector<ExperimentValues*> m_ExperimentValues;
-    std::vector<Experiment::PreviewValue> m_PreviewValues;
-    std::vector<double> m_StressForcePreviewValues;
-    std::vector<double> m_DistancePreviewValues;
-    std::vector<double> m_StressForceTimePreviewValues;
-    std::vector<double> m_DistanceTimePreviewValues;
+    MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
+    mpFXYVector *m_ValuesVector;																						/**< Pointer to the vector containing the values. */
+    mpFXYVector *m_StressForcePreviewVector;																/**< Pointer to the vector containing the stress/force preview values. */
+    mpFXYVector *m_DistancePreviewVector;																		/**< Pointer to the vector containing the distance preview values. */
+    wxListBox *m_ListBox;																										/**< Pointer to the listbox object. */
+    std::vector<Experiment*> m_Experiments;																	/**< Vector containing the pointers to the experiments. */
+    Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
+    std::thread *m_ExperimentRunningThread;																	/**< Pointer to the experiment running check thread */
+    std::vector<ExperimentValues*> m_ExperimentValues;											/**< Vector containing the pointers to the experiment values. */
+    std::vector<Experiment::PreviewValue> m_PreviewValues;									/**< Vector containing the preview values. */
+    std::vector<double> m_StressForcePreviewValues;													/**< Vector containing the stress/force preview values. */
+    std::vector<double> m_DistancePreviewValues;														/**< Vector containing the distance preview values. */
+    std::vector<double> m_StressForceTimePreviewValues;											/**< Vector containing the time points for the stress/force values. */
+    std::vector<double> m_DistanceTimePreviewValues;												/**< Vector containing the time points for the distance values. */
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
+
+    std::mutex *m_WaitMutex;																									/**< Mutex to protect m_Wait */
+    std::condition_variable *m_Wait;																					/**< Wait condition variable to wait for the end of an experiment */
+    bool m_ExperimentRunningFlag;								/**< Flag which indicates if an experiment is running */
+    std::mutex m_ExperimentRunningMutex;				/**< Mutex to protect m_ExperimentRunningFlag */
+    bool *m_PreloadDoneFlag;											/**< Indicates if preloading is done */
+    std::mutex *m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
+    bool *m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
+    std::mutex *m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
+    long m_PreloadDistance;											/**< Preload distance */
+    bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
+    std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
+    ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
 };
 
 #endif // PROTOCOLS_H
