@@ -41,14 +41,7 @@ Protocols::Protocols(wxListBox *listbox,
 Protocols::~Protocols(){
   delete m_ExperimentRunningThread;
 
-  for(auto i : m_Experiments){
-    delete i;
-  }
   m_Experiments.clear();
-
-  for(auto i : m_ExperimentValues){
-    delete i;
-  }
   m_ExperimentValues.clear();
 }
 
@@ -136,8 +129,8 @@ void Protocols::moveExperimentDown(int experimentPosition){
  * @brief Adds an experiment.
  * @param experiment Pointer to the experiment object.
  */
-void Protocols::addExperiment(Experiment *experiment){
-  m_Experiments.push_back(experiment);
+void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
+  m_Experiments.push_back(std::move(experiment));
   m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
   const wxString tmp((m_ExperimentValues.back())->experimentTypeToString());
 
@@ -149,9 +142,9 @@ void Protocols::addExperiment(Experiment *experiment){
  * @param experimentPosition Position of the experiment.
  */
 void Protocols::removeExperiment(int experimentPosition){
-  delete m_Experiments[experimentPosition];
+  m_Experiments[experimentPosition].reset(nullptr);
   m_Experiments.erase(m_Experiments.begin() + experimentPosition);
-  delete m_ExperimentValues[experimentPosition];
+  m_ExperimentValues[experimentPosition].reset();
   m_ExperimentValues.erase(m_ExperimentValues.begin() + experimentPosition);
 
   m_ListBox->Delete(experimentPosition);

@@ -419,7 +419,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     long m_CurrentDistance; 										/**< Current distance */
     Protocols *m_CurrentProtocol;								/**< Pointer to the current protocol */
     Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
-    ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
+    //ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */

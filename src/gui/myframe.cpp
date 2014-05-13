@@ -97,7 +97,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_StressOrForce(StressOrForce::Force),
     m_CurrentProtocol(NULL),
     m_CurrentExperiment(NULL),
-    m_CurrentExperimentValues(NULL),
+    //m_CurrentExperimentValues(NULL),
     m_StageMaxLimit(0),
     m_StageMinLimit(0),
     m_ForceMaxLimit(0),
@@ -277,9 +277,11 @@ MyFrame::~MyFrame(){
   if(NULL != m_CurrentExperiment){
     delete m_CurrentExperiment;
   }
+  /*
   if(NULL != m_CurrentExperimentValues){
     delete m_CurrentExperimentValues;
   }
+  */
 
   for(auto x : *m_LinearStages){
     delete x;
@@ -630,28 +632,28 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   m_Area = m_PreloadCrossSectionSpinCtrl->GetValue();
 
-  m_CurrentExperiment = new Preload(ExperimentType::Preload,
-                                    m_StressOrForce,
-                                    m_StageFrame,
-                                    m_ForceSensorMessageHandler,
-                                    &m_VectorLayer,
-                                    &m_VectorLayerMutex,
-                                    this,
-                                    m_StoragePath,
-                                    &m_Wait,
-                                    &m_WaitMutex,
-                                    &m_StagesStoppedFlag,
-                                    &m_StagesStoppedMutex,
-                                    m_PreloadLimitSpinCtrl->GetValue(),
-                                    m_PreloadSpeedMmSpinCtrl->GetValue(),
-                                    m_Area);
+  std::unique_ptr<Experiment> experiment(new Preload(ExperimentType::Preload,
+                                         m_StressOrForce,
+                                         m_StageFrame,
+                                         m_ForceSensorMessageHandler,
+                                         &m_VectorLayer,
+                                         &m_VectorLayerMutex,
+                                         this,
+                                         m_StoragePath,
+                                         &m_Wait,
+                                         &m_WaitMutex,
+                                         &m_StagesStoppedFlag,
+                                         &m_StagesStoppedMutex,
+                                         m_PreloadLimitSpinCtrl->GetValue(),
+                                         m_PreloadSpeedMmSpinCtrl->GetValue(),
+                                         m_Area));
 
   {
     std::lock_guard<std::mutex> lck{m_PreloadDoneMutex};
     m_PreloadDoneFlag = false;
   }
 
-  m_CurrentProtocol->addExperiment(m_CurrentExperiment);
+  m_CurrentProtocol->addExperiment(experiment);
 
   return;
 }
@@ -716,7 +718,7 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          m_ConditioningSpeedMmSpinCtrl->GetValue(),
                                          m_Area);
 
-  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+  //m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
 
   return;
 }

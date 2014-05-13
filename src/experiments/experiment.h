@@ -101,7 +101,7 @@ class Experiment
      * @return A pointer to the experiment values.
      * @todo throw exception if pointer is NULL.
      */
-    ExperimentValues* getExperimentValues(void){
+    std::shared_ptr<ExperimentValues> getExperimentValues(void){
       if(NULL != m_ExperimentValues){
         return(m_ExperimentValues);
       }else{
@@ -145,7 +145,7 @@ class Experiment
     /**
      * @todo Move the inherited experiment values classes in the corresponding experiment classes.
      */
-    ExperimentValues *m_ExperimentValues;				/**< Pointer to the experiment values */
+    std::shared_ptr<ExperimentValues> m_ExperimentValues;				/**< Pointer to the experiment values */
 
 };
 

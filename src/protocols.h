@@ -58,7 +58,7 @@ class Protocols
      * @brief Adds an experiment.
      * @param experiment Pointer to the experiment object.
      */
-    void addExperiment(Experiment *experiment);
+    void addExperiment(std::unique_ptr<Experiment> &experiment);
 
     /**
      * @brief Removes the Experiment at the desired position.
@@ -98,10 +98,10 @@ class Protocols
     mpFXYVector *m_StressForcePreviewVector;																/**< Pointer to the vector containing the stress/force preview values. */
     mpFXYVector *m_DistancePreviewVector;																		/**< Pointer to the vector containing the distance preview values. */
     wxListBox *m_ListBox;																										/**< Pointer to the listbox object. */
-    std::vector<Experiment*> m_Experiments;																	/**< Vector containing the pointers to the experiments. */
+    std::vector<std::unique_ptr<Experiment>> m_Experiments;																	/**< Vector containing the pointers to the experiments. */
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     std::thread *m_ExperimentRunningThread;																	/**< Pointer to the experiment running check thread */
-    std::vector<ExperimentValues*> m_ExperimentValues;											/**< Vector containing the pointers to the experiment values. */
+    std::vector<std::shared_ptr<ExperimentValues>> m_ExperimentValues;											/**< Vector containing the pointers to the experiment values. */
     std::vector<Experiment::PreviewValue> m_PreviewValues;									/**< Vector containing the preview values. */
     std::vector<double> m_StressForcePreviewValues;													/**< Vector containing the stress/force preview values. */
     std::vector<double> m_DistancePreviewValues;														/**< Vector containing the distance preview values. */
