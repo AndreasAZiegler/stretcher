@@ -77,6 +77,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
+  EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
 wxEND_EVENT_TABLE()
 
 // Costum event definitions
@@ -110,7 +111,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_PreloadDoneFlag(true),
     //m_MeasurementValuesRecordingFlag(false),
     m_CurrentForceUpdateDelay(0),
-    m_VectorLayer(_("Vector"))
+    m_VectorLayer(_("Vector")),
+    m_XAxis(NULL),
+    m_Y1Axis(NULL),
+    m_Y2Axis(NULL)
 {
 
   SetIcon(wxICON(sample));
@@ -429,7 +433,10 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ForceUnit = wxT(" kPa");
 
     m_Graph->DelLayer(m_Y1Axis);
-    delete m_Y1Axis;
+    if(NULL != m_Y1Axis){
+      delete m_Y1Axis;
+      m_Y1Axis = NULL;
+    }
     m_Y1Axis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Y1Axis->SetFont(graphFont);
@@ -445,7 +452,10 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ForceUnit = wxT(" N");
 
     m_Graph->DelLayer(m_Y1Axis);
-    delete m_Y1Axis;
+    if(NULL != m_Y1Axis){
+      delete m_Y1Axis;
+      m_Y1Axis = NULL;
+    }
     m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Y1Axis->SetFont(graphFont);
@@ -692,13 +702,16 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
     distanceOrStressForce = Conditioning::DistanceOrStressForce::Distance;
   }
 
-  long distancelimit = 0;
+  int calculatelimit = m_ConditioningDistanceLimitSpinCtrl->GetValue();
+  Experiment::DistanceOrPercentage dp;
   switch(m_ConditioningDisctanceLimitRadioBox->GetSelection()){
     case 0:
       //distancelimit = static_cast<long>(m_PreloadDistance + m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+      dp = Experiment::DistanceOrPercentage::Distance;
       break;
     case 1:
       //distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
+      dp = Experiment::DistanceOrPercentage::Percentage;
       break;
   }
 
@@ -717,11 +730,13 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          &m_WaitMutex,
                                          m_ConditioningStressForceLimitSpinCtrl->GetValue(),
                                          m_ConditioningCyclesSpinCtrl->GetValue(),
-                                         distancelimit,
+                                         dp,
+                                         calculatelimit,
                                          m_ConditioningSpeedMmSpinCtrl->GetValue(),
                                          m_Area));
 
   //m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+  m_CurrentProtocol->addExperiment(experiment);
 
   return;
 }
@@ -1207,9 +1222,18 @@ void MyFrame::updateForce(){
  * @brief Prepares the graph to show the experiment values.
  */
 void MyFrame::showValuesGraph(void){
+  // Remove layers
+  m_Graph->DelLayer(m_Y1Axis);
+  m_Graph->DelLayer(m_Y2Axis);
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
+
+  // Clear vectors
+  {
+    std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
+    m_VectorLayer.Clear();
+  }
 
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);

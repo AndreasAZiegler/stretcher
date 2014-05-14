@@ -128,7 +128,7 @@ void Ramp2Failure::process(Event e){
       break;
 
     case goBackState:
-      if(evDistanceUpdate == e){
+      if(Event::evDistanceUpdate == e){
         switch(m_BehaviorAfterFailure){
           case BehaviorAfterFailure::PreloadPos:
             /*

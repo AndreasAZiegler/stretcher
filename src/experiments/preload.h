@@ -40,6 +40,12 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             std::mutex *stagesstoppedmutex,
             double stressForceLimit, double speedInMM, double area);
 
+    /**
+     * @brief Sets the preload distance.
+     * @param preloaddistance Preload distance
+     */
+    virtual void setPreloadDistance(long preloaddistance);
+
     ~Preload();
 
     /**

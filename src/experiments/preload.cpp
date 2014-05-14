@@ -54,6 +54,12 @@ Preload::Preload(ExperimentType type,
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
+/**
+ * @brief Sets the preload distance.
+ * @param preloaddistance Preload distance
+ */
+void Preload::setPreloadDistance(long preloaddistance){}
+
 Preload::~Preload(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   // Delete the experiment values because we don't need them for the preloading.
@@ -98,7 +104,7 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
 void Preload::process(Event e){
   switch(m_CurrentState){
     case stopState:
-      if(evStart == e){
+      if(Event::evStart == e){
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_SpeedInMM);
         m_CurrentState = runState;
@@ -129,7 +135,7 @@ void Preload::process(Event e){
       }
       break;
     case runState:
-      if(evStop == e){
+      if(Event::evStop == e){
         std::cout << "Preload FSM switched to state: stopState." << std::endl;
 
         m_CurrentState = stopState;
@@ -142,7 +148,7 @@ void Preload::process(Event e){
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_one();
       }
-      if(evUpdate == e){
+      if(Event::evUpdate == e){
         // If force based
         if(StressOrForce::Force == m_StressOrForce){
           if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){

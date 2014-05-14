@@ -117,7 +117,7 @@ void Creep::process(Event e){
 
     case runState:
 
-      if(evStop == e){
+      if(Event::evStop == e){
         //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
@@ -126,7 +126,7 @@ void Creep::process(Event e){
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_one();
       }
-      if(evUpdate == e){
+      if(Event::evUpdate == e){
 
         std::lock_guard<std::mutex> lck{m_EndMutex};
         // Check if the experiment was stopped by the hold time timer.

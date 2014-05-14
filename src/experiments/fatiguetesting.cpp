@@ -111,7 +111,7 @@ void FatigueTesting::process(Event event){
 
     case runState:
 
-      if(evStop == event){
+      if(Event::evStop == event){
         //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
@@ -120,7 +120,7 @@ void FatigueTesting::process(Event event){
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_one();
       }
-      if(evUpdate == event){
+      if(Event::evUpdate == event){
         //std::cout << "m_CurrentDistance - m_AmplitudeInDistance: " << m_CurrentDistance << " - " << m_AmplitudeInDistance << std::endl;
         // Reduce speed to a tenth if stages are close to the turn point.
         if((m_CurrentDistance - m_AmplitudeInDistance) < (200 * m_DistanceThreshold)){
@@ -158,7 +158,7 @@ void FatigueTesting::process(Event event){
       break;
 
     case goBackState:
-      if(evUpdate == event){
+      if(Event::evUpdate == event){
         //std::cout << "m_CurrentDistance - m_PreloadDistance > m_DistanceThreshold: " << m_CurrentDistance - m_PreloadDistance << "   " << m_DistanceThreshold << std::endl;
         //std::cout << "m_CurrentDistance: " << m_CurrentDistance << " m_PreloadDistance: " << m_PreloadDistance << std::endl;
         if(std::abs(m_PreloadDistance - m_CurrentDistance) < m_DistanceThreshold){

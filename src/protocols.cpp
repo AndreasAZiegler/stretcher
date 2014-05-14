@@ -92,6 +92,15 @@ void Protocols::runProtocol(void){
     }
     // Set start point.
     m_StartTimePoint = std::chrono::high_resolution_clock::now();
+
+    // Start recording measurement values.
+    {
+      std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
+      m_MeasurementValuesRecordingFlag = true;
+    }
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement();
+
+    m_ListBox->SetSelection(m_CurrentExperimentNr);
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.join();
@@ -122,7 +131,16 @@ void Protocols::process(void){
       std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
       m_ExperimentRunningFlag = true;
     }
-    std::thread t1(&Experiment::process, std::move(m_Experiments[m_CurrentExperimentNr]), Preload::Event::evStart);
+
+    // Start recording measurement values.
+    {
+      std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
+      m_MeasurementValuesRecordingFlag = true;
+    }
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement();
+
+    m_ListBox->SetSelection(m_CurrentExperimentNr);
+    std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.join();
     m_CurrentExperimentNr++;
@@ -362,6 +380,10 @@ void Protocols::checkFinishedExperiment(void){
       // Set preload distance.
       m_PreloadDistance = m_MyFrame->getCurrentDistance();
       std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
+      // Set the prelod distance in all the experiments.
+      for(auto i : m_Experiments){
+        i->setPreloadDistance(m_PreloadDistance);
+      }
     }
   }
   {
@@ -369,7 +391,8 @@ void Protocols::checkFinishedExperiment(void){
     std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
     if(true == m_MeasurementValuesRecordingFlag){
       m_MeasurementValuesRecordingFlag = false;
-      m_CurrentExperimentValues->stopMeasurement();
+      //m_CurrentExperimentValues->stopMeasurement();
+      m_ExperimentValues[m_CurrentExperimentNr-1]->stopMeasurement();
     }
   }
   process();
@@ -385,6 +408,7 @@ void Protocols::clearGraphStop(void){
   std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
   if(true == m_MeasurementValuesRecordingFlag){
     m_MeasurementValuesRecordingFlag = false;
-    m_CurrentExperimentValues->stopMeasurement();
+    //m_CurrentExperimentValues->stopMeasurement();
+    m_ExperimentValues[m_CurrentExperimentNr-1]->stopMeasurement();
   }
 }

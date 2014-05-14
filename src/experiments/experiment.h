@@ -21,11 +21,18 @@ class Experiment
      * @enum Event
      * @brief Defines the events which can occur for the AutoStretch FSM.
      */
-    enum Event{evStart,         /**< Experiment should start */
-               evUpdate,        /**< New measured value */
-               evStop,					/**< Experiment should stop */
-               evDistanceUpdate,/**< New distance value */
-               evForceUpdate};	/**< New force value */
+    enum class Event{evStart,         /**< Experiment should start */
+                     evUpdate,        /**< New measured value */
+                     evStop,					/**< Experiment should stop */
+                     evDistanceUpdate,/**< New distance value */
+                     evForceUpdate};	/**< New force value */
+
+    /**
+     * @enum DistanceOrPercentage
+     * @brief Defines if the distance is given as distance or as percentage of the preload.
+     */
+    enum class DistanceOrPercentage{Distance = 0,
+                                    Percentage = 1};
 
     /**
      * @brief Indicates whether the experiment is distance or stress/force based.
@@ -70,6 +77,12 @@ class Experiment
                Experiment::Direction direction,
                double forcesStressThreshold, double distanceThreshold,
                double area, long currentdistance = 0);
+
+    /**
+     * @brief Sets the preload distance.
+     * @param preloaddistance Preload distance
+     */
+    virtual void setPreloadDistance(long preloaddistance) = 0;
 
     /**
      * @brief Destructor
@@ -137,6 +150,7 @@ class Experiment
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
     StressOrForce m_StressOrForce;							/**< Defines if the experiment is force or stress based. */
 
+    long m_PreloadDistance;											/**< Preload distance of the stage frame */
     long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance;											/**< Current distance of the stage frame */

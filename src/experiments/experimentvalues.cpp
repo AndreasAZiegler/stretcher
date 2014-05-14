@@ -37,6 +37,12 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
  * @brief Registers the update methods to receive the measurement values.
  */
 void ExperimentValues::startMeasurement(void){
+  // clear the vectors.
+  m_StressForceValues.clear();
+  m_GraphStressForceValues.clear();
+  m_DistanceValues.clear();
+  m_GraphDistanceValues.clear();
+
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
