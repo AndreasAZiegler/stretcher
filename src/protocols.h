@@ -2,6 +2,7 @@
 #define PROTOCOLS_H
 
 // Includes
+#include <vector>
 #include <wx/listbox.h>
 #include <mathplot.h>
 #include <thread>
@@ -118,6 +119,8 @@ class Protocols
     std::vector<double> m_DistancePreviewValues;														/**< Vector containing the distance preview values. */
     std::vector<double> m_StressForceTimePreviewValues;											/**< Vector containing the time points for the stress/force values. */
     std::vector<double> m_DistanceTimePreviewValues;												/**< Vector containing the time points for the distance values. */
+    std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
+    std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 

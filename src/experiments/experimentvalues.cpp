@@ -36,12 +36,16 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
 /**
  * @brief Registers the update methods to receive the measurement values.
  */
-void ExperimentValues::startMeasurement(void){
+void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce, std::shared_ptr<std::vector<double>> graphdistance){
+  std::cout << "Protocol graphstressforce size: " << graphstressforce->size() << " graphdistance size: " << graphdistance->size() << std::endl;
+  m_GraphStressForceValues = std::move(graphstressforce);
+  m_GraphDistanceValues = std::move(graphdistance);
+  std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
   // clear the vectors.
   m_StressForceValues.clear();
-  m_GraphStressForceValues.clear();
+  //m_GraphStressForceValues.clear();
   m_DistanceValues.clear();
-  m_GraphDistanceValues.clear();
+  //m_GraphDistanceValues.clear();
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -53,6 +57,9 @@ void ExperimentValues::startMeasurement(void){
 void ExperimentValues::stopMeasurement(void){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+
+  m_GraphStressForceValues = NULL;
+  m_GraphDistanceValues = NULL;
 }
 
 /**
@@ -81,13 +88,13 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Diameter, measurementValue.timestamp));
-          m_GraphStressForceValues.push_back((measurementValue.value / 10000.0) / m_Diameter);
+          m_GraphStressForceValues->push_back((measurementValue.value / 10000.0) / m_Diameter);
         }
       }else{
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
-          m_GraphStressForceValues.push_back(measurementValue.value / 10000.0);
+          m_GraphStressForceValues->push_back(measurementValue.value / 10000.0);
         }
       }
       break;
@@ -96,7 +103,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
-          m_GraphDistanceValues.push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+          m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         }
       //std::cout << "Conditioning distance update." << std::endl;
       break;
@@ -108,17 +115,17 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       m_DisplayGraphDelay = 0;
 
       std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-      if(m_GraphStressForceValues.size() == m_GraphDistanceValues.size()){
+      if(m_GraphStressForceValues->size() == m_GraphDistanceValues->size()){
         std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
-        m_VectorLayer->SetData(m_GraphDistanceValues, m_GraphStressForceValues);
+        m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
       }else{
         //std::cout << "ExperimentValues stress/force: " << m_GraphStressForceValues.size() << " distance: " << m_GraphDistanceValues.size() << std::endl;
-        if(m_GraphStressForceValues.size() > m_GraphDistanceValues.size()){
-          m_GraphStressForceValues.resize(m_GraphDistanceValues.size());
+        if(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
+          m_GraphStressForceValues->resize(m_GraphDistanceValues->size());
         }else{
-          m_GraphDistanceValues.resize(m_GraphStressForceValues.size());
+          m_GraphDistanceValues->resize(m_GraphStressForceValues->size());
         }
-        m_VectorLayer->SetData(m_GraphDistanceValues, m_GraphStressForceValues);
+        m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
       }
       m_MyFrame->updateGraphFromExperimentValues();
     }

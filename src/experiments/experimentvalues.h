@@ -70,7 +70,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     /**
      * @brief Registers the update methods to receive the measurement values.
      */
-    void startMeasurement(void);
+    void startMeasurement(std::shared_ptr<std::vector<double> > graphstressforce, std::shared_ptr<std::vector<double> > graphdistance);
 
     /**
      * @brief Unregister the update method.
@@ -174,8 +174,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     std::vector<ExperimentValues::MeasurementValue> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
-    std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
-    std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
+    std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
+    std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     double m_Diameter;																											/**< Diameter size of the sample. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */

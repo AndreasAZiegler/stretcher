@@ -661,11 +661,6 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      m_PreloadSpeedMmSpinCtrl->GetValue(),
                                                      m_Area));
 
-  {
-    std::lock_guard<std::mutex> lck{m_PreloadDoneMutex};
-    m_PreloadDoneFlag = false;
-  }
-
   m_CurrentProtocol->addExperiment(experiment);
 
   return;

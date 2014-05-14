@@ -1,9 +1,12 @@
+// Includes
 #include <iostream>
 #include <fstream>
 #include <chrono>
 #include "../gui/myframe.h"
 #include "protocols.h"
 #include "experiments/preload.h"
+
+void do_nothing_deleter(std::vector<double> *){return;}
 
 Protocols::Protocols(wxListBox *listbox,
                      MyFrame *myframe,
@@ -86,6 +89,13 @@ void Protocols::runProtocol(void){
   // Only continue if there are expeiments in the protocol.
   if(0 < m_Experiments.size()){
     // Run first experiment.
+
+    // Check if the experiment is a preloading experiment where a flag has to be set.
+    if(ExperimentType::Preload == m_Experiments[m_CurrentExperimentNr]->getExperimentType()){
+      std::lock_guard<std::mutex> lck{*m_PreloadDoneMutex};
+      *m_PreloadDoneFlag = false;
+    }
+
     {
       std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
       m_ExperimentRunningFlag = true;
@@ -98,7 +108,14 @@ void Protocols::runProtocol(void){
       std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
       m_MeasurementValuesRecordingFlag = true;
     }
-    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement();
+    // Clear graph vectors.
+    m_GraphStressForceValues.clear();
+    m_GraphDistanceValues.clear();
+    // Create shared_ptr's which are needed.
+    std::shared_ptr<std::vector<double>> graphstressforce(&m_GraphStressForceValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphdistance(&m_GraphDistanceValues, do_nothing_deleter);
+    // Start recording values.
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce, graphdistance);
 
     m_ListBox->SetSelection(m_CurrentExperimentNr);
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
@@ -127,6 +144,12 @@ void Protocols::process(void){
     }
   }
   if(m_Experiments.size() > m_CurrentExperimentNr){
+
+    // Check if the experiment is a preloading experiment where a flag has to be set.
+    if(ExperimentType::Preload == m_Experiments[m_CurrentExperimentNr]->getExperimentType()){
+      std::lock_guard<std::mutex> lck{*m_PreloadDoneMutex};
+      *m_PreloadDoneFlag = false;
+    }
     {
       std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
       m_ExperimentRunningFlag = true;
@@ -137,7 +160,12 @@ void Protocols::process(void){
       std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
       m_MeasurementValuesRecordingFlag = true;
     }
-    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement();
+
+    // Create shared_ptr's which are needed.
+    std::shared_ptr<std::vector<double>> graphstressforce(&m_GraphStressForceValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphdistance(&m_GraphDistanceValues, do_nothing_deleter);
+    // Start recording values.
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce, graphdistance);
 
     m_ListBox->SetSelection(m_CurrentExperimentNr);
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
@@ -145,7 +173,7 @@ void Protocols::process(void){
     t1.join();
     m_CurrentExperimentNr++;
 
-    if(NULL == m_ExperimentRunningThread){
+    if(NULL != m_ExperimentRunningThread){
       delete m_ExperimentRunningThread;
       m_ExperimentRunningThread = NULL;
     }
@@ -161,6 +189,7 @@ void Protocols::process(void){
  * @brief Stops the protocol.
  */
 void Protocols::stopProtocol(void){
+  clearGraphStop();
   m_CurrentExperimentNr = 0;
 }
 
