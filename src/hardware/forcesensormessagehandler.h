@@ -22,7 +22,10 @@ class ForceSensorMessageHandler : virtual public MessageHandler
                               UpdatedValuesReceiver::ValueType type,
                               std::mutex *readingSerialInterfaceMutex,
                               std::shared_ptr<std::condition_variable> waitmessagehandler,
-                              std::shared_ptr<std::mutex> waitmessagehandlermutex);
+                              std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                              std::shared_ptr<int> messagehandlerfinishednr);
+
+    ~ForceSensorMessageHandler();
 
     /**
      * @brief Updated scale factor parameters with the values given from the GUI.

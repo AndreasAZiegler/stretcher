@@ -17,6 +17,11 @@ StageFrame::StageFrame()
 {
 }
 
+StageFrame::~StageFrame(){
+  (m_LinearStagesMessageHandlers.at(0))->unregisterUpdateMethod(m_Position1Id);
+  (m_LinearStagesMessageHandlers.at(1))->unregisterUpdateMethod(m_Position2Id);
+}
+
 /**
  * @brief Registers the linear stages and get pointer for the message handlers of the linear stages.
  * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.
@@ -27,8 +32,8 @@ void StageFrame::registerLinearStages(std::vector<LinearStage*> *linearstages){
   m_LinearStagesMessageHandlers.push_back((m_LinearStages->at(0))->getMessageHandler());
   m_LinearStagesMessageHandlers.push_back((m_LinearStages->at(1))->getMessageHandler());
 
-  (m_LinearStagesMessageHandlers.at(0))->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
-  (m_LinearStagesMessageHandlers.at(1))->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_Position1Id = (m_LinearStagesMessageHandlers.at(0))->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_Position2Id = (m_LinearStagesMessageHandlers.at(1))->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**

@@ -30,7 +30,8 @@ class MessageHandler : virtual public UpdatedValuesSender
                    UpdatedValuesReceiver::ValueType type,
                    std::mutex *readingSerialInterfaceMutex,
                    std::shared_ptr<std::condition_variable> waitmessagehandler,
-                   std::shared_ptr<std::mutex> waitmessagehandlermutex);
+                   std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                   std::shared_ptr<int> messagehandlerfinishednr);
 
     /**
      * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
@@ -59,6 +60,7 @@ class MessageHandler : virtual public UpdatedValuesSender
     bool m_ExitFlag;																																	/**< Flag which indicates that the thread should stop */
     std::shared_ptr<std::condition_variable> m_WaitMessageHandler;
     std::shared_ptr<std::mutex> m_WaitMessageHandlerMutex;
+    std::shared_ptr<int> m_MessageHandlersFinishedNumber;
 
 };
 

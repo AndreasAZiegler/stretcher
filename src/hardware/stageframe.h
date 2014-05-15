@@ -23,6 +23,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
 	public:
     StageFrame();
 
+    ~StageFrame();
+
     /**
      * @brief Registers the linear stages and get pointer for the message handlers of the linear stages and register update method at the message handlers.
      * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.
@@ -146,6 +148,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
     std::vector<LinearStage*> *m_LinearStages;				/**< Pointer to a vector containing the pointers to the linear stages. */
     std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers; /**< Vector containing the pointers to the linear stage message handlers. */
     std::mutex m_AccessListMutex;											/**< Protect list */
+    std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator m_Position1Id;	/**< Id of the pos 1 callback method */
+    std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator m_Position2Id;	/**< Id of the pos 1 callback method */
 
     const double MM_PER_MS;               						/**< milimeter per microstep */
 

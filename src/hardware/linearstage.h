@@ -22,6 +22,7 @@ class LinearStage : public SerialInterface
     LinearStage(UpdatedValuesReceiver::ValueType type,
                 std::shared_ptr<std::condition_variable> waitmessagehandler,
                 std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                std::shared_ptr<int> messagehandlerfinishednr,
                 unsigned int baudrate = 115200);
 
     /**

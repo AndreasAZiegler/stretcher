@@ -9,13 +9,15 @@ MessageHandler::MessageHandler(wxSerialPort *serialPort,
                                UpdatedValuesReceiver::ValueType type,
                                std::mutex *readingSerialInterfaceMutex,
                                std::shared_ptr<std::condition_variable> waitmessagehandler,
-                               std::shared_ptr<std::mutex> waitmessagehandlermutex)
+                               std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                               std::shared_ptr<int> messagehandlerfinishednr)
   : m_SerialPort(serialPort),
     m_Type(type),
     m_ReadingSerialInterfaceMutex(readingSerialInterfaceMutex),
     m_ExitFlag(true),
     m_WaitMessageHandler(waitmessagehandler),
-    m_WaitMessageHandlerMutex(waitmessagehandlermutex)
+    m_WaitMessageHandlerMutex(waitmessagehandlermutex),
+    m_MessageHandlersFinishedNumber(messagehandlerfinishednr)
 {
 }
 

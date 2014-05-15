@@ -13,9 +13,10 @@ using namespace std;
 ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type,
                          std::shared_ptr<std::condition_variable> waitmessagehandler,
                          std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                         std::shared_ptr<int> messagehandlerfinishednr,
                          unsigned int baudrate)
   : SerialInterface(type, baudrate),
-    m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex),
+    m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex, messagehandlerfinishednr),
     m_ScalingFactor(161380.83),
     m_NominalForce(20/*N*/),
     m_NominalValue(0.4965/*mv/V*/),

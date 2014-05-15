@@ -34,40 +34,22 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     MyFrame(const wxString& title, Settings *settings, wxWindow* parent = (wxWindow *)NULL);
 
     /**
-     * @brief Returns the linear stage message handler wait condition variable as shared_ptr.
-     * @return The linear stage message handler wait condition variable as shared_ptr.
+     * @brief Returns the message handler wait condition variable as shared_ptr.
+     * @return The message handler wait condition variable as shared_ptr.
      */
-    std::shared_ptr<std::condition_variable> getLinearStageMessageHandlerWait1(void);
+    std::shared_ptr<std::condition_variable> getMessageHandlersWait(void);
 
     /**
-     * @brief Returns the linear stage message handler wait condition variable as shared_ptr.
-     * @return The linear stage message handler wait condition variable as shared_ptr.
+     * @brief Returns the message handler wait mutex as shared_ptr.
+     * @return The message handler wait mutex as shared_ptr.
      */
-    std::shared_ptr<std::condition_variable> getLinearStageMessageHandlerWait2(void);
+    std::shared_ptr<std::mutex> getMessageHandlersWaitMutex(void);
 
     /**
-     * @brief Returns the force sensor message handler wait condition variable as shared_ptr.
-     * @return The linear stage message handler wait condition variable as shared_ptr.
+     * @brief Returns the number of finished message handler variable as shared_ptr.
+     * @return The number of finished message handler variable as shared_ptr.
      */
-    std::shared_ptr<std::condition_variable> getForceSensorMessageHandlerWait(void);
-
-    /**
-     * @brief Returns the linear stage message handler wait mutex as shared_ptr.
-     * @return The linear stage message handler wait mutex as shared_ptr.
-     */
-    std::shared_ptr<std::mutex> getLinearStageMessageHandlerWaitMutex1(void);
-
-    /**
-     * @brief Returns the linear stage message handler wait mutex as shared_ptr.
-     * @return The linear stage message handler wait mutex as shared_ptr.
-     */
-    std::shared_ptr<std::mutex> getLinearStageMessageHandlerWaitMutex2(void);
-
-    /**
-     * @brief Returns the force sensor message handler wait mutex as shared_ptr.
-     * @return The force sensor message handler wait mutex as shared_ptr.
-     */
-    std::shared_ptr<std::mutex> getForceSensorMessageHandlerWaitMutex(void);
+    std::shared_ptr<int> getMessageHandlersFinishedNumber(void);
 
     /**
      * @brief Checks if a protocol object is already created, otherwise creates it.
@@ -467,10 +449,9 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
-    std::condition_variable m_WaitLinearStageMessageHandler1;
-    std::mutex m_WaitLinearStageMessageHandler1Mutex;
-    std::condition_variable m_WaitLinearStageMessageHandler2;
-    std::mutex m_WaitLinearStageMessageHandler2Mutex;
+    int m_MessageHandlersFinishedNumber;
+    std::condition_variable m_WaitMessageHandlers;
+    std::mutex m_WaitMessageHandlersMutex;
     StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
     long m_StageMaxLimit;												/**< The maximal position for the stages */
     long m_StageMinLimit;												/**< The minimal position for the stages */
@@ -478,8 +459,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     long m_ForceMinLimit;												/**< The minimal allowed force. */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
-    std::condition_variable m_WaitForceSensorMessageHandler;
-    std::mutex m_WaitForceSensorMessageHandlerMutex;
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
     std::unique_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */

@@ -46,12 +46,14 @@ bool MyApp::OnInit(){
 
   // Create the linear motor objects.
   m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos1,
-                                           m_MyFrame->getLinearStageMessageHandlerWait1(),
-                                           m_MyFrame->getLinearStageMessageHandlerWaitMutex1(),
+                                           m_MyFrame->getMessageHandlersWait(),
+                                           m_MyFrame->getMessageHandlersWaitMutex(),
+                                           m_MyFrame->getMessageHandlersFinishedNumber(),
                                            m_MySettings.getLinMot1BaudRate()));
   m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos2,
-                                           m_MyFrame->getLinearStageMessageHandlerWait2(),
-                                           m_MyFrame->getLinearStageMessageHandlerWaitMutex2(),
+                                           m_MyFrame->getMessageHandlersWait(),
+                                           m_MyFrame->getMessageHandlersWaitMutex(),
+                                           m_MyFrame->getMessageHandlersFinishedNumber(),
                                            m_MySettings.getLinMot2BaudRate()));
   m_StageFrame.registerLinearStages(&m_LinearStages);
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
@@ -88,8 +90,9 @@ bool MyApp::OnInit(){
 
   // Create the force sensor object
   m_ForceSensor = new ForceSensor(UpdatedValuesReceiver::ValueType::Force,
-                                  m_MyFrame->getForceSensorMessageHandlerWait(),
-                                  m_MyFrame->getForceSensorMessageHandlerWaitMutex(),
+                                  m_MyFrame->getMessageHandlersWait(),
+                                  m_MyFrame->getMessageHandlersWaitMutex(),
+                                  m_MyFrame->getMessageHandlersFinishedNumber(),
                                   m_MySettings.getForceSensorBaudRate());
   m_ForceSensor->connect(m_MySettings.getForceSensorComPort());
   m_ForceSensor->setBipolarMode();

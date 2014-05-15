@@ -12,10 +12,15 @@ ForceSensorMessageHandler::ForceSensorMessageHandler(wxSerialPort *serialport,
                                                      UpdatedValuesReceiver::ValueType type,
                                                      std::mutex *readingSerialInterfaceMutex,
                                                      std::shared_ptr<std::condition_variable> waitmessagehandler,
-                                                     std::shared_ptr<std::mutex> waitmessagehandlermutex)
-  : MessageHandler(serialport, type, readingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex)//,
+                                                     std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                                                     std::shared_ptr<int> messagehandlerfinishednr)
+  : MessageHandler(serialport, type, readingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex, messagehandlerfinishednr)//,
     //m_CurrentForce(0)
 {
+}
+
+ForceSensorMessageHandler::~ForceSensorMessageHandler(){
+  std::cout << "ForceSensorMessageHandler destructor finished." << std::endl;
 }
 
 /**
@@ -111,6 +116,13 @@ void ForceSensorMessageHandler::receiver(void){
         //}
       //}
     }
+  }
+  // Signaling that the message handler is finished.
+  {
+    std::lock_guard<std::mutex> lck{*m_WaitMessageHandlerMutex};
+    (*m_MessageHandlersFinishedNumber)++;
+    m_WaitMessageHandler->notify_all();
+    std::cout << "ForceSensorMessageHandler finished" << std::endl;
   }
 }
 

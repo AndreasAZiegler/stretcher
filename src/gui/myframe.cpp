@@ -25,6 +25,7 @@
 // An deleter which doesn't do anything, required for passing shared_ptr.
 void do_nothing_deleter_conditional_variable(std::condition_variable *){return;}
 void do_nothing_deleter_mutex(std::mutex *){return;}
+void do_nothing_deleter_int(int *){return;}
 
 //-----------------------------------------------------------------------------
 // Regular resources (the non-XRC kind).
@@ -118,7 +119,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_VectorLayer(_("Vector")),
     m_XAxis(NULL),
     m_Y1Axis(NULL),
-    m_Y2Axis(NULL)
+    m_Y2Axis(NULL),
+    m_MessageHandlersFinishedNumber(0)
 {
 
   SetIcon(wxICON(sample));
@@ -212,57 +214,30 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   }
 
 /**
- * @brief Returns the linear stage message handler wait condition variable as shared_ptr.
- * @return The linear stage message handler wait condition variable as shared_ptr.
+ * @brief Returns the message handler wait condition variable as shared_ptr.
+ * @return The message handler wait condition variable as shared_ptr.
  */
-std::shared_ptr<std::condition_variable> MyFrame::getLinearStageMessageHandlerWait1(void){
-  std::shared_ptr<std::condition_variable> linearstagemessagehandlerwait(&m_WaitLinearStageMessageHandler1, do_nothing_deleter_conditional_variable);
-  return(linearstagemessagehandlerwait);
+std::shared_ptr<std::condition_variable> MyFrame::getMessageHandlersWait(void){
+  std::shared_ptr<std::condition_variable> messagehandlerswait(&m_WaitMessageHandlers, do_nothing_deleter_conditional_variable);
+  return(messagehandlerswait);
 }
 
 /**
- * @brief Returns the linear stage message handler wait condition variable as shared_ptr.
- * @return The linear stage message handler wait condition variable as shared_ptr.
+ * @brief Returns the message handler wait mutex as shared_ptr.
+ * @return The message handler wait mutex as shared_ptr.
  */
-std::shared_ptr<std::condition_variable> MyFrame::getLinearStageMessageHandlerWait2(void){
-  std::shared_ptr<std::condition_variable> linearstagemessagehandlerwait(&m_WaitLinearStageMessageHandler2, do_nothing_deleter_conditional_variable);
-  return(linearstagemessagehandlerwait);
+std::shared_ptr<std::mutex> MyFrame::getMessageHandlersWaitMutex(void){
+  std::shared_ptr<std::mutex> messagehandlerswaitmutex(&m_WaitMessageHandlersMutex, do_nothing_deleter_mutex);
+  return(messagehandlerswaitmutex);
 }
 
 /**
- * @brief Returns the force sensor message handler wait condition variable as shared_ptr.
- * @return The linear stage message handler wait condition variable as shared_ptr.
+ * @brief Returns the number of finished message handler variable as shared_ptr.
+ * @return The number of finished message handler variable as shared_ptr.
  */
-std::shared_ptr<std::condition_variable> MyFrame::getForceSensorMessageHandlerWait(void){
-  std::shared_ptr<std::condition_variable> forcesensormessagehandlerwait(&m_WaitForceSensorMessageHandler, do_nothing_deleter_conditional_variable);
-  return(forcesensormessagehandlerwait);
-}
-
-/**
- * @brief Returns the linear stage message handler wait mutex as shared_ptr.
- * @return The linear stage message handler wait mutex as shared_ptr.
- */
-std::shared_ptr<std::mutex> MyFrame::getLinearStageMessageHandlerWaitMutex1(void){
-  std::shared_ptr<std::mutex> linearstagemessagehandlerwaitmutex(&m_WaitLinearStageMessageHandler1Mutex, do_nothing_deleter_mutex);
-  return(linearstagemessagehandlerwaitmutex);
-}
-
-/**
- * @brief Returns the linear stage message handler wait mutex as shared_ptr.
- * @return The linear stage message handler wait mutex as shared_ptr.
- */
-std::shared_ptr<std::mutex> MyFrame::getLinearStageMessageHandlerWaitMutex2(void){
-  std::shared_ptr<std::mutex> linearstagemessagehandlerwaitmutex(&m_WaitLinearStageMessageHandler2Mutex, do_nothing_deleter_mutex);
-  return(linearstagemessagehandlerwaitmutex);
-}
-
-/**
- * @brief Returns the force sensor message handler wait mutex as shared_ptr.
- * @return The force sensor message handler wait mutex as shared_ptr.
- */
-std::shared_ptr<std::mutex> MyFrame::getForceSensorMessageHandlerWaitMutex(void){
-  std::shared_ptr<std::mutex> forcesensormessagehandlerwaitmutex(&m_WaitForceSensorMessageHandlerMutex, do_nothing_deleter_mutex);
-  return(forcesensormessagehandlerwaitmutex);
+std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
+  std::shared_ptr<int> messagehandlerfinishednr(&m_MessageHandlersFinishedNumber, do_nothing_deleter_int);
+  return(messagehandlerfinishednr);
 }
 
 /**
@@ -314,6 +289,7 @@ void MyFrame::registerForceSensor(ForceSensor *forcesensor){
 MyFrame::~MyFrame(){
   // Unregister update methods
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
+  m_StageFrame->unregisterUpdateMethod(m_DistanceId);
   // Stop linear stage receiver threads
   ((m_LinearStages->at(0))->getMessageHandler())->setExitFlag(false);
   ((m_LinearStages->at(1))->getMessageHandler())->setExitFlag(false);
@@ -329,7 +305,6 @@ MyFrame::~MyFrame(){
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
 
-  /*
   if(NULL != m_Graph){
     delete m_Graph;
   }
@@ -339,35 +314,20 @@ MyFrame::~MyFrame(){
   if(NULL != m_Y1Axis){
     delete m_Y1Axis;
   }
-  */
 
   {
-    // Wait until the linear stage 1 message handler is finished.
-    std::unique_lock<std::mutex> lck(m_WaitLinearStageMessageHandler1Mutex);
-    m_WaitLinearStageMessageHandler1.wait(lck);
-  }
-  {
-    // Wait until the linear stage 2 message handler is finished.
-    std::unique_lock<std::mutex> lck(m_WaitLinearStageMessageHandler2Mutex);
-    m_WaitLinearStageMessageHandler2.wait(lck);
+    // Wait until the message handlers are finished.
+    std::unique_lock<std::mutex> lck(m_WaitMessageHandlersMutex);
+    m_WaitMessageHandlers.wait(lck, [&]{return(m_MessageHandlersFinishedNumber>=3);});
+    std::cout << "MyFrame all 3 handlers should be finished." << std::endl;
   }
 
   // Delete linear stage objects.
-  for(auto x : *m_LinearStages){
-    delete x;
-  }
-
-  {
-    // Wait until the force sensor message handler is finished.
-    std::unique_lock<std::mutex> lck(m_WaitForceSensorMessageHandlerMutex);
-    m_WaitForceSensorMessageHandler.wait(lck);
-  }
-  delete m_ForceSensor;
+  // Not needed because destructor of main.cpp deletes them.
   /*
   for(auto x : *m_LinearStages){
     delete x;
   }
-
   delete m_ForceSensor;
   */
 }
