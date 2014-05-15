@@ -33,6 +33,41 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     MyFrame(const wxString& title, Settings *settings, wxWindow* parent = (wxWindow *)NULL);
 
+    /**
+     * @brief Returns the linear stage message handler wait condition variable as shared_ptr.
+     * @return The linear stage message handler wait condition variable as shared_ptr.
+     */
+    std::shared_ptr<std::condition_variable> getLinearStageMessageHandlerWait1(void);
+
+    /**
+     * @brief Returns the linear stage message handler wait condition variable as shared_ptr.
+     * @return The linear stage message handler wait condition variable as shared_ptr.
+     */
+    std::shared_ptr<std::condition_variable> getLinearStageMessageHandlerWait2(void);
+
+    /**
+     * @brief Returns the force sensor message handler wait condition variable as shared_ptr.
+     * @return The linear stage message handler wait condition variable as shared_ptr.
+     */
+    std::shared_ptr<std::condition_variable> getForceSensorMessageHandlerWait(void);
+
+    /**
+     * @brief Returns the linear stage message handler wait mutex as shared_ptr.
+     * @return The linear stage message handler wait mutex as shared_ptr.
+     */
+    std::shared_ptr<std::mutex> getLinearStageMessageHandlerWaitMutex1(void);
+
+    /**
+     * @brief Returns the linear stage message handler wait mutex as shared_ptr.
+     * @return The linear stage message handler wait mutex as shared_ptr.
+     */
+    std::shared_ptr<std::mutex> getLinearStageMessageHandlerWaitMutex2(void);
+
+    /**
+     * @brief Returns the force sensor message handler wait mutex as shared_ptr.
+     * @return The force sensor message handler wait mutex as shared_ptr.
+     */
+    std::shared_ptr<std::mutex> getForceSensorMessageHandlerWaitMutex(void);
 
     /**
      * @brief Checks if a protocol object is already created, otherwise creates it.

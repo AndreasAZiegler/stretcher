@@ -9,8 +9,12 @@ using namespace std;
  * @brief Forwards the pointer to the serial port to the base class.
  * @param serialport Pointer to the serial port.
  */
-LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex)
-  : MessageHandler(serialport, type, readingSerialInterfaceMutex)//,
+LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport,
+                                                     UpdatedValuesReceiver::ValueType type,
+                                                     std::mutex *readingSerialInterfaceMutex,
+                                                     std::shared_ptr<std::condition_variable> waitmessagehandler,
+                                                     std::shared_ptr<std::mutex> waitmessagehandlermutex)
+  : MessageHandler(serialport, type, readingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex)//,
     //m_CurrentPosition(0)
 {
 }

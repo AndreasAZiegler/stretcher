@@ -6,6 +6,7 @@
 #include "protocols.h"
 #include "experiments/preload.h"
 
+// An deleter which doesn't do anything, required for passing shared_ptr.
 void do_nothing_deleter(std::vector<double> *){return;}
 
 Protocols::Protocols(wxListBox *listbox,

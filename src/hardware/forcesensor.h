@@ -17,7 +17,7 @@ class ForceSensor : public SerialInterface
      * @param comPort com port
      * @param baudrate baudrate
      */
-    ForceSensor(UpdatedValuesReceiver::ValueType type, unsigned int baudrate = 115200);
+    ForceSensor(UpdatedValuesReceiver::ValueType type, std::shared_ptr<std::condition_variable> waitmessagehandler, std::shared_ptr<std::mutex> waitmessagehandlermutex, unsigned int baudrate = 115200);
 
     /**
      * @brief Set the force sensor to the bipolar mode.

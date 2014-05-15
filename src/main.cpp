@@ -45,8 +45,14 @@ bool MyApp::OnInit(){
   m_MyFrame->startup();
 
   // Create the linear motor objects.
-  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos1, m_MySettings.getLinMot1BaudRate()));
-  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos2, m_MySettings.getLinMot2BaudRate()));
+  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos1,
+                                           m_MyFrame->getLinearStageMessageHandlerWait1(),
+                                           m_MyFrame->getLinearStageMessageHandlerWaitMutex1(),
+                                           m_MySettings.getLinMot1BaudRate()));
+  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos2,
+                                           m_MyFrame->getLinearStageMessageHandlerWait2(),
+                                           m_MyFrame->getLinearStageMessageHandlerWaitMutex2(),
+                                           m_MySettings.getLinMot2BaudRate()));
   m_StageFrame.registerLinearStages(&m_LinearStages);
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
@@ -81,7 +87,10 @@ bool MyApp::OnInit(){
   m_LinearStagesReceivers.at(1).detach();
 
   // Create the force sensor object
-  m_ForceSensor = new ForceSensor(UpdatedValuesReceiver::ValueType::Force, m_MySettings.getForceSensorBaudRate());
+  m_ForceSensor = new ForceSensor(UpdatedValuesReceiver::ValueType::Force,
+                                  m_MyFrame->getForceSensorMessageHandlerWait(),
+                                  m_MyFrame->getForceSensorMessageHandlerWaitMutex(),
+                                  m_MySettings.getForceSensorBaudRate());
   m_ForceSensor->connect(m_MySettings.getForceSensorComPort());
   m_ForceSensor->setBipolarMode();
   m_ForceSensor->setScaleFactor(m_MySettings.getForceSensorNominalForce(),

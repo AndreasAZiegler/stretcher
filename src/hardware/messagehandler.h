@@ -6,6 +6,8 @@
 #include <wx-3.0/wx/ctb-0.13/serport.h>
 #include <mutex>
 #include <functional>
+#include <memory>
+#include <condition_variable>
 #include <list>
 #include <../updatedvaluessender.h>
 
@@ -24,7 +26,11 @@ class MessageHandler : virtual public UpdatedValuesSender
      * @brief Initializes the pointer to the serial port.
      * @param serialPort Pointer to the serial port owned by the serial interface class
      */
-    MessageHandler(wxSerialPort *serialPort, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex);
+    MessageHandler(wxSerialPort *serialPort,
+                   UpdatedValuesReceiver::ValueType type,
+                   std::mutex *readingSerialInterfaceMutex,
+                   std::shared_ptr<std::condition_variable> waitmessagehandler,
+                   std::shared_ptr<std::mutex> waitmessagehandlermutex);
 
     /**
      * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
@@ -51,6 +57,8 @@ class MessageHandler : virtual public UpdatedValuesSender
     UpdatedValuesReceiver::ValueType m_Type;																					/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
     std::mutex *m_ReadingSerialInterfaceMutex;																				/**< Pointer to the mutex to protect serial interface of simultanously writing. */
     bool m_ExitFlag;																																	/**< Flag which indicates that the thread should stop */
+    std::shared_ptr<std::condition_variable> m_WaitMessageHandler;
+    std::shared_ptr<std::mutex> m_WaitMessageHandlerMutex;
 
 };
 

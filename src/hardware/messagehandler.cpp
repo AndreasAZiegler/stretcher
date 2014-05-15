@@ -5,11 +5,17 @@
  * @brief Initializes the pointer to the serial port.
  * @param serialPort Pointer to the serial port owned by the serial interface class
  */
-MessageHandler::MessageHandler(wxSerialPort *serialPort, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex)
+MessageHandler::MessageHandler(wxSerialPort *serialPort,
+                               UpdatedValuesReceiver::ValueType type,
+                               std::mutex *readingSerialInterfaceMutex,
+                               std::shared_ptr<std::condition_variable> waitmessagehandler,
+                               std::shared_ptr<std::mutex> waitmessagehandlermutex)
   : m_SerialPort(serialPort),
     m_Type(type),
     m_ReadingSerialInterfaceMutex(readingSerialInterfaceMutex),
-    m_ExitFlag(true)
+    m_ExitFlag(true),
+    m_WaitMessageHandler(waitmessagehandler),
+    m_WaitMessageHandlerMutex(waitmessagehandlermutex)
 {
 }
 

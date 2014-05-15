@@ -10,8 +10,10 @@ using namespace std;
  */
 ForceSensorMessageHandler::ForceSensorMessageHandler(wxSerialPort *serialport,
                                                      UpdatedValuesReceiver::ValueType type,
-                                                     std::mutex *readingSerialInterfaceMutex)
-  : MessageHandler(serialport, type, readingSerialInterfaceMutex)//,
+                                                     std::mutex *readingSerialInterfaceMutex,
+                                                     std::shared_ptr<std::condition_variable> waitmessagehandler,
+                                                     std::shared_ptr<std::mutex> waitmessagehandlermutex)
+  : MessageHandler(serialport, type, readingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex)//,
     //m_CurrentForce(0)
 {
 }

@@ -10,9 +10,12 @@ using namespace std;
  * @param comPort com port
  * @param baudrate baudrate
  */
-ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type, unsigned int baudrate)
+ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type,
+                         std::shared_ptr<std::condition_variable> waitmessagehandler,
+                         std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                         unsigned int baudrate)
   : SerialInterface(type, baudrate),
-    m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
+    m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex),
     m_ScalingFactor(161380.83),
     m_NominalForce(20/*N*/),
     m_NominalValue(0.4965/*mv/V*/),

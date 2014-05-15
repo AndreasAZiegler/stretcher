@@ -12,9 +12,12 @@ using namespace std;
  * @param comPort com port
  * @param baudrate baudrate
  */
-LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type, unsigned int baudrate)
+LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type,
+                         std::shared_ptr<std::condition_variable> waitmessagehandler,
+                         std::shared_ptr<std::mutex> waitmessagehandlermutex,
+                         unsigned int baudrate)
     : SerialInterface(type, baudrate),
-      m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex),
+      m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex),
       m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
       m_CurrentSpeed(0),
     /*

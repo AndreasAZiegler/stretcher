@@ -23,7 +23,11 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @brief Forwards the pointer to the serial port to the base class.
      * @param serialport Pointer to the serial port.
      */
-    LinearStageMessageHandler(wxSerialPort *serialport, UpdatedValuesReceiver::ValueType type, std::mutex *readingSerialInterfaceMutex);
+    LinearStageMessageHandler(wxSerialPort *serialport,
+                              UpdatedValuesReceiver::ValueType type,
+                              std::mutex *readingSerialInterfaceMutex,
+                              std::shared_ptr<std::condition_variable> waitmessagehandler,
+                              std::shared_ptr<std::mutex> waitmessagehandlermutex);
 
     /**
      * @brief Registers the stage frame object.
