@@ -47,7 +47,7 @@ class MessageHandler : virtual public UpdatedValuesSender
 
     char m_ReceiveBuffer[18];																													/**< Buffer for the received messages */
 
-    wxSerialPort	*m_SerialPort;																											/**< Pointer to the serial port object */
+    wxSerialPort *m_SerialPort;																												/**< Pointer to the serial port object */
     UpdatedValuesReceiver::ValueType m_Type;																					/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
     std::mutex *m_ReadingSerialInterfaceMutex;																				/**< Pointer to the mutex to protect serial interface of simultanously writing. */
     bool m_ExitFlag;																																	/**< Flag which indicates that the thread should stop */

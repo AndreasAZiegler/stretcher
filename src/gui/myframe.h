@@ -370,6 +370,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
+    std::condition_variable m_WaitLinearStageMessageHandler1;
+    std::mutex m_WaitLinearStageMessageHandler1Mutex;
+    std::condition_variable m_WaitLinearStageMessageHandler2;
+    std::mutex m_WaitLinearStageMessageHandler2Mutex;
     StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
     long m_StageMaxLimit;												/**< The maximal position for the stages */
     long m_StageMinLimit;												/**< The minimal position for the stages */
@@ -377,13 +381,17 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     long m_ForceMinLimit;												/**< The minimal allowed force. */
     ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
+    std::condition_variable m_WaitForceSensorMessageHandler;
+    std::mutex m_WaitForceSensorMessageHandlerMutex;
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
-    Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
-    ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
-    std::thread *m_ExperimentRunningThread;			/**< Pointer to the experiment running check thread */
-    bool m_ExperimentRunningFlag;								/**< Flag which indicates if an experiment is running */
-    std::mutex m_ExperimentRunningMutex;				/**< Mutex to protect m_ExperimentRunningFlag */
+    std::unique_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
+    //Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
+    //ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
+    std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
+    std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
+    bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
+    std::mutex m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
     bool m_PreloadDoneFlag;											/**< Indicates if preloading is done */
     std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */

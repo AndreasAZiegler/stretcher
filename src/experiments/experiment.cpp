@@ -1,3 +1,5 @@
+// Includes
+#include <iostream>
 #include "experiment.h"
 
 /**
@@ -42,5 +44,5 @@ Experiment::Experiment(ExperimentType type,
  * @brief Destructor
  */
 Experiment::~Experiment(){
-
+  std::cout << "Experiment destructor finished." << std::endl;
 }

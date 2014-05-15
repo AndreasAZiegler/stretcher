@@ -24,6 +24,7 @@ ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type, unsigned int bau
 }
 
 ForceSensor::~ForceSensor(){
+  //delete FORCE_SENSOR_SET_BIPOLAR;
 }
 
 /**

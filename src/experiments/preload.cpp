@@ -190,6 +190,7 @@ void Preload::process(Event e){
                 std::unique_lock<std::mutex> lck(*m_StagesStoppedMutex);
                 *m_StagesStoppedFlag = false;
               }
+              std::cout << "Stop preloading." << std::endl;
               m_StageFrame->stop();
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_one();

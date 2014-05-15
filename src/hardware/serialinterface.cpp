@@ -24,7 +24,6 @@ SerialInterface::~SerialInterface()
   if(m_SerialPort.IsOpen()){
     m_SerialPort.Close();
   }
-  //delete m_SerialPort;
 }
 
 /**

@@ -93,8 +93,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ClampingDistance(150),
     m_PreloadDistance(0),
     m_StressOrForce(StressOrForce::Force),
-    m_CurrentExperiment(NULL),
-    m_CurrentExperimentValues(NULL),
+    m_CurrentProtocol(nullptr),
+    //m_CurrentExperiment(NULL),
+    //m_CurrentExperimentValues(NULL),
     m_StageMaxLimit(0),
     m_StageMinLimit(0),
     m_ForceMaxLimit(0),
@@ -264,6 +265,7 @@ MyFrame::~MyFrame(){
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
 
+  /*
   if(NULL != m_Graph){
     delete m_Graph;
   }
@@ -274,6 +276,7 @@ MyFrame::~MyFrame(){
     delete m_YAxis;
   }
 
+<<<<<<< Updated upstream
   if(NULL != m_CurrentExperiment){
     delete m_CurrentExperiment;
   }
@@ -281,12 +284,20 @@ MyFrame::~MyFrame(){
     delete m_CurrentExperimentValues;
   }
 
+=======
+  */
+  /*
+>>>>>>> Stashed changes
   for(auto x : *m_LinearStages){
     delete x;
   }
 
   delete m_ForceSensor;
+<<<<<<< Updated upstream
   delete m_ExperimentRunningThread;
+=======
+  */
+>>>>>>> Stashed changes
 }
 
 /**
@@ -1329,6 +1340,7 @@ void MyFrame::checkFinishedExperiment(){
         }
       }
 
+<<<<<<< Updated upstream
       m_PreloadDoneFlag = true;
       m_PreloadDistance = m_CurrentDistance;
       std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
@@ -1340,6 +1352,25 @@ void MyFrame::checkFinishedExperiment(){
       m_MeasurementValuesRecordingFlag = false;
       m_CurrentExperimentValues->stopMeasurement();
     }
+=======
+/**
+ * @brief Checks if a protocol object is already created, otherwise creates it.
+ */
+void MyFrame::checkProtocol(void){
+  if(nullptr == m_CurrentProtocol){
+  m_CurrentProtocol = std::unique_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
+                                                               this,
+                                                               &m_StagesStoppedFlag,
+                                                               &m_StagesStoppedMutex,
+                                                               &m_WaitMutex,
+                                                               &m_Wait,
+                                                               &m_PreloadDoneFlag,
+                                                               &m_PreloadDoneMutex,
+                                                               &m_VectorLayer,
+                                                               &m_StressForcePreviewVector,
+                                                               &m_DistancePreviewVector,
+                                                               m_StoragePath));
+>>>>>>> Stashed changes
   }
   delete m_CurrentExperiment;
   m_CurrentExperiment = NULL;
