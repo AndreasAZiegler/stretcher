@@ -282,36 +282,12 @@ MyFrame::~MyFrame(){
     delete m_Y1Axis;
   }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-  /*
->>>>>>> protocols
-  if(NULL != m_CurrentExperiment){
-    delete m_CurrentExperiment;
-  }
-  if(NULL != m_CurrentExperimentValues){
-    delete m_CurrentExperimentValues;
-  }
-  */
-
-=======
-  */
-  /*
->>>>>>> Stashed changes
   for(auto x : *m_LinearStages){
     delete x;
   }
 
   delete m_ForceSensor;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  delete m_ExperimentRunningThread;
-=======
   */
->>>>>>> Stashed changes
-=======
->>>>>>> protocols
 }
 
 /**
@@ -1307,21 +1283,6 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-      m_PreloadDoneFlag = true;
-      m_PreloadDistance = m_CurrentDistance;
-      std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
-    }
-  }
-  {
-    std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
-    if(true == m_MeasurementValuesRecordingFlag){
-      m_MeasurementValuesRecordingFlag = false;
-      m_CurrentExperimentValues->stopMeasurement();
-    }
-=======
-=======
   m_Graph->AddLayer(&m_StressForcePreviewVector);
   m_Graph->AddLayer(&m_DistancePreviewVector);
 
@@ -1354,12 +1315,10 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->Fit();
 }
 
->>>>>>> protocols
 /**
  * @brief Checks if a protocol object is already created, otherwise creates it.
  */
 void MyFrame::checkProtocol(void){
-<<<<<<< HEAD
   if(nullptr == m_CurrentProtocol){
   m_CurrentProtocol = std::unique_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
                                                                this,
@@ -1373,21 +1332,5 @@ void MyFrame::checkProtocol(void){
                                                                &m_StressForcePreviewVector,
                                                                &m_DistancePreviewVector,
                                                                m_StoragePath));
->>>>>>> Stashed changes
-=======
-  if(NULL == m_CurrentProtocol){
-  m_CurrentProtocol = new Protocols(m_ProtocolsListBox,
-                                    this,
-                                    &m_StagesStoppedFlag,
-                                    &m_StagesStoppedMutex,
-                                    &m_WaitMutex,
-                                    &m_Wait,
-                                    &m_PreloadDoneFlag,
-                                    &m_PreloadDoneMutex,
-                                    &m_VectorLayer,
-                                    &m_StressForcePreviewVector,
-                                    &m_DistancePreviewVector,
-                                    m_StoragePath);
->>>>>>> protocols
   }
 }

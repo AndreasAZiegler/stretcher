@@ -459,14 +459,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     double m_Area;															/**< Area of the sample */
-    std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
-    std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
-    std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
-    bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
-    std::mutex m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
-    bool m_PreloadDoneFlag;											/**< Indicates if preloading is done */
-    std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
-    double m_Area;															/**< Area of the sample */
 
     StressOrForce m_StressOrForce;							/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
