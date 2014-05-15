@@ -1190,8 +1190,8 @@ void MyFrame::OnRunProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnStopProtocol(wxCommandEvent& event){
+  //OnMotorStop(event);
   m_CurrentProtocol->stopProtocol();
-  OnMotorStop(event);
 }
 
 /**

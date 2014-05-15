@@ -61,6 +61,11 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     virtual void process(Event e);
 
     /**
+     * @brief Do all the required thing to stop the experiment during process.
+     */
+    virtual void resetExperiment(void);
+
+    /**
      * @brief Sets speed.
      * @param mm Speed in mm/s
      */

@@ -135,12 +135,12 @@ void Conditioning::process(Experiment::Event event){
           }
         }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
-            //std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
+            std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_SpeedInMm);
             std::cout << "Conditioning moveForward" << std::endl;
           }else if((m_DistanceLimit - m_CurrentDistance) > m_DistanceThreshold){
-            //std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_DistanceLimit - m_CurrentDistance << std::endl;
+            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_DistanceLimit - m_CurrentDistance << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMm);
             std::cout << "Conditioning moveBackward" << std::endl;
@@ -159,7 +159,7 @@ void Conditioning::process(Experiment::Event event){
         m_CurrentCycle = 0;
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
       if(Event::evUpdate == event){
         // If stress/force based
@@ -325,4 +325,14 @@ void Conditioning::updateValues(MeasurementValue measurementValue, UpdatedValues
   t1.detach();
   */
   process(Event::evUpdate);
+}
+
+/**
+ * @brief Do all the required thing to stop the experiment during process.
+ */
+void Conditioning::resetExperiment(void){
+  m_CurrentCycle = 0;
+  m_CurrentState = stopState;
+  m_CurrentDirection = Direction::Stop;
+  m_StageFrame->stop();
 }

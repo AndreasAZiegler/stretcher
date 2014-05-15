@@ -118,7 +118,7 @@ void FatigueTesting::process(Event event){
         m_CurrentCycle = 0;
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
       if(Event::evUpdate == event){
         //std::cout << "m_CurrentDistance - m_AmplitudeInDistance: " << m_CurrentDistance << " - " << m_AmplitudeInDistance << std::endl;

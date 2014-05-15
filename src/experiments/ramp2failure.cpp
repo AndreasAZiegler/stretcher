@@ -92,7 +92,7 @@ void Ramp2Failure::process(Event e){
             m_CurrentDirection = Direction::Stop;
             m_StageFrame->stop();
             std::lock_guard<std::mutex> lck(*m_WaitMutex);
-            m_Wait->notify_one();
+            m_Wait->notify_all();
       }if(Event::evForceUpdate == e){
         std::lock_guard<std::mutex> lck{m_ForceMutex};
         if(std::abs(m_CurrentForce) < ((m_DropBeforeStop / 100.0) * std::abs(m_MaxForce))){

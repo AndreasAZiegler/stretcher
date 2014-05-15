@@ -117,6 +117,11 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     void process(Experiment::Event event);
 
     /**
+     * @brief Do all the required thing to stop the experiment during process.
+     */
+    virtual void resetExperiment(void);
+
+    /**
      * @brief Abstract method which will be calles by the message handlers to update the values
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.

@@ -124,6 +124,7 @@ class Protocols
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 
+    bool m_StopProtocolFlag;																								/**< Indicates if the protocol should be stopped. */
     std::mutex *m_WaitMutex;																									/**< Mutex to protect m_Wait */
     std::condition_variable *m_Wait;																					/**< Wait condition variable to wait for the end of an experiment */
     bool m_ExperimentRunningFlag;								/**< Flag which indicates if an experiment is running */

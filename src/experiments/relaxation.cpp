@@ -106,7 +106,7 @@ void Relaxation::process(Experiment::Event e){
         m_CurrentStep = 0;
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
       if(Experiment::Event::evUpdate == e){
         //std::cout << "std::abs(m_DistanceLimit - m_CurrentDistance) < m_DistanceThreshold " << std::abs(m_DistanceLimit - m_CurrentDistance) << " " << m_DistanceThreshold << std::endl;
@@ -143,7 +143,7 @@ void Relaxation::process(Experiment::Event e){
         m_CurrentDirection = Direction::Stop;
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
 
       /*

@@ -124,7 +124,7 @@ void Creep::process(Event e){
         m_StageFrame->stop();
         std::cout << "Creep stopped." << std::endl;
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
       if(Event::evUpdate == e){
 
@@ -198,7 +198,7 @@ void Creep::process(Event e){
           m_StageFrame->stop();
           std::cout << "Creep stopped." << std::endl;
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
-          m_Wait->notify_one();
+          m_Wait->notify_all();
         }
       }
       break;

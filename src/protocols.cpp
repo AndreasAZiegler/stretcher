@@ -26,6 +26,7 @@ Protocols::Protocols(wxListBox *listbox,
     m_StagesStoppedMutex(stagesstoppedmutex),
     m_WaitMutex(waitmutex),
     m_Wait(wait),
+    m_StopProtocolFlag(false),
     m_PreloadDoneFlag(preloaddoneflag),
     m_PreloadDoneMutex(preloaddonemutex),
     m_ValuesVector(valuesvector),
@@ -84,6 +85,9 @@ void Protocols::makePreview(void){
  * @brief Runs the protocol.
  */
 void Protocols::runProtocol(void){
+  m_StopProtocolFlag = false;
+  m_CurrentExperimentNr = 0;
+
   m_MyFrame->showValuesGraph();
 
   // Only continue if there are expeiments in the protocol.
@@ -136,6 +140,11 @@ void Protocols::runProtocol(void){
  * @brief Process the next experiments.
  */
 void Protocols::process(void){
+  // Return if protocol should be stopped.
+  if(true == m_StopProtocolFlag){
+    return;
+  }
+
   // Return if an experiment is currently running
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
@@ -189,8 +198,12 @@ void Protocols::process(void){
  * @brief Stops the protocol.
  */
 void Protocols::stopProtocol(void){
-  clearGraphStop();
-  m_CurrentExperimentNr = 0;
+  m_StopProtocolFlag = true;
+  {
+    std::lock_guard<std::mutex> lck(*m_WaitMutex);
+    m_Wait->notify_all();
+  }
+  //clearGraphStop();
 }
 
 /**
@@ -423,6 +436,11 @@ void Protocols::checkFinishedExperiment(void){
       //m_CurrentExperimentValues->stopMeasurement();
       m_ExperimentValues[m_CurrentExperimentNr-1]->stopMeasurement();
     }
+  }
+  m_Experiments[m_CurrentExperimentNr - 1]->resetExperiment();
+  // Reset the current experiment number if protocol should stop.
+  if(true == m_StopProtocolFlag){
+    m_CurrentExperimentNr = 0;
   }
   process();
   //delete m_CurrentExperiment;

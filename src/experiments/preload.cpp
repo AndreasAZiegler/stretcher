@@ -146,7 +146,7 @@ void Preload::process(Event e){
         }
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
       if(Event::evUpdate == e){
         // If force based
@@ -176,7 +176,7 @@ void Preload::process(Event e){
               }
               m_StageFrame->stop();
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
-              m_Wait->notify_one();
+              m_Wait->notify_all();
             }
           }
         }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
@@ -205,7 +205,7 @@ void Preload::process(Event e){
               }
               m_StageFrame->stop();
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
-              m_Wait->notify_one();
+              m_Wait->notify_all();
             }
           }
 
@@ -213,4 +213,12 @@ void Preload::process(Event e){
       }
       break;
   }
+}
+
+/**
+ * @brief Do all the required thing to stop the experiment during process.
+ */
+void Preload::resetExperiment(void){
+  m_CurrentState = stopState;
+  m_StageFrame->stop();
 }

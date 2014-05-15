@@ -102,6 +102,11 @@ class Experiment
     virtual void process(Event e) = 0;
 
     /**
+     * @brief Do all the required thing to stop the experiment during process.
+     */
+    virtual void resetExperiment(void) = 0;
+
+    /**
      * @brief Returns the type of experiment
      * @return The type of experiment
      */

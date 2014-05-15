@@ -37,10 +37,10 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
  * @brief Registers the update methods to receive the measurement values.
  */
 void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce, std::shared_ptr<std::vector<double>> graphdistance){
-  std::cout << "Protocol graphstressforce size: " << graphstressforce->size() << " graphdistance size: " << graphdistance->size() << std::endl;
+  //std::cout << "Protocol graphstressforce size: " << graphstressforce->size() << " graphdistance size: " << graphdistance->size() << std::endl;
   m_GraphStressForceValues = std::move(graphstressforce);
   m_GraphDistanceValues = std::move(graphdistance);
-  std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
+  //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
   // clear the vectors.
   m_StressForceValues.clear();
   //m_GraphStressForceValues.clear();
