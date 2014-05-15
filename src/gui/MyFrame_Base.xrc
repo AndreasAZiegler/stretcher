@@ -2060,47 +2060,11 @@
 										<style>wxTAB_TRAVERSAL</style>
 										<object class="wxFlexGridSizer">
 											<rows>6</rows>
-											<cols>3</cols>
+											<cols>2</cols>
 											<vgap>0</vgap>
 											<hgap>0</hgap>
 											<growablecols>0,1</growablecols>
 											<growablerows>0,1,2,3,4</growablerows>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER|wxALL</flag>
-												<border>5</border>
-												<object class="wxButton" name="m_ProtocolsExperiment1Button">
-													<label>1</label>
-													<default>0</default>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER|wxALL</flag>
-												<border>5</border>
-												<object class="wxStaticText" name="m_staticText32">
-													<label></label>
-													<wrap>-1</wrap>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-												<border>5</border>
-												<object class="wxButton" name="m_ProtocolsPauseButton">
-													<label>Pause</label>
-													<default>0</default>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER|wxALL</flag>
-												<border>5</border>
-												<object class="wxButton" name="m_ProtocolsExperiment2Button">
-													<label>2</label>
-													<default>0</default>
-												</object>
-											</object>
 											<object class="sizeritem">
 												<option>0</option>
 												<flag>wxALIGN_CENTER|wxALL</flag>
@@ -2123,15 +2087,6 @@
 												<option>0</option>
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
-												<object class="wxButton" name="m_ProtocolsExperiment3Button">
-													<label>3</label>
-													<default>0</default>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER|wxALL</flag>
-												<border>5</border>
 												<object class="wxButton" name="m_ProtocolsXButton">
 													<label>X</label>
 													<default>0</default>
@@ -2139,19 +2094,10 @@
 											</object>
 											<object class="sizeritem">
 												<option>0</option>
-												<flag>wxALL</flag>
+												<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 												<border>5</border>
-												<object class="wxStaticText" name="m_staticText324">
-													<label></label>
-													<wrap>-1</wrap>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER|wxALL</flag>
-												<border>5</border>
-												<object class="wxButton" name="m_ProtocolsExperiment4Button">
-													<label>4</label>
+												<object class="wxButton" name="m_ProtocolsPauseButton">
+													<label>Pause</label>
 													<default>0</default>
 												</object>
 											</object>
@@ -2177,16 +2123,7 @@
 												<option>0</option>
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
-												<object class="wxButton" name="m_ProtocolsExperiment5Button">
-													<label>5</label>
-													<default>0</default>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<option>0</option>
-												<flag>wxALIGN_CENTER|wxALL</flag>
-												<border>5</border>
-												<object class="wxCheckBox" name="m_checkBox3">
+												<object class="wxCheckBox" name="m_ProtocolsLoopCheckBox">
 													<label>Loop</label>
 													<checked>0</checked>
 												</object>
@@ -2224,6 +2161,15 @@
 												<border>5</border>
 												<object class="wxButton" name="m_ProtocolsSaveButton">
 													<label>Save</label>
+													<default>0</default>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxButton" name="m_ProtocolsLoadButton">
+													<label>Load</label>
 													<default>0</default>
 												</object>
 											</object>

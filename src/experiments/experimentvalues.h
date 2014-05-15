@@ -20,6 +20,33 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 	public:
 
     /**
+     * @brief Struct for the measurement values containing the values and the time stamp.
+     */
+    struct MeasurementValue{
+      MeasurementValue(){
+        value = 0;
+      }
+
+      MeasurementValue(double v, std::chrono::high_resolution_clock::time_point ts){
+        value = v;
+        timestamp = ts;
+      }
+
+      MeasurementValue(const MeasurementValue& mv){
+        value = mv.value;
+        timestamp = mv.timestamp;
+      }
+
+      MeasurementValue(MeasurementValue& mv){
+        value = mv.value;
+        timestamp = mv.timestamp;
+      }
+
+      double value;
+      std::chrono::high_resolution_clock::time_point timestamp;
+    };
+
+    /**
      * @brief Initializes all the needed variables.
      * @param stressOrForce Indicates if the experiment is stress or force based.
      * @param stageframe Pointer to the stage frame object.
@@ -33,7 +60,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
                      MyFrame *myframe,
-                     std::string path,
                      double diameter);
 
     /**
@@ -44,12 +70,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     /**
      * @brief Registers the update methods to receive the measurement values.
      */
-    void startMeasurement(void);
-
-    /**
-     * @brief Sets the experiment start time point.
-     */
-    void setStartPoint(void);
+    void startMeasurement(std::shared_ptr<std::vector<double> > graphstressforce, std::shared_ptr<std::vector<double> > graphdistance);
 
     /**
      * @brief Unregister the update method.
@@ -113,9 +134,22 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     virtual void updateValues(UpdatedValues::MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
-     * @brief Exports the measurement data to a .csv file.
+     * @brief Returns a pointer to the vector containing the stress/force values.
+     * @return Pointer to the vector.
      */
-    void exportCSV(void);
+    std::vector<ExperimentValues::MeasurementValue>* getStressForceValues(void);
+
+    /**
+     * @brief Returns a pointer to the vector containing the distance values.
+     * @return Pointer to the vector.
+     */
+    std::vector<ExperimentValues::MeasurementValue>* getDistanceValues(void);
+
+    /**
+     * @brief Returns the experiment settings as a std::string.
+     * @return Experiment settings as std::string.
+     */
+    //std::string getExperimentSettings(void) = 0;
 
     /**
      * @brief Returns the current experiment type as a string.
@@ -123,33 +157,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      */
     std::string experimentTypeToString();
 
-	private:
     /**
-     * @brief Struct for the measurement values containing the values and the time stamp.
+     * @brief Export the measurement unit (stress/force)
+     * @return The unit as std::string.
      */
-    struct MeasurementValue{
-      MeasurementValue(){
-        value = 0;
-      }
+    std::string getStressOrForce(void);
 
-      MeasurementValue(double v, std::chrono::high_resolution_clock::time_point ts){
-        value = v;
-        timestamp = ts;
-      }
-
-      MeasurementValue(const MeasurementValue& mv){
-        value = mv.value;
-        timestamp = mv.timestamp;
-      }
-
-      MeasurementValue(MeasurementValue& mv){
-        value = mv.value;
-        timestamp = mv.timestamp;
-      }
-
-      double value;
-      std::chrono::high_resolution_clock::time_point timestamp;
-    };
+	private:
 
     ExperimentType m_ExperimentType;																				/**< Type of the experiment */
     StressOrForce m_StressOrForce;																					/**< Indicates if the experiment is stress or force based */
@@ -158,15 +172,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
-    std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::vector<ExperimentValues::MeasurementValue> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
-    std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
-    std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
+    std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
+    std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     double m_Diameter;																											/**< Diameter size of the sample. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
-    std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 
 };
 

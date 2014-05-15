@@ -21,11 +21,35 @@ class Experiment
      * @enum Event
      * @brief Defines the events which can occur for the AutoStretch FSM.
      */
-    enum Event{evStart,         /**< Experiment should start */
-               evUpdate,        /**< New measured value */
-               evStop,					/**< Experiment should stop */
-               evDistanceUpdate,/**< New distance value */
-               evForceUpdate};	/**< New force value */
+    enum class Event{evStart,         /**< Experiment should start */
+                     evUpdate,        /**< New measured value */
+                     evStop,					/**< Experiment should stop */
+                     evDistanceUpdate,/**< New distance value */
+                     evForceUpdate};	/**< New force value */
+
+    /**
+     * @enum DistanceOrPercentage
+     * @brief Defines if the distance is given as distance or as percentage of the preload.
+     */
+    enum class DistanceOrPercentage{Distance = 0,
+                                    Percentage = 1};
+
+    /**
+     * @brief Indicates whether the experiment is distance or stress/force based.
+     */
+    enum class DistanceOrStressForce{
+      Distance = 0,
+      StressForce = 1
+    };
+
+    /**
+     * @brief The PreviewValue struct
+     */
+    struct PreviewValue{
+       int timepoint;
+       DistanceOrStressForce distanceOrForce;
+       int value;
+    };
 
   protected:
     /**
@@ -55,15 +79,32 @@ class Experiment
                double area, long currentdistance = 0);
 
     /**
+     * @brief Sets the preload distance.
+     * @param preloaddistance Preload distance
+     */
+    virtual void setPreloadDistance(long preloaddistance) = 0;
+
+    /**
      * @brief Destructor
      */
     virtual ~Experiment();
+
+    /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual void getPreview(std::vector<PreviewValue>& previewvalues) = 0;
 
     /**
      * @brief FSM of the experiment
      * @param e Occuring event
      */
     virtual void process(Event e) = 0;
+
+    /**
+     * @brief Do all the required thing to stop the experiment during process.
+     */
+    virtual void resetExperiment(void) = 0;
 
     /**
      * @brief Returns the type of experiment
@@ -78,7 +119,7 @@ class Experiment
      * @return A pointer to the experiment values.
      * @todo throw exception if pointer is NULL.
      */
-    ExperimentValues* getExperimentValues(void){
+    std::shared_ptr<ExperimentValues> getExperimentValues(void){
       if(NULL != m_ExperimentValues){
         return(m_ExperimentValues);
       }else{
@@ -114,12 +155,16 @@ class Experiment
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
     StressOrForce m_StressOrForce;							/**< Defines if the experiment is force or stress based. */
 
+    long m_PreloadDistance;											/**< Preload distance of the stage frame */
     long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
 
-    ExperimentValues *m_ExperimentValues;				/**< Pointer to the experiment values */
+    /**
+     * @todo Move the inherited experiment values classes in the corresponding experiment classes.
+     */
+    std::shared_ptr<ExperimentValues> m_ExperimentValues;				/**< Pointer to the experiment values */
 
 };
 

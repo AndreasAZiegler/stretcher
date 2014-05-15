@@ -4,6 +4,7 @@
 /*************** Includes ************/
 #include <thread>
 #include <wx/event.h>
+#include <pugixml/pugixml.hpp>
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
@@ -15,6 +16,9 @@
 #include "./hardware/forcesensor.h"
 #include "./experiments/experiment.h"
 #include "./experiments/experimentvalues.h"
+
+// Forward declaration
+class Protocols;
 
 /**
  * @brief The Main Frame class
@@ -28,6 +32,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param parent Pointer to the parent object.
      */
     MyFrame(const wxString& title, Settings *settings, wxWindow* parent = (wxWindow *)NULL);
+
+
+    /**
+     * @brief Checks if a protocol object is already created, otherwise creates it.
+     */
+    void checkProtocol(void);
 
     /**
      * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
@@ -53,6 +63,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     ~MyFrame();
 
     /**
+     * @brief Prepares the graph to show the experiment values.
+     */
+    void showValuesGraph(void);
+
+    /**
      * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
      * 				thread. (CallAfter() asynchronously call the updateDistance method)
      * @param value The position of a stage or a force.
@@ -61,9 +76,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     virtual void updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type);
 
     /**
-     * @brief Executes updateGraph() from the main threa.
+     * @brief Method which will be called from the class ExperimentValues to update the graph. Executes updateGraph() from the main thread.
      */
     void updateGraphFromExperimentValues(void);
+
+    /**
+     * @brief Method which will be called from the class Protocols to create the preview graph. Executes createPreviewGraph() from the main thread.
+     */
+    void showPreviewGraph(void);
 
     /**
      * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
@@ -100,6 +120,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnMotorIncreaseDistanceStop(wxCommandEvent& event);
+
+    /**
+     * @brief Returns the current distance.
+     * @return The current distance.
+     * @todo May move this method to a better place/class.
+     */
+    long getCurrentDistance(void){
+      return(m_CurrentDistance);
+    }
 
   private:
     /**
@@ -343,6 +372,36 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnClearGraph(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the delete experiment button.
+     * @param event Occuring event
+     */
+    void OnDeleteExperiment(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the move experiment up button.
+     * @param event Occuring event
+     */
+    void OnMoveUpExperiment(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the move experiment down button.
+     * @param event Occuring event
+     */
+    void OnMoveDownExperiment(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the run protocol button.
+     * @param event Occuring event
+     */
+    void OnRunProtocol(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the stop protocol button.
+     * @param event Occuring event
+     */
+    void OnStopProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Calculates the distance and print the value in the GUI.
      */
     void updateDistance(void);
@@ -355,18 +414,21 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     /**
      * @brief Updates the graph in the GUI.
      */
-    void updateGraph();
+    void updateGraph(void);
 
     /**
-     * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
+     * @brief Creates the preview graph.
      */
-    void checkFinishedExperiment();
+    void createPreviewGraph(void);
 
     mpWindow *m_Graph;													/**< Pointer to the graph */
-    mpFXYVector m_VectorLayer;									/**< Vector layer for the graph */
+    mpFXYVector m_VectorLayer;									/**< Vector layer for the value graph */
+    mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
+    mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     mpScaleX *m_XAxis;													/**< Pointer to the X axis */
-    mpScaleY *m_YAxis;													/**< Pointer to the Y axis */
+    mpScaleY *m_Y1Axis;													/**< Pointer to the left Y axis */
+    mpScaleY *m_Y2Axis;													/**< Pointer to the right Y axis */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
@@ -399,16 +461,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_Area;															/**< Area of the sample */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
+    std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
     std::mutex m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
+    bool m_PreloadDoneFlag;											/**< Indicates if preloading is done */
+    std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
+    double m_Area;															/**< Area of the sample */
 
     StressOrForce m_StressOrForce;							/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
     int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
     double m_ClampingDistance;									/**< Clamping distance */
-    long m_PreloadDistance;											/**< Preload distance */
-
     std::string m_StoragePath;									/**< Path were the measurement values will be saved as a std::string. */
 
     wxDECLARE_EVENT_TABLE();
@@ -454,7 +518,16 @@ enum
   ID_ClearGraph = 36,
   ID_ExportCSV = 37,
   ID_SetLimits = 38,
-  ID_LoadStoredPosition = 39
+  ID_LoadStoredPosition = 39,
+  ID_DeleteExperiment = 43,
+  ID_MoveUpExperiment = 44,
+  ID_MoveDownExperiment = 45,
+  ID_LoopProtocol = 46,
+  ID_RunProtocol = 47,
+  ID_StopProtocol = 48,
+  ID_SaveProtocol = 49,
+  ID_LoadProtocol = 50,
+  ID_MakePhoto = 51
 };
 
 #endif // MYFRAME_H

@@ -50,6 +50,12 @@ class Creep : virtual public Experiment, virtual public UpdatedValuesReceiver
     ~Creep();
 
     /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual void getPreview(std::vector<Experiment::PreviewValue>& previewvalue);
+
+    /**
      * @brief Sets the speed in mm/s.
      * @param mm Speed in mm/s.
      */

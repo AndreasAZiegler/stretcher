@@ -14,14 +14,6 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
 {
   public:
 
-    /**
-     * @brief Indicates whether the experiment is distance or stress/force based.
-     */
-    enum class DistanceOrStressForce{
-      Distance = 0,
-      StressForce = 1
-    };
-
    /**
      * @brief Initializes all the needed variables
      * @param type Type of the experiment.
@@ -40,10 +32,10 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      */
     Conditioning(ExperimentType type,
                  DistanceOrStressForce distanceOrStressForce,
-                 StressOrForce forceOrStress,
-                 long currentdistance,
+                 StressOrForce stressOrForce,
+                 int currentdistance,
                  StageFrame *stageframe,
-                 std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
+                 std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
@@ -51,9 +43,24 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  std::string path,
                  std::condition_variable *wait,
                  std::mutex *mutex,
-                 double stressForceLimit, int cycles, long distanceLimit, double speedInMM, double area, long preloaddistance);
+                 double stressForceLimit, int cycles, Experiment::DistanceOrPercentage dp, int calculateLimit, double speedInMM, double area);
 
+    /**
+     * @brief Sets the preload distance.
+     * @param preloaddistance Preload distance
+     */
+    virtual void setPreloadDistance(long preloaddistance);
+
+     /**
+       * @brief Destructor
+       */
     ~Conditioning();
+
+    /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual void getPreview(std::vector<Experiment::PreviewValue>& previewvalue);
 
     /**
      * @brief Sets the number of cycles.
@@ -110,6 +117,11 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     void process(Experiment::Event event);
 
     /**
+     * @brief Do all the required thing to stop the experiment during process.
+     */
+    virtual void resetExperiment(void);
+
+    /**
      * @brief Abstract method which will be calles by the message handlers to update the values
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
@@ -133,12 +145,13 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     int m_Cycles;																														/**< Number of cycles */
     int m_CurrentCycle;																											/**< Number of the current cycle */
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
-    long m_PreloadDistance;																									/**< Preload distance of the stage frame */
     double m_SpeedInPercent;																								/**< Speed in %preload/sec */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
-    DistanceOrStressForce m_DistanceOrStressForceLimit;											/**< Indicates if experiment is distance or stress/force based */
-    StressOrForce m_StressOrForceLimit;																			/**< Indicates if experiment is stress or force based */
+    DistanceOrStressForce m_DistanceOrStressForceLimit;											/**< Indicates if the experiment is distance or stress/force based */
+    StressOrForce m_StressOrForceLimit;																			/**< Indicates if the experiment is stress or force based */
+    Experiment::DistanceOrPercentage m_DistanceOrPercentage;								/**< Indicates if the distance limit is calculated by value or by percentage of preload length. */
     long m_StressForceLimit;																								/**< Stress or force limit value */
+    int m_CalculateLimit;																										/**< Variable required to calculate the distance limit. */
     long m_DistanceLimit;																										/**< Distance limit value */
     double m_Area;																													/**< Area of the sample in um^2 */
 

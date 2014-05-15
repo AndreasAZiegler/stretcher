@@ -72,6 +72,14 @@ Relaxation::~Relaxation(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+void Relaxation::getPreview(std::vector<PreviewValue> &previewvalue){
+
+}
+
+/**
  * @brief FSM of the conditioning experiment
  * @param event Occuring event
  */
@@ -81,7 +89,7 @@ void Relaxation::process(Experiment::Event e){
       if(Experiment::Event::evStart == e){
         //m_StageFrame->setSpeed();
         m_CurrentState = State::runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         m_StageFrame->gotoStepsDistance(m_PreloadDistance + m_DistanceLimit);
         std::cout << "Relaxation started, mPrlealoadDistance: " << m_PreloadDistance << " m_DistanceLimit: " << m_DistanceLimit << std::endl;
@@ -98,7 +106,7 @@ void Relaxation::process(Experiment::Event e){
         m_CurrentStep = 0;
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
       if(Experiment::Event::evUpdate == e){
         //std::cout << "std::abs(m_DistanceLimit - m_CurrentDistance) < m_DistanceThreshold " << std::abs(m_DistanceLimit - m_CurrentDistance) << " " << m_DistanceThreshold << std::endl;
@@ -135,7 +143,7 @@ void Relaxation::process(Experiment::Event e){
         m_CurrentDirection = Direction::Stop;
         m_StageFrame->stop();
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
 
       /*

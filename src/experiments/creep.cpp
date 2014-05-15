@@ -70,6 +70,14 @@ Creep::~Creep(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+void Creep::getPreview(std::vector<Experiment::PreviewValue>& previewvalue){
+
+}
+
+/**
  * @brief FSM of the Creep experiment
  * @param event Occuring event
  */
@@ -79,7 +87,7 @@ void Creep::process(Event e){
       if(Experiment::Event::evStart == e){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
 
         // If force based
         if(StressOrForce::Force == m_HoldStressOrForce){
@@ -109,16 +117,16 @@ void Creep::process(Event e){
 
     case runState:
 
-      if(evStop == e){
+      if(Event::evStop == e){
         //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
         m_StageFrame->stop();
         std::cout << "Creep stopped." << std::endl;
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
-        m_Wait->notify_one();
+        m_Wait->notify_all();
       }
-      if(evUpdate == e){
+      if(Event::evUpdate == e){
 
         std::lock_guard<std::mutex> lck{m_EndMutex};
         // Check if the experiment was stopped by the hold time timer.
@@ -190,7 +198,7 @@ void Creep::process(Event e){
           m_StageFrame->stop();
           std::cout << "Creep stopped." << std::endl;
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
-          m_Wait->notify_one();
+          m_Wait->notify_all();
         }
       }
       break;

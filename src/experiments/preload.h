@@ -29,20 +29,41 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     Preload(ExperimentType type,
             StressOrForce forceOrStress,
             StageFrame *stageframe,
-            ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
+            ForceSensorMessageHandler *forcesensormessagehandler,
+            mpFXYVector *vector,
+            std::mutex *vectoraccessmutex,
+            MyFrame *myframe,
+            std::string path,
             std::condition_variable *wait,
             std::mutex *mutex,
             bool *stagesstopped,
             std::mutex *stagesstoppedmutex,
             double stressForceLimit, double speedInMM, double area);
 
+    /**
+     * @brief Sets the preload distance.
+     * @param preloaddistance Preload distance
+     */
+    virtual void setPreloadDistance(long preloaddistance);
+
     ~Preload();
+
+    /**
+     * @brief Returns a vector containing the points required to cread a preview graph.
+     * @return Vector containing the preview points.
+     */
+    virtual void getPreview(std::vector<Experiment::PreviewValue>& previewvalue);
 
     /**
      * @brief FSM of the experiment
      * @param e Occuring event
      */
     virtual void process(Event e);
+
+    /**
+     * @brief Do all the required thing to stop the experiment during process.
+     */
+    virtual void resetExperiment(void);
 
     /**
      * @brief Sets speed.

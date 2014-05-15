@@ -26,6 +26,7 @@ Experiment::Experiment(ExperimentType type,
     m_ForceStressThreshold(forcesStressThreshold),
     m_DistanceThreshold(distanceThreshold),
     m_CurrentForce(0),
+    m_PreloadDistance(0),
     m_CurrentPositions{0, 0},
     m_CurrentDistance(currentdistance),
     m_ExperimentValues{new ExperimentValues(type,
@@ -35,7 +36,6 @@ Experiment::Experiment(ExperimentType type,
                                             vector,
                                             vectoraccessmutex,
                                             myframe,
-                                            path,
                                             area)}
 {
 }

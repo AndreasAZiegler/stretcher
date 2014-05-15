@@ -29,8 +29,8 @@ include( "${wxWidgets_USE_FILE}" )
  
 # For convenience we define the sources as a variable. You can add 
 # header files and cpp/c files and CMake will sort them out
-set(SOURCE main.cpp settings.cpp updatedvalues.cpp updatedvaluesreceiver.cpp updatedvaluessender.cpp)
-set(HEADERS main.h settings.h updatedvalues.h updatedvaluesreceiver.h updatedvaluessender.h)
+set(SOURCE main.cpp settings.cpp updatedvalues.cpp updatedvaluesreceiver.cpp updatedvaluessender.cpp protocols.cpp)
+set(HEADERS main.h settings.h updatedvalues.h updatedvaluesreceiver.h updatedvaluessender.h protocols.h)
 
 # Add gui part
 add_subdirectory(./gui)
@@ -38,6 +38,8 @@ add_subdirectory(./gui)
 add_subdirectory(./hardware)
 # Add experiments part
 add_subdirectory(./experiments)
+# Add pugixml
+add_subdirectory(./pugixml)
 
 # Add library for the serial interface wxctb-0.13
 find_package(Wxctb REQUIRED)
@@ -59,6 +61,13 @@ if(LIBCONFIG_FOUND)
   set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${LIBCONFIG_INCLUDE_DIR})
   set(EXTERN_LIBS ${EXTERN_LIBS} ${LIBCONFIG_LIBRARY})
 endif(LIBCONFIG_FOUND)
+
+# Add library for xml parsing pugixml
+find_package(Libpugixml REQUIRED)
+if(LIBPUGIXML_FOUND)
+  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${LIBPUGIXML_INCLUDE_DIR})
+  set(EXTERN_LIBS ${EXTERN_LIBS} ${LIBPUGIXML_LIBRARY})
+endif(LIBPUGIXML_FOUND)
 
 # Add gperftools for analyzing
 #find_package(Gperftools)

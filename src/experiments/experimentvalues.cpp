@@ -20,7 +20,6 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
                                    MyFrame *myframe,
-                                   std::string path,
                                    double diameter)
   : m_ExperimentType(experimenttype),
     m_StressOrForce(stressOrForce),
@@ -29,7 +28,6 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
     m_VectorLayer(vector),
     m_VectorLayerMutex(vectoraccessmutex),
     m_MyFrame(myframe),
-    m_StoragePath(path),
     m_Diameter(diameter),
     m_DisplayGraphDelay(0)
 {
@@ -38,16 +36,19 @@ ExperimentValues::ExperimentValues(ExperimentType experimenttype,
 /**
  * @brief Registers the update methods to receive the measurement values.
  */
-void ExperimentValues::startMeasurement(void){
+void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce, std::shared_ptr<std::vector<double>> graphdistance){
+  //std::cout << "Protocol graphstressforce size: " << graphstressforce->size() << " graphdistance size: " << graphdistance->size() << std::endl;
+  m_GraphStressForceValues = std::move(graphstressforce);
+  m_GraphDistanceValues = std::move(graphdistance);
+  //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
+  // clear the vectors.
+  m_StressForceValues.clear();
+  //m_GraphStressForceValues.clear();
+  m_DistanceValues.clear();
+  //m_GraphDistanceValues.clear();
+
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
-}
-
-/**
- * @brief Sets the experiment start time point.
- */
-void ExperimentValues::setStartPoint(void){
-  m_StartTimePoint = std::chrono::high_resolution_clock::now();
 }
 
 /**
@@ -56,10 +57,14 @@ void ExperimentValues::setStartPoint(void){
 void ExperimentValues::stopMeasurement(void){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+
+  m_GraphStressForceValues = NULL;
+  m_GraphDistanceValues = NULL;
 }
 
 /**
  * @brief Removes the current graph.
+ * @todo Remove method.
  */
 void ExperimentValues::removeGraph(void){
 }
@@ -83,13 +88,13 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Diameter, measurementValue.timestamp));
-          m_GraphStressForceValues.push_back((measurementValue.value / 10000.0) / m_Diameter);
+          m_GraphStressForceValues->push_back((measurementValue.value / 10000.0) / m_Diameter);
         }
       }else{
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
-          m_GraphStressForceValues.push_back(measurementValue.value / 10000.0);
+          m_GraphStressForceValues->push_back(measurementValue.value / 10000.0);
         }
       }
       break;
@@ -98,7 +103,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
-          m_GraphDistanceValues.push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+          m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         }
       //std::cout << "Conditioning distance update." << std::endl;
       break;
@@ -110,17 +115,17 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       m_DisplayGraphDelay = 0;
 
       std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-      if(m_GraphStressForceValues.size() == m_GraphDistanceValues.size()){
+      if(m_GraphStressForceValues->size() == m_GraphDistanceValues->size()){
         std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
-        m_VectorLayer->SetData(m_GraphDistanceValues, m_GraphStressForceValues);
+        m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
       }else{
         //std::cout << "ExperimentValues stress/force: " << m_GraphStressForceValues.size() << " distance: " << m_GraphDistanceValues.size() << std::endl;
-        if(m_GraphStressForceValues.size() > m_GraphDistanceValues.size()){
-          m_GraphStressForceValues.resize(m_GraphDistanceValues.size());
+        if(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
+          m_GraphStressForceValues->resize(m_GraphDistanceValues->size());
         }else{
-          m_GraphDistanceValues.resize(m_GraphStressForceValues.size());
+          m_GraphDistanceValues->resize(m_GraphStressForceValues->size());
         }
-        m_VectorLayer->SetData(m_GraphDistanceValues, m_GraphStressForceValues);
+        m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
       }
       m_MyFrame->updateGraphFromExperimentValues();
     }
@@ -128,51 +133,19 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
 }
 
 /**
- * @brief Exports the measurement data to a .csv file.
+ * @brief Returns a pointer to the vector containing the stress/force values.
+ * @return Pointer to the vector.
  */
-void ExperimentValues::exportCSV(void){
-  // Creating file name
-  std::time_t time = std::time(NULL);
-  char mbstr[100];
-  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-  std::cout << mbstr << std::endl;
-  std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
-  std::cout << pathAndFilename << std::endl;
+std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getStressForceValues(void){
+  return(&m_StressForceValues);
+}
 
-  // Correct the vector size if needed.
-  if(m_StressForceValues.size() > m_DistanceValues.size()){
-    m_StressForceValues.resize(m_DistanceValues.size());
-  }else{
-    m_DistanceValues.resize(m_StressForceValues.size());
-  }
-
-  std::ofstream file(pathAndFilename);
-  //std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
-  if(false == file.is_open()){
-    std::cerr << "Couldn't open file" << std::endl;
-    throw "Couldn't open file";
-  }
-  file << "Experiment: " <<  experimentTypeToString() << "Date/Time: " << std::string(mbstr) << std::endl << std::endl;
-
-  std::string stressforce;
-  if(StressOrForce::Stress == m_StressOrForce){
-    stressforce = "kPa";
-  }else{
-    stressforce = "N";
-  }
-
-  file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << stressforce << "; Time stamp for stress/force in micro seconds" << std::endl;
-
-
-  for(int i = 0; i < m_StressForceValues.size(); ++i){
-    file << m_DistanceValues[i].value << std::string(";")
-         << std::chrono::duration_cast<std::chrono::milliseconds>(m_DistanceValues[i].timestamp - m_StartTimePoint).count() << ";"
-         << m_StressForceValues[i].value << ";"
-         << std::chrono::duration_cast<std::chrono::milliseconds>(m_StressForceValues[i].timestamp - m_StartTimePoint).count() << std::endl;
-  }
-
-  file.close();
+/**
+ * @brief Returns a pointer to the vector containing the distance values.
+ * @return Pointer to the vector.
+ */
+std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getDistanceValues(void){
+  return(&m_DistanceValues);
 }
 
 /**
@@ -213,5 +186,17 @@ std::string ExperimentValues::experimentTypeToString(){
       return("ChamberStretch Gel");
       break;
   }
+}
 
+/**
+ * @brief Export the measurement unit (stress/force)
+ * @return The unit as std::string.
+ */
+std::string ExperimentValues::getStressOrForce(void){
+  std::string stressforce;
+  if(StressOrForce::Stress == m_StressOrForce){
+    stressforce = "kPa";
+  }else{
+    stressforce = "N";
+  }
 }

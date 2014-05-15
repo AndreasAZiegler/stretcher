@@ -147,7 +147,7 @@ protected:
  wxButton* m_FatigueCancelButton;
  wxButton* m_FatigueSendButton;
  wxPanel* m_ChamberStretchPanel;
- wxFlexGridSizer* m_ChamberStretchSizer1;
+wxFlexGridSizer* m_ChamberStretchSizer1;
  wxRadioBox* m_ChamberStretchMeasurementRadioBox;
  wxPanel* m_ChamberStretchGelPanel;
  wxStaticText* m_ChamberStretchEmodLeftStaticText;
@@ -189,24 +189,18 @@ protected:
  wxPanel* m_Protocols;
  wxListBox* m_ProtocolsListBox;
  wxPanel* m_ProtocolsNavigationPanel;
- wxButton* m_ProtocolsExperiment1Button;
- wxStaticText* m_staticText32;
- wxButton* m_ProtocolsPauseButton;
- wxButton* m_ProtocolsExperiment2Button;
  wxButton* m_ProtocolsUpButton;
  wxButton* m_ProtocolsPhotoButton;
- wxButton* m_ProtocolsExperiment3Button;
  wxButton* m_ProtocolsXButton;
- wxStaticText* m_staticText324;
- wxButton* m_ProtocolsExperiment4Button;
+ wxButton* m_ProtocolsPauseButton;
  wxButton* m_ProtocolsDownButton;
  wxStaticText* m_staticText325;
- wxButton* m_ProtocolsExperiment5Button;
- wxCheckBox* m_checkBox3;
+ wxCheckBox* m_ProtocolsLoopCheckBox;
  wxStaticText* m_staticText326;
  wxButton* m_ProtocolsRunButton;
  wxButton* m_ProtocolsStopButton;
  wxButton* m_ProtocolsSaveButton;
+ wxButton* m_ProtocolsLoadButton;
  wxScrolledWindow* m_Results;
  wxListCtrl* m_ResultListCtrl;
  wxButton* m_ResultSaveButton;
@@ -385,24 +379,18 @@ private:
   m_Protocols = XRCCTRL(*this,"m_Protocols",wxPanel);
   m_ProtocolsListBox = XRCCTRL(*this,"m_ProtocolsListBox",wxListBox);
   m_ProtocolsNavigationPanel = XRCCTRL(*this,"m_ProtocolsNavigationPanel",wxPanel);
-  m_ProtocolsExperiment1Button = XRCCTRL(*this,"m_ProtocolsExperiment1Button",wxButton);
-  m_staticText32 = XRCCTRL(*this,"m_staticText32",wxStaticText);
-  m_ProtocolsPauseButton = XRCCTRL(*this,"m_ProtocolsPauseButton",wxButton);
-  m_ProtocolsExperiment2Button = XRCCTRL(*this,"m_ProtocolsExperiment2Button",wxButton);
   m_ProtocolsUpButton = XRCCTRL(*this,"m_ProtocolsUpButton",wxButton);
   m_ProtocolsPhotoButton = XRCCTRL(*this,"m_ProtocolsPhotoButton",wxButton);
-  m_ProtocolsExperiment3Button = XRCCTRL(*this,"m_ProtocolsExperiment3Button",wxButton);
   m_ProtocolsXButton = XRCCTRL(*this,"m_ProtocolsXButton",wxButton);
-  m_staticText324 = XRCCTRL(*this,"m_staticText324",wxStaticText);
-  m_ProtocolsExperiment4Button = XRCCTRL(*this,"m_ProtocolsExperiment4Button",wxButton);
+  m_ProtocolsPauseButton = XRCCTRL(*this,"m_ProtocolsPauseButton",wxButton);
   m_ProtocolsDownButton = XRCCTRL(*this,"m_ProtocolsDownButton",wxButton);
   m_staticText325 = XRCCTRL(*this,"m_staticText325",wxStaticText);
-  m_ProtocolsExperiment5Button = XRCCTRL(*this,"m_ProtocolsExperiment5Button",wxButton);
-  m_checkBox3 = XRCCTRL(*this,"m_checkBox3",wxCheckBox);
+  m_ProtocolsLoopCheckBox = XRCCTRL(*this,"m_ProtocolsLoopCheckBox",wxCheckBox);
   m_staticText326 = XRCCTRL(*this,"m_staticText326",wxStaticText);
   m_ProtocolsRunButton = XRCCTRL(*this,"m_ProtocolsRunButton",wxButton);
   m_ProtocolsStopButton = XRCCTRL(*this,"m_ProtocolsStopButton",wxButton);
   m_ProtocolsSaveButton = XRCCTRL(*this,"m_ProtocolsSaveButton",wxButton);
+  m_ProtocolsLoadButton = XRCCTRL(*this,"m_ProtocolsLoadButton",wxButton);
   m_Results = XRCCTRL(*this,"m_Results",wxScrolledWindow);
   m_ResultListCtrl = XRCCTRL(*this,"m_ResultListCtrl",wxListCtrl);
   m_ResultSaveButton = XRCCTRL(*this,"m_ResultSaveButton",wxButton);
@@ -419,5 +407,6 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif

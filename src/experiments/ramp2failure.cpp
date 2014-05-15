@@ -64,6 +64,14 @@ Ramp2Failure::~Ramp2Failure(){
 }
 
 /**
+ * @brief Returns a vector containing the points required to cread a preview graph.
+ * @return Vector containing the preview points.
+ */
+void Ramp2Failure::getPreview(std::vector<PreviewValue> &previewvalue){
+
+}
+
+/**
  * @brief FSM of the Ramp2Failure experiment
  * @param event Occuring event
  */
@@ -73,7 +81,7 @@ void Ramp2Failure::process(Event e){
       if(Event::evStart == e){
         m_StageFrame->setSpeed(m_SpeedInMm);
         m_CurrentState = State::runState;
-        m_ExperimentValues->setStartPoint();
+        //m_ExperimentValues->setStartPoint();
         m_StageFrame->moveBackward(m_SpeedInMm);
       }
       break;
@@ -84,7 +92,7 @@ void Ramp2Failure::process(Event e){
             m_CurrentDirection = Direction::Stop;
             m_StageFrame->stop();
             std::lock_guard<std::mutex> lck(*m_WaitMutex);
-            m_Wait->notify_one();
+            m_Wait->notify_all();
       }if(Event::evForceUpdate == e){
         std::lock_guard<std::mutex> lck{m_ForceMutex};
         if(std::abs(m_CurrentForce) < ((m_DropBeforeStop / 100.0) * std::abs(m_MaxForce))){
@@ -120,7 +128,7 @@ void Ramp2Failure::process(Event e){
       break;
 
     case goBackState:
-      if(evDistanceUpdate == e){
+      if(Event::evDistanceUpdate == e){
         switch(m_BehaviorAfterFailure){
           case BehaviorAfterFailure::PreloadPos:
             /*

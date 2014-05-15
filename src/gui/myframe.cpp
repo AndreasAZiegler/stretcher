@@ -12,6 +12,7 @@
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
 #include "myfileoutput.h"
+#include "protocols.h"
 #include "../experiments/preload.h"
 #include "../experiments/conditioning.h"
 #include "../experiments/ramp2failure.h"
@@ -72,6 +73,11 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_RADIOBOX(ID_ChamberStretchGelOrCell, MyFrame::OnChamberGelCells)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
+  EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
+  EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
+  EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
+  EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
+  EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
 wxEND_EVENT_TABLE()
 
 // Costum event definitions
@@ -91,7 +97,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" kPa")),
     m_ClampingDistance(150),
-    m_PreloadDistance(0),
+    //m_PreloadDistance(0),
     m_StressOrForce(StressOrForce::Force),
     m_CurrentProtocol(nullptr),
     //m_CurrentExperiment(NULL),
@@ -101,11 +107,14 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceMaxLimit(0),
     m_ForceMinLimit(0),
     m_Area(0),
-    m_ExperimentRunningFlag(false),
-    m_PreloadDoneFlag(false),
-    m_MeasurementValuesRecordingFlag(false),
+    //m_ExperimentRunningFlag(false),
+    m_PreloadDoneFlag(true),
+    //m_MeasurementValuesRecordingFlag(false),
     m_CurrentForceUpdateDelay(0),
-    m_VectorLayer(_("Vector"))
+    m_VectorLayer(_("Vector")),
+    m_XAxis(NULL),
+    m_Y1Axis(NULL),
+    m_Y2Axis(NULL)
 {
 
   SetIcon(wxICON(sample));
@@ -149,6 +158,14 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberStretchGelOrCell);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
+  m_ProtocolsXButton->SetId(ID_DeleteExperiment);
+  m_ProtocolsUpButton->SetId(ID_MoveUpExperiment);
+  m_ProtocolsDownButton->SetId(ID_MoveDownExperiment);
+  m_ProtocolsLoopCheckBox->SetId(ID_LoopProtocol);
+  m_ProtocolsRunButton->SetId(ID_RunProtocol);
+  m_ProtocolsStopButton->SetId(ID_StopProtocol);
+  m_ProtocolsSaveButton->SetId(ID_SaveProtocol);
+  m_ProtocolsLoadButton->SetId(ID_LoadProtocol);
 
   // Register the main frame at the two custom buttons
   m_DecreaseDistanceButton->registerMyFrame(this);
@@ -169,27 +186,16 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_VectorLayer.SetContinuity(true);
+    m_StressForcePreviewVector.SetContinuity(true);
+    m_DistancePreviewVector.SetContinuity(true);
     wxPen vectorpen(*wxBLUE, 2, wxSOLID);
     m_VectorLayer.SetPen(vectorpen);
+    m_StressForcePreviewVector.SetPen(vectorpen);
+    m_DistancePreviewVector.SetPen(vectorpen);
     m_VectorLayer.SetDrawOutsideMargins(false);
+    m_StressForcePreviewVector.SetDrawOutsideMargins(false);
+    m_DistancePreviewVector.SetDrawOutsideMargins(false);
   }
-
-  // Add layer to graph.
-  m_Graph->AddLayer(&m_VectorLayer);
-
-  // Add axis.
-  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  m_XAxis = new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
-  m_XAxis->SetFont(graphFont);
-  m_YAxis->SetFont(graphFont);
-  m_XAxis->SetDrawOutsideMargins(false);
-  m_YAxis->SetDrawOutsideMargins(false);
-
-  m_Graph->SetMargins(20, 20, 30, 50);
-  m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(m_XAxis);
-  m_Graph->AddLayer(m_YAxis);
 
   // Add graph to window
   m_Graph->Fit();
@@ -260,7 +266,7 @@ MyFrame::~MyFrame(){
   // Remove vector, and the axis from graph.
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(m_XAxis);
-  m_Graph->DelLayer(m_YAxis);
+  m_Graph->DelLayer(m_Y1Axis);
 
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
@@ -272,17 +278,22 @@ MyFrame::~MyFrame(){
   if(NULL != m_XAxis){
     delete m_XAxis;
   }
-  if(NULL != m_YAxis){
-    delete m_YAxis;
+  if(NULL != m_Y1Axis){
+    delete m_Y1Axis;
   }
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+  /*
+>>>>>>> protocols
   if(NULL != m_CurrentExperiment){
     delete m_CurrentExperiment;
   }
   if(NULL != m_CurrentExperimentValues){
     delete m_CurrentExperimentValues;
   }
+  */
 
 =======
   */
@@ -293,11 +304,14 @@ MyFrame::~MyFrame(){
   }
 
   delete m_ForceSensor;
+<<<<<<< HEAD
 <<<<<<< Updated upstream
   delete m_ExperimentRunningThread;
 =======
   */
 >>>>>>> Stashed changes
+=======
+>>>>>>> protocols
 }
 
 /**
@@ -435,12 +449,15 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [kPa]");
     m_ForceUnit = wxT(" kPa");
 
-    m_Graph->DelLayer(m_YAxis);
-    delete m_YAxis;
-    m_YAxis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
+    m_Graph->DelLayer(m_Y1Axis);
+    if(NULL != m_Y1Axis){
+      delete m_Y1Axis;
+      m_Y1Axis = NULL;
+    }
+    m_Y1Axis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_YAxis->SetFont(graphFont);
-    m_Graph->AddLayer(m_YAxis);
+    m_Y1Axis->SetFont(graphFont);
+    m_Graph->AddLayer(m_Y1Axis);
     m_Graph->Fit();
 
     m_StressOrForce = StressOrForce::Stress;
@@ -451,12 +468,15 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_CreepSensitivityStaticText->SetLabelText("Sensitivity [N]");
     m_ForceUnit = wxT(" N");
 
-    m_Graph->DelLayer(m_YAxis);
-    delete m_YAxis;
-    m_YAxis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+    m_Graph->DelLayer(m_Y1Axis);
+    if(NULL != m_Y1Axis){
+      delete m_Y1Axis;
+      m_Y1Axis = NULL;
+    }
+    m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_YAxis->SetFont(graphFont);
-    m_Graph->AddLayer(m_YAxis);
+    m_Y1Axis->SetFont(graphFont);
+    m_Graph->AddLayer(m_Y1Axis);
     m_Graph->Fit();
 
     m_StressOrForce = StressOrForce::Force;
@@ -638,45 +658,27 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
+  checkProtocol();
 
   m_Area = m_PreloadCrossSectionSpinCtrl->GetValue();
 
-  m_CurrentExperiment = new Preload(ExperimentType::Preload,
-                                    m_StressOrForce,
-                                    m_StageFrame,
-                                    m_ForceSensorMessageHandler,
-                                    &m_VectorLayer,
-                                    &m_VectorLayerMutex,
-                                    this,
-                                    m_StoragePath,
-                                    &m_Wait,
-                                    &m_WaitMutex,
-                                    &m_StagesStoppedFlag,
-                                    &m_StagesStoppedMutex,
-                                    m_PreloadLimitSpinCtrl->GetValue(),
-                                    m_PreloadSpeedMmSpinCtrl->GetValue(),
-                                    m_Area);
+  std::unique_ptr<Experiment> experiment(new Preload(ExperimentType::Preload,
+                                                     m_StressOrForce,
+                                                     m_StageFrame,
+                                                     m_ForceSensorMessageHandler,
+                                                     &m_VectorLayer,
+                                                     &m_VectorLayerMutex,
+                                                     this,
+                                                     m_StoragePath,
+                                                     &m_Wait,
+                                                     &m_WaitMutex,
+                                                     &m_StagesStoppedFlag,
+                                                     &m_StagesStoppedMutex,
+                                                     m_PreloadLimitSpinCtrl->GetValue(),
+                                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
+                                                     m_Area));
 
-  {
-    std::lock_guard<std::mutex> lck{m_PreloadDoneMutex};
-    m_PreloadDoneFlag = false;
-  }
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
-  t1.join();
-
-  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+  m_CurrentProtocol->addExperiment(experiment);
 
   return;
 }
@@ -686,8 +688,8 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event){
- double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_ConditioningSpeedPreloadSpinCtrl->GetValue() / 100);
- m_ConditioningSpeedMmSpinCtrl->SetValue(speedmm);
+ //double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_ConditioningSpeedPreloadSpinCtrl->GetValue() / 100);
+ //m_ConditioningSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
 /**
@@ -695,8 +697,8 @@ void MyFrame::OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_ConditioningSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  m_ConditioningSpeedPreloadSpinCtrl->SetValue(speedpercent);
+  //double speedpercent = m_ConditioningSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
+  //m_ConditioningSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
 /**
@@ -704,13 +706,6 @@ void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
 
   Conditioning::DistanceOrStressForce distanceOrStressForce;
   if(true == m_ConditioningStressRadioBtn->GetValue()){
@@ -719,17 +714,20 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
     distanceOrStressForce = Conditioning::DistanceOrStressForce::Distance;
   }
 
-  long distancelimit = 0;
+  int calculatelimit = m_ConditioningDistanceLimitSpinCtrl->GetValue();
+  Experiment::DistanceOrPercentage dp;
   switch(m_ConditioningDisctanceLimitRadioBox->GetSelection()){
     case 0:
-      distancelimit = static_cast<long>(m_PreloadDistance + m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+      //distancelimit = static_cast<long>(m_PreloadDistance + m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+      dp = Experiment::DistanceOrPercentage::Distance;
       break;
     case 1:
-      distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
+      //distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
+      dp = Experiment::DistanceOrPercentage::Percentage;
       break;
   }
 
-  m_CurrentExperiment = new Conditioning(ExperimentType::Conditioning,
+  std::unique_ptr<Experiment> experiment(new Conditioning(ExperimentType::Conditioning,
                                          distanceOrStressForce,
                                          m_StressOrForce,
                                          m_CurrentDistance,
@@ -744,26 +742,13 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
                                          &m_WaitMutex,
                                          m_ConditioningStressForceLimitSpinCtrl->GetValue(),
                                          m_ConditioningCyclesSpinCtrl->GetValue(),
-                                         distancelimit,
+                                         dp,
+                                         calculatelimit,
                                          m_ConditioningSpeedMmSpinCtrl->GetValue(),
-                                         m_Area, m_PreloadDistance);
+                                         m_Area));
 
-  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  {
-    std::lock_guard<std::mutex> lck{m_MeasurementValuesRecordingMutex};
-    m_MeasurementValuesRecordingFlag = true;
-  }
-  m_CurrentExperimentValues->startMeasurement();
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Conditioning::Event::evStart);
-  t1.join();
-
-  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+  //m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
+  m_CurrentProtocol->addExperiment(experiment);
 
   return;
 }
@@ -773,8 +758,8 @@ void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnRamp2FailureSpeedPercentChanged(wxSpinDoubleEvent& event){
-  double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_R2FSpeedPreloadSpinCtrl->GetValue() / 100.0);
-  m_R2FSpeedMmSpinCtrl->SetValue(speedmm);
+  //double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_R2FSpeedPreloadSpinCtrl->GetValue() / 100.0);
+  //m_R2FSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
 /**
@@ -782,8 +767,8 @@ void MyFrame::OnRamp2FailureSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnRamp2FailureSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_R2FSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  m_R2FSpeedPreloadSpinCtrl->SetValue(speedpercent);
+  //double speedpercent = m_R2FSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
+  //m_R2FSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
 /**
@@ -791,13 +776,6 @@ void MyFrame::OnRamp2FailureSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
 
   Ramp2Failure::BehaviorAfterFailure behavior = Ramp2Failure::BehaviorAfterFailure::PreloadPos;
   switch(m_R2FAfterFailureRadioBox->GetSelection()){
@@ -816,11 +794,12 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
 
   long distanceafterfailure = 0;
   if(0 == m_R2FGoToRadioBox->GetSelection()){
-    distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+    //distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   }else if(1 == m_R2FGoToRadioBox->GetSelection()){
-    distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) /*+ 1.0*/) * m_PreloadDistance;
+    //distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) /*+ 1.0*/) * m_PreloadDistance;
   }
 
+  /*
   m_CurrentExperiment = new Ramp2Failure(ExperimentType::Ramp2Failure,
                                          m_StressOrForce,
                                          m_StageFrame,
@@ -840,21 +819,7 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
                                          distanceafterfailure);
 
   m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  {
-    std::lock_guard<std::mutex> lck{m_MeasurementValuesRecordingMutex};
-    m_MeasurementValuesRecordingFlag = true;
-  }
-  m_CurrentExperimentValues->startMeasurement();
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Ramp2Failure::Event::evStart);
-  t1.join();
-
-  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+  */
 
   return;
 }
@@ -864,13 +829,6 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
 
   long distance = 0;
   switch(m_RelaxationRampRadioBox->GetSelection()){
@@ -879,10 +837,11 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
       break;
 
     case 1:
-      distance = (m_RelaxationRampSpinCtrl->GetValue() / 100) * m_PreloadDistance;
+   //   distance = (m_RelaxationRampSpinCtrl->GetValue() / 100) * m_PreloadDistance;
       break;
   }
 
+  /*
   m_CurrentExperiment = new Relaxation(ExperimentType::Relaxation,
                                        m_StressOrForce,
                                        m_CurrentDistance,
@@ -902,21 +861,7 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
                                        m_PreloadDistance);
 
   m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  {
-    std::lock_guard<std::mutex> lck{m_MeasurementValuesRecordingMutex};
-    m_MeasurementValuesRecordingFlag = true;
-  }
-  m_CurrentExperimentValues->startMeasurement();
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Relaxation::Event::evStart);
-  t1.join();
-
-  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+  */
 
   return;
 }
@@ -926,8 +871,8 @@ void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnCreepSpeedPercentChanged(wxSpinDoubleEvent& event){
-  double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_CreepSpeedPreloadSpinCtrl->GetValue() / 100.0);
-  m_CreepSpeedMmSpinCtrl->SetValue(speedmm);
+  //double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_CreepSpeedPreloadSpinCtrl->GetValue() / 100.0);
+  //m_CreepSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
 /**
@@ -935,8 +880,8 @@ void MyFrame::OnCreepSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnCreepSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_CreepSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  m_CreepSpeedPreloadSpinCtrl->SetValue(speedpercent);
+  //double speedpercent = m_CreepSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
+  //m_CreepSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
 /**
@@ -944,14 +889,8 @@ void MyFrame::OnCreepSpeedMmChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
 
+  /*
   m_CurrentExperiment = new Creep(ExperimentType::Creep,
                                   m_StressOrForce,
                                   m_StageFrame,
@@ -970,21 +909,7 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
                                   m_Area);
 
   m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  {
-    std::lock_guard<std::mutex> lck{m_MeasurementValuesRecordingMutex};
-    m_MeasurementValuesRecordingFlag = true;
-  }
-  m_CurrentExperimentValues->startMeasurement();
-  std::thread t1(&Experiment::process, m_CurrentExperiment, Creep::Event::evStart);
-  t1.join();
-
-  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+  */
 
   return;
 }
@@ -994,13 +919,6 @@ void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
 
   long amplitude = 0;
   switch(m_FatigueAmplitudeRadioBox->GetSelection()){
@@ -1009,10 +927,11 @@ void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
       break;
 
     case 1:
-      amplitude = (m_FatigueAmplitudeSpinCtrl->GetValue() / 100.0) * m_PreloadDistance;
+      //amplitude = (m_FatigueAmplitudeSpinCtrl->GetValue() / 100.0) * m_PreloadDistance;
       break;
   }
 
+  /*
   m_CurrentExperiment = new FatigueTesting(ExperimentType::FatigueTesting,
                                            m_StressOrForce,
                                            m_StageFrame,
@@ -1034,21 +953,7 @@ void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
                                            m_CurrentDistance);
 
   m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = true;
-  }
-  {
-    std::lock_guard<std::mutex> lck{m_MeasurementValuesRecordingMutex};
-    m_MeasurementValuesRecordingFlag = true;
-  }
-  m_CurrentExperimentValues->startMeasurement();
-  std::thread t1(&Experiment::process, m_CurrentExperiment, FatigueTesting::Event::evStart);
-  t1.join();
-
-  m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-  m_ExperimentRunningThread->detach();
+  */
 
   return;
 }
@@ -1079,13 +984,6 @@ void MyFrame::OnChamberGelCells(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
-  // Return if an experiment is currently running
-  {
-    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-    if(true == m_ExperimentRunningFlag){
-      return;
-    }
-  }
 
   // If gel is active
   if(0 == m_ChamberStretchMeasurementRadioBox->GetSelection()){
@@ -1099,9 +997,10 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
         break;
 
       case 1:
-        amplitude = (m_ChamberStretchAmplitudeSpinCtrl1->GetValue() / 100.0) * m_PreloadDistance;
+        //amplitude = (m_ChamberStretchAmplitudeSpinCtrl1->GetValue() / 100.0) * m_PreloadDistance;
         break;
     }
+    /*
     m_CurrentExperiment = new FatigueTesting(ExperimentType::ChamberStretchGel,
                                              m_StressOrForce,
                                              m_StageFrame,
@@ -1123,21 +1022,7 @@ void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
                                              m_CurrentDistance);
 
     m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-
-    {
-      std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-      m_ExperimentRunningFlag = true;
-    }
-    {
-      std::lock_guard<std::mutex> lck{m_MeasurementValuesRecordingMutex};
-      m_MeasurementValuesRecordingFlag = true;
-    }
-    m_CurrentExperimentValues->startMeasurement();
-    std::thread t1(&Experiment::process, m_CurrentExperiment, FatigueTesting::Event::evStart);
-    t1.join();
-
-    m_ExperimentRunningThread = new std::thread(&MyFrame::checkFinishedExperiment, this);
-    m_ExperimentRunningThread->detach();
+    */
 
     return;
   }
@@ -1245,9 +1130,11 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
   std::lock_guard<std::mutex> lck(m_WaitMutex);
   m_Wait.notify_all();
 
+  /*
   if(NULL != m_CurrentExperiment){
     m_CurrentExperiment = NULL;
   }
+  */
 }
 
 /**
@@ -1255,7 +1142,7 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
-  m_CurrentExperimentValues->exportCSV();
+  //m_CurrentExperimentValues->exportCSV();
 }
 
 /**
@@ -1263,6 +1150,8 @@ void MyFrame::OnExportCSV(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnClearGraph(wxCommandEvent& event){
+  m_CurrentProtocol->clearGraphStop();
+  /*
   {
     std::unique_lock<std::mutex> lck(m_MeasurementValuesRecordingMutex);
     if(true == m_MeasurementValuesRecordingFlag){
@@ -1270,6 +1159,7 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
       m_CurrentExperimentValues->stopMeasurement();
     }
   }
+      */
   //m_Graph->DelLayer(&m_VectorLayer);
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
@@ -1278,6 +1168,47 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
   }
   m_Graph->Fit();
   //delete m_CurrentExperimentValues;
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the delete experiment button.
+ * @param event Occuring event
+ */
+void MyFrame::OnDeleteExperiment(wxCommandEvent& event){
+  m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the move experiment up button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
+  m_CurrentProtocol->moveExperimentUp(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the move experiment down button.
+ * @param event Occuring event
+ */
+void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
+  m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the run protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnRunProtocol(wxCommandEvent& event){
+  m_CurrentProtocol->runProtocol();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the stop protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnStopProtocol(wxCommandEvent& event){
+  //OnMotorStop(event);
+  m_CurrentProtocol->stopProtocol();
 }
 
 /**
@@ -1300,46 +1231,83 @@ void MyFrame::updateForce(){
 }
 
 /**
- * @brief MyFrame::updateGraphFromExperimentValues
- * @param vector
+ * @brief Prepares the graph to show the experiment values.
+ */
+void MyFrame::showValuesGraph(void){
+  // Remove layers
+  m_Graph->DelLayer(m_Y1Axis);
+  m_Graph->DelLayer(m_Y2Axis);
+  m_Graph->DelLayer(&m_VectorLayer);
+  m_Graph->DelLayer(&m_StressForcePreviewVector);
+  m_Graph->DelLayer(&m_DistancePreviewVector);
+
+  // Clear vectors
+  {
+    std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
+    m_VectorLayer.Clear();
+  }
+
+  // Add axis.
+  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+  if(NULL == m_XAxis){
+    delete m_XAxis;
+  m_XAxis = NULL;
+  }
+  if(NULL == m_Y1Axis){
+    delete m_Y1Axis;
+    m_Y1Axis = NULL;
+  }
+  if(NULL == m_Y2Axis){
+    delete m_Y2Axis;
+    m_Y2Axis = NULL;
+  }
+  m_XAxis = new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+  m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+  m_XAxis->SetFont(graphFont);
+  m_Y1Axis->SetFont(graphFont);
+  m_XAxis->SetDrawOutsideMargins(false);
+  m_Y1Axis->SetDrawOutsideMargins(false);
+
+  m_Graph->SetMargins(20, 20, 30, 50);
+  m_Graph->EnableMousePanZoom(true);
+  m_Graph->AddLayer(m_XAxis);
+  m_Graph->AddLayer(m_Y1Axis);
+  m_Graph->AddLayer(&m_VectorLayer);
+
+  m_Graph->Fit();
+}
+
+/**
+ * @brief Method which will be called from the class ExperimentValues to update the graph. Executes updateGraph() from the main thread.
  */
 void MyFrame::updateGraphFromExperimentValues(){
   CallAfter(&MyFrame::updateGraph);
 }
 
 /**
+ * @brief Method which will be called from the class Protocols to create the preview graph. Executes createPreviewGraph() from the main thread.
+ */
+void MyFrame::showPreviewGraph(){
+  CallAfter(&MyFrame::createPreviewGraph);
+}
+
+/**
  * @brief Updates the graph in the GUI.
  */
-void MyFrame::updateGraph(){
+void MyFrame::updateGraph(void){
   m_Graph->Fit();
   //std::cout << "ExperimentVaues graph fitted." << std::endl;
 }
 
 /**
- * @brief Sets the m_ExperimentRunningFlag false if experiment is finished and the stages stopped and record preload distance if a preloading happend.
+ * @brief Creates the preview graph.
  */
-void MyFrame::checkFinishedExperiment(){
-  {
-    // Wait until experiment is finised.
-    std::unique_lock<std::mutex> lck1(m_WaitMutex);
-    m_Wait.wait(lck1);
-  }
-  {
-    std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = false;
-  }
-  {
-    std::lock_guard<std::mutex> lck2{m_PreloadDoneMutex};
-    if(false == m_PreloadDoneFlag){
-      // Wait until the stages stopped.
-      {
-        bool tmp = false;
-        while(false == tmp){
-          std::unique_lock<std::mutex> lck3(m_StagesStoppedMutex);
-          tmp = m_StagesStoppedFlag;
-        }
-      }
+void MyFrame::createPreviewGraph(void){
+  m_Graph->DelLayer(&m_VectorLayer);
+  m_Graph->DelLayer(&m_StressForcePreviewVector);
+  m_Graph->DelLayer(&m_DistancePreviewVector);
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
       m_PreloadDoneFlag = true;
       m_PreloadDistance = m_CurrentDistance;
@@ -1353,10 +1321,45 @@ void MyFrame::checkFinishedExperiment(){
       m_CurrentExperimentValues->stopMeasurement();
     }
 =======
+=======
+  m_Graph->AddLayer(&m_StressForcePreviewVector);
+  m_Graph->AddLayer(&m_DistancePreviewVector);
+
+  // Add axis.
+  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+  delete m_XAxis;
+  m_XAxis = NULL;
+  delete m_Y1Axis;
+  m_Y1Axis = NULL;
+  if(NULL == m_Y2Axis){
+    delete m_Y2Axis;
+    m_Y2Axis = NULL;
+  }
+  m_XAxis = new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+  m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+  m_Y2Axis = new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true);
+  m_XAxis->SetFont(graphFont);
+  m_Y1Axis->SetFont(graphFont);
+  m_XAxis->SetDrawOutsideMargins(false);
+  m_Y1Axis->SetDrawOutsideMargins(false);
+
+  m_Graph->SetMargins(20, 20, 30, 50);
+  m_Graph->EnableMousePanZoom(true);
+  m_Graph->AddLayer(m_XAxis);
+  m_Graph->AddLayer(m_Y1Axis);
+  m_Graph->AddLayer(m_Y2Axis);
+  m_Graph->AddLayer(&m_StressForcePreviewVector);
+  m_Graph->AddLayer(&m_DistancePreviewVector);
+
+  m_Graph->Fit();
+}
+
+>>>>>>> protocols
 /**
  * @brief Checks if a protocol object is already created, otherwise creates it.
  */
 void MyFrame::checkProtocol(void){
+<<<<<<< HEAD
   if(nullptr == m_CurrentProtocol){
   m_CurrentProtocol = std::unique_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
                                                                this,
@@ -1371,7 +1374,20 @@ void MyFrame::checkProtocol(void){
                                                                &m_DistancePreviewVector,
                                                                m_StoragePath));
 >>>>>>> Stashed changes
+=======
+  if(NULL == m_CurrentProtocol){
+  m_CurrentProtocol = new Protocols(m_ProtocolsListBox,
+                                    this,
+                                    &m_StagesStoppedFlag,
+                                    &m_StagesStoppedMutex,
+                                    &m_WaitMutex,
+                                    &m_Wait,
+                                    &m_PreloadDoneFlag,
+                                    &m_PreloadDoneMutex,
+                                    &m_VectorLayer,
+                                    &m_StressForcePreviewVector,
+                                    &m_DistancePreviewVector,
+                                    m_StoragePath);
+>>>>>>> protocols
   }
-  delete m_CurrentExperiment;
-  m_CurrentExperiment = NULL;
 }
