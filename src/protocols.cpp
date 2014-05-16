@@ -89,7 +89,7 @@ void Protocols::runProtocol(void){
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
 
-  m_MyFrame->showValuesGraph();
+  m_MyFrame->createValuesGraph();
 
   // Only continue if there are expeiments in the protocol.
   if(0 < m_Experiments.size()){

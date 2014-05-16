@@ -152,7 +152,7 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_InitializeMoveStaticText">
-																	<label>Mount the clamps and move the stage to the calibration length manually and set zero lenght.</label>
+																	<label>Move the stage to the mounting length manually, mount the clamps and push the button &quot;Set mounting lenght&quot;.</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -160,9 +160,54 @@
 																<option>0</option>
 																<flag>wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxButton" name="m_InitializeCalibrationLengthButton">
-																	<label>Set zero length</label>
+																<object class="wxButton" name="m_InitializeMountingLengthButton">
+																	<label>Set mounting length</label>
 																	<default>0</default>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>0</option>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+													<object class="wxRadioBox" name="m_InitializeUnitRadioBox">
+														<style>wxRA_SPECIFY_COLS</style>
+														<label>Unit</label>
+														<selection>1</selection>
+														<content>
+															<item>Stress</item>
+															<item>Force</item>
+														</content>
+														<dimension>2</dimension>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_InitializeCalculateDiameterPanel">
+														<style>wxSIMPLE_BORDER</style>
+														<object class="wxBoxSizer">
+															<orient>wxHORIZONTAL</orient>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_InitializeCrossSectionStaticText">
+																	<label>Cross section area [um2]:</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_InitializeCrossSectionSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10000</max>
 																</object>
 															</object>
 														</object>
@@ -172,9 +217,9 @@
 										</object>
 									</object>
 									<object class="notebookpage">
-										<label>Clamping Position</label>
+										<label>Limits</label>
 										<selected>0</selected>
-										<object class="wxPanel" name="m_ClampingPosPanel">
+										<object class="wxPanel" name="m_LimitsPanel">
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
 												<rows>4</rows>
@@ -193,7 +238,7 @@
 													<option>1</option>
 													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
-													<object class="wxPanel" name="m_ClampingPositionLimitPanel">
+													<object class="wxPanel" name="m_LimitsLimitPanel">
 														<style>wxSIMPLE_BORDER</style>
 														<object class="wxFlexGridSizer">
 															<rows>6</rows>
@@ -355,36 +400,48 @@
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
-													<flag>wxEXPAND</flag>
+													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
-													<object class="wxBoxSizer">
-														<orient>wxHORIZONTAL</orient>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALIGN_CENTER|wxALL</flag>
-															<border>5</border>
-															<object class="wxStaticText" name="m_ClampingPositionStaticText">
-																<label>Clamping Position [mm]:</label>
-																<wrap>-1</wrap>
+													<object class="wxPanel" name="m_LimitsL0Panel">
+														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
+														<object class="wxBoxSizer">
+															<orient>wxHORIZONTAL</orient>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_LimitsGoToStaticText">
+																	<label>Distance [mm]:</label>
+																	<wrap>-1</wrap>
+																</object>
 															</object>
-														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL</flag>
-															<border>5</border>
-															<object class="wxSpinCtrlDouble" name="m_ClampingPositionSpinCtrl">
-																<value>150</value>
-																<min>0</min>
-																<max>200</max>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ClampingPositionSpinCtrl">
+																	<value>150</value>
+																	<min>0</min>
+																	<max>200</max>
+																</object>
 															</object>
-														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALL</flag>
-															<border>5</border>
-															<object class="wxButton" name="m_ClampingPositionButton">
-																<label>Got to</label>
-																<default>0</default>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_LimitsGoToButton">
+																	<label>Got to</label>
+																	<default>0</default>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_LimitsSetL0Button">
+																	<label>Set L0</label>
+																	<default>0</default>
+																</object>
 															</object>
 														</object>
 													</object>
@@ -417,48 +474,11 @@
 													<size>0,10</size>
 												</object>
 												<object class="sizeritem">
-													<option>0</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<object class="wxRadioBox" name="m_PreloadUnitRadioBox">
-														<style>wxRA_SPECIFY_COLS</style>
-														<label>Unit</label>
-														<selection>0</selection>
-														<content>
-															<item>Stress</item>
-															<item>Force</item>
-														</content>
-														<dimension>2</dimension>
-													</object>
-												</object>
-												<object class="sizeritem">
 													<option>1</option>
 													<flag>wxEXPAND</flag>
 													<border>0</border>
 													<object class="wxPanel" name="m_PreloadCalculateDiameterPanel">
 														<style>wxSIMPLE_BORDER</style>
-														<object class="wxBoxSizer">
-															<orient>wxHORIZONTAL</orient>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_PreloadCrossSectionStaticText">
-																	<label>Cross section area [um2]:</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_PreloadCrossSectionSpinCtrl">
-																	<value>0</value>
-																	<min>0</min>
-																	<max>10000</max>
-																</object>
-															</object>
-														</object>
 													</object>
 												</object>
 												<object class="sizeritem">
@@ -2130,11 +2150,11 @@
 											</object>
 											<object class="sizeritem">
 												<option>0</option>
-												<flag>wxALL</flag>
+												<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 												<border>5</border>
-												<object class="wxStaticText" name="m_staticText326">
-													<label></label>
-													<wrap>-1</wrap>
+												<object class="wxButton" name="m_ProtocolsPreviewButton">
+													<label>Preview</label>
+													<default>0</default>
 												</object>
 											</object>
 											<object class="sizeritem">

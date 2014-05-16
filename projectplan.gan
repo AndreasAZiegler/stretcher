@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Stretcher" company="Institute for Biomechanics" webLink="" view-date="2014-04-15" view-index="0" gantt-divider-location="480" resource-divider-location="300" version="2.0" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Stretcher" company="Institute for Biomechanics" webLink="" view-date="2014-05-07" view-index="0" gantt-divider-location="480" resource-divider-location="300" version="2.0" locale="en_US">
     <description/>
     <view zooming-state="default:3" id="gantt-chart">
         <field id="tpd3" name="Name" width="50" order="0"/>
@@ -53,13 +53,13 @@
             <depend id="41" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="41" name="Motor&amp;Sensor adjustments" color="#8cb6ce" meeting="false" start="2014-04-21" duration="10" complete="0" expand="true">
-            <depend id="91" type="2" difference="0" hardness="Strong"/>
-        </task>
-        <task id="91" name="Experiment FSM's redesign" color="#8cb6ce" meeting="false" start="2014-05-05" duration="5" complete="0" expand="true">
             <depend id="71" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="71" name="Experiments and data management" color="#8cb6ce" meeting="false" start="2014-05-12" duration="10" complete="0" expand="true">
+        <task id="91" name="Experiment FSM's redesign" color="#8cb6ce" meeting="false" start="2014-05-19" duration="5" complete="0" expand="true">
             <depend id="61" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="71" name="Experiments and data management" color="#8cb6ce" meeting="false" start="2014-05-05" duration="10" complete="0" expand="true">
+            <depend id="91" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="61" name="Removing bugs" color="#8cb6ce" meeting="false" start="2014-05-26" duration="10" complete="0" expand="true">
             <depend id="67" type="2" difference="0" hardness="Strong"/>

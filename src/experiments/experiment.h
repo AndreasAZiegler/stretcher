@@ -46,6 +46,15 @@ class Experiment
      * @brief The PreviewValue struct
      */
     struct PreviewValue{
+        PreviewValue(int itimepoint, DistanceOrStressForce idistanceOrForce, int ivalue){
+          timepoint = itimepoint;
+          distanceOrForce = idistanceOrForce;
+          value = ivalue;
+        }
+        int getTimepoint(void){
+          return(timepoint);
+        }
+
        int timepoint;
        DistanceOrStressForce distanceOrForce;
        int value;

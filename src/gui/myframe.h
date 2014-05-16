@@ -82,7 +82,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     /**
      * @brief Prepares the graph to show the experiment values.
      */
-    void showValuesGraph(void);
+    void createValuesGraph(void);
 
     /**
      * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
@@ -407,6 +407,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMoveDownExperiment(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the preview protocol button.
+     * @param event Occuring event
+     */
+    void OnPreviewProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the run protocol button.
      * @param event Occuring event
      */
@@ -529,11 +535,12 @@ enum
   ID_MoveUpExperiment = 44,
   ID_MoveDownExperiment = 45,
   ID_LoopProtocol = 46,
-  ID_RunProtocol = 47,
-  ID_StopProtocol = 48,
-  ID_SaveProtocol = 49,
-  ID_LoadProtocol = 50,
-  ID_MakePhoto = 51
+  ID_Preview = 47,
+  ID_RunProtocol = 48,
+  ID_StopProtocol = 49,
+  ID_SaveProtocol = 50,
+  ID_LoadProtocol = 51,
+  ID_MakePhoto = 52
 };
 
 #endif // MYFRAME_H

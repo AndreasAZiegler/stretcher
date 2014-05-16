@@ -72,7 +72,13 @@ Preload::~Preload(){
  * @return Vector containing the preview points.
  */
 void Preload::getPreview(std::vector<PreviewValue> &previewvalue){
-
+  int timepoint;
+  if(0 == previewvalue.size()){
+   timepoint = 1;
+  } else{
+   timepoint =  previewvalue.back().getTimepoint() + 1;
+  }
+  previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::StressForce, m_StressForceLimit));
 }
 
 /**

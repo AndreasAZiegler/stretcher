@@ -62,12 +62,19 @@ Conditioning::Conditioning(ExperimentType type,
     m_CurrentCycle(0),
     m_DecreaseSpeedFlag(false)
 {
+  // Calculate distance limit.
+  if(Experiment::DistanceOrPercentage::Distance == m_DistanceOrPercentage){
+    m_DistanceLimit = static_cast<long>(m_PreloadDistance + m_CalculateLimit / 0.00009921875/*mm per micro step*/);
+  } else if(Experiment::DistanceOrPercentage::Percentage == m_DistanceOrPercentage){
+    m_DistanceLimit = ((m_CalculateLimit / 100.0) + 1.0) * m_PreloadDistance;
+  }
+
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**
- * @brief Sets the preload distance.
+ * @brief Sets the preload distance and updates the distance limit.
  * @param preloaddistance Preload distance
  */
 void Conditioning::setPreloadDistance(long preloaddistance){

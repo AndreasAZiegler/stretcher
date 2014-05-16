@@ -81,6 +81,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
   EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
+  EVT_BUTTON(ID_Preview, MyFrame::OnPreviewProtocol)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
   EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
 wxEND_EVENT_TABLE()
@@ -129,7 +130,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   wxString str;
   str << m_ClampingPositionSpinCtrl->GetValue();
   m_ClampingPositionSpinCtrl->SetValue(str + " mm");
-  m_PreloadUnitRadioBox->SetId(ID_Unit);
+  m_InitializeUnitRadioBox->SetId(ID_Unit);
   m_ConditioningStressRadioBtn->SetId(ID_StressLimit);
   m_ConditioningDistanceRadioBtn->SetId(ID_DistanceLimit);
   m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
@@ -138,7 +139,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
-  m_InitializeCalibrationLengthButton->SetId(ID_SetZeroLength);
+  m_InitializeMountingLengthButton->SetId(ID_SetZeroLength);
   m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
   m_ClampingPositionLimitSet1Button->SetId(ID_LoadLimitSet1);
   m_ClampingPositionLimitSet2Button->SetId(ID_LoadLimitSet2);
@@ -146,7 +147,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ClampingPositionLimitSet4Button->SetId(ID_LoadLimitSet4);
   m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
   m_ClampingPositionLimitSetButton->SetId(ID_SetLimits);
-  m_ClampingPositionButton->SetId((ID_ClampingGoTo));
+  m_LimitsGoToButton->SetId((ID_ClampingGoTo));
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
   m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
   m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
@@ -168,6 +169,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsUpButton->SetId(ID_MoveUpExperiment);
   m_ProtocolsDownButton->SetId(ID_MoveDownExperiment);
   m_ProtocolsLoopCheckBox->SetId(ID_LoopProtocol);
+  m_ProtocolsPreviewButton->SetId(ID_Preview);
   m_ProtocolsRunButton->SetId(ID_RunProtocol);
   m_ProtocolsStopButton->SetId(ID_StopProtocol);
   m_ProtocolsSaveButton->SetId(ID_SaveProtocol);
@@ -299,8 +301,11 @@ MyFrame::~MyFrame(){
 
   // Remove vector, and the axis from graph.
   m_Graph->DelLayer(&m_VectorLayer);
+  m_Graph->DelLayer(&m_StressForcePreviewVector);
+  m_Graph->DelLayer(&m_DistancePreviewVector);
   m_Graph->DelLayer(m_XAxis);
   m_Graph->DelLayer(m_Y1Axis);
+  m_Graph->DelLayer(m_Y2Axis);
 
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
@@ -386,7 +391,7 @@ void MyFrame::startup(void){
 
   // Set digits for the wxSpinCtrlDouble
   m_ClampingPositionSpinCtrl->SetDigits(2);
-  m_PreloadCrossSectionSpinCtrl->SetDigits(2);
+  m_InitializeCrossSectionSpinCtrl->SetDigits(2);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
@@ -460,7 +465,7 @@ void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnUnit(wxCommandEvent& event){
-  if(0 == m_PreloadUnitRadioBox->GetSelection()){
+  if(0 == m_InitializeUnitRadioBox->GetSelection()){
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
@@ -678,7 +683,7 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   checkProtocol();
 
-  m_Area = m_PreloadCrossSectionSpinCtrl->GetValue();
+  m_Area = m_InitializeCrossSectionSpinCtrl->GetValue();
 
   std::unique_ptr<Experiment> experiment(new Preload(ExperimentType::Preload,
                                                      m_StressOrForce,
@@ -1213,6 +1218,14 @@ void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user clicks on the preview protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnPreviewProtocol(wxCommandEvent& event){
+  m_CurrentProtocol->makePreview();
+}
+
+/**
  * @brief Method wich will be executed, when the user clicks on the run protocol button.
  * @param event Occuring event
  */
@@ -1251,7 +1264,7 @@ void MyFrame::updateForce(){
 /**
  * @brief Prepares the graph to show the experiment values.
  */
-void MyFrame::showValuesGraph(void){
+void MyFrame::createValuesGraph(void){
   // Remove layers
   m_Graph->DelLayer(m_Y1Axis);
   m_Graph->DelLayer(m_Y2Axis);
@@ -1269,7 +1282,7 @@ void MyFrame::showValuesGraph(void){
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
   if(NULL == m_XAxis){
     delete m_XAxis;
-  m_XAxis = NULL;
+    m_XAxis = NULL;
   }
   if(NULL == m_Y1Axis){
     delete m_Y1Axis;
@@ -1321,23 +1334,29 @@ void MyFrame::updateGraph(void){
  * @brief Creates the preview graph.
  */
 void MyFrame::createPreviewGraph(void){
+  // Remove layers
+  m_Graph->DelLayer(m_Y1Axis);
+  m_Graph->DelLayer(m_Y2Axis);
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
 
-  m_Graph->AddLayer(&m_StressForcePreviewVector);
-  m_Graph->AddLayer(&m_DistancePreviewVector);
-
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  delete m_XAxis;
-  m_XAxis = NULL;
-  delete m_Y1Axis;
-  m_Y1Axis = NULL;
+
+  if(NULL == m_XAxis){
+    delete m_XAxis;
+    m_XAxis = NULL;
+  }
+  if(NULL == m_Y1Axis){
+    delete m_Y1Axis;
+    m_Y1Axis = NULL;
+  }
   if(NULL == m_Y2Axis){
     delete m_Y2Axis;
     m_Y2Axis = NULL;
   }
+
   m_XAxis = new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL);
   m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
   m_Y2Axis = new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true);
