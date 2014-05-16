@@ -43,24 +43,27 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
   EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
+  EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
+  EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnInitializeLoadStoredPosition)
+  EVT_BUTTON(ID_HomeStages, MyFrame::OnInitializeHomeLinearStages)
+  EVT_BUTTON(ID_SetMountingLength, MyFrame::OnInitializeSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
-  EVT_RADIOBOX(ID_ChamberMeasurement, MyFrame::OnChamberMeasurement)
-  EVT_RADIOBUTTON(ID_DistanceLimit, MyFrame::OnDistanceLimit)
-  EVT_RADIOBUTTON(ID_StressLimit, MyFrame::OnStressLimit)
   EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
   //EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
   //EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
-  EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
-  EVT_BUTTON(ID_HomeStages, MyFrame::OnInitializeHomeLinearStages)
-  EVT_BUTTON(ID_SetZeroLength, MyFrame::OnInitializeSetZeroLength)
-  EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnInitializeLoadStoredPosition)
-  EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnClampingPosLoadSet1)
-  EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnClampingPosLoadSet2)
-  EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnClampingPosLoadSet3)
-  EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnClampingPosLoadSet4)
-  EVT_SPINCTRLDOUBLE(ID_ClampingPosValue, MyFrame::OnClampingPosValueChanged)
-  EVT_BUTTON(ID_ClampingGoTo, MyFrame::OnClampingGoTo)
-  EVT_BUTTON(ID_SetLimits, MyFrame::OnClampingPosSetLimits)
+  EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnLimitsLoadSet1)
+  EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnLimitsLoadSet2)
+  EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnLimitsLoadSet3)
+  EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
+  //EVT_SPINCTRLDOUBLE(ID_MountingLength, MyFrame::OnMountingLengthChanged)
+  EVT_BUTTON(ID_LimitsDistanceGoTo, MyFrame::OnLimitsGoTo)
+  EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
+  EVT_RADIOBUTTON(ID_OneStepStressForce, MyFrame::OnOneStepStressForce)
+  EVT_RADIOBUTTON(ID_OneStepDistance, MyFrame::OnOneStepDistance)
+  EVT_BUTTON(ID_OneStepSendToProtocol, MyFrame::OnOneStepSendToProtocol)
+  EVT_RADIOBUTTON(ID_ContinuousStressForce, MyFrame::OnContinuousStressForce)
+  EVT_RADIOBUTTON(ID_ContinuousDistance, MyFrame::OnContinuousDistance)
+  EVT_BUTTON(ID_ContinuousSendToProtocol, MyFrame::OnContinuousSendToProtocol)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
@@ -70,12 +73,6 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedPercent, MyFrame::OnRamp2FailureSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedMm, MyFrame::OnRamp2FailureSpeedMmChanged)
   EVT_BUTTON(ID_Ramp2FailureSendToProtocol, MyFrame::OnRamp2FailureSendToProtocol)
-  EVT_BUTTON(ID_RelaxationSendToProtocol, MyFrame::OnRelexationSendToProtocol)
-  EVT_SPINCTRLDOUBLE(ID_CreepSpeedPercent, MyFrame::OnCreepSpeedPercentChanged)
-  EVT_SPINCTRLDOUBLE(ID_CreepSpeedMm, MyFrame::OnCreepSpeedMmChanged)
-  EVT_BUTTON(ID_CreepSendToProtocol, MyFrame::OnCreepSendToProtocol)
-  EVT_BUTTON(ID_FatigueSendToProtocol, MyFrame::OnFatigueSendToProtocol)
-  EVT_RADIOBOX(ID_ChamberStretchGelOrCell, MyFrame::OnChamberGelCells)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
@@ -101,8 +98,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentPositions{0,0},
     m_CurrentDistance(150),
     m_CurrentForce(0),
-    m_ForceUnit(wxT(" kPa")),
-    m_ClampingDistance(150),
+    m_ForceUnit(wxT(" N")),
+    m_MountingLength(150),
     //m_PreloadDistance(0),
     m_StressOrForce(StressOrForce::Force),
     m_CurrentProtocol(nullptr),
@@ -127,42 +124,43 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   SetIcon(wxICON(sample));
 
   // Set the required ID's
-  wxString str;
-  str << m_ClampingPositionSpinCtrl->GetValue();
-  m_ClampingPositionSpinCtrl->SetValue(str + " mm");
-  m_InitializeUnitRadioBox->SetId(ID_Unit);
-  m_ConditioningStressRadioBtn->SetId(ID_StressLimit);
-  m_ConditioningDistanceRadioBtn->SetId(ID_DistanceLimit);
-  m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
-  m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberMeasurement);
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
-  m_StopButton->SetId(ID_MotorStop);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
-  m_InitializeMountingLengthButton->SetId(ID_SetZeroLength);
+  m_InitializeMountingLengthButton->SetId(ID_SetMountingLength);
   m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
-  m_ClampingPositionLimitSet1Button->SetId(ID_LoadLimitSet1);
-  m_ClampingPositionLimitSet2Button->SetId(ID_LoadLimitSet2);
-  m_ClampingPositionLimitSet3Button->SetId(ID_LoadLimitSet3);
-  m_ClampingPositionLimitSet4Button->SetId(ID_LoadLimitSet4);
-  m_ClampingPositionSpinCtrl->SetId(ID_ClampingPosValue);
-  m_ClampingPositionLimitSetButton->SetId(ID_SetLimits);
-  m_LimitsGoToButton->SetId((ID_ClampingGoTo));
+  m_InitializeUnitRadioBox->SetId(ID_Unit);
+  wxString str;
+  str << m_LimitsGoToSpinCtrl->GetValue();
+  m_LimitsGoToSpinCtrl->SetValue(str + " mm");
+  m_LimitsLimitSet1Button->SetId(ID_LoadLimitSet1);
+  m_LimitsLimitSet2Button->SetId(ID_LoadLimitSet2);
+  m_LimitsLimitSet3Button->SetId(ID_LoadLimitSet3);
+  m_LimitsLimitSet4Button->SetId(ID_LoadLimitSet4);
+  m_LimitsGoToSpinCtrl->SetId(ID_LimitsDistanceValue);
+  m_LimitsLimitSetButton->SetId(ID_SetLimits);
+  m_LimitsGoToButton->SetId((ID_LimitsDistanceGoTo));
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
   m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
   m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
+  m_OneStepStressForceRadioBtn->SetId(ID_OneStepStressForce);
+  m_OneStepDistanceRadioBtn->SetId(ID_OneStepDistance);
+  m_OneStepCancelButton->SetId(ID_OneStepCancel);
+  m_OneStepSendButton->SetId(ID_OneStepSendToProtocol);
+  m_ContinuousStressForceRadioBtn->SetId(ID_ContinuousStressForce);
+  m_ContinuousDistanceRadioBtn->SetId(ID_ContinuousDistance);
+  m_ContinuousCancelButton->SetId(ID_ContinuousCancel);
+  m_ContinuousSendButton->SetId(ID_ContinuousSendToProtocol);
+  m_ConditioningStressRadioBtn->SetId(ID_ConditioningStressLimit);
+  m_ConditioningDistanceRadioBtn->SetId(ID_ConditioningDistanceLimit);
+  m_StopButton->SetId(ID_MotorStop);
   m_ConditioningSpeedPreloadSpinCtrl->SetId(ID_ConditioningSpeedPercent);
   m_ConditioningSpeedMmSpinCtrl->SetId(ID_ConditioningSpeedMm);
   m_ConditioningSendButton->SetId(ID_ConditioningSendToProtocol);
   m_R2FSpeedPreloadSpinCtrl->SetId(ID_Ramp2FailureSpeedPercent);
   m_R2FSpeedMmSpinCtrl->SetId(ID_Ramp2FailureSpeedMm);
   m_R2FSendButton->SetId(ID_Ramp2FailureSendToProtocol);
-  m_RelaxationSendButton->SetId(ID_RelaxationSendToProtocol);
-  m_CreepSpeedPreloadSpinCtrl->SetId(ID_CreepSpeedPercent);
-  m_CreepSpeedMmSpinCtrl->SetId(ID_CreepSpeedMm);
-  m_CreepSendButton->SetId(ID_CreepSendToProtocol);
-  m_FatigueSendButton->SetId(ID_FatigueSendToProtocol);
-  m_ChamberStretchMeasurementRadioBox->SetId(ID_ChamberStretchGelOrCell);
+  m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_ProtocolsXButton->SetId(ID_DeleteExperiment);
@@ -366,9 +364,6 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
  * 				sets digits for the wxSpinCtrlDouble.
  */
 void MyFrame::startup(void){
-  // Hide cells panel in Chamber stretch
-  m_ChamberStretchCellsPanel->Show(false);
-
   // Hide distance limit options
   /*
   m_ConditioningDistanceLimitStaticText->Show(false);
@@ -377,24 +372,47 @@ void MyFrame::startup(void){
   */
   // Change the limit set butten names
   const wxString label1 = "Load " + m_Settings->getSet1Name() + " limits";
-  m_ClampingPositionLimitSet1Button->SetLabelText(label1);
+  m_LimitsLimitSet1Button->SetLabelText(label1);
   const wxString label2 = "Load " + m_Settings->getSet2Name() + " limits";
-  m_ClampingPositionLimitSet2Button->SetLabelText(label2);
+  m_LimitsLimitSet2Button->SetLabelText(label2);
   const wxString label3 = "Load " + m_Settings->getSet3Name() + " limits";
-  m_ClampingPositionLimitSet3Button->SetLabelText(label3);
+  m_LimitsLimitSet3Button->SetLabelText(label3);
   const wxString label4 = "Load " + m_Settings->getSet4Name() + " limits";
-  m_ClampingPositionLimitSet4Button->SetLabelText(label4);
+  m_LimitsLimitSet4Button->SetLabelText(label4);
 
   // Hide Go to options
   m_R2FGoToSpinCtrl->Show(false);
   m_R2FGoToRadioBox->Show(false);
 
   // Set digits for the wxSpinCtrlDouble
-  m_ClampingPositionSpinCtrl->SetDigits(2);
+  m_LimitsGoToSpinCtrl->SetDigits(2);
   m_InitializeCrossSectionSpinCtrl->SetDigits(2);
+  m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
+  m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
+  m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
+  m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
+  m_OneStepStressForceVelocitySpinCtrl->SetDigits(2);
+  m_OneStepStressForceHoldTime1SpinCtrl->SetDigits(2);
+  m_OneStepStressForceUpperLimitSpinCtrl->SetDigits(2);
+  m_OneStepStressForceHoldTime2SpinCtrl->SetDigits(2);
+  m_OneStepStressForceLowerLimitSpinCtrl->SetDigits(2);
+  m_OneStepDistanceVelocitySpinCtrl->SetDigits(2);
+  m_OneStepDistanceHoldTime1SpinCtrl->SetDigits(2);
+  m_OneStepDistanceUpperLimitSpinCtrl->SetDigits(2);
+  m_OneStepDistanceHoldTime2SpinCtrl->SetDigits(2);
+  m_OneStepDistanceLowerLimitSpinCtrl->SetDigits(2);
+  m_OneStepEndOfEventHoldSpinCtrl->SetDigits(2);
+  m_ContinuousStressForceVelocitySpinCtrl->SetDigits(2);
+  m_ContinuousStressForceHoldTime1SpinCtrl->SetDigits(2);
+  m_ContinuousStressForceIncrementSpinCtrl->SetDigits(2);
+  m_ContinuousStressForceMaxValueSpinCtrl->SetDigits(2);
+  m_ContinuousDistanceVelocitySpinCtrl->SetDigits(2);
+  m_ContinuousDistanceHoldTime1SpinCtrl->SetDigits(2);
+  m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
+  m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
   m_ConditioningSpeedMmSpinCtrl->SetDigits(2);
   m_ConditioningSpeedPreloadSpinCtrl->SetDigits(2);
   m_ConditioningStressForceLimitSpinCtrl->SetDigits(2);
@@ -403,17 +421,6 @@ void MyFrame::startup(void){
   m_R2FSpeedMmSpinCtrl->SetDigits(2);
   m_R2FDropBStopSpinCtrl->SetDigits(2);
   m_R2FGoToSpinCtrl->SetDigits(2);
-  m_RelaxationRampSpinCtrl->SetDigits(2);
-  m_RelaxationPauseSpinCtrl->SetDigits(2);
-  m_CreepSpeedPreloadSpinCtrl->SetDigits(2);
-  m_CreepSpeedMmSpinCtrl->SetDigits(2);
-  m_CreepHoldForceStressSpinCtrl->SetDigits(2);
-  m_CreepHoldTimeSpinCtrl->SetDigits(2);
-  m_FatigueTotalTimeSpinCtrl->SetDigits(2);
-  m_FatigueAmplitudeSpinCtrl->SetDigits(2);
-  m_FatigueRestTimeSpinCtrl->SetDigits(2);
-  m_FatigueFrequencySpinCtrl->SetDigits(2);
-
 }
 
 /**
@@ -468,8 +475,6 @@ void MyFrame::OnUnit(wxCommandEvent& event){
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
-    m_CreepHoldForceStressStaticText->SetLabelText("Hold Stress [kPa]");
-    m_CreepSensitivityStaticText->SetLabelText("Sensitivity [kPa]");
     m_ForceUnit = wxT(" kPa");
 
     m_Graph->DelLayer(m_Y1Axis);
@@ -487,8 +492,6 @@ void MyFrame::OnUnit(wxCommandEvent& event){
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
-    m_CreepHoldForceStressStaticText->SetLabelText("Hold Force [N]");
-    m_CreepSensitivityStaticText->SetLabelText("Sensitivity [N]");
     m_ForceUnit = wxT(" N");
 
     m_Graph->DelLayer(m_Y1Axis);
@@ -551,22 +554,6 @@ void MyFrame::OnGoTo(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user chooses a measurement in Chamber stretch.
- * @param event Occuring event
- */
-void MyFrame::OnChamberMeasurement(wxCommandEvent& event){
-  if(0 == m_ChamberStretchMeasurementRadioBox->GetSelection()){
-    m_ChamberStretchCellsPanel->Show(false);
-    m_ChamberStretchGelPanel->Show(true);
-    m_ChamberStretchSizer1->Layout();
-  } else{
-    m_ChamberStretchGelPanel->Show(false);
-    m_ChamberStretchCellsPanel->Show(true);
-    m_ChamberStretchSizer1->Layout();
-  }
-}
-
-/**
  * @brief Method wich will be executed, when the user klicks on load stored position button.
  * @param event Occuring event
  */
@@ -592,7 +579,7 @@ void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user clicks on the set length button.
  * @param event Occuring event
  */
-void MyFrame::OnInitializeSetZeroLength(wxCommandEvent& event){
+void MyFrame::OnInitializeSetMountingLength(wxCommandEvent& event){
   m_StageFrame->setZeroDistance();
   m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
@@ -602,60 +589,60 @@ void MyFrame::OnInitializeSetZeroLength(wxCommandEvent& event){
  * @brief Loads limit set 1 from the configuration.
  * @param event Occuring event
  */
-void MyFrame::OnClampingPosLoadSet1(wxCommandEvent& event){
-  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet1MaxDistance());
-  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet1MinDistance());
-  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet1MaxForce());
-  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet1MinForce());
+void MyFrame::OnLimitsLoadSet1(wxCommandEvent& event){
+  m_LimitsLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet1MaxDistance());
+  m_LimitsLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet1MinDistance());
+  m_LimitsLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet1MaxForce());
+  m_LimitsLimitMinForceSpinCtrl->SetValue(m_Settings->getSet1MinForce());
 }
 
 /**
  * @brief Loads limit set 2 from the configuration.
  * @param event Occuring event
  */
-void MyFrame::OnClampingPosLoadSet2(wxCommandEvent& event){
-  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet2MaxDistance());
-  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet2MinDistance());
-  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet2MaxForce());
-  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet2MinForce());
+void MyFrame::OnLimitsLoadSet2(wxCommandEvent& event){
+  m_LimitsLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet2MaxDistance());
+  m_LimitsLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet2MinDistance());
+  m_LimitsLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet2MaxForce());
+  m_LimitsLimitMinForceSpinCtrl->SetValue(m_Settings->getSet2MinForce());
 }
 
 /**
  * @brief Loads limit set 3 from the configuration.
  * @param event Occuring event
  */
-void MyFrame::OnClampingPosLoadSet3(wxCommandEvent& event){
-  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet3MaxDistance());
-  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet3MinDistance());
-  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet3MaxForce());
-  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet3MinForce());
+void MyFrame::OnLimitsLoadSet3(wxCommandEvent& event){
+  m_LimitsLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet3MaxDistance());
+  m_LimitsLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet3MinDistance());
+  m_LimitsLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet3MaxForce());
+  m_LimitsLimitMinForceSpinCtrl->SetValue(m_Settings->getSet3MinForce());
 }
 
 /**
  * @brief Loads limit set 4 from the configuration.
  * @param event Occuring event
  */
-void MyFrame::OnClampingPosLoadSet4(wxCommandEvent& event){
-  m_ClampingPositionLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet4MaxDistance());
-  m_ClampingPositionLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet4MinDistance());
-  m_ClampingPositionLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet4MaxForce());
-  m_ClampingPositionLimitMinForceSpinCtrl->SetValue(m_Settings->getSet4MinForce());
+void MyFrame::OnLimitsLoadSet4(wxCommandEvent& event){
+  m_LimitsLimitMaxDistanceSpinCtrl->SetValue(m_Settings->getSet4MaxDistance());
+  m_LimitsLimitMinDistanceSpinCtrl->SetValue(m_Settings->getSet4MinDistance());
+  m_LimitsLimitMaxForceSpinCtrl->SetValue(m_Settings->getSet4MaxForce());
+  m_LimitsLimitMinForceSpinCtrl->SetValue(m_Settings->getSet4MinForce());
 }
 
 /**
  * @brief Method wich will be executed, when the user changes the clamping position value.
  * @param event Occuring event
  */
-void MyFrame::OnClampingPosValueChanged(wxSpinDoubleEvent& event){
-  m_ClampingDistance = m_ClampingPositionSpinCtrl->GetValue();
+void MyFrame::OnMountingLengthChanged(wxSpinDoubleEvent& event){
+  m_MountingLength = m_LimitsGoToSpinCtrl->GetValue();
 }
 
 /**
  * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
  * @param event Occuring event
  */
-void MyFrame::OnClampingGoTo(wxCommandEvent& event){
-  m_StageFrame->gotoMMDistance(m_ClampingDistance);
+void MyFrame::OnLimitsGoTo(wxCommandEvent& event){
+  m_StageFrame->gotoMMDistance(m_MountingLength);
 }
 
 /**
@@ -663,7 +650,7 @@ void MyFrame::OnClampingGoTo(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
- double speedmm = m_ClampingDistance * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
+ double speedmm = m_MountingLength * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
  m_PreloadSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
@@ -672,7 +659,7 @@ void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / m_ClampingDistance * 100/*%*/;
+  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / m_MountingLength * 100/*%*/;
   m_PreloadSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
@@ -704,6 +691,62 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   m_CurrentProtocol->addExperiment(experiment);
 
   return;
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses stress/force in the one step event.
+ * @param event Occuring event
+ */
+void MyFrame::OnOneStepStressForce(wxCommandEvent& event){
+  m_OneStepDistancePanel->Show(false);
+  m_OneStepStressForcePanel->Show(true);
+  m_OneStepPanel21->Layout();
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses distance in the one step event.
+ * @param event Occuring event
+ */
+void MyFrame::OnOneStepDistance(wxCommandEvent& event){
+  m_OneStepStressForcePanel->Show(false);
+  m_OneStepDistancePanel->Show(true);
+  m_OneStepPanel21->Layout();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in one step event.
+ * @param event Occuring event
+ */
+void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
+
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses stress/force in the continuous event.
+ * @param event Occuring event
+ */
+void MyFrame::OnContinuousStressForce(wxCommandEvent& event){
+  m_ContinuousDistancePanel->Show(false);
+  m_ContinuousStressForcePanel->Show(true);
+  m_ContinuousPanel21->Layout();
+}
+
+/**
+ * @brief Method wich will be executed, when the user chooses distance in the contiunous event.
+ * @param event Occuring event
+ */
+void MyFrame::OnContinuousDistance(wxCommandEvent& event){
+  m_ContinuousStressForcePanel->Show(false);
+  m_ContinuousDistancePanel->Show(true);
+  m_ContinuousPanel21->Layout();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event.
+ * @param event Occuring event
+ */
+void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
+
 }
 
 /**
@@ -848,218 +891,14 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in relexation.
- * @param event Occuring event
- */
-void MyFrame::OnRelexationSendToProtocol(wxCommandEvent& event){
-
-  long distance = 0;
-  switch(m_RelaxationRampRadioBox->GetSelection()){
-    case 0:
-      distance = m_RelaxationRampSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-      break;
-
-    case 1:
-   //   distance = (m_RelaxationRampSpinCtrl->GetValue() / 100) * m_PreloadDistance;
-      break;
-  }
-
-  /*
-  m_CurrentExperiment = new Relaxation(ExperimentType::Relaxation,
-                                       m_StressOrForce,
-                                       m_CurrentDistance,
-                                       m_StageFrame,
-                                       m_LinearStagesMessageHandlers,
-                                       m_ForceSensorMessageHandler,
-                                       &m_VectorLayer,
-                                       &m_VectorLayerMutex,
-                                       this,
-                                       m_StoragePath,
-                                       &m_Wait,
-                                       &m_WaitMutex,
-                                       distance,
-                                       m_RelaxationPauseSpinCtrl->GetValue(),
-                                       m_RelaxationStepsSpinCtrl->GetValue(),
-                                       m_Area,
-                                       m_PreloadDistance);
-
-  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-  */
-
-  return;
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in percent in creep.
- * @param event Occuring event
- */
-void MyFrame::OnCreepSpeedPercentChanged(wxSpinDoubleEvent& event){
-  //double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_CreepSpeedPreloadSpinCtrl->GetValue() / 100.0);
-  //m_CreepSpeedMmSpinCtrl->SetValue(speedmm);
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in mm in creep.
- * @param event Occuring event
- */
-void MyFrame::OnCreepSpeedMmChanged(wxSpinDoubleEvent& event){
-  //double speedpercent = m_CreepSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  //m_CreepSpeedPreloadSpinCtrl->SetValue(speedpercent);
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in creep.
- * @param event Occuring event
- */
-void MyFrame::OnCreepSendToProtocol(wxCommandEvent& event){
-
-  /*
-  m_CurrentExperiment = new Creep(ExperimentType::Creep,
-                                  m_StressOrForce,
-                                  m_StageFrame,
-                                  m_LinearStagesMessageHandlers,
-                                  m_ForceSensorMessageHandler,
-                                  &m_VectorLayer,
-                                  &m_VectorLayerMutex,
-                                  this,
-                                  m_StoragePath,
-                                  &m_Wait,
-                                  &m_WaitMutex,
-                                  m_CreepHoldForceStressSpinCtrl->GetValue(),
-                                  m_CreepHoldTimeSpinCtrl->GetValue(),
-                                  m_CreepSensitivitySpinCtrl->GetValue(),
-                                  m_CreepSpeedMmSpinCtrl->GetValue(),
-                                  m_Area);
-
-  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-  */
-
-  return;
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in fatigue.
- * @param event Occuring event
- */
-void MyFrame::OnFatigueSendToProtocol(wxCommandEvent& event){
-
-  long amplitude = 0;
-  switch(m_FatigueAmplitudeRadioBox->GetSelection()){
-    case 0:
-      amplitude = m_FatigueAmplitudeSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-      break;
-
-    case 1:
-      //amplitude = (m_FatigueAmplitudeSpinCtrl->GetValue() / 100.0) * m_PreloadDistance;
-      break;
-  }
-
-  /*
-  m_CurrentExperiment = new FatigueTesting(ExperimentType::FatigueTesting,
-                                           m_StressOrForce,
-                                           m_StageFrame,
-                                           m_LinearStagesMessageHandlers,
-                                           m_ForceSensorMessageHandler,
-                                           &m_VectorLayer,
-                                           &m_VectorLayerMutex,
-                                           this,
-                                           m_StoragePath,
-                                           &m_Wait,
-                                           &m_WaitMutex,
-                                           m_FatigueCyclesSpinCtrl->GetValue(),
-                                           m_FatigueTotalTimeSpinCtrl->GetValue(),
-                                           amplitude,
-                                           m_FatigueRestTimeSpinCtrl->GetValue(),
-                                           m_FatigueFrequencySpinCtrl->GetValue(),
-                                           m_Area,
-                                           m_PreloadDistance,
-                                           m_CurrentDistance);
-
-  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-  */
-
-  return;
-}
-
-/**
- * @brief Method wich will be executed, when the user changes from gel to cells or vica versa in chamber stretch.
- * @param event Occuring event
- */
-void MyFrame::OnChamberGelCells(wxCommandEvent& event){
-  if(0 == m_ChamberStretchMeasurementRadioBox->GetSelection()){
-    // Hide cells panel in Chamber stretch
-    m_ChamberStretchCellsPanel->Show(false);
-
-    // Show gel panel in Chamber stretech
-    m_ChamberStretchGelPanel->Show(true);
-  }else if(1 == m_ChamberStretchMeasurementRadioBox->GetSelection()){
-    // Hide gel panel in Chamber stretch
-    m_ChamberStretchGelPanel->Show(false);
-
-    // Show cells panel in Chamber stretech
-    m_ChamberStretchCellsPanel->Show(true);
-  }
-  m_ChamberStretchPanel->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in chamber stretch.
- * @param event Occuring event
- */
-void MyFrame::OnChamberStretchSendToProtocol(wxCommandEvent& event){
-
-  // If gel is active
-  if(0 == m_ChamberStretchMeasurementRadioBox->GetSelection()){
-
-  }else if(1 == m_ChamberStretchMeasurementRadioBox->GetSelection()){ // If cells is active
-
-    long amplitude = 0;
-    switch(m_FatigueAmplitudeRadioBox->GetSelection()){
-      case 0:
-        amplitude = m_ChamberStretchAmplitudeSpinCtrl1->GetValue() / 0.00009921875/*mm per micro step*/;
-        break;
-
-      case 1:
-        //amplitude = (m_ChamberStretchAmplitudeSpinCtrl1->GetValue() / 100.0) * m_PreloadDistance;
-        break;
-    }
-    /*
-    m_CurrentExperiment = new FatigueTesting(ExperimentType::ChamberStretchGel,
-                                             m_StressOrForce,
-                                             m_StageFrame,
-                                             m_LinearStagesMessageHandlers,
-                                             m_ForceSensorMessageHandler,
-                                             &m_VectorLayer,
-                                             &m_VectorLayerMutex,
-                                             this,
-                                             m_StoragePath,
-                                             &m_Wait,
-                                             &m_WaitMutex,
-                                             m_ChamberStretchCyclesSpinCtrl1->GetValue(),
-                                             m_ChamberStretchTotalTimeSpinCtrl1->GetValue(),
-                                             amplitude,
-                                             m_ChamberStretchRestTimeSpinCtrl1->GetValue()*3600,
-                                             m_ChamberStretchFrequencySpinCtrl1->GetValue(),
-                                             m_Area,
-                                             m_PreloadDistance,
-                                             m_CurrentDistance);
-
-    m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-    */
-
-    return;
-  }
-}
-
-/**
  * @brief Method wich will be executed, when the user sets the limits.
  * @param event Occuring event
  */
-void MyFrame::OnClampingPosSetLimits(wxCommandEvent& event){
-  m_StageMaxLimit = m_ClampingPositionLimitMaxDistanceSpinCtrl->GetValue();
-  m_StageMinLimit = m_ClampingPositionLimitMinDistanceSpinCtrl->GetValue();
-  m_ForceMaxLimit = m_ClampingPositionLimitMaxForceSpinCtrl->GetValue();
-  m_ForceMinLimit = m_ClampingPositionLimitMinForceSpinCtrl->GetValue();
+void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
+  m_StageMaxLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
+  m_StageMinLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
+  m_ForceMaxLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue();
+  m_ForceMinLimit = m_LimitsLimitMinForceSpinCtrl->GetValue();
 
   m_StageFrame->setMaxDistanceLimit(m_StageMaxLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
@@ -1078,8 +917,8 @@ void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
 
     // If the clamping position tab is active.
     if(1 == m_Experiments->GetSelection()){
-      m_ClampingDistance -= (2 * 0.25);
-      m_ClampingPositionSpinCtrl->SetValue(m_ClampingDistance);
+      m_MountingLength -= (2 * 0.25);
+      m_LimitsGoToSpinCtrl->SetValue(m_MountingLength);
     }
   }
 }
@@ -1096,8 +935,8 @@ void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
 
   // If the clamping position tab is active.
   if(1 == m_Experiments->GetSelection()){
-    m_ClampingDistance += (2 * 0.25);
-    m_ClampingPositionSpinCtrl->SetValue(m_ClampingDistance);
+    m_MountingLength += (2 * 0.25);
+    m_LimitsGoToSpinCtrl->SetValue(m_MountingLength);
   }
 }
 

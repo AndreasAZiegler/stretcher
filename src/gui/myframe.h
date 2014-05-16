@@ -197,12 +197,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnGoTo(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user chooses a measurement in Chamber stretch.
-     * @param event Occuring event
-     */
-    void OnChamberMeasurement(wxCommandEvent& event);
-
-    /**
      * @brief Method wich will be executed, when the user klicks on load stored position button.
      * @param event Occuring event
      */
@@ -218,49 +212,49 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Method wich will be executed, when the user clicks on the set length button.
      * @param event Occuring event
      */
-    void OnInitializeSetZeroLength(wxCommandEvent& event);
+    void OnInitializeSetMountingLength(wxCommandEvent& event);
 
     /**
      * @brief Loads limit set 1 from the configuration.
      * @param event Occuring event
      */
-    void OnClampingPosLoadSet1(wxCommandEvent& event);
+    void OnLimitsLoadSet1(wxCommandEvent& event);
 
     /**
      * @brief Loads limit set 2 from the configuration.
      * @param event Occuring event
      */
-    void OnClampingPosLoadSet2(wxCommandEvent& event);
+    void OnLimitsLoadSet2(wxCommandEvent& event);
 
     /**
      * @brief Loads limit set 3 from the configuration.
      * @param event Occuring event
      */
-    void OnClampingPosLoadSet3(wxCommandEvent& event);
+    void OnLimitsLoadSet3(wxCommandEvent& event);
 
     /**
      * @brief Loads limit set 4 from the configuration.
      * @param event Occuring event
      */
-    void OnClampingPosLoadSet4(wxCommandEvent& event);
+    void OnLimitsLoadSet4(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user sets the limits.
      * @param event Occuring event
      */
-    void OnClampingPosSetLimits(wxCommandEvent& event);
+    void OnLimitsSetLimits(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the clamping position value.
      * @param event Occuring event
      */
-    void OnClampingPosValueChanged(wxSpinDoubleEvent &event);
+    void OnMountingLengthChanged(wxSpinDoubleEvent &event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
      * @param event Occuring event
      */
-    void OnClampingGoTo(wxCommandEvent& event);
+    void OnLimitsGoTo(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
@@ -279,6 +273,42 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnPreloadSendToProtocol(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses stress/force in the one step event.
+     * @param event Occuring event
+     */
+    void OnOneStepStressForce(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses distance in the one step event.
+     * @param event Occuring event
+     */
+    void OnOneStepDistance(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the one step event.
+     * @param event Occuring event
+     */
+    void OnOneStepSendToProtocol(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses stress/force in the continuous event.
+     * @param event Occuring event
+     */
+    void OnContinuousStressForce(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses distance in the contiunous event.
+     * @param event Occuring event
+     */
+    void OnContinuousDistance(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event.
+     * @param event Occuring event
+     */
+    void OnContinuousSendToProtocol(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the speed value in percent in conditioning.
@@ -315,48 +345,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnRamp2FailureSendToProtocol(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in relexation.
-     * @param event Occuring event
-     */
-    void OnRelexationSendToProtocol(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes the speed value in percent in creep.
-     * @param event Occuring event
-     */
-    void OnCreepSpeedPercentChanged(wxSpinDoubleEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes the speed value in mm in creep.
-     * @param event Occuring event
-     */
-    void OnCreepSpeedMmChanged(wxSpinDoubleEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in creep.
-     * @param event Occuring event
-     */
-    void OnCreepSendToProtocol(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in fatigue.
-     * @param event Occuring event
-     */
-    void OnFatigueSendToProtocol(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes from gel to cells or vica versa in chamber stretch.
-     * @param event Occuring event
-     */
-    void OnChamberGelCells(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in chamber stretch.
-     * @param event Occuring event
-     */
-    void OnChamberStretchSendToProtocol(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
@@ -484,7 +472,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     long m_CurrentForce;												/**< Current force */
     int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
-    double m_ClampingDistance;									/**< Clamping distance */
+    double m_MountingLength;									/**< Clamping distance */
     std::string m_StoragePath;									/**< Path were the measurement values will be saved as a std::string. */
 
     wxDECLARE_EVENT_TABLE();
@@ -496,51 +484,54 @@ enum
 	ID_Ports = 2,
 	ID_FileOutput = 3,
   ID_Unit = 4,
-  ID_DistanceLimit = 5,
-  ID_StressLimit = 6,
-  ID_GoTo = 7,
-  ID_ChamberMeasurement = 8,
-  ID_MotorDecreaseDistance = 9,
-  ID_MotorIncreaseDistance = 10,
-  ID_MotorStop = 11,
-  ID_HomeStages = 12,
-  ID_SetZeroLength = 13,
-  ID_LoadLimitSet1 = 14,
-  ID_LoadLimitSet2 = 15,
-  ID_LoadLimitSet3 = 16,
-  ID_LoadLimitSet4 = 17,
-  ID_ClampingPosValue = 18,
-  ID_ClampingGoTo = 19,
-  ID_PreloadSpeedPercent = 20,
-  ID_PreloadSpeedMm = 21,
-  ID_PreloadSendToProtocol = 22,
-  ID_ConditioningSpeedPercent = 23,
-  ID_ConditioningSpeedMm = 24,
-  ID_ConditioningSendToProtocol = 25,
-  ID_Ramp2FailureSpeedPercent = 26,
-  ID_Ramp2FailureSpeedMm = 27,
-  ID_Ramp2FailureSendToProtocol = 28,
-  ID_RelaxationSendToProtocol = 29,
-  ID_CreepSpeedPercent = 30,
-  ID_CreepSpeedMm = 31,
-  ID_CreepSendToProtocol = 32,
-  ID_FatigueSendToProtocol = 33,
-  ID_ChamberStretchGelOrCell = 34,
-  ID_ChamberStretchSendToProtocol = 35,
-  ID_ClearGraph = 36,
-  ID_ExportCSV = 37,
-  ID_SetLimits = 38,
-  ID_LoadStoredPosition = 39,
-  ID_DeleteExperiment = 43,
-  ID_MoveUpExperiment = 44,
-  ID_MoveDownExperiment = 45,
-  ID_LoopProtocol = 46,
-  ID_Preview = 47,
-  ID_RunProtocol = 48,
-  ID_StopProtocol = 49,
-  ID_SaveProtocol = 50,
-  ID_LoadProtocol = 51,
-  ID_MakePhoto = 52
+  ID_GoTo = 5,
+  ID_MotorDecreaseDistance = 6,
+  ID_MotorIncreaseDistance = 7,
+  ID_MotorStop = 8,
+  ID_LoadStoredPosition = 9,
+  ID_HomeStages = 10,
+  ID_SetMountingLength = 11,
+  ID_LoadLimitSet1 = 12,
+  ID_LoadLimitSet2 = 13,
+  ID_LoadLimitSet3 = 14,
+  ID_LoadLimitSet4 = 15,
+  ID_SetLimits = 16,
+  ID_LimitsDistanceValue = 17,
+  ID_LimitsDistanceGoTo = 18,
+  ID_PreloadSpeedPercent = 19,
+  ID_PreloadSpeedMm = 20,
+  ID_PreloadSendToProtocol = 21,
+
+  ID_OneStepStressForce = 22,
+  ID_OneStepDistance = 23,
+  ID_OneStepCancel = 24,
+  ID_OneStepSendToProtocol = 25,
+
+  ID_ContinuousStressForce = 26,
+  ID_ContinuousDistance = 27,
+  ID_ContinuousCancel = 28,
+  ID_ContinuousSendToProtocol = 29,
+
+  ID_ConditioningSpeedPercent = 30,
+  ID_ConditioningSpeedMm = 31,
+  ID_ConditioningStressLimit = 32,
+  ID_ConditioningDistanceLimit = 33,
+  ID_ConditioningSendToProtocol = 34,
+  ID_Ramp2FailureSpeedPercent = 35,
+  ID_Ramp2FailureSpeedMm = 36,
+  ID_Ramp2FailureSendToProtocol = 37,
+  ID_ClearGraph = 38,
+  ID_ExportCSV = 39,
+  ID_DeleteExperiment = 40,
+  ID_MoveUpExperiment = 41,
+  ID_MoveDownExperiment = 42,
+  ID_LoopProtocol = 43,
+  ID_Preview = 44,
+  ID_RunProtocol = 45,
+  ID_StopProtocol = 46,
+  ID_SaveProtocol = 47,
+  ID_LoadProtocol = 48,
+  ID_MakePhoto = 49
 };
 
 #endif // MYFRAME_H
