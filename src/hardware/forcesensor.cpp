@@ -1,5 +1,6 @@
 
 // Includes
+#include <iostream>
 #include <mutex>
 #include "forcesensor.h"
 
@@ -29,6 +30,7 @@ ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type,
 
 ForceSensor::~ForceSensor(){
   //delete FORCE_SENSOR_SET_BIPOLAR;
+  std::cout << "ForceSensor destructor finished." << std::endl;
 }
 
 /**

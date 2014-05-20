@@ -1,3 +1,6 @@
+// Includes
+#include <iostream>
+#include <thread>
 #include "onestepevent.h"
 
 OneStepEvent::OneStepEvent(StageFrame *stageframe,
@@ -43,6 +46,9 @@ OneStepEvent::OneStepEvent(StageFrame *stageframe,
                area,
                0.3/*stress force threshold*/,
                0.01/*distance threshold*/),
+    m_Wait(wait),
+    m_WaitMutex(mutex),
+
     m_VelocityDistanceOrPercentage(velocityDistanceOrPercentage),
     m_Velocity(velocity),
     m_HoldTime1(holdtime1),
@@ -53,6 +59,10 @@ OneStepEvent::OneStepEvent(StageFrame *stageframe,
     m_HoldDistanceOrPercentage(holdDistanceOrPercentage),
     m_HoldDistance(holddistance),
     m_BehaviorAfterStop(behaviorAfterStop),
+    m_CurrentState(State::stopState),
+    m_CurrentLimit(0),
+    m_CurrentCycle(0),
+    m_DecreaseSpeedFlag(false),
     m_ExperimentValues(new OneStepEventValues(stageframe,
                                               forcesensormessagehandler,
                                               vector,
@@ -73,6 +83,10 @@ OneStepEvent::OneStepEvent(StageFrame *stageframe,
                                               cycles,
                                               behaviorAfterStop))
 {
+  if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
+    m_UpperLimit *= 10000;
+    m_LowerLimit *= 10000;
+  }
 }
 
 /**
@@ -120,10 +134,14 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   }
   timepoint++;
 
+  // Make last point depending on the stop behavior.
   switch(m_BehaviorAfterStop){
     case BehaviorAfterStop::GoToL0:
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_UpperLimit));
-
+        break;
+    case BehaviorAfterStop::HoldADistance:
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_HoldDistance));
+        break;
   }
 }
 
@@ -132,7 +150,295 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
 * @param e Occuring event
 */
 void OneStepEvent::process(Event event){
+  switch(m_CurrentState){
+    case stopState:
+      if(Experiment::Event::evStart == event){
 
+        // Perform hold if there is a hold time 1
+        if(0 < m_HoldTime1){
+          std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+          std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
+          std::cout << "OneStepEvent holding over." << std::endl;
+        }
+
+        m_CurrentLimit = m_UpperLimit;
+        m_StageFrame->setSpeed(m_Velocity);
+        m_CurrentState = runState;
+        //m_ExperimentValues->setStartPoint();
+
+        // If force based
+        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+          if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
+            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+            m_CurrentDirection = Direction::Backwards;
+            m_StageFrame->moveBackward(m_Velocity);
+          }else if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward(m_Velocity);
+          }
+        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
+          if((m_CurrentForce/m_Area - m_CurrentLimit) > m_ForceStressThreshold){
+            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+            m_CurrentDirection = Direction::Backwards;
+            m_StageFrame->moveBackward(m_Velocity);
+          }else if((m_CurrentLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward(m_Velocity);
+          }
+        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
+          if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
+            std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_CurrentLimit << std::endl;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward(m_Velocity);
+            std::cout << "Conditioning moveForward" << std::endl;
+          }else if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
+            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_CurrentLimit - m_CurrentDistance << std::endl;
+            m_CurrentDirection = Direction::Backwards;
+            m_StageFrame->moveBackward(m_Velocity);
+            std::cout << "Conditioning moveBackward" << std::endl;
+          }
+        }
+      }
+      break;
+
+    case runState:
+
+      if(Event::evStop == event){
+        //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
+        m_CurrentState = stopState;
+        m_CurrentDirection = Direction::Stop;
+        m_CurrentCycle = 0;
+        m_StageFrame->stop();
+        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+        m_Wait->notify_all();
+      }
+      if(Event::evUpdate == event){
+        // If force based
+        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+          std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
+          if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
+            std::cout << "m_CurrentForce - m_CurrentLimit: " << m_CurrentForce - m_CurrentLimit << std::endl;
+
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward(m_Velocity);
+            }
+          }else if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
+            std::cout << "m_CurrentLimit - m_CurrentForce: " << m_CurrentLimit - m_CurrentForce << std::endl;
+
+            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward(m_Velocity);
+            }
+          }else{
+            //m_StageFrame->stop();
+            //std::cout << "Go to preload distance" << std::endl;
+            if(m_CurrentLimit == m_UpperLimit){
+              m_CurrentLimit = m_LowerLimit;
+
+              // Perform hold if there is a hold time 2
+              if(0 < m_HoldTime2){
+                std::cout << "OneStepEvent holds for " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
+                std::cout << "OneStepEvent holding over." << std::endl;
+              }
+              process(Event::evUpdate);
+            }else if(m_CurrentLimit == m_LowerLimit){
+              if((m_Cycles - 1) <= m_CurrentCycle){
+
+                switch(m_BehaviorAfterStop){
+                  case BehaviorAfterStop::GoToL0:
+                    m_CurrentLimit = m_GageLength;
+                    break;
+                  case BehaviorAfterStop::HoldADistance:
+                    m_CurrentLimit = m_HoldDistance;
+                    break;
+                }
+
+                m_CurrentState = goBackState;
+                m_CurrentCycle = 0;
+                process(Event::evUpdate);
+              } else{
+                m_CurrentState = goStartState;
+                m_StageFrame->gotoStepsDistance(m_StartLength);
+              }
+            }
+          }
+        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
+          if((m_CurrentForce/m_Area - m_CurrentLimit) > m_ForceStressThreshold){
+            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward(m_Velocity);
+            }
+          }else if((m_CurrentLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){ // Only reverse motor, if state changed
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+
+          if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward(m_Velocity);
+            }
+          }else{
+            //m_CurrentState = goBackState;
+            //m_StageFrame->stop();
+            if(m_CurrentLimit == m_UpperLimit){
+              m_CurrentLimit = m_LowerLimit;
+
+              // Perform hold if there is a hold time 2
+              if(0 < m_HoldTime2){
+                std::cout << "OneStepEvent holds for " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
+                std::cout << "OneStepEvent holding over." << std::endl;
+              }
+              process(Event::evUpdate);
+            }else if(m_CurrentLimit == m_LowerLimit){
+              if((m_Cycles - 1) <= m_CurrentCycle){
+
+                switch(m_BehaviorAfterStop){
+                  case BehaviorAfterStop::GoToL0:
+                    m_CurrentLimit = m_GageLength;
+                    break;
+                  case BehaviorAfterStop::HoldADistance:
+                    m_CurrentLimit = m_HoldDistance;
+                    break;
+                }
+
+                m_CurrentState = goBackState;
+                m_CurrentCycle = 0;
+                process(Event::evUpdate);
+              } else {
+                m_CurrentState = goStartState;
+                m_StageFrame->gotoStepsDistance(m_StartLength);
+              }
+            }
+          }
+        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
+
+          if((m_CurrentDistance - m_CurrentLimit) < (200 * m_DistanceThreshold)){
+            if(false == m_DecreaseSpeedFlag){
+              m_DecreaseSpeedFlag = true;
+              m_StageFrame->setSpeed(m_Velocity/10);
+            }
+          }
+          // Reduce speed to a tenth if stages are close to the turn point.
+          else if((m_CurrentLimit - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+            if(false == m_DecreaseSpeedFlag){
+              m_DecreaseSpeedFlag = true;
+              m_StageFrame->setSpeed(m_Velocity/10);
+            }
+          }
+          if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
+            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Forwards;
+              m_StageFrame->moveForward();
+            }
+          }else if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
+            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+              m_CurrentDirection = Direction::Backwards;
+              m_StageFrame->moveBackward();
+            }
+          }else{
+            //m_CurrentState = goBackState;
+            m_StageFrame->setSpeed(m_Velocity);
+            //m_StageFrame->stop();
+            if(m_CurrentLimit == m_UpperLimit){
+              m_CurrentLimit = m_LowerLimit;
+
+              // Perform hold if there is a hold time 2
+              if(0 < m_HoldTime2){
+                std::cout << "OneStepEvent holds for " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
+                std::cout << "OneStepEvent holding over." << std::endl;
+              }
+              process(Event::evUpdate);
+            }else if(m_CurrentLimit == m_LowerLimit){
+              if((m_Cycles - 1) <= m_CurrentCycle){
+
+                switch(m_BehaviorAfterStop){
+                  case BehaviorAfterStop::GoToL0:
+                    m_CurrentLimit = m_GageLength;
+                    break;
+                  case BehaviorAfterStop::HoldADistance:
+                    m_CurrentLimit = m_HoldDistance;
+                    break;
+                }
+
+                m_CurrentState = goBackState;
+                m_CurrentCycle = 0;
+                process(Event::evUpdate);
+              } else {
+                m_CurrentState = goStartState;
+                m_StageFrame->gotoStepsDistance(m_StartLength);
+              }
+            }
+          }
+        }
+      }
+      break;
+
+    case goStartState:
+      if(Event::evStop == event){
+        //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
+        m_CurrentState = stopState;
+        m_CurrentDirection = Direction::Stop;
+        m_CurrentCycle = 0;
+        m_StageFrame->stop();
+        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+        m_Wait->notify_all();
+      }
+      if(Event::evUpdate == event){
+        //std::cout << "m_CurrentDistance - m_PreloadDistance > m_DistanceThreshold: " << m_CurrentDistance - m_PreloadDistance << "   " << m_DistanceThreshold << std::endl;
+        //std::cout << "m_CurrentDistance: " << m_CurrentDistance << " m_PreloadDistance: " << m_PreloadDistance << std::endl;
+        if(std::abs(m_StartLength - m_CurrentDistance) < m_DistanceThreshold){
+          //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles - 1 << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
+          m_CurrentLimit = m_UpperLimit;
+          m_CurrentState = runState;
+            //m_CurrentDirection = Direction::Stop;
+            //m_StageFrame->stop();
+        }else{
+          if((m_CurrentDistance - m_StartLength) > m_DistanceThreshold){
+            m_DecreaseSpeedFlag = false;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward(m_Velocity);
+          }else if((m_StartLength - m_CurrentDistance) > m_DistanceThreshold){
+            m_DecreaseSpeedFlag = false;
+            m_CurrentDirection = Direction::Backwards;
+            m_StageFrame->moveBackward(m_Velocity);
+          }
+        }
+      }
+    break;
+
+    case goBackState:
+      if(Event::evUpdate == event){
+        //std::cout << "m_CurrentDistance - m_PreloadDistance > m_DistanceThreshold: " << m_CurrentDistance - m_PreloadDistance << "   " << m_DistanceThreshold << std::endl;
+        //std::cout << "m_CurrentDistance: " << m_CurrentDistance << " m_PreloadDistance: " << m_PreloadDistance << std::endl;
+        if(std::abs(m_CurrentLimit - m_CurrentDistance) < m_DistanceThreshold){
+          //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles - 1 << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
+          std::cout << "Stop OneStepEvent." << std::endl;
+          m_CurrentState = stopState;
+          m_CurrentCycle = 0;
+          m_CurrentDirection = Direction::Stop;
+          //m_StageFrame->stop();
+          std::lock_guard<std::mutex> lck(*m_WaitMutex);
+          m_Wait->notify_all();
+        }else{
+          if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
+            m_DecreaseSpeedFlag = false;
+            m_CurrentDirection = Direction::Forwards;
+            m_StageFrame->moveForward(m_Velocity);
+          }else if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
+            m_DecreaseSpeedFlag = false;
+            m_CurrentDirection = Direction::Backwards;
+            m_StageFrame->moveBackward(m_Velocity);
+          }
+        }
+      }
+      break;
+  }
 }
 
 /**
@@ -140,13 +446,26 @@ void OneStepEvent::process(Event event){
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
-void OneStepEvent::updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type){
+void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
+  switch(type){
+    case UpdatedValuesReceiver::ValueType::Force:
+      m_CurrentForce = measurementValue.value;
+      break;
 
+    case UpdatedValuesReceiver::ValueType::Distance:
+      m_CurrentDistance = measurementValue.value;
+      break;
+  }
+
+  process(Event::evUpdate);
 }
 
 /**
 * @brief Do all the required thing to stop the experiment during process.
 */
 void OneStepEvent::resetExperiment(void){
-
+  m_CurrentCycle = 0;
+  m_CurrentState = stopState;
+  m_CurrentDirection = Direction::Stop;
+  m_StageFrame->stop();
 }

@@ -161,7 +161,8 @@ class Experiment
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
     DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */
 
-    long m_GageLength;											/**< Preload distance of the stage frame */
+    long m_GageLength;													/**< Preload distance of the stage frame */
+    long m_StartLength;
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */

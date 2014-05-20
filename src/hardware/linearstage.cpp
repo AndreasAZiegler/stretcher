@@ -77,6 +77,7 @@ void LinearStage::configure(){
 LinearStage::~LinearStage()
 {
   storeCurrentPosition();
+  std::cout << "LinearStage destructor finished." << std::endl;
 }
 
 /**

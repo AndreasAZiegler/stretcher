@@ -32,6 +32,7 @@ Experiment::Experiment(StageFrame *stageframe,
     m_CurrentForce(0),
     m_GageLength(gagelength),
     m_CurrentPositions{0, 0},
+    m_StartLength(currentdistance),
     m_CurrentDistance(currentdistance),
     m_Area(area * 0.000000000001/*um^2*/)
 {

@@ -80,6 +80,16 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
 
   private:
+
+    /**
+     * @enum State
+     * @brief Defines the states of the Conditioning FSM.
+     */
+    enum State{stopState,       /**< Stop state */
+               runState,       	/**< Run state */
+               goStartState,		/**< Go to start state */
+               goBackState};		/**< Go back state */
+
     DistanceOrPercentage m_VelocityDistanceOrPercentage;
     double m_Velocity;
     double m_HoldTime1;
@@ -90,6 +100,14 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     long m_HoldDistance;
     int m_Cycles;
     BehaviorAfterStop m_BehaviorAfterStop;
+
+    State m_CurrentState;
+    long m_CurrentLimit;
+    int m_CurrentCycle;
+
+    bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
+    std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
+    std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
 
     std::shared_ptr<OneStepEventValues> m_ExperimentValues;				/**< Pointer to the experiment values */
 };
