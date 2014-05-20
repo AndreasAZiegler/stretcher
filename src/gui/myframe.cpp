@@ -328,8 +328,8 @@ MyFrame::~MyFrame(){
   }
 
   // Delete linear stage objects.
-  // Not needed because destructor of main.cpp deletes them.
   /*
+  // Not needed because destructor of main.cpp deletes them.
   for(auto x : *m_LinearStages){
     delete x;
   }
