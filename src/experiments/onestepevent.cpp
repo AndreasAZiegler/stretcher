@@ -98,7 +98,7 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   if(0 == previewvalue.size()){
    timepoint = 1;
   } else{
-   timepoint =  previewvalue.back().getTimepoint() + 1;
+   timepoint = previewvalue.back().getTimepoint() + 1;
   }
 
   for(int i = 0; i < m_Cycles; ++i){
