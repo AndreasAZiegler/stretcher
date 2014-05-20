@@ -65,10 +65,10 @@ void Protocols::makePreview(void){
 
   // Split preview point into stressforce and distance points.
   for(auto i : m_PreviewValues){
-    if(Experiment::DistanceOrStressForce::Distance ==  i.distanceOrForce){
+    if(DistanceOrStressForce::Distance ==  i.distanceOrForce){
       m_DistancePreviewValues.push_back(i.value);
       m_DistanceTimePreviewValues.push_back(i.timepoint);
-    } else if(Experiment::DistanceOrStressForce::StressForce ==  i.distanceOrForce){
+    } else if(DistanceOrStressForce::StressForce ==  i.distanceOrForce){
       m_StressForcePreviewValues.push_back(i.value);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
@@ -316,7 +316,7 @@ void Protocols::exportCSV(std::vector<bool> *disableexport){
   // Printing the experiment settings.
   for(int i = 0; i < m_ExperimentValues.size(); ++i){
     if(false == disableexport->operator [](i)){
-      //file << m_ExperimentValues[i]->getExperimentSettings();
+      file << m_ExperimentValues[i]->getExperimentSettings();
     }
   }
 

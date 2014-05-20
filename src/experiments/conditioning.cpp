@@ -32,9 +32,16 @@ Conditioning::Conditioning(ExperimentType type,
                            std::string path,
                            std::condition_variable *wait,
                            std::mutex *mutex,
-                           double stressForceLimit, int cycles, Experiment::DistanceOrPercentage dp, int calculateLimit, double speedInMM, double area)
+                           double stressForceLimit,
+                           int cycles,
+                           DistanceOrPercentage dp,
+                           int calculateLimit,
+                           double speedInMM,
+                           double area)
   : Experiment(type,
+               distanceOrStressForce,
                stressOrForce,
+               Experiment::DistanceOrPercentage::Distance,
                stageframe,
                forcesensormessagehandler,
                vector,
@@ -116,7 +123,7 @@ void Conditioning::process(Experiment::Event event){
         //m_ExperimentValues->setStartPoint();
 
         // If force/stress based
-        if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+        if(DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
           // If force based
           if(StressOrForce::Force == m_StressOrForce){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
@@ -140,7 +147,7 @@ void Conditioning::process(Experiment::Event event){
             }
 
           }
-        }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+        }else if(DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
             std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
@@ -170,7 +177,7 @@ void Conditioning::process(Experiment::Event event){
       }
       if(Event::evUpdate == event){
         // If stress/force based
-        if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+        if(DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
           // If force based
           if(StressOrForce::Force == m_StressOrForce){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
@@ -214,7 +221,7 @@ void Conditioning::process(Experiment::Event event){
               m_StageFrame->gotoStepsDistance(m_PreloadDistance);
             }
           }
-        }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+        }else if(DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
 
           if((m_CurrentDistance - m_DistanceLimit) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
@@ -269,7 +276,7 @@ void Conditioning::process(Experiment::Event event){
             m_CurrentState = runState;
 
             // If force/stress based
-            if(Conditioning::DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+            if(DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
               // If force based
               if(StressOrForce::Force == m_StressOrForce){
                 if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
@@ -292,7 +299,7 @@ void Conditioning::process(Experiment::Event event){
                   m_StageFrame->moveBackward(m_SpeedInMm);
                 }
               }
-            }else if(Conditioning::DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+            }else if(DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
               if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
                 m_DecreaseSpeedFlag = false;
                 m_CurrentDirection = Direction::Forwards;

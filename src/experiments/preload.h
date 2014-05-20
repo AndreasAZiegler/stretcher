@@ -4,6 +4,7 @@
 
 #include <condition_variable>
 #include "experiment.h"
+#include "preloadvalues.h"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
 #include "../updatedvaluesreceiver.h"
@@ -28,6 +29,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      */
     Preload(ExperimentType type,
             StressOrForce forceOrStress,
+            DistanceOrPercentage distanceOrPercentage,
             StageFrame *stageframe,
             ForceSensorMessageHandler *forcesensormessagehandler,
             mpFXYVector *vector,
@@ -38,7 +40,9 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             std::mutex *mutex,
             bool *stagesstopped,
             std::mutex *stagesstoppedmutex,
-            double stressForceLimit, double speedInMM, double area);
+            double stressForceLimit,
+            double speedInMM,
+            double area);
 
     /**
      * @brief Sets the preload distance.
@@ -104,6 +108,13 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      */
     virtual void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
 
+    /**
+     * @brief Returns a pointer to the experiment values.
+     * @return A pointer to the experiment values.
+     * @todo throw exception if pointer is NULL.
+     */
+    virtual std::shared_ptr<ExperimentValues> getExperimentValues(void);
+
   private:
     /**
      * @enum State
@@ -118,7 +129,6 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     State m_CurrentState;																		/**< Current state of the preload FSM */
 
     double m_StressForceLimit;															/**< Stress or force limit value */
-    double m_Area;																					/**< Area needed for stress calculation */
     double m_SpeedInMM;																			/**< Speed in mm/sec */
     double m_SpeedInPercent;																/**< Speed in percent of clamping distance / sec */
 
@@ -129,6 +139,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     bool *m_StagesStoppedFlag;
     std::mutex *m_StagesStoppedMutex;
 
+    //PreloadValues *m_ExperimentValues;				/**< Pointer to the experiment values */
+    std::shared_ptr<PreloadValues> m_ExperimentValues;				/**< Pointer to the experiment values */
 };
 
 #endif // PRELOAD_H

@@ -15,7 +15,8 @@
  * @param area Value of the area.
  */
 Preload::Preload(ExperimentType type,
-                 StressOrForce forceOrStress,
+                 StressOrForce stressOrForce,
+                 DistanceOrPercentage distanceOrPercentage,
                  StageFrame *stageframe,
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  mpFXYVector *vector,
@@ -30,7 +31,9 @@ Preload::Preload(ExperimentType type,
                  double speedInMM,
                  double area)
   : Experiment(type,
-               forceOrStress,
+               DistanceOrStressForce::StressForce,
+               stressOrForce,
+               distanceOrPercentage,
                stageframe,
                forcesensormessagehandler,
                vector,
@@ -49,7 +52,16 @@ Preload::Preload(ExperimentType type,
     m_StagesStoppedMutex(stagesstoppedmutex),
     m_StressForceLimit(stressForceLimit),
     m_SpeedInMM(speedInMM),
-    m_Area(area * 0.000000000001/*um^2*/)
+    m_ExperimentValues(std::make_shared<PreloadValues>(type,
+                                                       stressOrForce,
+                                                       stageframe,
+                                                       forcesensormessagehandler,
+                                                       vector,
+                                                       vectoraccessmutex,
+                                                       myframe,
+                                                       area,
+                                                       stressForceLimit,
+                                                       speedInMM))
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
@@ -58,7 +70,9 @@ Preload::Preload(ExperimentType type,
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
-void Preload::setPreloadDistance(long preloaddistance){}
+void Preload::setPreloadDistance(long preloaddistance){
+
+}
 
 Preload::~Preload(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
@@ -101,6 +115,15 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
 
     process(Event::evUpdate);
   }
+}
+
+/**
+ * @brief Returns a pointer to the experiment values.
+ * @return A pointer to the experiment values.
+ * @todo throw exception if pointer is NULL.
+ */
+std::shared_ptr<ExperimentValues> Preload::getExperimentValues(void){
+  return(m_ExperimentValues);
 }
 
 /**

@@ -82,7 +82,7 @@ protected:
  wxStaticText* m_OneStepStressForceVelocityStaticText;
  wxSpinCtrlDouble* m_OneStepStressForceVelocitySpinCtrl;
  wxRadioButton* m_OneStepStressForceVelocityMmRadioBtn;
- wxRadioButton* m_OneStepVelocityPercentRadioBtn;
+ wxRadioButton* m_OneStepStressForceVelocityPercentRadioBtn;
  wxStaticText* m_OneStepStressForceHoldTime1StaticText;
  wxSpinCtrlDouble* m_OneStepStressForceHoldTime1SpinCtrl;
  wxStaticText* m_staticText78;
@@ -116,6 +116,9 @@ protected:
  wxRadioButton* m_OneStepDistanceLowerLimitPercentRadioBtn;
  wxCheckBox* m_OneStepDistancePhotoCheckBox;
  wxPanel* m_OneStepPanel22;
+ wxCheckBox* m_OneStepEndOfEventRepeatCheckBox;
+ wxSpinCtrl* m_OneStepEndOfEventRepeatSpinCtrl;
+ wxStaticText* m_staticText75;
  wxStaticText* m_OneStepEndOfEventStaticText;
  wxStaticText* m_staticText711;
  wxStaticText* m_staticText72;
@@ -123,9 +126,6 @@ protected:
  wxSpinCtrlDouble* m_OneStepEndOfEventHoldSpinCtrl;
  wxRadioButton* m_OneStepEndOfEventHoldMmRadioBtn;
  wxRadioButton* m_OneStepEndOfEventHoldPercentRadioBtn;
- wxRadioButton* m_OneStepEndOfEventRepeatRadioBtn;
- wxSpinCtrl* m_OneStepEndOfEventRepeatSpinCtrl;
- wxStaticText* m_staticText73;
  wxRadioButton* m_OneStepEndOfEventL0RadioBtn;
  wxStaticText* m_staticText142;
  wxButton* m_OneStepCancelButton;
@@ -165,13 +165,13 @@ protected:
  wxRadioButton* m_ContinuousDistanceMaxValuePercentRadioBtn1;
  wxCheckBox* m_ContinuousDistancePhotoCheckBox;
  wxPanel* m_ContinuousPanel22;
+ wxCheckBox* m_ContinuousEndOfEventRepeatCheckBox;
+ wxSpinCtrl* m_ContinuousEndOfEventRepeatSpinCtrl;
  wxStaticText* m_OneStepEndOfEventStaticText1;
  wxStaticText* m_staticText7111;
- wxRadioButton* m_OneStepEndOfEventHoldRadioBtn1;
+ wxRadioButton* m_ContinuousEndOfEventHoldRadioBtn;
  wxStaticText* m_staticText140;
- wxRadioButton* m_OneStepEndOfEventRepeatRadioBtn1;
- wxSpinCtrl* m_OneStepEndOfEventRepeatSpinCtrl1;
- wxRadioButton* m_OneStepEndOfEventL0RadioBtn1;
+ wxRadioButton* m_ContinuousEndOfEventL0RadioBtn;
  wxStaticText* m_staticText143;
  wxButton* m_ContinuousCancelButton;
  wxButton* m_ContinuousSendButton;
@@ -299,7 +299,7 @@ private:
   m_OneStepStressForceVelocityStaticText = XRCCTRL(*this,"m_OneStepStressForceVelocityStaticText",wxStaticText);
   m_OneStepStressForceVelocitySpinCtrl = XRCCTRL(*this,"m_OneStepStressForceVelocitySpinCtrl",wxSpinCtrlDouble);
   m_OneStepStressForceVelocityMmRadioBtn = XRCCTRL(*this,"m_OneStepStressForceVelocityMmRadioBtn",wxRadioButton);
-  m_OneStepVelocityPercentRadioBtn = XRCCTRL(*this,"m_OneStepVelocityPercentRadioBtn",wxRadioButton);
+  m_OneStepStressForceVelocityPercentRadioBtn = XRCCTRL(*this,"m_OneStepStressForceVelocityPercentRadioBtn",wxRadioButton);
   m_OneStepStressForceHoldTime1StaticText = XRCCTRL(*this,"m_OneStepStressForceHoldTime1StaticText",wxStaticText);
   m_OneStepStressForceHoldTime1SpinCtrl = XRCCTRL(*this,"m_OneStepStressForceHoldTime1SpinCtrl",wxSpinCtrlDouble);
   m_staticText78 = XRCCTRL(*this,"m_staticText78",wxStaticText);
@@ -333,6 +333,9 @@ private:
   m_OneStepDistanceLowerLimitPercentRadioBtn = XRCCTRL(*this,"m_OneStepDistanceLowerLimitPercentRadioBtn",wxRadioButton);
   m_OneStepDistancePhotoCheckBox = XRCCTRL(*this,"m_OneStepDistancePhotoCheckBox",wxCheckBox);
   m_OneStepPanel22 = XRCCTRL(*this,"m_OneStepPanel22",wxPanel);
+  m_OneStepEndOfEventRepeatCheckBox = XRCCTRL(*this,"m_OneStepEndOfEventRepeatCheckBox",wxCheckBox);
+  m_OneStepEndOfEventRepeatSpinCtrl = XRCCTRL(*this,"m_OneStepEndOfEventRepeatSpinCtrl",wxSpinCtrl);
+  m_staticText75 = XRCCTRL(*this,"m_staticText75",wxStaticText);
   m_OneStepEndOfEventStaticText = XRCCTRL(*this,"m_OneStepEndOfEventStaticText",wxStaticText);
   m_staticText711 = XRCCTRL(*this,"m_staticText711",wxStaticText);
   m_staticText72 = XRCCTRL(*this,"m_staticText72",wxStaticText);
@@ -340,9 +343,6 @@ private:
   m_OneStepEndOfEventHoldSpinCtrl = XRCCTRL(*this,"m_OneStepEndOfEventHoldSpinCtrl",wxSpinCtrlDouble);
   m_OneStepEndOfEventHoldMmRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldMmRadioBtn",wxRadioButton);
   m_OneStepEndOfEventHoldPercentRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldPercentRadioBtn",wxRadioButton);
-  m_OneStepEndOfEventRepeatRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventRepeatRadioBtn",wxRadioButton);
-  m_OneStepEndOfEventRepeatSpinCtrl = XRCCTRL(*this,"m_OneStepEndOfEventRepeatSpinCtrl",wxSpinCtrl);
-  m_staticText73 = XRCCTRL(*this,"m_staticText73",wxStaticText);
   m_OneStepEndOfEventL0RadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventL0RadioBtn",wxRadioButton);
   m_staticText142 = XRCCTRL(*this,"m_staticText142",wxStaticText);
   m_OneStepCancelButton = XRCCTRL(*this,"m_OneStepCancelButton",wxButton);
@@ -382,13 +382,13 @@ private:
   m_ContinuousDistanceMaxValuePercentRadioBtn1 = XRCCTRL(*this,"m_ContinuousDistanceMaxValuePercentRadioBtn1",wxRadioButton);
   m_ContinuousDistancePhotoCheckBox = XRCCTRL(*this,"m_ContinuousDistancePhotoCheckBox",wxCheckBox);
   m_ContinuousPanel22 = XRCCTRL(*this,"m_ContinuousPanel22",wxPanel);
+  m_ContinuousEndOfEventRepeatCheckBox = XRCCTRL(*this,"m_ContinuousEndOfEventRepeatCheckBox",wxCheckBox);
+  m_ContinuousEndOfEventRepeatSpinCtrl = XRCCTRL(*this,"m_ContinuousEndOfEventRepeatSpinCtrl",wxSpinCtrl);
   m_OneStepEndOfEventStaticText1 = XRCCTRL(*this,"m_OneStepEndOfEventStaticText1",wxStaticText);
   m_staticText7111 = XRCCTRL(*this,"m_staticText7111",wxStaticText);
-  m_OneStepEndOfEventHoldRadioBtn1 = XRCCTRL(*this,"m_OneStepEndOfEventHoldRadioBtn1",wxRadioButton);
+  m_ContinuousEndOfEventHoldRadioBtn = XRCCTRL(*this,"m_ContinuousEndOfEventHoldRadioBtn",wxRadioButton);
   m_staticText140 = XRCCTRL(*this,"m_staticText140",wxStaticText);
-  m_OneStepEndOfEventRepeatRadioBtn1 = XRCCTRL(*this,"m_OneStepEndOfEventRepeatRadioBtn1",wxRadioButton);
-  m_OneStepEndOfEventRepeatSpinCtrl1 = XRCCTRL(*this,"m_OneStepEndOfEventRepeatSpinCtrl1",wxSpinCtrl);
-  m_OneStepEndOfEventL0RadioBtn1 = XRCCTRL(*this,"m_OneStepEndOfEventL0RadioBtn1",wxRadioButton);
+  m_ContinuousEndOfEventL0RadioBtn = XRCCTRL(*this,"m_ContinuousEndOfEventL0RadioBtn",wxRadioButton);
   m_staticText143 = XRCCTRL(*this,"m_staticText143",wxStaticText);
   m_ContinuousCancelButton = XRCCTRL(*this,"m_ContinuousCancelButton",wxButton);
   m_ContinuousSendButton = XRCCTRL(*this,"m_ContinuousSendButton",wxButton);
@@ -461,5 +461,6 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif

@@ -8,7 +8,9 @@
  * @param forceOrStress Force or stress.
  */
 Experiment::Experiment(ExperimentType type,
+                       DistanceOrStressForce distanceOrStressForce,
                        StressOrForce stressOrForce,
+                       DistanceOrPercentage distanceOrPercent,
                        StageFrame *stageframe,
                        ForceSensorMessageHandler *forcesensormessagehandler,
                        mpFXYVector *vector,
@@ -17,9 +19,13 @@ Experiment::Experiment(ExperimentType type,
                        std::string path,
                        Direction direction,
                        double forcesStressThreshold,
-                       double distanceThreshold, double area, long currentdistance)
+                       double distanceThreshold,
+                       double area,
+                       long currentdistance)
   : m_ExperimentType(type),
+    m_DistanceOrStressForce(distanceOrStressForce),
     m_StressOrForce(stressOrForce),
+    m_DistanceOrPercentage(distanceOrPercent),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_CurrentDirection(direction),
@@ -29,14 +35,7 @@ Experiment::Experiment(ExperimentType type,
     m_PreloadDistance(currentdistance),
     m_CurrentPositions{0, 0},
     m_CurrentDistance(currentdistance),
-    m_ExperimentValues{new ExperimentValues(type,
-                                            stressOrForce,
-                                            stageframe,
-                                            forcesensormessagehandler,
-                                            vector,
-                                            vectoraccessmutex,
-                                            myframe,
-                                            area)}
+    m_Area(area * 0.000000000001/*um^2*/)
 {
 }
 

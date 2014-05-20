@@ -35,12 +35,11 @@ class Experiment
                                     Percentage = 1};
 
     /**
-     * @brief Indicates whether the experiment is distance or stress/force based.
+     * @brief Indicates the behavior after the experiment stops.
      */
-    enum class DistanceOrStressForce{
-      Distance = 0,
-      StressForce = 1
-    };
+    enum BehaviorAfterStop{HoldADistance = 0,
+                           Repeat = 1,
+                           GoToL0 = 2};
 
     /**
      * @brief The PreviewValue struct
@@ -76,7 +75,9 @@ class Experiment
      * @param forceOrStress Force or stress.
      */
     Experiment(ExperimentType type,
+               DistanceOrStressForce distanceOrStressForce,
                StressOrForce stressOrForce,
+               DistanceOrPercentage distanceOrPercent,
                StageFrame* stageframe,
                ForceSensorMessageHandler* forcesensormessagehandler,
                mpFXYVector *vector,
@@ -128,13 +129,7 @@ class Experiment
      * @return A pointer to the experiment values.
      * @todo throw exception if pointer is NULL.
      */
-    std::shared_ptr<ExperimentValues> getExperimentValues(void){
-      if(NULL != m_ExperimentValues){
-        return(m_ExperimentValues);
-      }else{
-        return(NULL);
-      }
-    }
+    virtual std::shared_ptr<ExperimentValues> getExperimentValues(void) = 0;
 
     /**
      * @brief Defines if experiment is force or stress based.
@@ -162,18 +157,16 @@ class Experiment
     double m_DistanceThreshold;									/**< Threshold for the coparison of distances */
     Direction m_CurrentDirection;								/**< The current direction */
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
+    DistanceOrStressForce m_DistanceOrStressForce; /**< Defines if the experiment is distance of stress/force based. */
     StressOrForce m_StressOrForce;							/**< Defines if the experiment is force or stress based. */
+    Experiment::DistanceOrPercentage m_DistanceOrPercentage;								/**< Indicates if the distance limit is calculated by value or by percentage of preload length. */
 
     long m_PreloadDistance;											/**< Preload distance of the stage frame */
     long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
-
-    /**
-     * @todo Move the inherited experiment values classes in the corresponding experiment classes.
-     */
-    std::shared_ptr<ExperimentValues> m_ExperimentValues;				/**< Pointer to the experiment values */
+    double m_Area;																													/**< Area size of the sample. */
 
 };
 

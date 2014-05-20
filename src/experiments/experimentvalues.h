@@ -54,13 +54,16 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param graph Pointer to the graph object.
      * @param diameter The diameter of the sample.
      */
-    ExperimentValues(ExperimentType experimenttype, StressOrForce stressOrForce,
+    ExperimentValues(ExperimentType experimenttype, DistanceOrStressForce distanceorstressforce,
+                     StressOrForce stressOrForce,
                      StageFrame *stageframe,
                      ForceSensorMessageHandler *forcesensormessagehandler,
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
                      MyFrame *myframe,
-                     double diameter);
+                     double area);
+
+    //ExperimentValues(const ExperimentValues &experimentvalues);
 
     /**
      * @brief Destructor
@@ -115,7 +118,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param diameter The diameter of the sample.
      */
     void setDiameter(double diameter){
-      m_Diameter = diameter;
+      m_Area = diameter;
     }
 
     /**
@@ -123,7 +126,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @return The diameter of the sample.
      */
     double getDiameter(void){
-      return(m_Diameter);
+      return(m_Area);
     }
 
     /**
@@ -149,7 +152,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Returns the experiment settings as a std::string.
      * @return Experiment settings as std::string.
      */
-    //std::string getExperimentSettings(void) = 0;
+    virtual std::string getExperimentSettings(void) = 0;
 
     /**
      * @brief Returns the current experiment type as a string.
@@ -158,15 +161,25 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::string experimentTypeToString();
 
     /**
-     * @brief Export the measurement unit (stress/force)
+     * @brief Returns the measurement unit (stress/force).
      * @return The unit as std::string.
      */
     std::string getStressOrForce(void);
 
+    /**
+     * @brief Returns the the measurement type (distance/stressForce).
+     * @return The type as std::string.
+     */
+    std::string getDistanceOrStressForce(void);
+
+  protected:
+    double m_Area;																													/**< Area size of the sample. */
+    DistanceOrStressForce m_DistanceOrStressForce;												  /**< Defines if the experiment is distance of stress/force based. */
+    StressOrForce m_StressOrForce;																					/**< Indicates if the experiment is stress or force based */
+
 	private:
 
     ExperimentType m_ExperimentType;																				/**< Type of the experiment */
-    StressOrForce m_StressOrForce;																					/**< Indicates if the experiment is stress or force based */
     StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
     ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
@@ -177,7 +190,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
     std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
-    double m_Diameter;																											/**< Diameter size of the sample. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
 
 };

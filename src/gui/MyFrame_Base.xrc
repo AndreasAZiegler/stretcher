@@ -543,7 +543,7 @@
 																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_PreloadSpeedPreloadStaticText">
-																			<label>% clamping/sec.</label>
+																			<label>% L0/sec.</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
@@ -702,7 +702,7 @@
 																			<flag>wxALIGN_CENTER|wxALL</flag>
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceVelocitySpinCtrl">
-																				<value>2</value>
+																				<value>0</value>
 																				<min>-1000</min>
 																				<max>1000</max>
 																			</object>
@@ -727,7 +727,7 @@
 																					<option>0</option>
 																					<flag>wxALIGN_CENTER|wxALL</flag>
 																					<border>5</border>
-																					<object class="wxRadioButton" name="m_OneStepVelocityPercentRadioBtn">
+																					<object class="wxRadioButton" name="m_OneStepStressForceVelocityPercentRadioBtn">
 																						<label>%L0/s</label>
 																						<value>0</value>
 																					</object>
@@ -883,7 +883,7 @@
 																			<flag>wxALIGN_CENTER|wxALL</flag>
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceVelocitySpinCtrl">
-																				<value>2</value>
+																				<value>0</value>
 																				<min>-1000</min>
 																				<max>1000</max>
 																			</object>
@@ -1090,6 +1090,34 @@
 															<growablerows>4</growablerows>
 															<object class="sizeritem">
 																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxCheckBox" name="m_OneStepEndOfEventRepeatCheckBox">
+																	<label>Repeat [cycles]:</label>
+																	<checked>0</checked>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrl" name="m_OneStepEndOfEventRepeatSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>1000</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText75">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
 																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_OneStepEndOfEventStaticText">
@@ -1120,6 +1148,7 @@
 																<flag>wxALIGN_CENTER|wxALL</flag>
 																<border>5</border>
 																<object class="wxRadioButton" name="m_OneStepEndOfEventHoldRadioBtn">
+																	<style>wxRB_GROUP</style>
 																	<label>Hold a distance:</label>
 																	<value>0</value>
 																</object>
@@ -1159,34 +1188,6 @@
 																			<value>0</value>
 																		</object>
 																	</object>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
-																<border>5</border>
-																<object class="wxRadioButton" name="m_OneStepEndOfEventRepeatRadioBtn">
-																	<label>Repeat [cycles]:</label>
-																	<value>0</value>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrl" name="m_OneStepEndOfEventRepeatSpinCtrl">
-																	<value>0</value>
-																	<min>0</min>
-																	<max>1000</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_staticText73">
-																	<label></label>
-																	<wrap>-1</wrap>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -1347,7 +1348,7 @@
 																			<flag>wxALIGN_CENTER|wxALL</flag>
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousStressForceVelocitySpinCtrl">
-																				<value>2</value>
+																				<value>0</value>
 																				<min>-1000</min>
 																				<max>1000</max>
 																			</object>
@@ -1500,7 +1501,7 @@
 																			<flag>wxALIGN_CENTER|wxALL</flag>
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousDistanceVelocitySpinCtrl">
-																				<value>2</value>
+																				<value>0</value>
 																				<min>-1000</min>
 																				<max>1000</max>
 																			</object>
@@ -1564,7 +1565,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousDistanceIncrementStaticText">
-																				<label>Increment [dN]:</label>
+																				<label>Increment [dmm]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1662,6 +1663,25 @@
 															<growablerows>4</growablerows>
 															<object class="sizeritem">
 																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxCheckBox" name="m_ContinuousEndOfEventRepeatCheckBox">
+																	<label>Repeat [cycles]:</label>
+																	<checked>0</checked>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrl" name="m_ContinuousEndOfEventRepeatSpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>1000</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
 																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_OneStepEndOfEventStaticText1">
@@ -1682,7 +1702,8 @@
 																<option>0</option>
 																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 																<border>5</border>
-																<object class="wxRadioButton" name="m_OneStepEndOfEventHoldRadioBtn1">
+																<object class="wxRadioButton" name="m_ContinuousEndOfEventHoldRadioBtn">
+																	<style>wxRB_GROUP</style>
 																	<label>Stop</label>
 																	<value>0</value>
 																</object>
@@ -1700,26 +1721,7 @@
 																<option>0</option>
 																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 																<border>5</border>
-																<object class="wxRadioButton" name="m_OneStepEndOfEventRepeatRadioBtn1">
-																	<label>Repeat [cycles]:</label>
-																	<value>0</value>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrl" name="m_OneStepEndOfEventRepeatSpinCtrl1">
-																	<value>0</value>
-																	<min>0</min>
-																	<max>1000</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																<border>5</border>
-																<object class="wxRadioButton" name="m_OneStepEndOfEventL0RadioBtn1">
+																<object class="wxRadioButton" name="m_ContinuousEndOfEventL0RadioBtn">
 																	<label>Go to L0</label>
 																	<value>0</value>
 																</object>

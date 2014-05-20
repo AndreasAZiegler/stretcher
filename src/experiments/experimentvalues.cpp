@@ -14,24 +14,40 @@
  * @param diameter The diameter of the sample.
  */
 ExperimentValues::ExperimentValues(ExperimentType experimenttype,
+                                   DistanceOrStressForce distanceorstressforce,
                                    StressOrForce stressOrForce,
                                    StageFrame *stageframe,
                                    ForceSensorMessageHandler *forcesensormessagehandler,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
                                    MyFrame *myframe,
-                                   double diameter)
+                                   double area)
   : m_ExperimentType(experimenttype),
+    m_DistanceOrStressForce(distanceorstressforce),
     m_StressOrForce(stressOrForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_VectorLayer(vector),
     m_VectorLayerMutex(vectoraccessmutex),
     m_MyFrame(myframe),
-    m_Diameter(diameter),
+    m_Area(area * 0.000000000001/*um^2*/),
     m_DisplayGraphDelay(0)
 {
 }
+
+/*
+ExperimentValues::ExperimentValues(const ExperimentValues &experimentvalues)
+  : m_ExperimentType(experimentvalues.m_ExperimentType),
+    m_StressOrForce(experimentvalues.m_StressOrForce),
+    m_StageFrame(experimentvalues.m_StageFrame),
+    m_ForceSensorMessageHandler(experimentvalues.m_ForceSensorMessageHandler),
+    m_VectorLayer(experimentvalues.m_VectorLayer),
+    m_VectorLayerMutex(experimentvalues.m_VectorLayerMutex),
+    m_MyFrame(experimentvalues.m_MyFrame),
+    m_Area(experimentvalues.m_Area),
+    m_DisplayGraphDelay(experimentvalues.m_DisplayGraphDelay)
+{}
+*/
 
 /**
  * @brief Registers the update methods to receive the measurement values.
@@ -87,8 +103,8 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       if(StressOrForce::Stress == m_StressOrForce){
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Diameter, measurementValue.timestamp));
-          m_GraphStressForceValues->push_back((measurementValue.value / 10000.0) / m_Diameter);
+          m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Area, measurementValue.timestamp));
+          m_GraphStressForceValues->push_back((measurementValue.value / 10000.0) / m_Area);
         }
       }else{
         {
@@ -158,32 +174,20 @@ std::string ExperimentValues::experimentTypeToString(){
       return("Preload");
       break;
 
+    case ExperimentType::OneStepEvent:
+      return("OneStepEvent");
+      break;
+
+    case ExperimentType::ContinuousEvent:
+      return("ContinuousEvent");
+      break;
+
     case ExperimentType::Conditioning:
       return("Conditioning");
       break;
 
     case ExperimentType::Ramp2Failure:
       return("Ramp2Failure");
-      break;
-
-    case ExperimentType::Relaxation:
-      return("Relaxation");
-      break;
-
-    case ExperimentType::Creep:
-      return("Creep");
-      break;
-
-    case ExperimentType::FatigueTesting:
-      return("FatigueTesting");
-      break;
-
-    case ExperimentType::ChamberStretchCells:
-      return("ChamberStretch Cells");
-      break;
-
-    case ExperimentType::ChamberStretchGel:
-      return("ChamberStretch Gel");
       break;
   }
 }
@@ -199,4 +203,19 @@ std::string ExperimentValues::getStressOrForce(void){
   }else{
     stressforce = "N";
   }
+  return(stressforce);
+}
+
+/**
+ * @brief Returns the the measurement type (distance/stressForce).
+ * @return The type as std::string.
+ */
+std::string ExperimentValues::getDistanceOrStressForce(void){
+  std::string distancestressforce;
+  if(DistanceOrStressForce::Distance == m_DistanceOrStressForce){
+    distancestressforce = "mm";
+  } else{
+    distancestressforce = getStressOrForce();
+  }
+  return(distancestressforce);
 }

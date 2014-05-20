@@ -3,11 +3,14 @@ set(SOURCE
         ./experiments/experiment.cpp
         ./experiments/experimentvalues.cpp
         ./experiments/preload.cpp
+        ./experiments/preloadvalues.cpp
+        ./experiments/onestepevent.cpp
+        ./experiments/onestepeventvalues.cpp
         ./experiments/conditioning.cpp
         ./experiments/ramp2failure.cpp
-        ./experiments/relaxation.cpp
-        ./experiments/creep.cpp
-        ./experiments/fatiguetesting.cpp
+        #./experiments/relaxation.cpp
+        #./experiments/creep.cpp
+        #./experiments/fatiguetesting.cpp
         PARENT_SCOPE
 )
 
@@ -17,10 +20,13 @@ set(HEADERS
         ./experiments/experiment.h
         ./experiments/experimentvalues.h
         ./experiments/preload.h
+        ./experiments/preloadvalues.h
+        ./experiments/onestepevent.h
+        ./experiments/onestepeventvalues.h
         ./experiments/conditioning.h
         ./experiments/ramp2failure.h
-        ./experiments/relaxation.h
-        ./experiments/creep.h
-        ./experiments/fatiguetesting.h
+        #./experiments/relaxation.h
+        #./experiments/creep.h
+        #./experiments/fatiguetesting.h
         PARENT_SCOPE
 )

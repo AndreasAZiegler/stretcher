@@ -43,7 +43,12 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  std::string path,
                  std::condition_variable *wait,
                  std::mutex *mutex,
-                 double stressForceLimit, int cycles, Experiment::DistanceOrPercentage dp, int calculateLimit, double speedInMM, double area);
+                 double stressForceLimit,
+                 int cycles,
+                 DistanceOrPercentage dp,
+                 int calculateLimit,
+                 double speedInMM,
+                 double area);
 
     /**
      * @brief Sets the preload distance.
