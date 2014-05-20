@@ -245,16 +245,22 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnLimitsSetLimits(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user changes the clamping position value.
+     * @brief Method wich will be executed, when the user changes the mounting length.
      * @param event Occuring event
      */
     void OnMountingLengthChanged(wxSpinDoubleEvent &event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
+     * @brief Method wich will be executed, when the user clicks on the "Go to" button in limits.
      * @param event Occuring event
      */
     void OnLimitsGoTo(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Set L0" button in limits.
+     * @param event Occuring event
+     */
+    void OnSetL0(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
@@ -443,9 +449,9 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
-    int m_MessageHandlersFinishedNumber;
-    std::condition_variable m_WaitMessageHandlers;
-    std::mutex m_WaitMessageHandlersMutex;
+    int m_MessageHandlersFinishedNumber;				/**< Number of finished message handlers. */
+    std::condition_variable m_WaitMessageHandlers;/**< Wait condition variable to wait for message handlers to stop. */
+    std::mutex m_WaitMessageHandlersMutex;			/**< Mutex to protect m_WaitMessageHandlers. */
     StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
     long m_StageMaxLimit;												/**< The maximal position for the stages */
     long m_StageMinLimit;												/**< The minimal position for the stages */
@@ -466,9 +472,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
+    long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
     double m_Area;															/**< Area of the sample */
 
-    StressOrForce m_StressOrForce;							/**< Indicates if experiment is force or stress based */
+    DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
     int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
@@ -495,43 +502,44 @@ enum
   ID_LoadLimitSet2 = 13,
   ID_LoadLimitSet3 = 14,
   ID_LoadLimitSet4 = 15,
-  ID_SetLimits = 16,
-  ID_LimitsDistanceValue = 17,
+  ID_LimitsDistanceValue = 16,
+  ID_SetLimits = 17,
   ID_LimitsDistanceGoTo = 18,
-  ID_PreloadSpeedPercent = 19,
-  ID_PreloadSpeedMm = 20,
-  ID_PreloadSendToProtocol = 21,
+  ID_LimitsSetL0 = 19,
+  ID_PreloadSpeedPercent = 20,
+  ID_PreloadSpeedMm = 21,
+  ID_PreloadSendToProtocol = 22,
 
-  ID_OneStepStressForce = 22,
-  ID_OneStepDistance = 23,
-  ID_OneStepCancel = 24,
-  ID_OneStepSendToProtocol = 25,
+  ID_OneStepStressForce = 23,
+  ID_OneStepDistance = 24,
+  ID_OneStepCancel = 25,
+  ID_OneStepSendToProtocol = 26,
 
-  ID_ContinuousStressForce = 26,
-  ID_ContinuousDistance = 27,
-  ID_ContinuousCancel = 28,
-  ID_ContinuousSendToProtocol = 29,
+  ID_ContinuousStressForce = 27,
+  ID_ContinuousDistance = 28,
+  ID_ContinuousCancel = 29,
+  ID_ContinuousSendToProtocol = 30,
 
-  ID_ConditioningSpeedPercent = 30,
-  ID_ConditioningSpeedMm = 31,
-  ID_ConditioningStressLimit = 32,
-  ID_ConditioningDistanceLimit = 33,
-  ID_ConditioningSendToProtocol = 34,
-  ID_Ramp2FailureSpeedPercent = 35,
-  ID_Ramp2FailureSpeedMm = 36,
-  ID_Ramp2FailureSendToProtocol = 37,
-  ID_ClearGraph = 38,
-  ID_ExportCSV = 39,
-  ID_DeleteExperiment = 40,
-  ID_MoveUpExperiment = 41,
-  ID_MoveDownExperiment = 42,
-  ID_LoopProtocol = 43,
-  ID_Preview = 44,
-  ID_RunProtocol = 45,
-  ID_StopProtocol = 46,
-  ID_SaveProtocol = 47,
-  ID_LoadProtocol = 48,
-  ID_MakePhoto = 49
+  ID_ConditioningSpeedPercent = 31,
+  ID_ConditioningSpeedMm = 32,
+  ID_ConditioningStressLimit = 33,
+  ID_ConditioningDistanceLimit = 34,
+  ID_ConditioningSendToProtocol = 35,
+  ID_Ramp2FailureSpeedPercent = 36,
+  ID_Ramp2FailureSpeedMm = 37,
+  ID_Ramp2FailureSendToProtocol = 38,
+  ID_ClearGraph = 39,
+  ID_ExportCSV = 40,
+  ID_DeleteExperiment = 41,
+  ID_MoveUpExperiment = 42,
+  ID_MoveDownExperiment = 43,
+  ID_LoopProtocol = 44,
+  ID_Preview = 45,
+  ID_RunProtocol = 46,
+  ID_StopProtocol = 47,
+  ID_SaveProtocol = 48,
+  ID_LoadProtocol = 49,
+  ID_MakePhoto = 50
 };
 
 #endif // MYFRAME_H

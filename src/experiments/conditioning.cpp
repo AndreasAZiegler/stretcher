@@ -19,41 +19,44 @@
  * @param area Value of the area.
  * @param preloaddistance Preload distance of the stage frame.
  */
-Conditioning::Conditioning(ExperimentType type,
-                           DistanceOrStressForce distanceOrStressForce,
-                           StressOrForce stressOrForce,
-                           int currentdistance,
-                           StageFrame *stageframe,
+Conditioning::Conditioning(StageFrame *stageframe,
                            std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
                            ForceSensorMessageHandler *forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
                            MyFrame *myframe,
                            std::string path,
+
                            std::condition_variable *wait,
                            std::mutex *mutex,
+
+                           ExperimentType type,
+                           DistanceOrStressOrForce distanceOrStressForce,
+                           long gagelength,
+                           long currentdistance,
+                           double area,
+
                            double stressForceLimit,
                            int cycles,
                            DistanceOrPercentage dp,
                            int calculateLimit,
-                           double speedInMM,
-                           double area)
-  : Experiment(type,
-               distanceOrStressForce,
-               stressOrForce,
-               Experiment::DistanceOrPercentage::Distance,
-               stageframe,
+                           double speedInMM)
+  : Experiment(stageframe,
                forcesensormessagehandler,
                vector,
                vectoraccessmutex,
                myframe,
                path,
+
+               type,
+               distanceOrStressForce,
                Direction::Stop,
-               300/*stress force threshold*/,
-               0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
+               gagelength,
+               currentdistance,
                area,
-               currentdistance),
-    m_DistanceOrStressForceLimit(distanceOrStressForce),
+               300/*stress force threshold*/,
+               0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+    m_DistanceOrStressOrForceLimit(distanceOrStressForce),
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_DistanceOrPercentage(dp),
     m_Wait(wait),
@@ -71,9 +74,9 @@ Conditioning::Conditioning(ExperimentType type,
 {
   // Calculate distance limit.
   if(Experiment::DistanceOrPercentage::Distance == m_DistanceOrPercentage){
-    m_DistanceLimit = static_cast<long>(m_PreloadDistance + m_CalculateLimit / 0.00009921875/*mm per micro step*/);
+    m_DistanceLimit = static_cast<long>(m_GageLength + m_CalculateLimit / 0.00009921875/*mm per micro step*/);
   } else if(Experiment::DistanceOrPercentage::Percentage == m_DistanceOrPercentage){
-    m_DistanceLimit = ((m_CalculateLimit / 100.0) + 1.0) * m_PreloadDistance;
+    m_DistanceLimit = ((m_CalculateLimit / 100.0) + 1.0) * m_GageLength;
   }
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -85,13 +88,13 @@ Conditioning::Conditioning(ExperimentType type,
  * @param preloaddistance Preload distance
  */
 void Conditioning::setPreloadDistance(long preloaddistance){
-  m_PreloadDistance = preloaddistance;
+  m_GageLength = preloaddistance;
 
   // Calculate distance limit.
   if(Experiment::DistanceOrPercentage::Distance == m_DistanceOrPercentage){
-    m_DistanceLimit = static_cast<long>(m_PreloadDistance + m_CalculateLimit / 0.00009921875/*mm per micro step*/);
+    m_DistanceLimit = static_cast<long>(m_GageLength + m_CalculateLimit / 0.00009921875/*mm per micro step*/);
   } else if(Experiment::DistanceOrPercentage::Percentage == m_DistanceOrPercentage){
-    m_DistanceLimit = ((m_CalculateLimit / 100.0) + 1.0) * m_PreloadDistance;
+    m_DistanceLimit = ((m_CalculateLimit / 100.0) + 1.0) * m_GageLength;
   }
 }
 
@@ -123,9 +126,9 @@ void Conditioning::process(Experiment::Event event){
         //m_ExperimentValues->setStartPoint();
 
         // If force/stress based
-        if(DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+        if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForceLimit) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForceLimit)){
           // If force based
-          if(StressOrForce::Force == m_StressOrForce){
+          if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
               m_CurrentDirection = Direction::Backwards;
@@ -135,7 +138,7 @@ void Conditioning::process(Experiment::Event event){
               m_CurrentDirection = Direction::Forwards;
               m_StageFrame->moveForward(m_SpeedInMm);
             }
-          }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
+          }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
             if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
               m_CurrentDirection = Direction::Backwards;
@@ -147,7 +150,7 @@ void Conditioning::process(Experiment::Event event){
             }
 
           }
-        }else if(DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForceLimit){ // If distance based
           if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
             std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_DistanceLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
@@ -177,9 +180,9 @@ void Conditioning::process(Experiment::Event event){
       }
       if(Event::evUpdate == event){
         // If stress/force based
-        if(DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+        if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForceLimit) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForceLimit)){
           // If force based
-          if(StressOrForce::Force == m_StressOrForce){
+          if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
             if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
@@ -198,9 +201,9 @@ void Conditioning::process(Experiment::Event event){
               m_CurrentState = goBackState;
               //m_StageFrame->stop();
               //std::cout << "Go to preload distance" << std::endl;
-              m_StageFrame->gotoStepsDistance(m_PreloadDistance);
+              m_StageFrame->gotoStepsDistance(m_GageLength);
             }
-          }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
+          }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
             if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
               //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
@@ -218,10 +221,10 @@ void Conditioning::process(Experiment::Event event){
             }else{
               m_CurrentState = goBackState;
               //m_StageFrame->stop();
-              m_StageFrame->gotoStepsDistance(m_PreloadDistance);
+              m_StageFrame->gotoStepsDistance(m_GageLength);
             }
           }
-        }else if(DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForceLimit){ // If distance based
 
           if((m_CurrentDistance - m_DistanceLimit) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
@@ -250,7 +253,7 @@ void Conditioning::process(Experiment::Event event){
             m_CurrentState = goBackState;
             m_StageFrame->setSpeed(m_SpeedInMm);
             //m_StageFrame->stop();
-            m_StageFrame->gotoStepsDistance(m_PreloadDistance);
+            m_StageFrame->gotoStepsDistance(m_GageLength);
           }
         }
       }
@@ -260,7 +263,7 @@ void Conditioning::process(Experiment::Event event){
       if(Event::evUpdate == event){
         //std::cout << "m_CurrentDistance - m_PreloadDistance > m_DistanceThreshold: " << m_CurrentDistance - m_PreloadDistance << "   " << m_DistanceThreshold << std::endl;
         //std::cout << "m_CurrentDistance: " << m_CurrentDistance << " m_PreloadDistance: " << m_PreloadDistance << std::endl;
-        if(std::abs(m_PreloadDistance - m_CurrentDistance) < m_DistanceThreshold){
+        if(std::abs(m_GageLength - m_CurrentDistance) < m_DistanceThreshold){
           //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles - 1 << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
           if((m_Cycles - 1) <= m_CurrentCycle){
             std::cout << "Stop conditioning." << std::endl;
@@ -276,9 +279,9 @@ void Conditioning::process(Experiment::Event event){
             m_CurrentState = runState;
 
             // If force/stress based
-            if(DistanceOrStressForce::StressForce == m_DistanceOrStressForceLimit){
+            if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForceLimit) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForceLimit)){
               // If force based
-              if(StressOrForce::Force == m_StressOrForce){
+              if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
                 if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
                   //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
                   m_CurrentDirection = Direction::Forwards;
@@ -288,7 +291,7 @@ void Conditioning::process(Experiment::Event event){
                   m_CurrentDirection = Direction::Backwards;
                   m_StageFrame->moveBackward(m_SpeedInMm);
                 }
-              }else if(StressOrForce::Stress == m_StressOrForce){ // If stress based
+              }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
                 if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
                   //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
                   m_CurrentDirection = Direction::Forwards;
@@ -299,7 +302,7 @@ void Conditioning::process(Experiment::Event event){
                   m_StageFrame->moveBackward(m_SpeedInMm);
                 }
               }
-            }else if(DistanceOrStressForce::Distance == m_DistanceOrStressForceLimit){ // If distance based
+            }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForceLimit){ // If distance based
               if((m_CurrentDistance - m_DistanceLimit) > m_DistanceThreshold){
                 m_DecreaseSpeedFlag = false;
                 m_CurrentDirection = Direction::Forwards;

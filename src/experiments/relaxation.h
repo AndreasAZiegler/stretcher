@@ -37,17 +37,26 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
      * @param steps The amount of steps.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Relaxation(ExperimentType type,
-               StressOrForce stressOrForce,
-               long currentdistance,
-               StageFrame *stageframe,
+    Relaxation(StageFrame *stageframe,
                std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                ForceSensorMessageHandler *forcesensormessagehandler,
                mpFXYVector *vector,
-               std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
+               std::mutex *vectoraccessmutex,
+               MyFrame *myframe,
+               std::string path,
+
                std::condition_variable *wait,
                std::mutex *mutex,
-               long distance, double pause, int steps, double area, long preloaddistance);
+
+               ExperimentType type,
+               DistanceOrStressOrForce distanceOrStressOrForce,
+               long gagelenght,
+               long currentdistance,
+               double area,
+
+               long distance,
+               double pause,
+               int steps);
 
     ~Relaxation();
 
@@ -128,7 +137,7 @@ class Relaxation : virtual public Experiment, virtual public UpdatedValuesReceiv
     State m_CurrentState;																										/**< Current state of the preload FSM */
 
     DistanceOrExpansion m_DistanceOrExpansion;															/**< Indicates if experiment is distance or expansion based. */
-    long m_PreloadDistance;																									/**< Preload distance of the stage frame */
+    long m_GageLength;																									/**< Preload distance of the stage frame */
     long m_Distance;																												/**< Distance */
     long m_DistanceLimit;																										/**< Distance limit, increases every step by m_Distance */
     double m_Expansion;																											/**< Expansion */

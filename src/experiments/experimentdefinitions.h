@@ -15,17 +15,10 @@ enum class ExperimentType{
 /**
  * @brief Indicates whether the experiment is distance or stress/force based.
  */
-enum class DistanceOrStressForce{
+enum class DistanceOrStressOrForce{
   Distance = 0,
-  StressForce = 1
-};
-
-/**
- * @brief Force or stress
- */
-enum class StressOrForce{
-  Stress = 0,
-  Force = 1
+  Stress = 1,
+  Force = 2,
 };
 
 #endif // EXPERIMENTSDEFINITIONS_H

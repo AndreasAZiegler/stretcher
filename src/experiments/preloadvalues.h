@@ -7,14 +7,16 @@
 class PreloadValues : public ExperimentValues
 {
   public:
-    PreloadValues(ExperimentType experimentType,
-                  StressOrForce stressOrForce,
-                  StageFrame *stageframe,
+    PreloadValues(StageFrame *stageframe,
                   ForceSensorMessageHandler *forcesensormessagehandler,
                   mpFXYVector *vector,
                   std::mutex *vectoraccessmutex,
                   MyFrame *myframe,
+
+                  ExperimentType experimentType,
+                  DistanceOrStressOrForce distanceOrStressOrForce,
                   double area,
+
                   double stressForceLimit,
                   double speedInMm);
 

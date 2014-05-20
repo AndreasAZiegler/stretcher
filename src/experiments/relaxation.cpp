@@ -20,32 +20,41 @@
  * @param steps The amount of steps.
  * @param preloaddistance Preload distance of the stage frame.
  */
-Relaxation::Relaxation(ExperimentType type,
-                       StressOrForce stressOrForce,
-                       long currentdistance,
-                       StageFrame *stageframe,
+Relaxation::Relaxation(StageFrame *stageframe,
                        std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
                        ForceSensorMessageHandler *forcesensormessagehandler,
                        mpFXYVector *vector,
                        std::mutex *vectoraccessmutex,
                        MyFrame *myframe,
                        std::string path,
+
                        std::condition_variable *wait,
                        std::mutex *mutex,
-                       long distance, double pause, int steps, double area, long preloaddistance)
-  : Experiment(type,
-               stressOrForce,
-               stageframe,
+
+                       ExperimentType type,
+                       DistanceOrStressOrForce distanceOrStressOrForce,
+                       long gagelenght,
+                       long currentdistance,
+                       double area,
+
+                       long distance,
+                       double pause,
+                       int steps)
+  : Experiment(stageframe,
                forcesensormessagehandler,
                vector,
                vectoraccessmutex,
                myframe,
                path,
+
+               type,
+               distanceOrStressOrForce,
                Direction::Stop,
-               300/*stress force threshold*/,
-               0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/,
+               gagelenght,
+               currentdistance,
                area,
-               currentdistance),
+               300/*stress force threshold*/,
+               0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_StageFrame(stageframe),
     m_LinearStageMessageHanders(linearstagemessagehandlers),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
@@ -57,7 +66,7 @@ Relaxation::Relaxation(ExperimentType type,
     m_Pause(pause),
     m_Steps(steps),
     m_CurrentStep(0),
-    m_PreloadDistance(preloaddistance)
+    m_GageLength(gagelenght)
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);

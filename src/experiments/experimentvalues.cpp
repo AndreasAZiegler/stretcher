@@ -13,18 +13,17 @@
  * @param graph Pointer to the graph object.
  * @param diameter The diameter of the sample.
  */
-ExperimentValues::ExperimentValues(ExperimentType experimenttype,
-                                   DistanceOrStressForce distanceorstressforce,
-                                   StressOrForce stressOrForce,
-                                   StageFrame *stageframe,
+ExperimentValues::ExperimentValues(StageFrame *stageframe,
                                    ForceSensorMessageHandler *forcesensormessagehandler,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
                                    MyFrame *myframe,
+
+                                   ExperimentType experimenttype,
+                                   DistanceOrStressOrForce distanceOrStressOrForce,
                                    double area)
   : m_ExperimentType(experimenttype),
-    m_DistanceOrStressForce(distanceorstressforce),
-    m_StressOrForce(stressOrForce),
+    m_DistanceOrStressOrForce(distanceOrStressOrForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_VectorLayer(vector),
@@ -100,7 +99,7 @@ ExperimentValues::~ExperimentValues(){
 void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
-      if(StressOrForce::Stress == m_StressOrForce){
+      if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
         {
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Area, measurementValue.timestamp));
@@ -198,7 +197,7 @@ std::string ExperimentValues::experimentTypeToString(){
  */
 std::string ExperimentValues::getStressOrForce(void){
   std::string stressforce;
-  if(StressOrForce::Stress == m_StressOrForce){
+  if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
     stressforce = "kPa";
   }else{
     stressforce = "N";
@@ -212,7 +211,7 @@ std::string ExperimentValues::getStressOrForce(void){
  */
 std::string ExperimentValues::getDistanceOrStressForce(void){
   std::string distancestressforce;
-  if(DistanceOrStressForce::Distance == m_DistanceOrStressForce){
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     distancestressforce = "mm";
   } else{
     distancestressforce = getStressOrForce();

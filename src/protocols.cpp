@@ -65,11 +65,11 @@ void Protocols::makePreview(void){
 
   // Split preview point into stressforce and distance points.
   for(auto i : m_PreviewValues){
-    if(DistanceOrStressForce::Distance ==  i.distanceOrForce){
-      m_DistancePreviewValues.push_back(i.value);
+    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
+      m_DistancePreviewValues.push_back(i.value * 0.00009921875/*mm per micro step*/);
       m_DistanceTimePreviewValues.push_back(i.timepoint);
-    } else if(DistanceOrStressForce::StressForce ==  i.distanceOrForce){
-      m_StressForcePreviewValues.push_back(i.value);
+    } else if((DistanceOrStressOrForce::Stress ==  i.distanceOrForce) || (DistanceOrStressOrForce::Force ==  i.distanceOrForce)){
+      m_StressForcePreviewValues.push_back(i.value / 10000.0);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
   }

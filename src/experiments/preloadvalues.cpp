@@ -2,24 +2,26 @@
 #include <string>
 #include "preloadvalues.h"
 
-PreloadValues::PreloadValues(ExperimentType experimentType,
-                             StressOrForce stressOrForce,
-                             StageFrame *stageframe,
+PreloadValues::PreloadValues(StageFrame *stageframe,
                              ForceSensorMessageHandler *forcesensormessagehandler,
                              mpFXYVector *vector,
                              std::mutex *vectoraccessmutex,
                              MyFrame *myframe,
+
+                             ExperimentType experimentType,
+                             DistanceOrStressOrForce distanceOrStressOrForce,
                              double area,
+
                              double stressForceLimit,
                              double speedInMm)
-  : ExperimentValues(experimentType,
-                     DistanceOrStressForce::StressForce,
-                     stressOrForce,
-                     stageframe,
+  : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      vector,
                      vectoraccessmutex,
                      myframe,
+
+                     experimentType,
+                     distanceOrStressOrForce,
                      area),
     m_StressForceLimit(stressForceLimit),
     m_SpeedInMm(speedInMm)

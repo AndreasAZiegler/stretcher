@@ -1,63 +1,69 @@
 #include "onestepevent.h"
 
-OneStepEvent::OneStepEvent(ExperimentType type,
-                           DistanceOrStressForce distanceOrStressForce,
-                           StressOrForce stressOrForce,
-                           DistanceOrPercentage distanceOrPercentage,
-                           StageFrame *stageframe,
+OneStepEvent::OneStepEvent(StageFrame *stageframe,
                            ForceSensorMessageHandler *forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
                            MyFrame *myframe,
                            std::string path,
+
                            std::condition_variable *wait,
                            std::mutex *mutex,
                            bool *stagesstopped,
                            std::mutex *stagesstoppedmutex,
+
+                           ExperimentType type,
+                           DistanceOrStressOrForce distanceOrStressForce,
+                           long gagelength,
+                           long currentdistance,
+                           double area,
+
+                           DistanceOrPercentage velocityDistanceOrPercentage,
                            double velocity,
                            double holdtime1,
                            long upperlimit,
                            double holdtime2,
                            long lowerlimit,
-                           DistanceOrPercentage holddistanceOrPercentage,
+                           DistanceOrPercentage holdDistanceOrPercentage,
                            long holddistance,
                            int cycles,
-                           BehaviorAfterStop behaviorAfterStop,
-                           double area,
-                           long currentdistance)
-  : Experiment(type,
-               distanceOrStressForce,
-               stressOrForce,
-               distanceOrPercentage,
-               stageframe,
+                           BehaviorAfterStop behaviorAfterStop)
+  : Experiment(stageframe,
                forcesensormessagehandler,
                vector,
                vectoraccessmutex,
                myframe,
                path,
+
+               type,
+               distanceOrStressForce,
                Direction::Stop,
-               0.3/*stress force threshold*/,
-               0.01/*distance threshold*/,
+               gagelength,
+               currentdistance,
                area,
-               currentdistance),
+               0.3/*stress force threshold*/,
+               0.01/*distance threshold*/),
+    m_VelocityDistanceOrPercentage(velocityDistanceOrPercentage),
     m_Velocity(velocity),
     m_HoldTime1(holdtime1),
     m_UpperLimit(upperlimit),
     m_HoldTime2(holdtime2),
     m_LowerLimit(lowerlimit),
     m_Cycles(cycles),
-    m_HoldDistanceOrPercentage(holddistanceOrPercentage),
+    m_HoldDistanceOrPercentage(holdDistanceOrPercentage),
     m_HoldDistance(holddistance),
     m_BehaviorAfterStop(behaviorAfterStop),
-    m_ExperimentValues(new OneStepEventValues(type,
-                                              distanceOrStressForce,
-                                              stressOrForce,
-                                              stageframe,
+    m_ExperimentValues(new OneStepEventValues(stageframe,
                                               forcesensormessagehandler,
                                               vector,
                                               vectoraccessmutex,
                                               myframe,
+                                              path,
+
+                                              type,
+                                              distanceOrStressForce,
                                               area,
+
                                               velocity,
                                               holdtime1,
                                               upperlimit,
@@ -74,7 +80,12 @@ OneStepEvent::OneStepEvent(ExperimentType type,
  * @param preloaddistance Preload distance
  */
 void OneStepEvent::setPreloadDistance(long preloaddistance){
+  m_GageLength = preloaddistance;
 
+  if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
+    m_Velocity = (m_Velocity / 100.0) * m_GageLength;
+    m_ExperimentValues->setVelocity(m_Velocity);
+  }
 }
 
 /**
@@ -91,38 +102,28 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   }
 
   for(int i = 0; i < m_Cycles; ++i){
-    // If distance based.
-    if(DistanceOrStressForce::Distance == m_DistanceOrStressForce){
-      // Make point if there is a hold time 1.
-      if(0 < m_HoldTime1){
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::Distance, 0));
-        timepoint++;
-      }
-      // Make upper limit point.
-      previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::Distance, m_UpperLimit));
-      timepoint++;
-      // Make point if there is a hold time 2.
-      if(0 < m_HoldTime2){
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::Distance, m_UpperLimit));
-        timepoint++;
-      }
-      // Make lower limit point.
-      previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::Distance, m_LowerLimit));
-
-    } else if(DistanceOrStressForce::StressForce == m_DistanceOrStressForce){ // If stress/force based.
-      if(0 < m_HoldTime1){
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::StressForce, 0));
-        timepoint++;
-      }
-      previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::StressForce, m_UpperLimit));
-      timepoint++;
-      if(0 < m_HoldTime2){
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::StressForce, m_UpperLimit));
-        timepoint++;
-      }
-      previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressForce::StressForce, m_LowerLimit));
+    // Make point if there is a hold time 1.
+    if(0 < m_HoldTime1){
+      previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
       timepoint++;
     }
+    // Make upper limit point.
+    previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_UpperLimit));
+    timepoint++;
+    // Make point if there is a hold time 2.
+    if(0 < m_HoldTime2){
+      previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_UpperLimit));
+      timepoint++;
+    }
+    // Make lower limit point.
+    previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_LowerLimit));
+  }
+  timepoint++;
+
+  switch(m_BehaviorAfterStop){
+    case BehaviorAfterStop::GoToL0:
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_UpperLimit));
+
   }
 }
 

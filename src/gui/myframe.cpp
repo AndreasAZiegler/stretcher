@@ -18,8 +18,6 @@
 #include "../experiments/conditioning.h"
 #include "../experiments/ramp2failure.h"
 #include "../experiments/relaxation.h"
-#include "../experiments/creep.h"
-#include "../experiments/fatiguetesting.h"
 
 #include <iostream>
 
@@ -59,6 +57,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   //EVT_SPINCTRLDOUBLE(ID_MountingLength, MyFrame::OnMountingLengthChanged)
   EVT_BUTTON(ID_LimitsDistanceGoTo, MyFrame::OnLimitsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
+  EVT_BUTTON(ID_LimitsSetL0, MyFrame::OnSetL0)
   EVT_RADIOBUTTON(ID_OneStepStressForce, MyFrame::OnOneStepStressForce)
   EVT_RADIOBUTTON(ID_OneStepDistance, MyFrame::OnOneStepDistance)
   EVT_BUTTON(ID_OneStepSendToProtocol, MyFrame::OnOneStepSendToProtocol)
@@ -102,7 +101,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
     //m_PreloadDistance(0),
-    m_StressOrForce(StressOrForce::Force),
+    m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
     m_CurrentProtocol(nullptr),
     //m_CurrentExperiment(NULL),
     //m_CurrentExperimentValues(NULL),
@@ -110,6 +109,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_StageMinLimit(0),
     m_ForceMaxLimit(0),
     m_ForceMinLimit(0),
+    m_GageLength(0),
     m_Area(0),
     //m_ExperimentRunningFlag(false),
     m_PreloadDoneFlag(true),
@@ -141,6 +141,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_LimitsGoToSpinCtrl->SetId(ID_LimitsDistanceValue);
   m_LimitsLimitSetButton->SetId(ID_SetLimits);
   m_LimitsGoToButton->SetId((ID_LimitsDistanceGoTo));
+  m_LimitsSetL0Button->SetId(ID_LimitsSetL0);
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
   m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
   m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
@@ -489,7 +490,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_Graph->AddLayer(m_Y1Axis);
     m_Graph->Fit();
 
-    m_StressOrForce = StressOrForce::Stress;
+    m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
   }else{
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
@@ -506,7 +507,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_Graph->AddLayer(m_Y1Axis);
     m_Graph->Fit();
 
-    m_StressOrForce = StressOrForce::Force;
+    m_DistanceOrStressOrForce = DistanceOrStressOrForce::Force;
   }
 }
 
@@ -581,6 +582,7 @@ void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnInitializeSetMountingLength(wxCommandEvent& event){
+  m_GageLength = 0;
   m_StageFrame->setZeroDistance();
   m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
@@ -647,6 +649,14 @@ void MyFrame::OnLimitsGoTo(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user clicks on the "Set L0" button in limits.
+ * @param event Occuring event
+ */
+void MyFrame::OnSetL0(wxCommandEvent& event){
+  m_GageLength = m_CurrentDistance;
+}
+
+/**
  * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
  * @param event Occuring event
  */
@@ -674,23 +684,26 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   m_Area = m_InitializeCrossSectionSpinCtrl->GetValue();
 
   //Experiment* experiment = new Preload(ExperimentType::Preload,
-  std::unique_ptr<Experiment> experiment(new Preload(ExperimentType::Preload,
-                                                     m_StressOrForce,
-                                                     Experiment::DistanceOrPercentage::Distance,
-                                                     m_StageFrame,
+  std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
                                                      m_ForceSensorMessageHandler,
                                                      &m_VectorLayer,
                                                      &m_VectorLayerMutex,
                                                      this,
                                                      m_StoragePath,
+
                                                      &m_Wait,
                                                      &m_WaitMutex,
                                                      &m_StagesStoppedFlag,
                                                      &m_StagesStoppedMutex,
+
+                                                     ExperimentType::Preload,
+                                                     m_DistanceOrStressOrForce,
+                                                     m_GageLength,
+                                                     m_CurrentDistance,
+                                                     m_Area,
+
                                                      m_PreloadLimitSpinCtrl->GetValue(),
-                                                     m_PreloadSpeedMmSpinCtrl->GetValue(),
-                                                     m_Area));
-                                                     //m_Area);
+                                                     m_PreloadSpeedMmSpinCtrl->GetValue()));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
@@ -722,30 +735,30 @@ void MyFrame::OnOneStepDistance(wxCommandEvent& event){
 void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   checkProtocol();
 
-  DistanceOrStressForce distanceOrStressForce;
+  DistanceOrStressOrForce distanceOrStressOrForce;
   double holdtime1;
   long upperlimit;
   double holdtime2;
   long lowerlimit;
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
-    distanceOrStressForce = DistanceOrStressForce::StressForce;
+    distanceOrStressOrForce = m_DistanceOrStressOrForce;
     holdtime1 = m_OneStepStressForceHoldTime1SpinCtrl->GetValue();
     upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue();
     holdtime2 = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
     lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue();
   }else if(true == m_OneStepDistanceRadioBtn->GetValue()){
-    distanceOrStressForce = DistanceOrStressForce::Distance;
+    distanceOrStressOrForce = DistanceOrStressOrForce::Distance;
     holdtime1 = m_OneStepDistanceHoldTime1SpinCtrl->GetValue();
     upperlimit = m_OneStepDistanceUpperLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
     holdtime2 = m_OneStepDistanceHoldTime2SpinCtrl->GetValue();
-    lowerlimit = m_OneStepDistanceLowerLimitSpinCtrl->GetValue();
+    lowerlimit = m_OneStepDistanceLowerLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   }
 
-  Experiment::DistanceOrPercentage distanceOrPercentage;
+  Experiment::DistanceOrPercentage velocityDistanceOrPercentage;
   if(true == m_OneStepStressForceVelocityMmRadioBtn->GetValue()){
-    distanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
+    velocityDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
   } else if(true == m_OneStepStressForceVelocityPercentRadioBtn->GetValue()){
-    distanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
+    velocityDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
   }
 
   Experiment::DistanceOrPercentage holddistanceOrPercentage;
@@ -770,20 +783,25 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
 
   m_Area = m_InitializeCrossSectionSpinCtrl->GetValue();
 
-  std::unique_ptr<Experiment> experiment(new OneStepEvent(ExperimentType::OneStepEvent,
-                                                          distanceOrStressForce,
-                                                          m_StressOrForce,
-                                                          distanceOrPercentage,
-                                                          m_StageFrame,
+  std::unique_ptr<Experiment> experiment(new OneStepEvent(m_StageFrame,
                                                           m_ForceSensorMessageHandler,
                                                           &m_VectorLayer,
                                                           &m_VectorLayerMutex,
                                                           this,
                                                           m_StoragePath,
+
                                                           &m_Wait,
                                                           &m_WaitMutex,
                                                           &m_StagesStoppedFlag,
                                                           &m_StagesStoppedMutex,
+
+                                                          ExperimentType::OneStepEvent,
+                                                          distanceOrStressOrForce,
+                                                          m_GageLength,
+                                                          m_CurrentDistance,
+                                                          m_Area,
+
+                                                          velocityDistanceOrPercentage,
                                                           m_OneStepStressForceVelocitySpinCtrl->GetValue(),
                                                           holdtime1,
                                                           upperlimit,
@@ -792,9 +810,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           holddistanceOrPercentage,
                                                           holddistance,
                                                           cycles,
-                                                          behaviorAfterStop,
-                                                          m_Area,
-                                                          m_CurrentDistance));
+                                                          behaviorAfterStop));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
@@ -851,11 +867,11 @@ void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
  */
 void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
 
-  DistanceOrStressForce distanceOrStressForce;
+  DistanceOrStressOrForce distanceOrStressForce;
   if(true == m_ConditioningStressRadioBtn->GetValue()){
-    distanceOrStressForce = DistanceOrStressForce::StressForce;
+    distanceOrStressForce = m_DistanceOrStressOrForce;
   }else if(true == m_ConditioningDistanceRadioBtn->GetValue()){
-    distanceOrStressForce = DistanceOrStressForce::Distance;
+    distanceOrStressForce = DistanceOrStressOrForce::Distance;
   }
 
   int calculatelimit = m_ConditioningDistanceLimitSpinCtrl->GetValue();

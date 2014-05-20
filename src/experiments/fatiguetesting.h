@@ -130,7 +130,7 @@ class FatigueTesting : virtual public Experiment, virtual public UpdatedValuesRe
     double m_AmplitudeInDistance;																						/**< Amplitude in distance */
     double m_RestTime;																											/**< Rest time after each cycle in sec. */
     double m_Frequency;																											/**< Frequency in cycles/sec. */
-    long m_PreloadDistance;																									/**< Preload distance of the stage frame */
+    long m_GageLength;																									/**< Preload distance of the stage frame */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
 

@@ -32,15 +32,28 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
      * @param area Value of the area.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Ramp2Failure(ExperimentType type,
-                 StressOrForce stressOrForce,
-                 StageFrame *stageframe,
+    Ramp2Failure(StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler*> *linearstagemessagehandlers,
-                 ForceSensorMessageHandler *forcesensormessagehandler, mpFXYVector *vector, std::mutex *vectoraccessmutex, MyFrame *myframe, std::string path,
+                 ForceSensorMessageHandler *forcesensormessagehandler,
+                 mpFXYVector *vector,
+                 std::mutex *vectoraccessmutex,
+                 MyFrame *myframe,
+                 std::string path,
+
                  std::condition_variable *wait,
                  std::mutex *mutex,
+
+                 ExperimentType type,
+                 DistanceOrStressOrForce distanceOrStressOrForce,
+                 long gagelength,
+                 long currentdistance,
+                 double area,
+
                  BehaviorAfterFailure behavior,
-                 double speedInMM, double dropbeforestop, double area, long preloaddistance, long distanceafterfailure);
+                 double speedInMM,
+                 double dropbeforestop,
+                 long preloaddistance,
+                 long distanceafterfailure);
 
     ~Ramp2Failure();
 
@@ -129,7 +142,7 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
     BehaviorAfterFailure m_BehaviorAfterFailure;														/**< Indicates what happens after the experiment */
     long m_DistanceAfterFailure;																						/**< Distance after experiment if desired */
     State m_CurrentState;																										/**< Current state of the FSM */
-    long m_PreloadDistance;																									/**< Preload distance of the stage frame */
+    long m_GageLength;																									/**< Preload distance of the stage frame */
     double m_Area;																													/**< Area of the sample in um^2 */
     long m_MaxForce;																												/**< Maximal measured force */
     std::mutex m_ForceMutex;																								/**< Mutex to protect m_MaxForce and m_CurrentForce */

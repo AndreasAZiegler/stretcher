@@ -11,31 +11,35 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
   private:
 
   public:
-    OneStepEvent(ExperimentType type,
-                 DistanceOrStressForce distanceOrStressForce,
-                 StressOrForce stressOrForce,
-                 DistanceOrPercentage distanceOrPercentage,
-                 StageFrame *stageframe,
+    OneStepEvent(StageFrame *stageframe,
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
                  MyFrame *myframe,
                  std::string path,
+
+
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  bool *stagesstopped,
                  std::mutex *stagesstoppedmutex,
+
+                 ExperimentType type,
+                 DistanceOrStressOrForce distanceOrStressForce,
+                 long gagelength,
+                 long currentdistance,
+                 double area,
+
+                 DistanceOrPercentage velocityDistanceOrPercentage,
                  double velocity,
                  double holdtime1,
                  long upperlimit,
                  double holdtime2,
                  long lowerlimit,
-                 DistanceOrPercentage holddistanceOrPercentage,
+                 DistanceOrPercentage holdDistanceOrPercentage,
                  long holddistance,
                  int cycles,
-                 BehaviorAfterStop behaviorAfterStop,
-                 double area,
-                 long currentdistance);
+                 BehaviorAfterStop behaviorAfterStop);
 
     /**
      * @brief Sets the preload distance.
@@ -76,6 +80,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
 
   private:
+    DistanceOrPercentage m_VelocityDistanceOrPercentage;
     double m_Velocity;
     double m_HoldTime1;
     long m_UpperLimit;

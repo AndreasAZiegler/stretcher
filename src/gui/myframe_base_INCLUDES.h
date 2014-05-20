@@ -15,15 +15,11 @@
 #include <mathplot.h>
 #include <wx/xrc/xmlres.h>
 
-wxFlexGridSizer* m_ChamberStretchSizer1;
-
  wxMyButton* m_DecreaseDistanceButton;
  wxMyButton* m_IncreaseDistanceButton;
 
 wxBoxSizer* m_GraphSizer1;
 wxBoxSizer* m_GraphSizer2;
-
-m_ChamberStretchSizer1 = static_cast<wxFlexGridSizer*>(m_ChamberStretchGelPanel->GetContainingSizer());
 
 m_GraphSizer2 = static_cast<wxBoxSizer*>(m_GraphExportCSVButton->GetContainingSizer());
 m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());

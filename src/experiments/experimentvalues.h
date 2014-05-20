@@ -54,13 +54,14 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param graph Pointer to the graph object.
      * @param diameter The diameter of the sample.
      */
-    ExperimentValues(ExperimentType experimenttype, DistanceOrStressForce distanceorstressforce,
-                     StressOrForce stressOrForce,
-                     StageFrame *stageframe,
+    ExperimentValues(StageFrame *stageframe,
                      ForceSensorMessageHandler *forcesensormessagehandler,
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
                      MyFrame *myframe,
+
+                     ExperimentType experimenttype,
+                     DistanceOrStressOrForce distanceOrStressOrForce,
                      double area);
 
     //ExperimentValues(const ExperimentValues &experimentvalues);
@@ -89,8 +90,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Defines if experiment is force or stress based.
      * @param forceOrStress
      */
-    void setStressOrForce(StressOrForce stressOrForce){
-      m_StressOrForce = stressOrForce;
+    void setDistanceOrStressOrForce(DistanceOrStressOrForce distanceOrStressOrForce){
+      m_DistanceOrStressOrForce = distanceOrStressOrForce;
     }
 
     /**
@@ -174,8 +175,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
   protected:
     double m_Area;																													/**< Area size of the sample. */
-    DistanceOrStressForce m_DistanceOrStressForce;												  /**< Defines if the experiment is distance of stress/force based. */
-    StressOrForce m_StressOrForce;																					/**< Indicates if the experiment is stress or force based */
+    DistanceOrStressOrForce m_DistanceOrStressOrForce;										  /**< Defines if the experiment is distance of stress/force based. */
 
 	private:
 

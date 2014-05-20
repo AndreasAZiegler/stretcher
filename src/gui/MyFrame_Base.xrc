@@ -899,6 +899,7 @@
 																					<flag>wxALIGN_CENTER|wxALL</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_OneStepDistanceVelocityMmRadioBtn">
+																						<style>wxRB_GROUP</style>
 																						<label>mm/s</label>
 																						<value>0</value>
 																					</object>
@@ -972,6 +973,7 @@
 																					<flag>wxALIGN_CENTER|wxALL</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitMmRadioBtn">
+																						<style>wxRB_GROUP</style>
 																						<label>mm</label>
 																						<value>0</value>
 																					</object>
@@ -1045,6 +1047,7 @@
 																					<flag>wxALIGN_CENTER|wxALL</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_OneStepDistanceLowerLimitMmRadioBtn">
+																						<style>wxRB_GROUP</style>
 																						<label>mm</label>
 																						<value>0</value>
 																					</object>
@@ -1165,27 +1168,30 @@
 															</object>
 															<object class="sizeritem">
 																<option>1</option>
-																<flag>wxEXPAND</flag>
+																<flag>wxEXPAND | wxALL</flag>
 																<border>5</border>
-																<object class="wxBoxSizer">
-																	<orient>wxVERTICAL</orient>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxRadioButton" name="m_OneStepEndOfEventHoldMmRadioBtn">
-																			<style>wxRB_GROUP</style>
-																			<label>mm</label>
-																			<value>0</value>
+																<object class="wxPanel" name="m_OneStepPanel3">
+																	<style>wxTAB_TRAVERSAL</style>
+																	<object class="wxBoxSizer">
+																		<orient>wxVERTICAL</orient>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALIGN_CENTER|wxALL</flag>
+																			<border>5</border>
+																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldMmRadioBtn">
+																				<style>wxRB_GROUP</style>
+																				<label>mm</label>
+																				<value>0</value>
+																			</object>
 																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxRadioButton" name="m_OneStepEndOfEventHoldPercentRadioBtn">
-																			<label>%L0</label>
-																			<value>0</value>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALIGN_CENTER|wxALL</flag>
+																			<border>5</border>
+																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldPercentRadioBtn">
+																				<label>%L0</label>
+																				<value>0</value>
+																			</object>
 																		</object>
 																	</object>
 																</object>
@@ -1517,6 +1523,7 @@
 																					<flag>wxALIGN_CENTER|wxALL</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_ContinuousDistanceVelocityMmRadioBtn">
+																						<style>wxRB_GROUP</style>
 																						<label>mm/s</label>
 																						<value>0</value>
 																					</object>
@@ -1618,6 +1625,7 @@
 																					<flag>wxALIGN_CENTER|wxALL</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_ContinuousDistanceMaxValueMmRadioBtn1">
+																						<style>wxRB_GROUP</style>
 																						<label>mm</label>
 																						<value>0</value>
 																					</object>

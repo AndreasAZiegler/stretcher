@@ -7,15 +7,17 @@
 class OneStepEventValues : public ExperimentValues
 {
   public:
-    OneStepEventValues(ExperimentType experimentType,
-                       DistanceOrStressForce distanceOrStressForce,
-                       StressOrForce stressOrForce,
-                       StageFrame *stageframe,
+    OneStepEventValues(StageFrame *stageframe,
                        ForceSensorMessageHandler *forcesensormessagehandler,
                        mpFXYVector *vector,
                        std::mutex *vectoraccessmutex,
                        MyFrame *myframe,
+                       std::string path,
+
+                       ExperimentType experimentType,
+                       DistanceOrStressOrForce distanceOrStressOrForce,
                        double area,
+
                        double velocity,
                        double holdtime1,
                        long upperlimit,
@@ -24,6 +26,14 @@ class OneStepEventValues : public ExperimentValues
                        long holddistance,
                        int cycles,
                        Experiment::BehaviorAfterStop bahaviorAfterStop);
+
+    /**
+     * @brief Sets the velocity.
+     * @param velocity Velocity in mm/s.
+     */
+    void setVelocity(double velocity){
+      m_Velocity = velocity;
+    }
 
     /**
      * @brief Returns the experiment settings as a std::string.
@@ -39,7 +49,7 @@ class OneStepEventValues : public ExperimentValues
      */
     std::string getEndOfEvent(void);
 
-    DistanceOrStressForce m_DistanceOrStressForce;
+    DistanceOrStressOrForce m_DistanceOrStressOrForce;
     double m_Velocity;
     double m_HoldTime1;
     long m_UpperLimit;

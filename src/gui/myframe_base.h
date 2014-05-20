@@ -124,6 +124,7 @@ protected:
  wxStaticText* m_staticText72;
  wxRadioButton* m_OneStepEndOfEventHoldRadioBtn;
  wxSpinCtrlDouble* m_OneStepEndOfEventHoldSpinCtrl;
+ wxPanel* m_OneStepPanel3;
  wxRadioButton* m_OneStepEndOfEventHoldMmRadioBtn;
  wxRadioButton* m_OneStepEndOfEventHoldPercentRadioBtn;
  wxRadioButton* m_OneStepEndOfEventL0RadioBtn;
@@ -341,6 +342,7 @@ private:
   m_staticText72 = XRCCTRL(*this,"m_staticText72",wxStaticText);
   m_OneStepEndOfEventHoldRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldRadioBtn",wxRadioButton);
   m_OneStepEndOfEventHoldSpinCtrl = XRCCTRL(*this,"m_OneStepEndOfEventHoldSpinCtrl",wxSpinCtrlDouble);
+  m_OneStepPanel3 = XRCCTRL(*this,"m_OneStepPanel3",wxPanel);
   m_OneStepEndOfEventHoldMmRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldMmRadioBtn",wxRadioButton);
   m_OneStepEndOfEventHoldPercentRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldPercentRadioBtn",wxRadioButton);
   m_OneStepEndOfEventL0RadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventL0RadioBtn",wxRadioButton);

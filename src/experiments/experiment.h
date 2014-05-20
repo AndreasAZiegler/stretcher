@@ -45,7 +45,7 @@ class Experiment
      * @brief The PreviewValue struct
      */
     struct PreviewValue{
-        PreviewValue(int itimepoint, DistanceOrStressForce idistanceOrForce, int ivalue){
+        PreviewValue(int itimepoint, DistanceOrStressOrForce idistanceOrForce, int ivalue){
           timepoint = itimepoint;
           distanceOrForce = idistanceOrForce;
           value = ivalue;
@@ -55,7 +55,7 @@ class Experiment
         }
 
        int timepoint;
-       DistanceOrStressForce distanceOrForce;
+       DistanceOrStressOrForce distanceOrForce;
        int value;
     };
 
@@ -74,19 +74,21 @@ class Experiment
      * @param type Type of experiment.
      * @param forceOrStress Force or stress.
      */
-    Experiment(ExperimentType type,
-               DistanceOrStressForce distanceOrStressForce,
-               StressOrForce stressOrForce,
-               DistanceOrPercentage distanceOrPercent,
-               StageFrame* stageframe,
+    Experiment(StageFrame* stageframe,
                ForceSensorMessageHandler* forcesensormessagehandler,
                mpFXYVector *vector,
                std::mutex *vectoraccessmutex,
                MyFrame *myframe,
                std::string path,
+
+               ExperimentType type,
+               DistanceOrStressOrForce distanceOrStressForce,
                Experiment::Direction direction,
-               double forcesStressThreshold, double distanceThreshold,
-               double area, long currentdistance = 0);
+               long gagelength,
+               long currentdistance,
+               double area,
+               double forcesStressThreshold,
+               double distanceThreshold);
 
     /**
      * @brief Sets the preload distance.
@@ -135,8 +137,8 @@ class Experiment
      * @brief Defines if experiment is force or stress based.
      * @param forceOrStress
      */
-    void setStressOrForce(StressOrForce stressOrForce){
-      m_StressOrForce = stressOrForce;
+    void setDistanceOrStressOrForce(DistanceOrStressOrForce distanceOrStressOrForce){
+      m_DistanceOrStressOrForce = distanceOrStressOrForce;
     }
 
     /**
@@ -157,14 +159,12 @@ class Experiment
     double m_DistanceThreshold;									/**< Threshold for the coparison of distances */
     Direction m_CurrentDirection;								/**< The current direction */
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
-    DistanceOrStressForce m_DistanceOrStressForce; /**< Defines if the experiment is distance of stress/force based. */
-    StressOrForce m_StressOrForce;							/**< Defines if the experiment is force or stress based. */
-    Experiment::DistanceOrPercentage m_DistanceOrPercentage;								/**< Indicates if the distance limit is calculated by value or by percentage of preload length. */
+    DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */
 
-    long m_PreloadDistance;											/**< Preload distance of the stage frame */
+    long m_GageLength;											/**< Preload distance of the stage frame */
+    long m_CurrentDistance;											/**< Current distance of the stage frame */
     long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
-    long m_CurrentDistance;											/**< Current distance of the stage frame */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
     double m_Area;																													/**< Area size of the sample. */
 

@@ -1,14 +1,16 @@
 #include "onestepeventvalues.h"
 
-OneStepEventValues::OneStepEventValues(ExperimentType experimentType,
-                                       DistanceOrStressForce distanceOrStressForce,
-                                       StressOrForce stressOrForce,
-                                       StageFrame *stageframe,
+OneStepEventValues::OneStepEventValues(StageFrame *stageframe,
                                        ForceSensorMessageHandler *forcesensormessagehandler,
                                        mpFXYVector *vector,
                                        std::mutex *vectoraccessmutex,
                                        MyFrame *myframe,
+                                       std::string path,
+
+                                       ExperimentType experimentType,
+                                       DistanceOrStressOrForce distanceOrStressOrForce,
                                        double area,
+
                                        double velocity,
                                        double holdtime1,
                                        long upperlimit,
@@ -17,16 +19,16 @@ OneStepEventValues::OneStepEventValues(ExperimentType experimentType,
                                        long holddistance,
                                        int cycles,
                                        Experiment::BehaviorAfterStop behaviorAfterStop)
-  : ExperimentValues(experimentType,
-                     distanceOrStressForce,
-                     stressOrForce,
-                     stageframe,
+  : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      vector,
                      vectoraccessmutex,
                      myframe,
+
+                     experimentType,
+                     distanceOrStressOrForce,
                      area),
-    m_DistanceOrStressForce(distanceOrStressForce),
+    m_DistanceOrStressOrForce(distanceOrStressOrForce),
     m_Velocity(velocity),
     m_HoldTime1(holdtime1),
     m_UpperLimit(upperlimit),
@@ -37,7 +39,6 @@ OneStepEventValues::OneStepEventValues(ExperimentType experimentType,
     m_Cycles(cycles)
 {
 }
-
 
 /**
  * @brief Returns the experiment settings as a std::string.

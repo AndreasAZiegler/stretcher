@@ -30,25 +30,25 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @param area Value of the area.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Conditioning(ExperimentType type,
-                 DistanceOrStressForce distanceOrStressForce,
-                 StressOrForce stressOrForce,
-                 int currentdistance,
-                 StageFrame *stageframe,
+    Conditioning(StageFrame *stageframe,
                  std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
                  ForceSensorMessageHandler *forcesensormessagehandler,
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
                  MyFrame *myframe,
                  std::string path,
+
                  std::condition_variable *wait,
                  std::mutex *mutex,
+
+                 ExperimentType type,
+                 DistanceOrStressOrForce distanceOrStressForce, long gagelength,
+                 long currentdistance, double area,
                  double stressForceLimit,
                  int cycles,
                  DistanceOrPercentage dp,
                  int calculateLimit,
-                 double speedInMM,
-                 double area);
+                 double speedInMM);
 
     /**
      * @brief Sets the preload distance.
@@ -95,8 +95,8 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @brief Defines the experiment force or stress based.
      * @param stressOrForceLimit Force or stress based.
      */
-    void setStressOrForceLimit(StressOrForce stressOrForceLimit){
-      m_StressOrForceLimit = stressOrForceLimit;
+    void setDistanceOrStressOrForceLimit(DistanceOrStressOrForce distanceOrStressOrForceLimit){
+      m_DistanceOrStressOrForceLimit = distanceOrStressOrForceLimit;
     }
 
     /**
@@ -152,8 +152,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     double m_SpeedInPercent;																								/**< Speed in %preload/sec */
     double m_SpeedInMm;																											/**< Speed in mm/sec */
-    DistanceOrStressForce m_DistanceOrStressForceLimit;											/**< Indicates if the experiment is distance or stress/force based */
-    StressOrForce m_StressOrForceLimit;																			/**< Indicates if the experiment is stress or force based */
+    DistanceOrStressOrForce m_DistanceOrStressOrForceLimit;											/**< Indicates if the experiment is distance or stress/force based */
     Experiment::DistanceOrPercentage m_DistanceOrPercentage;								/**< Indicates if the distance limit is calculated by value or by percentage of preload length. */
     long m_StressForceLimit;																								/**< Stress or force limit value */
     int m_CalculateLimit;																										/**< Variable required to calculate the distance limit. */
