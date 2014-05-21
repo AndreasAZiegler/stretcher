@@ -84,7 +84,7 @@ class Experiment
                ExperimentType type,
                DistanceOrStressOrForce distanceOrStressForce,
                Experiment::Direction direction,
-               long gagelength,
+               long gagelength, long zerodistance,
                long currentdistance,
                double area,
                double forcesStressThreshold,
@@ -162,7 +162,8 @@ class Experiment
     DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */
 
     long m_GageLength;													/**< Preload distance of the stage frame */
-    long m_StartLength;
+    long m_ZeroDistance;													/**< Zero distance */
+    long m_StartLength;													/**< Distance where the experiment starts. */
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     long m_CurrentForce;												/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */

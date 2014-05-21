@@ -46,6 +46,7 @@ class Ramp2Failure : virtual public Experiment, virtual public UpdatedValuesRece
                  ExperimentType type,
                  DistanceOrStressOrForce distanceOrStressOrForce,
                  long gagelength,
+                 long zerodistance,
                  long currentdistance,
                  double area,
 

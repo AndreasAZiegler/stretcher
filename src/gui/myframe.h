@@ -473,6 +473,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
+    long m_ZeroLength;													/**< Zero length. */
     double m_Area;															/**< Area of the sample */
 
     DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */

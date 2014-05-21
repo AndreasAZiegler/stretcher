@@ -42,7 +42,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  std::mutex *mutex,
 
                  ExperimentType type,
-                 DistanceOrStressOrForce distanceOrStressForce, long gagelength,
+                 DistanceOrStressOrForce distanceOrStressForce, long gagelength, long zerodistance,
                  long currentdistance, double area,
                  double stressForceLimit,
                  int cycles,

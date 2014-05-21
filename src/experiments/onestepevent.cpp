@@ -18,6 +18,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            ExperimentType type,
                            DistanceOrStressOrForce distanceOrStressForce,
                            long gagelength,
+                           long zerodistance,
                            long currentdistance,
                            double area,
 
@@ -42,10 +43,11 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                distanceOrStressForce,
                Direction::Stop,
                gagelength,
+               zerodistance,
                currentdistance,
                area,
                0.3/*stress force threshold*/,
-               0.01/*distance threshold*/),
+               0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_Wait(wait),
     m_WaitMutex(mutex),
 
@@ -83,10 +85,12 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                                               cycles,
                                               behaviorAfterStop))
 {
-  if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
-    m_UpperLimit *= 10000;
-    m_LowerLimit *= 10000;
-  }
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+}
+
+OneStepEvent::~OneStepEvent(){
+  m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
 }
 
 /**
@@ -188,16 +192,16 @@ void OneStepEvent::process(Event event){
             m_StageFrame->moveForward(m_Velocity);
           }
         }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
-          if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
-            std::cout << "m_CurrentDistance - m_DistanceLimit: " << m_CurrentDistance - m_CurrentLimit << std::endl;
+          if((m_CurrentDistance) - m_CurrentLimit > m_DistanceThreshold){
+            std::cout << "m_CurrentDistance - m_DistanceLimit: " << (m_CurrentDistance) - m_CurrentLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_Velocity);
-            std::cout << "Conditioning moveForward" << std::endl;
-          }else if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
-            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_CurrentLimit - m_CurrentDistance << std::endl;
+            std::cout << "OneStepEvent moveForward" << std::endl;
+          }else if((m_CurrentLimit - (m_CurrentDistance)) > m_DistanceThreshold){
+            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_CurrentLimit - (m_CurrentDistance) << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_Velocity);
-            std::cout << "Conditioning moveBackward" << std::endl;
+            std::cout << "OneStepEvent moveBackward" << std::endl;
           }
         }
       }
@@ -240,7 +244,7 @@ void OneStepEvent::process(Event event){
 
               // Perform hold if there is a hold time 2
               if(0 < m_HoldTime2){
-                std::cout << "OneStepEvent holds for " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                std::cout << "OneStepEvent holds for hold time 2" << m_HoldTime2 * 1000 << " ms" << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
                 std::cout << "OneStepEvent holding over." << std::endl;
               }
@@ -261,7 +265,16 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
                 process(Event::evUpdate);
               } else{
+                m_CurrentCycle++;
                 m_CurrentState = goStartState;
+
+                // Perform hold if there is a hold time 1
+                if(0 < m_HoldTime1){
+                  std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+                  std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
+                  std::cout << "OneStepEvent holding over." << std::endl;
+                }
+
                 m_StageFrame->gotoStepsDistance(m_StartLength);
               }
             }
@@ -289,7 +302,7 @@ void OneStepEvent::process(Event event){
 
               // Perform hold if there is a hold time 2
               if(0 < m_HoldTime2){
-                std::cout << "OneStepEvent holds for " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                std::cout << "OneStepEvent holds for hold time 2 " << m_HoldTime2 * 1000 << " ms" << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
                 std::cout << "OneStepEvent holding over." << std::endl;
               }
@@ -310,32 +323,41 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
                 process(Event::evUpdate);
               } else {
+                m_CurrentCycle++;
                 m_CurrentState = goStartState;
+
+                // Perform hold if there is a hold time 1
+                if(0 < m_HoldTime1){
+                  std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+                  std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
+                  std::cout << "OneStepEvent holding over." << std::endl;
+                }
                 m_StageFrame->gotoStepsDistance(m_StartLength);
               }
             }
           }
         }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
 
-          if((m_CurrentDistance - m_CurrentLimit) < (200 * m_DistanceThreshold)){
+          if(((m_CurrentDistance) - m_CurrentLimit) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
               m_DecreaseSpeedFlag = true;
               m_StageFrame->setSpeed(m_Velocity/10);
             }
           }
           // Reduce speed to a tenth if stages are close to the turn point.
-          else if((m_CurrentLimit - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+          else if((m_CurrentLimit - (m_CurrentDistance)) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
               m_DecreaseSpeedFlag = true;
               m_StageFrame->setSpeed(m_Velocity/10);
             }
           }
-          if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
+          //std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
+          if(((m_CurrentDistance) - m_CurrentLimit) > m_DistanceThreshold){
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Forwards;
               m_StageFrame->moveForward();
             }
-          }else if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
+          }else if((m_CurrentLimit - (m_CurrentDistance)) > m_DistanceThreshold){
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
               m_StageFrame->moveBackward();
@@ -349,7 +371,7 @@ void OneStepEvent::process(Event event){
 
               // Perform hold if there is a hold time 2
               if(0 < m_HoldTime2){
-                std::cout << "OneStepEvent holds for " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                std::cout << "OneStepEvent holds for hold time 2 " << m_HoldTime2 * 1000 << " ms" << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
                 std::cout << "OneStepEvent holding over." << std::endl;
               }
@@ -370,7 +392,15 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
                 process(Event::evUpdate);
               } else {
+                m_CurrentCycle++;
                 m_CurrentState = goStartState;
+
+                // Perform hold if there is a hold time 1
+                if(0 < m_HoldTime1){
+                  std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+                  std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
+                  std::cout << "OneStepEvent holding over." << std::endl;
+                }
                 m_StageFrame->gotoStepsDistance(m_StartLength);
               }
             }

@@ -109,6 +109,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceMaxLimit(0),
     m_ForceMinLimit(0),
     m_GageLength(0),
+    m_ZeroLength(0),
     m_Area(0),
     //m_ExperimentRunningFlag(false),
     m_PreloadDoneFlag(true),
@@ -565,6 +566,7 @@ void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
  */
 void MyFrame::OnInitializeSetMountingLength(wxCommandEvent& event){
   m_GageLength = 0;
+  m_ZeroLength = m_CurrentDistance;
   m_StageFrame->setZeroDistance();
   m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
@@ -681,6 +683,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      ExperimentType::Preload,
                                                      m_DistanceOrStressOrForce,
                                                      m_GageLength,
+                                                     m_ZeroLength,
                                                      m_CurrentDistance,
                                                      m_Area,
 
@@ -725,9 +728,9 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
     distanceOrStressOrForce = m_DistanceOrStressOrForce;
     holdtime1 = m_OneStepStressForceHoldTime1SpinCtrl->GetValue();
-    upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue();
+    upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * 10000.0;
     holdtime2 = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
-    lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue();
+    lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue() * 10000.0;
   }else if(true == m_OneStepDistanceRadioBtn->GetValue()){
     distanceOrStressOrForce = DistanceOrStressOrForce::Distance;
     holdtime1 = m_OneStepDistanceHoldTime1SpinCtrl->GetValue();
@@ -780,6 +783,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           ExperimentType::OneStepEvent,
                                                           distanceOrStressOrForce,
                                                           m_GageLength,
+                                                          m_ZeroLength,
                                                           m_CurrentDistance,
                                                           m_Area,
 

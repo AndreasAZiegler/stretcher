@@ -26,7 +26,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 
                  ExperimentType type,
                  DistanceOrStressOrForce distanceOrStressForce,
-                 long gagelength,
+                 long gagelength, long zerodistance,
                  long currentdistance,
                  double area,
 
@@ -40,6 +40,8 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  long holddistance,
                  int cycles,
                  BehaviorAfterStop behaviorAfterStop);
+
+    ~OneStepEvent();
 
     /**
      * @brief Sets the preload distance.
