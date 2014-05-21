@@ -6,6 +6,9 @@
 
 using namespace std;
 
+// An deleter which doesn't do anything, required for passing shared_ptr.
+void do_nothing_deleter(ForceSensorMessageHandler*){return;}
+
 /**
  * @brief Forwards the com port and the baud rate to SerialPort
  * @param comPort com port
@@ -66,6 +69,14 @@ void ForceSensor::setScaleFactor(double nominalforce, double nominalvalue, doubl
 
   calculateScaleFactor();
   m_MessageHandler.setScaleFactor(m_ScalingFactor, m_ZeroValue);
+}
+
+/**
+  * @brief Returns the pointer to the message handler.
+  * @return Pointer to the message handler.
+  */
+std::shared_ptr<ForceSensorMessageHandler> ForceSensor::getMessageHandler(void){
+  return(std::shared_ptr<ForceSensorMessageHandler>(&m_MessageHandler, do_nothing_deleter));
 }
 
 /**

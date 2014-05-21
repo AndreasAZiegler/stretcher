@@ -13,8 +13,8 @@
  * @param graph Pointer to the graph object.
  * @param diameter The diameter of the sample.
  */
-ExperimentValues::ExperimentValues(StageFrame *stageframe,
-                                   ForceSensorMessageHandler *forcesensormessagehandler,
+ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
+                                   std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
                                    MyFrame *myframe,

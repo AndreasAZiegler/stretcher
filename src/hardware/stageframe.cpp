@@ -26,11 +26,12 @@ StageFrame::~StageFrame(){
  * @brief Registers the linear stages and get pointer for the message handlers of the linear stages.
  * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.
  */
-void StageFrame::registerLinearStages(std::vector<LinearStage*> *linearstages){
-  m_LinearStages = linearstages;
+void StageFrame::registerLinearStages(std::vector<std::shared_ptr<LinearStage>> &linearstages){
+  m_LinearStages.push_back(linearstages.at(0));
+  m_LinearStages.push_back(linearstages.at(1));
 
-  m_LinearStagesMessageHandlers.push_back((m_LinearStages->at(0))->getMessageHandler());
-  m_LinearStagesMessageHandlers.push_back((m_LinearStages->at(1))->getMessageHandler());
+  m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(0))->getMessageHandler());
+  m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
 
   m_Position1Id = (m_LinearStagesMessageHandlers.at(0))->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_Position2Id = (m_LinearStagesMessageHandlers.at(1))->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -129,11 +130,11 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
   if(UpdatedValuesReceiver::ValueType::Pos1 == type){
     m_CurrentPositions[0].value = measurementValue.value;
     m_CurrentPositions[0].timestamp = measurementValue.timestamp;
-    (m_LinearStages->at(0))->setCurrentPosition(measurementValue.value);
+    (m_LinearStages.at(0))->setCurrentPosition(measurementValue.value);
   }else if(UpdatedValuesReceiver::ValueType::Pos2 == type){
     m_CurrentPositions[1].value = measurementValue.value;
     m_CurrentPositions[1].timestamp = measurementValue.timestamp;
-    (m_LinearStages->at(1))->setCurrentPosition(measurementValue.value);
+    (m_LinearStages.at(1))->setCurrentPosition(measurementValue.value);
   }
 
   m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
@@ -153,24 +154,24 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
  * @param speedinmm Speed in mm/s
  */
 void StageFrame::setSpeed(double speedinmm){
- (m_LinearStages->at(0))->setSpeed(speedinmm);
- (m_LinearStages->at(1))->setSpeed(speedinmm);
+ (m_LinearStages.at(0))->setSpeed(speedinmm);
+ (m_LinearStages.at(1))->setSpeed(speedinmm);
 }
 
 /**
  * @brief Moves the stage frame forward at constant speed
  */
 void StageFrame::moveForward(double speed){
- (m_LinearStages->at(0))->moveForward(speed);
- (m_LinearStages->at(1))->moveForward(speed);
+ (m_LinearStages.at(0))->moveForward(speed);
+ (m_LinearStages.at(1))->moveForward(speed);
 }
 
 /**
  * @brief Moves the stage frame backward at constant speed
  */
 void StageFrame::moveBackward(double speed){
- (m_LinearStages->at(0))->moveBackward(speed);
- (m_LinearStages->at(1))->moveBackward(speed);
+ (m_LinearStages.at(0))->moveBackward(speed);
+ (m_LinearStages.at(1))->moveBackward(speed);
 }
 
 /**
@@ -180,8 +181,8 @@ void StageFrame::moveBackward(double speed){
 void StageFrame::moveMM(double millimeters){
   int steps=0;
   steps = millimeters / m_Stepsize;//transformation from millimeters to steps
-  (m_LinearStages->at(0))->moveSteps(steps);
-  (m_LinearStages->at(1))->moveSteps(steps);
+  (m_LinearStages.at(0))->moveSteps(steps);
+  (m_LinearStages.at(1))->moveSteps(steps);
 }
 
 /**
@@ -200,8 +201,8 @@ void StageFrame::gotoMMDistance(int mmDistance){
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
   */
-  (m_LinearStages->at(0))->moveToAbsolute(position);
-  (m_LinearStages->at(1))->moveToAbsolute(position);
+  (m_LinearStages.at(0))->moveToAbsolute(position);
+  (m_LinearStages.at(1))->moveToAbsolute(position);
 }
 
 /**
@@ -216,8 +217,8 @@ void StageFrame::gotoStepsDistance(long stepsDistance){
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
   */
-  (m_LinearStages->at(0))->moveToAbsolute(position);
-  (m_LinearStages->at(1))->moveToAbsolute(position);
+  (m_LinearStages.at(0))->moveToAbsolute(position);
+  (m_LinearStages.at(1))->moveToAbsolute(position);
 }
 
 /**
@@ -225,16 +226,16 @@ void StageFrame::gotoStepsDistance(long stepsDistance){
  * @param position Absolute stage position.
  */
 void StageFrame::gotoToAbsolute(long position){
-  (m_LinearStages->at(0))->moveToAbsolute(position);
-  (m_LinearStages->at(1))->moveToAbsolute(position);
+  (m_LinearStages.at(0))->moveToAbsolute(position);
+  (m_LinearStages.at(1))->moveToAbsolute(position);
 }
 
 /**
  * @brief Stops the stage frame.
  */
 void StageFrame::stop(){
-  (m_LinearStages->at(0))->stop();
-  (m_LinearStages->at(1))->stop();
+  (m_LinearStages.at(0))->stop();
+  (m_LinearStages.at(1))->stop();
   //std::cout << "Stop stages." << std::endl;
 }
 
@@ -271,9 +272,9 @@ void StageFrame::setMaxDistanceLimit(long limit){
   long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
-  (m_LinearStages->at(0))->setMinLimit(position);
+  (m_LinearStages.at(0))->setMinLimit(position);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(10)));
-  (m_LinearStages->at(1))->setMinLimit(position);
+  (m_LinearStages.at(1))->setMinLimit(position);
   //std::cout << "StageFrame max limit position: " << position << std::endl;
 }
 
@@ -286,9 +287,9 @@ void StageFrame::setMinDistanceLimit(long limit){
   long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
-  (m_LinearStages->at(0))->setMaxLimit(position);
+  (m_LinearStages.at(0))->setMaxLimit(position);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(10)));
-  (m_LinearStages->at(1))->setMaxLimit(position);
+  (m_LinearStages.at(1))->setMaxLimit(position);
   //std::cout << "StageFrame min limit position: " << position << std::endl;
 }
 

@@ -36,7 +36,7 @@ class LinearStageMessageHandler : virtual public MessageHandler
      * @brief Registers the stage frame object.
      * @param stageframe Pointer to the stage frame object.
      */
-    void registerStageFrame(StageFrame *stageframe){
+    void registerStageFrame(std::shared_ptr<StageFrame> stageframe){
       m_StageFrame = stageframe;
     }
 
@@ -80,7 +80,7 @@ class LinearStageMessageHandler : virtual public MessageHandler
 
     MeasurementValue m_CurrentPosition;								/**< Struct containing the current position and its time stamp */
 
-    StageFrame *m_StageFrame;													/**< Pointer to the stage frame object */
+    std::shared_ptr<StageFrame> m_StageFrame;					/**< Pointer to the stage frame object */
 
 };
 

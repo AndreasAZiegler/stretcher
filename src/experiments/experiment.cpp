@@ -7,8 +7,8 @@
  * @param type Type of experiment.
  * @param forceOrStress Force or stress.
  */
-Experiment::Experiment(StageFrame *stageframe,
-                       ForceSensorMessageHandler *forcesensormessagehandler,
+Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
+                       std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                        mpFXYVector *vector,
                        std::mutex *vectoraccessmutex,
                        MyFrame *myframe,

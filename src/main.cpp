@@ -1,4 +1,5 @@
 /*************** Includes ************/
+#include <memory>
 #include <sched.h>
 #include <cstring>
 #include <wx/wx.h>
@@ -12,6 +13,10 @@
 #include "./gui/xh_wxmybuttonxmlhandler.h"
 #include <wx/spinctrl.h>
 #include "updatedvaluesreceiver.h"
+
+// An deleter which doesn't do anything, required for passing shared_ptr.
+template<typename T>
+void do_nothing_deleter(T *ptr){return;}
 
 // Define main app.
 IMPLEMENT_APP(MyApp)
@@ -40,32 +45,36 @@ bool MyApp::OnInit(){
   //m_MySettings = new Settings();
 
   // Create the main frame and show it
-  m_MyFrame = new MyFrame("Stretcher", &m_MySettings);
+  MyFrame *m_MyFrame = new MyFrame("Stretcher", &m_MySettings);
   m_MyFrame->Show(true);
   m_MyFrame->startup();
 
   // Create the linear motor objects.
-  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos1,
+  std::vector<std::shared_ptr<LinearStage>> m_LinearStages;
+  m_LinearStages.push_back(std::make_shared<LinearStage>(UpdatedValuesReceiver::ValueType::Pos1,
                                            m_MyFrame->getMessageHandlersWait(),
                                            m_MyFrame->getMessageHandlersWaitMutex(),
                                            m_MyFrame->getMessageHandlersFinishedNumber(),
                                            m_MySettings.getLinMot1BaudRate()));
-  m_LinearStages.push_back(new LinearStage(UpdatedValuesReceiver::ValueType::Pos2,
+  m_LinearStages.push_back(std::make_shared<LinearStage>(UpdatedValuesReceiver::ValueType::Pos2,
                                            m_MyFrame->getMessageHandlersWait(),
                                            m_MyFrame->getMessageHandlersWaitMutex(),
                                            m_MyFrame->getMessageHandlersFinishedNumber(),
                                            m_MySettings.getLinMot2BaudRate()));
-  m_StageFrame.registerLinearStages(&m_LinearStages);
+  m_StageFrame.registerLinearStages(m_LinearStages);
   m_LinearStages.at(0)->connect(m_MySettings.getLinMot1ComPort());
   m_LinearStages.at(1)->connect(m_MySettings.getLinMot2ComPort());
   m_LinearStages.at(0)->configure();
   m_LinearStages.at(1)->configure();
-  m_MyFrame->registerLinearStage(&m_LinearStages, &m_StageFrame);
+  // Create shared_ptr which is needed to pass as parameter.
+  std::shared_ptr<StageFrame> stageframe(&m_StageFrame, do_nothing_deleter<StageFrame>);
+  m_MyFrame->registerLinearStage(m_LinearStages, stageframe);
 
   // Get the message handlers for the linear stages.
+  std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers;
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(0))->getMessageHandler());
   m_LinearStagesMessageHandlers.push_back((m_LinearStages.at(1))->getMessageHandler());
-  m_MyFrame->registerLinearStageMessageHandlers(&m_LinearStagesMessageHandlers);
+  m_MyFrame->registerLinearStageMessageHandlers(m_LinearStagesMessageHandlers);
 
   // Run the receivers of the linear stages in seperate threads.
   m_LinearStagesReceivers.push_back(std::thread(&LinearStageMessageHandler::receiver, m_LinearStagesMessageHandlers.at(0)));
@@ -89,7 +98,8 @@ bool MyApp::OnInit(){
   m_LinearStagesReceivers.at(1).detach();
 
   // Create the force sensor object
-  m_ForceSensor = new ForceSensor(UpdatedValuesReceiver::ValueType::Force,
+  std::shared_ptr<ForceSensor> m_ForceSensor;
+  m_ForceSensor = std::make_shared<ForceSensor>(UpdatedValuesReceiver::ValueType::Force,
                                   m_MyFrame->getMessageHandlersWait(),
                                   m_MyFrame->getMessageHandlersWaitMutex(),
                                   m_MyFrame->getMessageHandlersFinishedNumber(),
@@ -104,12 +114,12 @@ bool MyApp::OnInit(){
   m_MyFrame->registerForceSensor(m_ForceSensor);
 
   // Get the message handlers for the force sensor.
+  std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;
   m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
 
   // Run the receiver of the force sensor in seperate threads.
   m_ForceSensorReceiver = std::thread(&ForceSensorMessageHandler::receiver, m_ForceSensorMessageHandler);
   m_ForceSensorReceiver.detach();
-
 
   return(true);
 }

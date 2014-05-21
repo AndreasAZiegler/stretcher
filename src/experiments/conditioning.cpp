@@ -19,9 +19,9 @@
  * @param area Value of the area.
  * @param preloaddistance Preload distance of the stage frame.
  */
-Conditioning::Conditioning(StageFrame *stageframe,
+Conditioning::Conditioning(std::shared_ptr<StageFrame> stageframe,
                            std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
-                           ForceSensorMessageHandler *forcesensormessagehandler,
+                           std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
                            MyFrame *myframe,

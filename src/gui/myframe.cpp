@@ -22,9 +22,8 @@
 #include <iostream>
 
 // An deleter which doesn't do anything, required for passing shared_ptr.
-void do_nothing_deleter_conditional_variable(std::condition_variable *){return;}
-void do_nothing_deleter_mutex(std::mutex *){return;}
-void do_nothing_deleter_int(int *){return;}
+template<typename T>
+void do_nothing_deleter(T *ptr){return;}
 
 //-----------------------------------------------------------------------------
 // Regular resources (the non-XRC kind).
@@ -220,7 +219,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
  * @return The message handler wait condition variable as shared_ptr.
  */
 std::shared_ptr<std::condition_variable> MyFrame::getMessageHandlersWait(void){
-  std::shared_ptr<std::condition_variable> messagehandlerswait(&m_WaitMessageHandlers, do_nothing_deleter_conditional_variable);
+  std::shared_ptr<std::condition_variable> messagehandlerswait(&m_WaitMessageHandlers, do_nothing_deleter<std::condition_variable>);
   return(messagehandlerswait);
 }
 
@@ -229,7 +228,7 @@ std::shared_ptr<std::condition_variable> MyFrame::getMessageHandlersWait(void){
  * @return The message handler wait mutex as shared_ptr.
  */
 std::shared_ptr<std::mutex> MyFrame::getMessageHandlersWaitMutex(void){
-  std::shared_ptr<std::mutex> messagehandlerswaitmutex(&m_WaitMessageHandlersMutex, do_nothing_deleter_mutex);
+  std::shared_ptr<std::mutex> messagehandlerswaitmutex(&m_WaitMessageHandlersMutex, do_nothing_deleter<std::mutex>);
   return(messagehandlerswaitmutex);
 }
 
@@ -238,7 +237,7 @@ std::shared_ptr<std::mutex> MyFrame::getMessageHandlersWaitMutex(void){
  * @return The number of finished message handler variable as shared_ptr.
  */
 std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
-  std::shared_ptr<int> messagehandlerfinishednr(&m_MessageHandlersFinishedNumber, do_nothing_deleter_int);
+  std::shared_ptr<int> messagehandlerfinishednr(&m_MessageHandlersFinishedNumber, do_nothing_deleter<int>);
   return(messagehandlerfinishednr);
 }
 
@@ -246,8 +245,9 @@ std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
  * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
  * @param linearstage Pointer to the vector containing the linear motors.
  */
-void MyFrame::registerLinearStage(std::vector<LinearStage*> *linearstage, StageFrame *stageframe){
-  m_LinearStages = linearstage;
+void MyFrame::registerLinearStage(std::vector<std::shared_ptr<LinearStage>> &linearstage, std::shared_ptr<StageFrame> &stageframe){
+  m_LinearStages.push_back(linearstage.at(0));
+  m_LinearStages.push_back(linearstage.at(1));
   m_StageFrame = stageframe;
 
   // Registers update methods at stage frame.
@@ -265,19 +265,20 @@ void MyFrame::registerLinearStage(std::vector<LinearStage*> *linearstage, StageF
  * @brief Registers the message handlers of the linear stages, registers the stage frame at the linear stage message handlers.
  * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
  */
-void MyFrame::registerLinearStageMessageHandlers(std::vector<LinearStageMessageHandler*> *linearstagesmessagehandlers){
-  m_LinearStagesMessageHandlers = linearstagesmessagehandlers;
+void MyFrame::registerLinearStageMessageHandlers(std::vector<std::shared_ptr<LinearStageMessageHandler>> &linearstagesmessagehandlers){
+  m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(0));
+  m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(1));
 
   // Register stage frame
-  (m_LinearStagesMessageHandlers->at(0))->registerStageFrame(m_StageFrame);
-  (m_LinearStagesMessageHandlers->at(1))->registerStageFrame(m_StageFrame);
+  (m_LinearStagesMessageHandlers.at(0))->registerStageFrame(m_StageFrame);
+  (m_LinearStagesMessageHandlers.at(1))->registerStageFrame(m_StageFrame);
 }
 
 /**
  * @brief Register the force sensor.
  * @param forcesensor Pointer to the force sensor.
  */
-void MyFrame::registerForceSensor(ForceSensor *forcesensor){
+void MyFrame::registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
   m_ForceSensor = forcesensor;
 
   // Registers update method at forcesensormessagehandler.
@@ -293,8 +294,8 @@ MyFrame::~MyFrame(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
   // Stop linear stage receiver threads
-  ((m_LinearStages->at(0))->getMessageHandler())->setExitFlag(false);
-  ((m_LinearStages->at(1))->getMessageHandler())->setExitFlag(false);
+  ((m_LinearStages.at(0))->getMessageHandler())->setExitFlag(false);
+  ((m_LinearStages.at(1))->getMessageHandler())->setExitFlag(false);
 
   // Stop force sensor receiver thread
   (m_ForceSensor->getMessageHandler())->setExitFlag(false);
@@ -560,8 +561,8 @@ void MyFrame::OnGoTo(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnInitializeLoadStoredPosition(wxCommandEvent& event){
-  (m_LinearStages->at(0))->loadStoredPosition();
-  (m_LinearStages->at(1))->loadStoredPosition();
+  (m_LinearStages.at(0))->loadStoredPosition();
+  (m_LinearStages.at(1))->loadStoredPosition();
 }
 
 /**
@@ -1008,7 +1009,7 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
  */
 void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
   std::cout << "MyFrame decrease distance" << std::endl;
-  if(NULL != m_LinearStages){
+  if(0 != m_LinearStages.size()){
     m_StageFrame->moveMM(0.25);
 
     // If the clamping position tab is active.
@@ -1025,7 +1026,7 @@ void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
  */
 void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
   std::cout << "MyFrame increase distance" << std::endl;
-  if(NULL != m_LinearStages){
+  if(0 != m_LinearStages.size()){
     m_StageFrame->moveMM(-0.25);
   }
 
@@ -1081,9 +1082,9 @@ void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorStop(wxCommandEvent& event){
-  if(NULL != m_LinearStages){
-    (m_LinearStages->at(0))->stop();
-    (m_LinearStages->at(1))->stop();
+  if(0 != m_LinearStages.size()){
+    (m_LinearStages.at(0))->stop();
+    (m_LinearStages.at(1))->stop();
   }
   std::lock_guard<std::mutex> lck(m_WaitMutex);
   m_Wait.notify_all();

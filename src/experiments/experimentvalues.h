@@ -54,8 +54,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @param graph Pointer to the graph object.
      * @param diameter The diameter of the sample.
      */
-    ExperimentValues(StageFrame *stageframe,
-                     ForceSensorMessageHandler *forcesensormessagehandler,
+    ExperimentValues(std::shared_ptr<StageFrame> stageframe,
+                     std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
                      MyFrame *myframe,
@@ -180,8 +180,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 	private:
 
     ExperimentType m_ExperimentType;																				/**< Type of the experiment */
-    StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
-    ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
+    std::shared_ptr<StageFrame> m_StageFrame;																/**< Pointer to the stage frame object */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */

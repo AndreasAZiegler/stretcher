@@ -11,8 +11,8 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
   private:
 
   public:
-    OneStepEvent(StageFrame *stageframe,
-                 ForceSensorMessageHandler *forcesensormessagehandler,
+    OneStepEvent(std::shared_ptr<StageFrame> stageframe,
+                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
                  MyFrame *myframe,

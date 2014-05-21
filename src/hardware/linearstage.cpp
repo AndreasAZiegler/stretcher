@@ -7,6 +7,9 @@
 
 using namespace std;
 
+// An deleter which doesn't do anything, required for passing shared_ptr.
+void do_nothing_deleter(LinearStageMessageHandler*){return;}
+
 /**
  * @brief Forwards the com port and the baud rate to SerialPort
  * @param comPort com port
@@ -78,6 +81,14 @@ LinearStage::~LinearStage()
 {
   storeCurrentPosition();
   std::cout << "LinearStage destructor finished." << std::endl;
+}
+
+/**
+  * @brief Returns the pointer to the message handler.
+  * @return Pointer to the message handler.
+  */
+std::shared_ptr<LinearStageMessageHandler> LinearStage::getMessageHandler(void){
+  return(std::shared_ptr<LinearStageMessageHandler>(&m_MessageHandler, do_nothing_deleter));
 }
 
 /**

@@ -1,7 +1,7 @@
 #include "onestepeventvalues.h"
 
-OneStepEventValues::OneStepEventValues(StageFrame *stageframe,
-                                       ForceSensorMessageHandler *forcesensormessagehandler,
+OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
+                                       std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                                        mpFXYVector *vector,
                                        std::mutex *vectoraccessmutex,
                                        MyFrame *myframe,

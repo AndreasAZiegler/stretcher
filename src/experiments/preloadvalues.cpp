@@ -2,8 +2,8 @@
 #include <string>
 #include "preloadvalues.h"
 
-PreloadValues::PreloadValues(StageFrame *stageframe,
-                             ForceSensorMessageHandler *forcesensormessagehandler,
+PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
+                             std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                              mpFXYVector *vector,
                              std::mutex *vectoraccessmutex,
                              MyFrame *myframe,

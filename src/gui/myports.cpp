@@ -13,12 +13,13 @@ wxEND_EVENT_TABLE()
  * @param parent Pointer to the parent object.
  * @param settings Pointer to the Settings object.
  */
-MyPorts::MyPorts(Settings *settings, std::vector<LinearStage *> *linearstage, ForceSensor *forcesensor, wxWindow *parent)
+MyPorts::MyPorts(Settings *settings, std::vector<std::shared_ptr<LinearStage> > &linearstage, std::shared_ptr<ForceSensor> forcesensor, wxWindow *parent)
   : MyPorts_Base(parent),
     m_Settings(settings),
-    m_LinearStages(linearstage),
     m_ForceSensor(forcesensor)
 {
+  m_LinearStages.push_back(linearstage.at(0));
+  m_LinearStages.push_back(linearstage.at(1));
   wxID_PortsOK->SetId(ID_PortsOK);
 }
 
@@ -31,12 +32,12 @@ void MyPorts::OnOK(wxCommandEvent &event){
    m_Settings->setLinMot2ComPort(choiceToString(m_PortsMotor2Choice->GetSelection()));
    m_Settings->setForceSensorComPort(choiceToString(m_PortsForceChoice->GetSelection()));
 
-   if(NULL != m_LinearStages){
-     m_LinearStages->at(0)->disconnect();
-     m_LinearStages->at(1)->disconnect();
+   if(0 != m_LinearStages.size()){
+     m_LinearStages.at(0)->disconnect();
+     m_LinearStages.at(1)->disconnect();
 
-     m_LinearStages->at(0)->connect(m_Settings->getLinMot1ComPort());
-     m_LinearStages->at(1)->connect(m_Settings->getLinMot2ComPort());
+     m_LinearStages.at(0)->connect(m_Settings->getLinMot1ComPort());
+     m_LinearStages.at(1)->connect(m_Settings->getLinMot2ComPort());
    }
    if(NULL != m_ForceSensor){
      m_ForceSensor->disconnect();

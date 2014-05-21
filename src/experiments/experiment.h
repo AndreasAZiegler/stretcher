@@ -74,8 +74,8 @@ class Experiment
      * @param type Type of experiment.
      * @param forceOrStress Force or stress.
      */
-    Experiment(StageFrame* stageframe,
-               ForceSensorMessageHandler* forcesensormessagehandler,
+    Experiment(std::shared_ptr<StageFrame> stageframe,
+               std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                mpFXYVector *vector,
                std::mutex *vectoraccessmutex,
                MyFrame *myframe,
@@ -152,8 +152,8 @@ class Experiment
 
   protected:
 
-    StageFrame *m_StageFrame;																								/**< Pointer to the stage frame object */
-    ForceSensorMessageHandler *m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
+    std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
 
     double m_ForceStressThreshold;							/**< Threshold for the comparison */
     double m_DistanceThreshold;									/**< Threshold for the coparison of distances */

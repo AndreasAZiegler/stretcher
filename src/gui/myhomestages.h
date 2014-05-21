@@ -9,7 +9,7 @@
 class MyHomeStages : public MyHomeStages_Base
 {
   public:
-    MyHomeStages(std::vector<LinearStage *> *linearstages, wxWindow *parent);
+    MyHomeStages(std::vector<std::shared_ptr<LinearStage>> &linearstages, wxWindow *parent);
 
   private:
 
@@ -19,7 +19,7 @@ class MyHomeStages : public MyHomeStages_Base
      */
     void OnOK(wxCommandEvent& event);
 
-    std::vector<LinearStage *> *m_LinearStages;
+    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;
 
     wxDECLARE_EVENT_TABLE();
 };

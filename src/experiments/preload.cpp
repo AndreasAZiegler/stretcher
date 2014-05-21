@@ -14,8 +14,8 @@
  * @param speedInMM Speed in mm/s.
  * @param area Value of the area.
  */
-Preload::Preload(StageFrame *stageframe,
-                 ForceSensorMessageHandler *forcesensormessagehandler,
+Preload::Preload(std::shared_ptr<StageFrame> stageframe,
+                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
                  MyFrame *myframe,

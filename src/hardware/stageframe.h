@@ -29,7 +29,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @brief Registers the linear stages and get pointer for the message handlers of the linear stages and register update method at the message handlers.
      * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.
      */
-    void registerLinearStages(std::vector<LinearStage*> *linearstages);
+    void registerLinearStages(std::vector<std::shared_ptr<LinearStage> > &linearstages);
 
     /**
      * @brief Registers the wait condition variable for the wait for stop.
@@ -145,8 +145,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
      */
     long getCurrentDistance(void);
 
-    std::vector<LinearStage*> *m_LinearStages;				/**< Pointer to a vector containing the pointers to the linear stages. */
-    std::vector<LinearStageMessageHandler*> m_LinearStagesMessageHandlers; /**< Vector containing the pointers to the linear stage message handlers. */
+    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;				/**< Pointer to a vector containing the pointers to the linear stages. */
+    std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers; /**< Vector containing the pointers to the linear stage message handlers. */
     std::mutex m_AccessListMutex;											/**< Protect list */
     std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator m_Position1Id;	/**< Id of the pos 1 callback method */
     std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator m_Position2Id;	/**< Id of the pos 1 callback method */

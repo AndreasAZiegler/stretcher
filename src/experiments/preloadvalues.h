@@ -7,8 +7,8 @@
 class PreloadValues : public ExperimentValues
 {
   public:
-    PreloadValues(StageFrame *stageframe,
-                  ForceSensorMessageHandler *forcesensormessagehandler,
+    PreloadValues(std::shared_ptr<StageFrame> stageframe,
+                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                   mpFXYVector *vector,
                   std::mutex *vectoraccessmutex,
                   MyFrame *myframe,

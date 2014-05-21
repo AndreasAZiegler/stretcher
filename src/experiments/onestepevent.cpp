@@ -3,8 +3,8 @@
 #include <thread>
 #include "onestepevent.h"
 
-OneStepEvent::OneStepEvent(StageFrame *stageframe,
-                           ForceSensorMessageHandler *forcesensormessagehandler,
+OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
+                           std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
                            MyFrame *myframe,

@@ -60,19 +60,19 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
      * @param linearmotor Pointer to the vector containing the linear motors.
      */
-    void registerLinearStage(std::vector<LinearStage *> *linearmotor, StageFrame *stageframe);
+    void registerLinearStage(std::vector<std::shared_ptr<LinearStage> > &linearmotor, std::shared_ptr<StageFrame> &stageframe);
 
     /**
      * @brief Registers the message handlers of the linear stages.
      * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
      */
-    void registerLinearStageMessageHandlers(std::vector<LinearStageMessageHandler*> *linearstagesmessagehandlers);
+    void registerLinearStageMessageHandlers(std::vector<std::shared_ptr<LinearStageMessageHandler> > &linearstagesmessagehandlers);
 
     /**
      * @brief Register the force sensor.
      * @param forcesensor Pointer to the force sensor.
      */
-    void registerForceSensor(ForceSensor *forcesensor);
+    void registerForceSensor(std::shared_ptr<ForceSensor> forcesensor);
 
     /**
      * @brief Destructor
@@ -447,18 +447,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     mpScaleY *m_Y1Axis;													/**< Pointer to the left Y axis */
     mpScaleY *m_Y2Axis;													/**< Pointer to the right Y axis */
     Settings *m_Settings;												/**< Pointer to the settings object */
-    std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stages */
-    std::vector<LinearStageMessageHandler*> *m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
+    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;	/**< Vector containing the pointers to the linear stages */
+    std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
     int m_MessageHandlersFinishedNumber;				/**< Number of finished message handlers. */
     std::condition_variable m_WaitMessageHandlers;/**< Wait condition variable to wait for message handlers to stop. */
     std::mutex m_WaitMessageHandlersMutex;			/**< Mutex to protect m_WaitMessageHandlers. */
-    StageFrame *m_StageFrame;										/**< Pointer to the stage frame object */
+    std::shared_ptr<StageFrame> m_StageFrame;		/**< Pointer to the stage frame object */
     long m_StageMaxLimit;												/**< The maximal position for the stages */
     long m_StageMinLimit;												/**< The minimal position for the stages */
     long m_ForceMaxLimit;												/**< The maximal allowed force. */
     long m_ForceMinLimit;												/**< The minimal allowed force. */
-    ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor */
-    ForceSensorMessageHandler *m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
+    std::shared_ptr<ForceSensor> m_ForceSensor;	/**< Pointer to the force sensor */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
     std::unique_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */

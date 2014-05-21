@@ -30,9 +30,9 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
      * @param area Value of the area.
      * @param preloaddistance Preload distance of the stage frame.
      */
-    Conditioning(StageFrame *stageframe,
+    Conditioning(std::shared_ptr<StageFrame> stageframe,
                  std::vector<LinearStageMessageHandler *> *linearstagemessagehandlers,
-                 ForceSensorMessageHandler *forcesensormessagehandler,
+                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
                  MyFrame *myframe,

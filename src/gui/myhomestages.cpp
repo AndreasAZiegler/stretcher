@@ -6,10 +6,11 @@ wxBEGIN_EVENT_TABLE(MyHomeStages, MyHomeStages_Base)
   EVT_BUTTON(ID_HomeStagesOK, MyHomeStages::OnOK)
 wxEND_EVENT_TABLE()
 
-MyHomeStages::MyHomeStages(std::vector<LinearStage *> *linearstages, wxWindow *parent)
-  : MyHomeStages_Base(parent),
-    m_LinearStages(linearstages)
+MyHomeStages::MyHomeStages(std::vector<std::shared_ptr<LinearStage> > &linearstages, wxWindow *parent)
+  : MyHomeStages_Base(parent)
 {
+  m_LinearStages.push_back(linearstages.at(0));
+  m_LinearStages.push_back(linearstages.at(1));
   wxID_HomeStagesOK->SetId(ID_HomeStagesOK);
   //m_FileOutputNameDirPicker->SetPath(m_Path);
 }
@@ -19,8 +20,8 @@ MyHomeStages::MyHomeStages(std::vector<LinearStage *> *linearstages, wxWindow *p
  * @param event Occuring event
  */
 void MyHomeStages::OnOK(wxCommandEvent &event){
-  (m_LinearStages->at(0))->home();
-  (m_LinearStages->at(1))->home();
+  (m_LinearStages.at(0))->home();
+  (m_LinearStages.at(1))->home();
 
   Close(true);
 }

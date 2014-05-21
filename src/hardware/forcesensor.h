@@ -43,9 +43,7 @@ class ForceSensor : public SerialInterface
       * @brief Returns the pointer to the message handler.
       * @return Pointer to the message handler.
       */
-    ForceSensorMessageHandler* getMessageHandler(void){
-      return(&m_MessageHandler);
-    }
+    std::shared_ptr<ForceSensorMessageHandler> getMessageHandler(void);
 
     double getForce ();
 

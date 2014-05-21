@@ -22,7 +22,7 @@ class MyPorts : public MyPorts_Base
      * @param parent Pointer to the parent object.
      * @param settings Pointer to the Settings object.
      */
-    MyPorts(Settings *settings, std::vector<LinearStage*> *linearstage, ForceSensor *forcesensor, wxWindow *parent=NULL);
+    MyPorts(Settings *settings, std::vector<std::shared_ptr<LinearStage>> &linearstage, std::shared_ptr<ForceSensor> forcesensor, wxWindow *parent=NULL);
 
   private:
 
@@ -35,8 +35,8 @@ class MyPorts : public MyPorts_Base
     std::string choiceToString(int i);
 
     Settings *m_Settings;												/**< Pointer to the Settings object. */
-    std::vector<LinearStage*> *m_LinearStages;	/**< Vector containing the pointers to the linear stage objects */
-    ForceSensor *m_ForceSensor;									/**< Pointer to the force sensor object */
+    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;	/**< Vector containing the pointers to the linear stage objects */
+    std::shared_ptr<ForceSensor> m_ForceSensor;									/**< Pointer to the force sensor object */
 
     wxDECLARE_EVENT_TABLE();
 };

@@ -39,9 +39,7 @@ class LinearStage : public SerialInterface
       * @brief Returns the pointer to the message handler.
       * @return Pointer to the message handler.
       */
-    LinearStageMessageHandler* getMessageHandler(void){
-      return(&m_MessageHandler);
-    }
+    std::shared_ptr<LinearStageMessageHandler> getMessageHandler(void);
 
     /**
      * @brief Sets the maximum position of the stages.
