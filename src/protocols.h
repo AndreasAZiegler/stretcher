@@ -112,8 +112,8 @@ class Protocols
     std::vector<std::shared_ptr<Experiment>> m_Experiments;									/**< Vector containing the pointers to the experiments. */
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
-    std::thread *m_ExperimentRunningThread;																	/**< Pointer to the experiment running check thread */
-    std::vector<std::shared_ptr<ExperimentValues>> m_ExperimentValues;											/**< Vector containing the pointers to the experiment values. */
+    std::unique_ptr<std::thread> m_ExperimentRunningThread;									/**< Pointer to the experiment running check thread */
+    std::vector<std::shared_ptr<ExperimentValues>> m_ExperimentValues;			/**< Vector containing the pointers to the experiment values. */
     std::vector<Experiment::PreviewValue> m_PreviewValues;									/**< Vector containing the preview values. */
     std::vector<double> m_StressForcePreviewValues;													/**< Vector containing the stress/force preview values. */
     std::vector<double> m_DistancePreviewValues;														/**< Vector containing the distance preview values. */

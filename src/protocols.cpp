@@ -45,8 +45,6 @@ Protocols::Protocols(wxListBox *listbox,
  * @brief Destructor
  */
 Protocols::~Protocols(){
-  delete m_ExperimentRunningThread;
-
   /*
   m_Experiments.clear();
   m_ExperimentValues.clear();
@@ -128,11 +126,7 @@ void Protocols::runProtocol(void){
     t1.join();
     m_CurrentExperimentNr++;
 
-    if(NULL == m_ExperimentRunningThread){
-      delete m_ExperimentRunningThread;
-      m_ExperimentRunningThread = NULL;
-    }
-    m_ExperimentRunningThread = new std::thread(&Protocols::checkFinishedExperiment, this);
+    m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
     m_ExperimentRunningThread->detach();
   }
 }
@@ -183,11 +177,7 @@ void Protocols::process(void){
     t1.join();
     m_CurrentExperimentNr++;
 
-    if(NULL != m_ExperimentRunningThread){
-      delete m_ExperimentRunningThread;
-      m_ExperimentRunningThread = NULL;
-    }
-    m_ExperimentRunningThread = new std::thread(&Protocols::checkFinishedExperiment, this);
+    m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
     m_ExperimentRunningThread->detach();
 
   } else{

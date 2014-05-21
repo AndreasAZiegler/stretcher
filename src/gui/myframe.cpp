@@ -1183,6 +1183,7 @@ void MyFrame::updateForce(){
  */
 void MyFrame::createValuesGraph(void){
   // Remove layers
+  m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
   m_Graph->DelLayer(&m_VectorLayer);
@@ -1240,6 +1241,7 @@ void MyFrame::updateGraph(void){
  */
 void MyFrame::createPreviewGraph(void){
   // Remove layers
+  m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
   m_Graph->DelLayer(&m_VectorLayer);
