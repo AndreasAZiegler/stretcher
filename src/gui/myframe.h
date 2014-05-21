@@ -443,9 +443,9 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
     mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
-    mpScaleX *m_XAxis;													/**< Pointer to the X axis */
-    mpScaleY *m_Y1Axis;													/**< Pointer to the left Y axis */
-    mpScaleY *m_Y2Axis;													/**< Pointer to the right Y axis */
+    std::unique_ptr<mpScaleX> m_XAxis;					/**< Pointer to the X axis */
+    std::unique_ptr<mpScaleY> m_Y1Axis;					/**< Pointer to the left Y axis */
+    std::unique_ptr<mpScaleY> m_Y2Axis;					/**< Pointer to the right Y axis */
     Settings *m_Settings;												/**< Pointer to the settings object */
     std::vector<std::shared_ptr<LinearStage>> m_LinearStages;	/**< Vector containing the pointers to the linear stages */
     std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */

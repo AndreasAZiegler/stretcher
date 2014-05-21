@@ -115,9 +115,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     //m_MeasurementValuesRecordingFlag(false),
     m_CurrentForceUpdateDelay(0),
     m_VectorLayer(_("Vector")),
-    m_XAxis(NULL),
-    m_Y1Axis(NULL),
-    m_Y2Axis(NULL),
+    m_XAxis(nullptr),
+    m_Y1Axis(nullptr),
+    m_Y2Axis(nullptr),
     m_MessageHandlersFinishedNumber(0)
 {
 
@@ -304,19 +304,12 @@ MyFrame::~MyFrame(){
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
-  m_Graph->DelLayer(m_XAxis);
-  m_Graph->DelLayer(m_Y1Axis);
-  m_Graph->DelLayer(m_Y2Axis);
+  m_Graph->DelLayer(m_XAxis.get());
+  m_Graph->DelLayer(m_Y1Axis.get());
+  m_Graph->DelLayer(m_Y2Axis.get());
 
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
-
-  if(NULL != m_XAxis){
-    delete m_XAxis;
-  }
-  if(NULL != m_Y1Axis){
-    delete m_Y1Axis;
-  }
 
   {
     // Wait until the message handlers are finished.
@@ -477,15 +470,11 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_ForceUnit = wxT(" kPa");
 
-    m_Graph->DelLayer(m_Y1Axis);
-    if(NULL != m_Y1Axis){
-      delete m_Y1Axis;
-      m_Y1Axis = NULL;
-    }
-    m_Y1Axis = new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true);
+    m_Graph->DelLayer(m_Y1Axis.get());
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Y1Axis->SetFont(graphFont);
-    m_Graph->AddLayer(m_Y1Axis);
+    m_Graph->AddLayer(m_Y1Axis.get());
     m_Graph->Fit();
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
@@ -494,15 +483,10 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_ForceUnit = wxT(" N");
 
-    m_Graph->DelLayer(m_Y1Axis);
-    if(NULL != m_Y1Axis){
-      delete m_Y1Axis;
-      m_Y1Axis = NULL;
-    }
-    m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Y1Axis->SetFont(graphFont);
-    m_Graph->AddLayer(m_Y1Axis);
+    m_Graph->AddLayer(m_Y1Axis.get());
     m_Graph->Fit();
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Force;
@@ -1199,8 +1183,8 @@ void MyFrame::updateForce(){
  */
 void MyFrame::createValuesGraph(void){
   // Remove layers
-  m_Graph->DelLayer(m_Y1Axis);
-  m_Graph->DelLayer(m_Y2Axis);
+  m_Graph->DelLayer(m_Y1Axis.get());
+  m_Graph->DelLayer(m_Y2Axis.get());
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
@@ -1213,20 +1197,8 @@ void MyFrame::createValuesGraph(void){
 
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  if(NULL == m_XAxis){
-    delete m_XAxis;
-    m_XAxis = NULL;
-  }
-  if(NULL == m_Y1Axis){
-    delete m_Y1Axis;
-    m_Y1Axis = NULL;
-  }
-  if(NULL == m_Y2Axis){
-    delete m_Y2Axis;
-    m_Y2Axis = NULL;
-  }
-  m_XAxis = new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
+  m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+  m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
   m_XAxis->SetDrawOutsideMargins(false);
@@ -1234,8 +1206,8 @@ void MyFrame::createValuesGraph(void){
 
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(m_XAxis);
-  m_Graph->AddLayer(m_Y1Axis);
+  m_Graph->AddLayer(m_XAxis.get());
+  m_Graph->AddLayer(m_Y1Axis.get());
   m_Graph->AddLayer(&m_VectorLayer);
 
   m_Graph->Fit();
@@ -1268,8 +1240,8 @@ void MyFrame::updateGraph(void){
  */
 void MyFrame::createPreviewGraph(void){
   // Remove layers
-  m_Graph->DelLayer(m_Y1Axis);
-  m_Graph->DelLayer(m_Y2Axis);
+  m_Graph->DelLayer(m_Y1Axis.get());
+  m_Graph->DelLayer(m_Y2Axis.get());
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
@@ -1277,22 +1249,9 @@ void MyFrame::createPreviewGraph(void){
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
-  if(NULL == m_XAxis){
-    delete m_XAxis;
-    m_XAxis = NULL;
-  }
-  if(NULL == m_Y1Axis){
-    delete m_Y1Axis;
-    m_Y1Axis = NULL;
-  }
-  if(NULL == m_Y2Axis){
-    delete m_Y2Axis;
-    m_Y2Axis = NULL;
-  }
-
-  m_XAxis = new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-  m_Y1Axis = new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true);
-  m_Y2Axis = new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true);
+  m_XAxis.reset(new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+  m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+  m_Y2Axis.reset(new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true));
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
   m_XAxis->SetDrawOutsideMargins(false);
@@ -1300,9 +1259,9 @@ void MyFrame::createPreviewGraph(void){
 
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
-  m_Graph->AddLayer(m_XAxis);
-  m_Graph->AddLayer(m_Y1Axis);
-  m_Graph->AddLayer(m_Y2Axis);
+  m_Graph->AddLayer(m_XAxis.get());
+  m_Graph->AddLayer(m_Y1Axis.get());
+  m_Graph->AddLayer(m_Y2Axis.get());
   m_Graph->AddLayer(&m_StressForcePreviewVector);
   m_Graph->AddLayer(&m_DistancePreviewVector);
 
