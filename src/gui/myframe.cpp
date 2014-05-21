@@ -187,7 +187,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   Bind(EVT_MYBUTTON_UP, &MyFrame::OnMotorIncreaseDistanceStop, this, ID_MotorIncreaseDistance);
 
   // Create graph
-  m_Graph = new mpWindow(m_GraphPanel, wxID_ANY);
+  m_Graph = std::unique_ptr<mpWindow>(new mpWindow(m_GraphPanel, wxID_ANY));
 
   // Define layer for the graph
   {
@@ -206,7 +206,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   // Add graph to window
   m_Graph->Fit();
-  m_GraphSizer1->Insert(0, m_Graph, 0, wxEXPAND);
+  m_GraphSizer1->Insert(0, m_Graph.get(), 0, wxEXPAND);
   m_GraphPanel->Layout();
 
   // Load file path
@@ -311,9 +311,6 @@ MyFrame::~MyFrame(){
   // Remove all layers and destroy the objects.
   //m_Graph->DelAllLayers(true, false);
 
-  if(NULL != m_Graph){
-    delete m_Graph;
-  }
   if(NULL != m_XAxis){
     delete m_XAxis;
   }

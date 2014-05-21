@@ -438,7 +438,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void createPreviewGraph(void);
 
-    mpWindow *m_Graph;													/**< Pointer to the graph */
+    std::unique_ptr<mpWindow> m_Graph;					/**< Pointer to the graph */
     mpFXYVector m_VectorLayer;									/**< Vector layer for the value graph */
     mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
     mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
