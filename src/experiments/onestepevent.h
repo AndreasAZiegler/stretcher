@@ -92,6 +92,13 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                goStartState,		/**< Go to start state */
                goBackState};		/**< Go back state */
 
+    /**
+     * @enum LimitState
+     * @brief Defines the limit states.
+     */
+    enum LimitState{upperLimitState,		/**< Going to upper limit. */
+                    lowerLimitState};		/**< Going to lower limit. */
+
     DistanceOrPercentage m_VelocityDistanceOrPercentage;
     double m_Velocity;
     double m_HoldTime1;
@@ -104,6 +111,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     BehaviorAfterStop m_BehaviorAfterStop;
 
     State m_CurrentState;
+    LimitState m_CurrentLimitState;
     long m_CurrentLimit;
     int m_CurrentCycle;
 

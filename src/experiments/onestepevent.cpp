@@ -62,6 +62,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_HoldDistance(holddistance),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_CurrentState(State::stopState),
+    m_CurrentLimitState(LimitState::upperLimitState),
     m_CurrentLimit(0),
     m_CurrentCycle(0),
     m_DecreaseSpeedFlag(false),
@@ -135,13 +136,17 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
     }
     // Make lower limit point.
     previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_LowerLimit));
+    timepoint++;
+
+    // Make start point.
+    previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength));
   }
   timepoint++;
 
   // Make last point depending on the stop behavior.
   switch(m_BehaviorAfterStop){
     case BehaviorAfterStop::GoToL0:
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_UpperLimit));
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_GageLength));
         break;
     case BehaviorAfterStop::HoldADistance:
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_HoldDistance));
@@ -165,6 +170,7 @@ void OneStepEvent::process(Event event){
           std::cout << "OneStepEvent holding over." << std::endl;
         }
 
+        m_CurrentLimitState = LimitState::upperLimitState;
         m_CurrentLimit = m_UpperLimit;
         m_StageFrame->setSpeed(m_Velocity);
         m_CurrentState = runState;
@@ -239,7 +245,9 @@ void OneStepEvent::process(Event event){
           }else{
             //m_StageFrame->stop();
             //std::cout << "Go to preload distance" << std::endl;
-            if(m_CurrentLimit == m_UpperLimit){
+            if(LimitState::upperLimitState == m_CurrentLimitState){
+              m_StageFrame->stop();
+              m_CurrentLimitState = LimitState::lowerLimitState;
               m_CurrentLimit = m_LowerLimit;
 
               // Perform hold if there is a hold time 2
@@ -249,7 +257,7 @@ void OneStepEvent::process(Event event){
                 std::cout << "OneStepEvent holding over." << std::endl;
               }
               process(Event::evUpdate);
-            }else if(m_CurrentLimit == m_LowerLimit){
+            }else if(LimitState::lowerLimitState == m_CurrentLimitState){
               if((m_Cycles - 1) <= m_CurrentCycle){
 
                 switch(m_BehaviorAfterStop){
@@ -265,6 +273,7 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
                 process(Event::evUpdate);
               } else{
+                m_StageFrame->stop();
                 m_CurrentCycle++;
                 m_CurrentState = goStartState;
 
@@ -297,7 +306,9 @@ void OneStepEvent::process(Event event){
           }else{
             //m_CurrentState = goBackState;
             //m_StageFrame->stop();
-            if(m_CurrentLimit == m_UpperLimit){
+            if(LimitState::upperLimitState == m_CurrentLimitState){
+              m_StageFrame->stop();
+              m_CurrentLimitState = LimitState::lowerLimitState;
               m_CurrentLimit = m_LowerLimit;
 
               // Perform hold if there is a hold time 2
@@ -307,7 +318,7 @@ void OneStepEvent::process(Event event){
                 std::cout << "OneStepEvent holding over." << std::endl;
               }
               process(Event::evUpdate);
-            }else if(m_CurrentLimit == m_LowerLimit){
+            }else if(LimitState::lowerLimitState == m_CurrentLimitState){
               if((m_Cycles - 1) <= m_CurrentCycle){
 
                 switch(m_BehaviorAfterStop){
@@ -323,6 +334,7 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
                 process(Event::evUpdate);
               } else {
+                m_StageFrame->stop();
                 m_CurrentCycle++;
                 m_CurrentState = goStartState;
 
@@ -366,7 +378,9 @@ void OneStepEvent::process(Event event){
             //m_CurrentState = goBackState;
             m_StageFrame->setSpeed(m_Velocity);
             //m_StageFrame->stop();
-            if(m_CurrentLimit == m_UpperLimit){
+            if(LimitState::upperLimitState == m_CurrentLimitState){
+              m_StageFrame->stop();
+              m_CurrentLimitState = LimitState::lowerLimitState;
               m_CurrentLimit = m_LowerLimit;
 
               // Perform hold if there is a hold time 2
@@ -376,7 +390,7 @@ void OneStepEvent::process(Event event){
                 std::cout << "OneStepEvent holding over." << std::endl;
               }
               process(Event::evUpdate);
-            }else if(m_CurrentLimit == m_LowerLimit){
+            }else if(LimitState::lowerLimitState == m_CurrentLimitState){
               if((m_Cycles - 1) <= m_CurrentCycle){
 
                 switch(m_BehaviorAfterStop){
@@ -392,6 +406,7 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
                 process(Event::evUpdate);
               } else {
+                m_StageFrame->stop();
                 m_CurrentCycle++;
                 m_CurrentState = goStartState;
 
@@ -424,6 +439,7 @@ void OneStepEvent::process(Event event){
         //std::cout << "m_CurrentDistance: " << m_CurrentDistance << " m_PreloadDistance: " << m_PreloadDistance << std::endl;
         if(std::abs(m_StartLength - m_CurrentDistance) < m_DistanceThreshold){
           //std::cout << "diff < m_DistanceThreshold m_Cycles: " << m_Cycles - 1 << " m_CurrentCycle: " << m_CurrentCycle << std::endl;
+          m_CurrentLimitState = LimitState::upperLimitState;
           m_CurrentLimit = m_UpperLimit;
           m_CurrentState = runState;
             //m_CurrentDirection = Direction::Stop;

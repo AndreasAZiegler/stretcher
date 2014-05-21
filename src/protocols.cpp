@@ -55,6 +55,11 @@ Protocols::~Protocols(){
  * @brief Create the preview vector and display it in the graph.
  */
 void Protocols::makePreview(void){
+  m_PreviewValues.clear();
+  m_DistancePreviewValues.clear();
+  m_DistanceTimePreviewValues.clear();
+  m_StressForcePreviewValues.clear();
+  m_StressForceTimePreviewValues.clear();
 
   // Collect the preview points from the single experiments.
   for(int i = 0; i < m_Experiments.size(); ++i){
