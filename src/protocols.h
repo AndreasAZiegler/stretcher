@@ -22,9 +22,15 @@ class Protocols
               std::condition_variable *wait,
               bool *preloaddoneflag,
               std::mutex *preloaddonemutex,
+              long maxdistance,
+              long mindistance,
+              long maxforce,
+              long minforce,
               mpFXYVector *valuesvector,
               mpFXYVector *stressforcevector,
               mpFXYVector *distancevector,
+              mpFXYVector *maxstressforcelimitvector, mpFXYVector *minstressforcelimitvector,
+              mpFXYVector *maxdistancelimitvector, mpFXYVector *mindistancelimitvector,
               std::string path);
 
     /**
@@ -108,11 +114,24 @@ class Protocols
     mpFXYVector *m_ValuesVector;																						/**< Pointer to the vector containing the values. */
     mpFXYVector *m_StressForcePreviewVector;																/**< Pointer to the vector containing the stress/force preview values. */
     mpFXYVector *m_DistancePreviewVector;																		/**< Pointer to the vector containing the distance preview values. */
+    mpFXYVector *m_MaxStressForceLimitVector;																/**< Pointer to the vector containing the max. stress/force limits. */
+    mpFXYVector *m_MinStressForceLimitVector;																/**< Pointer to the vector containing the min. stress/force limits. */
+    mpFXYVector *m_MaxDistanceLimitVector;																	/**< Pointer to the vector containing the max. distance limits. */
+    mpFXYVector *m_MinDistanceLimitVector;																	/**< Pointer to the vector containing the min. distance limits. */
+    std::vector<double> m_TimePointLimits;																	/**< Vector for the limits timepoints. */
+    std::vector<double> m_MaxStressForceLimits;															/**< Vector for the max. stress/force limits. */
+    std::vector<double> m_MinStressForceLimits;															/**< Vector for the min. stress/force limits. */
+    std::vector<double> m_MaxDistanceLimits;																/**< Vector for the max. distance limits. */
+    std::vector<double> m_MinDistanceLimits;																/**< Vector for the min. distance limits. */
     wxListBox *m_ListBox;																										/**< Pointer to the listbox object. */
     std::vector<std::shared_ptr<Experiment>> m_Experiments;									/**< Vector containing the pointers to the experiments. */
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
     std::unique_ptr<std::thread> m_ExperimentRunningThread;									/**< Pointer to the experiment running check thread */
+    long m_MaxDistanceLimit;																								/**< The maximal position for the stages */
+    long m_MinDistanceLimit;																								/**< The minimal position for the stages */
+    long m_MaxForceLimit;																										/**< The maximal allowed force. */
+    long m_MinForceLimit;																										/**< The minimal allowed force. */
     std::vector<std::shared_ptr<ExperimentValues>> m_ExperimentValues;			/**< Vector containing the pointers to the experiment values. */
     std::vector<Experiment::PreviewValue> m_PreviewValues;									/**< Vector containing the preview values. */
     std::vector<double> m_StressForcePreviewValues;													/**< Vector containing the stress/force preview values. */
@@ -138,5 +157,4 @@ class Protocols
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
 };
-
 #endif // PROTOCOLS_H

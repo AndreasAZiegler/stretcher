@@ -263,9 +263,9 @@ void OneStepEvent::process(Event event){
       if(Event::evUpdate == event){
         // If force based
         if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-          std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
+          //std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
           if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
-            std::cout << "m_CurrentForce - m_CurrentLimit: " << m_CurrentForce - m_CurrentLimit << std::endl;
+            //std::cout << "(m_CurrentForce - m_CurrentLimit) >  m_ForceStressThreshold: " << (m_CurrentForce - m_CurrentLimit) << " " << m_ForceStressThreshold << std::endl;
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
@@ -275,7 +275,7 @@ void OneStepEvent::process(Event event){
               }
             }
           }else if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
-            std::cout << "m_CurrentLimit - m_CurrentForce: " << m_CurrentLimit - m_CurrentForce << std::endl;
+            //std::cout << "(m_CurrentLimit - m_CurrentForce) >  m_ForceStressThreshold: " << (m_CurrentLimit - m_CurrentForce) << " " << m_ForceStressThreshold << std::endl;
 
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
               m_CurrentDirection = Direction::Forwards;
@@ -599,6 +599,19 @@ void OneStepEvent::process(Event event){
     break;
 
     case goBackState:
+      if(Event::evStop == event){
+        //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
+        m_CurrentState = stopState;
+        m_CurrentDirection = Direction::Stop;
+        m_CurrentCycle = 0;
+        m_CurrentDirection = Direction::Stop;
+        {
+          std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+          m_StageFrame->stop();
+        }
+        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+        m_Wait->notify_all();
+      }
       if(Event::evUpdate == event){
         //std::cout << "abs(m_StartLength - m_CurrentDistance) < m_DistanceThreshold): " << std::abs(m_StartLength - m_CurrentDistance) << " < " << m_DistanceThreshold << std::endl;
         if(std::abs(m_CurrentLimit - m_CurrentDistance) < 0.7*m_DistanceThreshold){

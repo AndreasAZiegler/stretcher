@@ -162,10 +162,10 @@ class Experiment
     DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */
 
     long m_GageLength;													/**< Preload distance of the stage frame */
-    long m_ZeroDistance;													/**< Zero distance */
+    long m_ZeroDistance;												/**< Zero distance */
     long m_StartLength;													/**< Distance where the experiment starts. */
     long m_CurrentDistance;											/**< Current distance of the stage frame */
-    double m_CurrentForce;												/**< Current force */
+    double m_CurrentForce;											/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
     double m_Area;																													/**< Area size of the sample. */

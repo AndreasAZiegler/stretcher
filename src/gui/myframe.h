@@ -442,6 +442,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     mpFXYVector m_VectorLayer;									/**< Vector layer for the value graph */
     mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
     mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
+    mpFXYVector m_MaxStressForceLimitVector;		/**< Vector layer to display the max stress/force limits. */
+    mpFXYVector m_MinStressForceLimitVector;		/**< Vector layer to display the min stress/force limits. */
+    mpFXYVector m_MaxDistanceLimitVector;				/**< Vector layer to display the max distance limits. */
+    mpFXYVector m_MinDistanceLimitVector;				/**< Vector layer to display the min distance limits. */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     std::unique_ptr<mpScaleX> m_XAxis;					/**< Pointer to the X axis */
     std::unique_ptr<mpScaleY> m_Y1Axis;					/**< Pointer to the left Y axis */
@@ -453,10 +457,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::condition_variable m_WaitMessageHandlers;/**< Wait condition variable to wait for message handlers to stop. */
     std::mutex m_WaitMessageHandlersMutex;			/**< Mutex to protect m_WaitMessageHandlers. */
     std::shared_ptr<StageFrame> m_StageFrame;		/**< Pointer to the stage frame object */
-    long m_StageMaxLimit;												/**< The maximal position for the stages */
-    long m_StageMinLimit;												/**< The minimal position for the stages */
-    long m_ForceMaxLimit;												/**< The maximal allowed force. */
-    long m_ForceMinLimit;												/**< The minimal allowed force. */
+    double m_DistanceMaxLimit;									/**< The maximal position for the stages */
+    double m_DistanceMinLimit;									/**< The minimal position for the stages */
+    double m_ForceMaxLimit;											/**< The maximal allowed force. */
+    double m_ForceMinLimit;											/**< The minimal allowed force. */
     std::shared_ptr<ForceSensor> m_ForceSensor;	/**< Pointer to the force sensor */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */

@@ -104,8 +104,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentProtocol(nullptr),
     //m_CurrentExperiment(NULL),
     //m_CurrentExperimentValues(NULL),
-    m_StageMaxLimit(0),
-    m_StageMinLimit(0),
+    m_DistanceMaxLimit(0),
+    m_DistanceMinLimit(0),
     m_ForceMaxLimit(0),
     m_ForceMinLimit(0),
     m_GageLength(0),
@@ -196,13 +196,27 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_VectorLayer.SetContinuity(true);
     m_StressForcePreviewVector.SetContinuity(true);
     m_DistancePreviewVector.SetContinuity(true);
-    wxPen vectorpen(*wxBLUE, 2, wxSOLID);
-    m_VectorLayer.SetPen(vectorpen);
-    m_StressForcePreviewVector.SetPen(vectorpen);
-    m_DistancePreviewVector.SetPen(vectorpen);
+    wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
+    wxPen vectorpenDistance(*wxGREEN, 2, wxSOLID);
+    m_VectorLayer.SetPen(vectorpenStressForce);
+    m_StressForcePreviewVector.SetPen(vectorpenStressForce);
+    m_DistancePreviewVector.SetPen(vectorpenDistance);
     m_VectorLayer.SetDrawOutsideMargins(false);
     m_StressForcePreviewVector.SetDrawOutsideMargins(false);
     m_DistancePreviewVector.SetDrawOutsideMargins(false);
+
+    m_MaxStressForceLimitVector.SetPen(vectorpenStressForce);
+    m_MaxStressForceLimitVector.SetContinuity(true);
+    m_MaxStressForceLimitVector.SetName("Maximal stress/force limit");
+    m_MinStressForceLimitVector.SetPen(vectorpenStressForce);
+    m_MinStressForceLimitVector.SetContinuity(true);
+    m_MinStressForceLimitVector.SetName("Minimal stress/force limit");
+    m_MaxDistanceLimitVector.SetPen(vectorpenDistance);
+    m_MaxDistanceLimitVector.SetContinuity(true);
+    m_MaxDistanceLimitVector.SetName("Maximal distance limit");
+    m_MinDistanceLimitVector.SetPen(vectorpenDistance);
+    m_MinDistanceLimitVector.SetContinuity(true);
+    m_MinDistanceLimitVector.SetName("Minimal distance limit");
   }
 
   // Add graph to window
@@ -305,6 +319,10 @@ MyFrame::~MyFrame(){
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
+  m_Graph->DelLayer(&m_MaxStressForceLimitVector);
+  m_Graph->DelLayer(&m_MinStressForceLimitVector);
+  m_Graph->DelLayer(&m_MaxDistanceLimitVector);
+  m_Graph->DelLayer(&m_MinDistanceLimitVector);
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
@@ -467,12 +485,21 @@ void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
  */
 void MyFrame::OnUnit(wxCommandEvent& event){
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
+    m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_ForceUnit = wxT(" kPa");
 
+
+    wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
     m_Graph->DelLayer(m_Y1Axis.get());
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+    m_Y1Axis->SetPen(vectorpenStressForce);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Y1Axis->SetFont(graphFont);
     m_Graph->AddLayer(m_Y1Axis.get());
@@ -480,11 +507,17 @@ void MyFrame::OnUnit(wxCommandEvent& event){
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
   }else{
+    m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
+    m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_ForceUnit = wxT(" N");
 
+    wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+    m_Y1Axis->SetPen(vectorpenStressForce);
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Y1Axis->SetFont(graphFont);
     m_Graph->AddLayer(m_Y1Axis.get());
@@ -977,14 +1010,14 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
-  m_StageMaxLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
-  m_StageMinLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
+  m_DistanceMaxLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
+  m_DistanceMinLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
   m_ForceMaxLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue();
   m_ForceMinLimit = m_LimitsLimitMinForceSpinCtrl->GetValue();
 
-  m_StageFrame->setMaxDistanceLimit(m_StageMaxLimit);
+  m_StageFrame->setMaxDistanceLimit(m_DistanceMaxLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-  m_StageFrame->setMinDistanceLimit(m_StageMinLimit);
+  m_StageFrame->setMinDistanceLimit(m_DistanceMinLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
 }
 
@@ -1160,6 +1193,7 @@ void MyFrame::OnRunProtocol(wxCommandEvent& event){
  */
 void MyFrame::OnStopProtocol(wxCommandEvent& event){
   //OnMotorStop(event);
+  m_StageFrame->stop();
   m_CurrentProtocol->stopProtocol();
 }
 
@@ -1193,6 +1227,10 @@ void MyFrame::createValuesGraph(void){
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
+  m_Graph->DelLayer(&m_MaxStressForceLimitVector);
+  m_Graph->DelLayer(&m_MinStressForceLimitVector);
+  m_Graph->DelLayer(&m_MaxDistanceLimitVector);
+  m_Graph->DelLayer(&m_MinDistanceLimitVector);
 
   // Clear vectors
   {
@@ -1203,7 +1241,15 @@ void MyFrame::createValuesGraph(void){
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
   m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
-  m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+
+  wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+    m_Y1Axis->SetPen(vectorpenStressForce);
+  } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+    m_Y1Axis->SetPen(vectorpenStressForce);
+  }
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
   m_XAxis->SetDrawOutsideMargins(false);
@@ -1214,6 +1260,13 @@ void MyFrame::createValuesGraph(void){
   m_Graph->AddLayer(m_XAxis.get());
   m_Graph->AddLayer(m_Y1Axis.get());
   m_Graph->AddLayer(&m_VectorLayer);
+  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+    m_Graph->AddLayer(&m_MaxStressForceLimitVector);
+    m_Graph->AddLayer(&m_MinStressForceLimitVector);
+  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    m_Graph->AddLayer(&m_MaxDistanceLimitVector);
+    m_Graph->AddLayer(&m_MinDistanceLimitVector);
+  }
 
   m_Graph->Fit();
 }
@@ -1251,13 +1304,26 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->DelLayer(&m_VectorLayer);
   m_Graph->DelLayer(&m_StressForcePreviewVector);
   m_Graph->DelLayer(&m_DistancePreviewVector);
+  m_Graph->DelLayer(&m_MaxStressForceLimitVector);
+  m_Graph->DelLayer(&m_MinStressForceLimitVector);
+  m_Graph->DelLayer(&m_MaxDistanceLimitVector);
+  m_Graph->DelLayer(&m_MinDistanceLimitVector);
 
   // Add axis.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
+  wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
+  wxPen vectorpenDistance(*wxGREEN, 2, wxSOLID);
   m_XAxis.reset(new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL));
-  m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+    m_Y1Axis->SetPen(vectorpenStressForce);
+  } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+    m_Y1Axis->SetPen(vectorpenStressForce);
+  }
   m_Y2Axis.reset(new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true));
+  m_Y2Axis->SetPen(vectorpenDistance);
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
   m_XAxis->SetDrawOutsideMargins(false);
@@ -1270,6 +1336,10 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->AddLayer(m_Y2Axis.get());
   m_Graph->AddLayer(&m_StressForcePreviewVector);
   m_Graph->AddLayer(&m_DistancePreviewVector);
+  m_Graph->AddLayer(&m_MaxStressForceLimitVector);
+  m_Graph->AddLayer(&m_MinStressForceLimitVector);
+  m_Graph->AddLayer(&m_MaxDistanceLimitVector);
+  m_Graph->AddLayer(&m_MinDistanceLimitVector);
 
   m_Graph->Fit();
 }
@@ -1287,9 +1357,18 @@ void MyFrame::checkProtocol(void){
                                                                &m_Wait,
                                                                &m_PreloadDoneFlag,
                                                                &m_PreloadDoneMutex,
+                                                               m_LimitsLimitMaxDistanceSpinCtrl->GetValue(),
+                                                               m_LimitsLimitMinDistanceSpinCtrl->GetValue(),
+                                                               m_LimitsLimitMaxForceSpinCtrl->GetValue(),
+                                                               m_LimitsLimitMinForceSpinCtrl->GetValue(),
+
                                                                &m_VectorLayer,
                                                                &m_StressForcePreviewVector,
                                                                &m_DistancePreviewVector,
+                                                               &m_MaxStressForceLimitVector,
+                                                               &m_MinStressForceLimitVector,
+                                                               &m_MaxDistanceLimitVector,
+                                                               &m_MinDistanceLimitVector,
                                                                m_StoragePath));
   }
 }

@@ -17,9 +17,17 @@ Protocols::Protocols(wxListBox *listbox,
                      std::condition_variable *wait,
                      bool *preloaddoneflag,
                      std::mutex *preloaddonemutex,
+                     long maxdistance,
+                     long mindistance,
+                     long maxforce,
+                     long minforce,
                      mpFXYVector *valuesvector,
                      mpFXYVector *stressforcevector,
                      mpFXYVector *distancevector,
+                     mpFXYVector *maxstressforcelimitvector,
+                     mpFXYVector *minstressforcelimitvector,
+                     mpFXYVector *maxdistancelimitvector,
+                     mpFXYVector *mindistancelimitvector,
                      std::string path)
   : m_ListBox(listbox),
     m_MyFrame(myframe),
@@ -30,9 +38,17 @@ Protocols::Protocols(wxListBox *listbox,
     m_StopProtocolFlag(false),
     m_PreloadDoneFlag(preloaddoneflag),
     m_PreloadDoneMutex(preloaddonemutex),
+    m_MaxDistanceLimit(maxdistance),
+    m_MinDistanceLimit(mindistance),
+    m_MaxForceLimit(maxforce),
+    m_MinForceLimit(minforce),
     m_ValuesVector(valuesvector),
     m_StressForcePreviewVector(stressforcevector),
     m_DistancePreviewVector(distancevector),
+    m_MaxStressForceLimitVector(maxstressforcelimitvector),
+    m_MinStressForceLimitVector(minstressforcelimitvector),
+    m_MaxDistanceLimitVector(maxdistancelimitvector),
+    m_MinDistanceLimitVector(mindistancelimitvector),
     m_StoragePath(path),
     m_PreloadDistance(0),
     m_ExperimentRunningFlag(false),
@@ -60,6 +76,9 @@ void Protocols::makePreview(void){
   m_DistanceTimePreviewValues.clear();
   m_StressForcePreviewValues.clear();
   m_StressForceTimePreviewValues.clear();
+  m_TimePointLimits.clear();
+  m_MaxStressForceLimits.clear();
+  m_MaxDistanceLimits.clear();
 
   // Collect the preview points from the single experiments.
   for(int i = 0; i < m_Experiments.size(); ++i){
@@ -77,9 +96,25 @@ void Protocols::makePreview(void){
     }
   }
 
+  // Create limit vectors
+  m_TimePointLimits.push_back(m_PreviewValues.front().timepoint);
+  m_TimePointLimits.push_back(m_PreviewValues.back().timepoint);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
+  m_MinStressForceLimits.push_back(m_MinForceLimit);
+  m_MinStressForceLimits.push_back(m_MinForceLimit);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
+
   // Set the the vector data.
   m_StressForcePreviewVector->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
   m_DistancePreviewVector->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
+  m_MaxStressForceLimitVector->SetData(m_TimePointLimits, m_MaxStressForceLimits);
+  m_MinStressForceLimitVector->SetData(m_TimePointLimits, m_MinStressForceLimits);
+  m_MaxDistanceLimitVector->SetData(m_TimePointLimits, m_MaxDistanceLimits);
+  m_MinDistanceLimitVector->SetData(m_TimePointLimits, m_MinDistanceLimits);
 
   // Show preview in the graph.
   m_MyFrame->showPreviewGraph();
