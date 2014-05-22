@@ -687,7 +687,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      m_CurrentDistance,
                                                      m_Area,
 
-                                                     m_PreloadLimitSpinCtrl->GetValue(),
+                                                     m_PreloadLimitSpinCtrl->GetValue() * 10000.0,
                                                      m_PreloadSpeedMmSpinCtrl->GetValue()));
 
   m_CurrentProtocol->addExperiment(experiment);

@@ -66,6 +66,16 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      */
     virtual void resetExperiment(void);
 
+    /**
+     * @brief Sleep for the amount of milliseconds.
+     * @param milliseconds
+     */
+    void sleepForMilliseconds(double milliseconds);
+
+    /**
+     * @brief Returns a pointer to the experiment values.
+     * @return A pointer to the experiment values.
+     */
     std::shared_ptr<ExperimentValues> getExperimentValues(void){
       if(NULL != m_ExperimentValues){
         return(m_ExperimentValues);
@@ -118,6 +128,9 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
+
+    std::mutex m_StageFrameAccessMutex;
+    bool m_CheckDistanceFlag;
 
     std::shared_ptr<OneStepEventValues> m_ExperimentValues;				/**< Pointer to the experiment values */
 };

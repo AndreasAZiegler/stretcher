@@ -72,9 +72,6 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
 void ExperimentValues::stopMeasurement(void){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
-
-  m_GraphStressForceValues = NULL;
-  m_GraphDistanceValues = NULL;
 }
 
 /**

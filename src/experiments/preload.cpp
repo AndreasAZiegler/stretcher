@@ -49,7 +49,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                zerodistance,
                currentdistance,
                area,
-               0.3/*stress force threshold*/,
+               0.005 * 10000.0/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
@@ -122,7 +122,7 @@ void Preload::setArea(double x, double y){
  */
 void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   if(UpdatedValuesReceiver::ValueType::Force == type){
-    m_CurrentForce = measurementValue.value / 10000.0;
+    m_CurrentForce = measurementValue.value;
 
     process(Event::evUpdate);
   }
