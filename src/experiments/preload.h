@@ -34,7 +34,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             mpFXYVector *maxlimitvector,
             mpFXYVector *minlimitvector,
             MyFrame *myframe,
-            std::string path,
+            std::string path, long maxforcelimit, long minforcelimit, long maxdistancelimit, long mindistancelimit,
 
             std::condition_variable *wait,
             std::mutex *mutex,

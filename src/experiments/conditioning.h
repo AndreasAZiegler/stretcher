@@ -36,7 +36,7 @@ class Conditioning : virtual public Experiment, virtual public UpdatedValuesRece
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex,
                  MyFrame *myframe,
-                 std::string path,
+                 std::string path, long maxforcelimit, long minforcelimit, long maxdistancelimit, long mindistancelimit,
 
                  std::condition_variable *wait,
                  std::mutex *mutex,

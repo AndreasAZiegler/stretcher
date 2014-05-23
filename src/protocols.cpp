@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <wx/msgdlg.h>
 #include "../gui/myframe.h"
 #include "protocols.h"
 #include "experiments/preload.h"
@@ -126,8 +127,11 @@ void Protocols::makePreview(void){
  * @brief Runs the protocol.
  */
 void Protocols::runProtocol(void){
+  // Check if the protocol will exceed some limits and returns with a message in this case.
   if(false == checkProtocol()){
-
+    std::unique_ptr<wxMessageDialog> popup = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(m_MyFrame, "Limit will exeed, check your experiment settings."));
+    popup->ShowModal();
+    return;
   }
 
   m_StopProtocolFlag = false;
@@ -258,12 +262,15 @@ void Protocols::process(void){
  * @brief Checks if protocol exceeds some limits.
  */
 bool Protocols::checkProtocol(void){
-  for(auto i : m_StressForcePreviewValues){
+  // Creat preview to generate the preview values.
+  makePreview();
+
+  for(double i : m_StressForcePreviewValues){
     if((i >= m_MaxForceLimit) || (i <= m_MinForceLimit)){
       return(false);
     }
   }
-  for(auto i : m_DistancePreviewValues){
+  for(double i : m_DistancePreviewValues){
     if((i >= m_MaxDistanceLimit) || (i <= m_MinDistanceLimit)){
       return(false);
     }

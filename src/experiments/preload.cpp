@@ -22,6 +22,10 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  mpFXYVector *minlimitvector,
                  MyFrame *myframe,
                  std::string path,
+                 long maxforcelimit,
+                 long minforcelimit,
+                 long maxdistancelimit,
+                 long mindistancelimit,
 
                  std::condition_variable *wait,
                  std::mutex *mutex,
@@ -43,6 +47,10 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                vectoraccessmutex,
                myframe,
                path,
+               maxforcelimit,
+               minforcelimit,
+               maxdistancelimit,
+               mindistancelimit,
 
                type,
                distanceOrStressOrForce,
@@ -79,6 +87,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                                                        speedInMM))
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**
@@ -91,6 +100,7 @@ void Preload::setPreloadDistance(long preloaddistance){
 
 Preload::~Preload(){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
+  m_StageFrame->unregisterUpdateMethod(m_DistanceId);
   // Delete the experiment values because we don't need them for the preloading.
   //delete m_ExperimentValues;
   std::cout << "Preload destructor finished." << std::endl;
@@ -125,10 +135,24 @@ void Preload::setArea(double x, double y){
  * @param type Type of value.
  */
 void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
-  if(UpdatedValuesReceiver::ValueType::Force == type){
-    m_CurrentForce = measurementValue.value;
+  switch(type){
+    case UpdatedValuesReceiver::ValueType::Force:
+      m_CurrentForce = measurementValue.value;
+      if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
+        std::cout << "OneStepEvent: Force limit exceeded." << std::endl;
+        process(Event::evStop);
+      } else{
+        process(Event::evUpdate);
+      }
+      break;
 
-    process(Event::evUpdate);
+    case UpdatedValuesReceiver::ValueType::Distance:
+      m_CurrentDistance = measurementValue.value;
+      if((true == m_CheckLimitsFlag) && ((m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance))){
+        std::cout << "OneStepEvent: Distance limit exceeded." << std::endl;
+        process(Event::evStop);
+      }
+      break;
   }
 }
 
@@ -152,6 +176,7 @@ void Preload::process(Event e){
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_SpeedInMM);
         m_CurrentState = runState;
+        m_CheckLimitsFlag = true;
 
         // If force based
         if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
@@ -265,5 +290,6 @@ void Preload::process(Event e){
  */
 void Preload::resetExperiment(void){
   m_CurrentState = stopState;
+  m_CheckLimitsFlag = false;
   m_StageFrame->stop();
 }

@@ -80,6 +80,10 @@ class Experiment
                std::mutex *vectoraccessmutex,
                MyFrame *myframe,
                std::string path,
+               long maxforcelimit,
+               long minforcelimit,
+               long maxdistancelimit,
+               long mindistancelimit,
 
                ExperimentType type,
                DistanceOrStressOrForce distanceOrStressForce,
@@ -155,6 +159,11 @@ class Experiment
     std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
 
+    bool m_CheckLimitsFlag;											/**< Indicates if the limits should be checked. */
+    long m_MaxForceLimit;												/**< Maximal force limit. */
+    long m_MinForceLimit;												/**< Minimal force limit. */
+    long m_MaxDistanceLimit;										/**< Maximal distance limit. */
+    long m_MinDistanceLimit;										/**< Minimal distance limit. */
     double m_ForceStressThreshold;							/**< Threshold for the comparison */
     double m_DistanceThreshold;									/**< Threshold for the coparison of distances */
     Direction m_CurrentDirection;								/**< The current direction */

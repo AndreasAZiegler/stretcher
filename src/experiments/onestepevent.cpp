@@ -11,6 +11,10 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            mpFXYVector *minlimitvector,
                            MyFrame *myframe,
                            std::string path,
+                           long maxforcelimit,
+                           long minforcelimit,
+                           long maxdistancelimit,
+                           long mindistancelimit,
 
                            std::condition_variable *wait,
                            std::mutex *mutex,
@@ -46,6 +50,10 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                vectoraccessmutex,
                myframe,
                path,
+               maxforcelimit,
+               minforcelimit,
+               maxdistancelimit,
+               mindistancelimit,
 
                type,
                distanceOrStressForce,
@@ -228,6 +236,7 @@ void OneStepEvent::process(Event event){
           m_StageFrame->setSpeed(m_Velocity);
         }
         m_CurrentState = runState;
+        m_CheckLimitsFlag = true;
         //m_ExperimentValues->setStartPoint();
 
         // If force based
@@ -695,15 +704,25 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
-      if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-        process(Event::evUpdate);
+      if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
+        std::cout << "OneStepEvent: Force limit exceeded." << std::endl;
+        process(Event::evStop);
+      } else{
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+          process(Event::evUpdate);
+        }
       }
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = measurementValue.value;
-      if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){
-        process(Event::evUpdate);
+      if((true == m_CheckLimitsFlag) && (m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance)){
+        std::cout << "OneStepEvent: Distance limit exceeded." << std::endl;
+        process(Event::evStop);
+      } else{
+        if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){
+          process(Event::evUpdate);
+        }
       }
       break;
   }
@@ -716,6 +735,7 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
 void OneStepEvent::resetExperiment(void){
   m_CurrentCycle = 0;
   m_CurrentState = stopState;
+  m_CheckLimitsFlag = false;
   m_CurrentDirection = Direction::Stop;
   m_StageFrame->stop();
 }

@@ -457,10 +457,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::condition_variable m_WaitMessageHandlers;/**< Wait condition variable to wait for message handlers to stop. */
     std::mutex m_WaitMessageHandlersMutex;			/**< Mutex to protect m_WaitMessageHandlers. */
     std::shared_ptr<StageFrame> m_StageFrame;		/**< Pointer to the stage frame object */
-    double m_DistanceMaxLimit;									/**< The maximal position for the stages */
-    double m_DistanceMinLimit;									/**< The minimal position for the stages */
-    double m_ForceMaxLimit;											/**< The maximal allowed force. */
-    double m_ForceMinLimit;											/**< The minimal allowed force. */
+    double m_MaxDistanceLimit;									/**< The maximal position for the stages */
+    double m_MinDistanceLimit;									/**< The minimal position for the stages */
+    double m_MaxForceLimit;											/**< The maximal allowed force. */
+    double m_MinForceLimit;											/**< The minimal allowed force. */
     std::shared_ptr<ForceSensor> m_ForceSensor;	/**< Pointer to the force sensor */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */

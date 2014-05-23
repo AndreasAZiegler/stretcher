@@ -104,10 +104,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentProtocol(nullptr),
     //m_CurrentExperiment(NULL),
     //m_CurrentExperimentValues(NULL),
-    m_DistanceMaxLimit(0),
-    m_DistanceMinLimit(0),
-    m_ForceMaxLimit(0),
-    m_ForceMinLimit(0),
+    m_MaxDistanceLimit(0),
+    m_MinDistanceLimit(0),
+    m_MaxForceLimit(0),
+    m_MinForceLimit(0),
     m_GageLength(0),
     m_ZeroLength(0),
     m_Area(0),
@@ -717,9 +717,12 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      &m_VectorLayerMutex,
                                                      maxlimitvector,
                                                      minlimitvector,
-
                                                      this,
                                                      m_StoragePath,
+                                                     m_MaxForceLimit,
+                                                     m_MinForceLimit,
+                                                     m_MaxDistanceLimit,
+                                                     m_MinDistanceLimit,
 
                                                      &m_Wait,
                                                      &m_WaitMutex,
@@ -847,6 +850,10 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           minlimitvector,
                                                           this,
                                                           m_StoragePath,
+                                                          m_MaxForceLimit,
+                                                          m_MinForceLimit,
+                                                          m_MaxDistanceLimit,
+                                                          m_MinDistanceLimit,
 
                                                           &m_Wait,
                                                           &m_WaitMutex,
@@ -1056,14 +1063,14 @@ void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
-  m_DistanceMaxLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
-  m_DistanceMinLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
-  m_ForceMaxLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue();
-  m_ForceMinLimit = m_LimitsLimitMinForceSpinCtrl->GetValue();
+  m_MaxDistanceLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
+  m_MinDistanceLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
+  m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue();
+  m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue();
 
-  m_StageFrame->setMaxDistanceLimit(m_DistanceMaxLimit);
+  m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-  m_StageFrame->setMinDistanceLimit(m_DistanceMinLimit);
+  m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
 }
 
@@ -1230,6 +1237,12 @@ void MyFrame::OnPreviewProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnRunProtocol(wxCommandEvent& event){
+  /*
+  wxMessageDialog *popup = new wxMessageDialog(this, "Limit will exeed, check your experiment settings.");
+  popup->Show();
+  popup->ShowModal();
+  delete popup;
+  */
   m_CurrentProtocol->runProtocol();
 }
 

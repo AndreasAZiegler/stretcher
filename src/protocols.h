@@ -11,6 +11,9 @@
 // Forward declaration
 class MyFrame;
 
+/**
+ * @brief Protocols class which handle all the containing experiments and the required methods.
+ */
 class Protocols
 {
   public:
@@ -152,17 +155,17 @@ class Protocols
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 
     bool m_StopProtocolFlag;																								/**< Indicates if the protocol should be stopped. */
-    std::mutex *m_WaitMutex;																									/**< Mutex to protect m_Wait */
-    std::condition_variable *m_Wait;																					/**< Wait condition variable to wait for the end of an experiment */
-    bool m_ExperimentRunningFlag;								/**< Flag which indicates if an experiment is running */
-    std::mutex m_ExperimentRunningMutex;				/**< Mutex to protect m_ExperimentRunningFlag */
-    bool *m_PreloadDoneFlag;											/**< Indicates if preloading is done */
-    std::mutex *m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
-    bool *m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
-    std::mutex *m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
-    long m_PreloadDistance;											/**< Preload distance */
-    bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
-    std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
-    ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
+    std::mutex *m_WaitMutex;																								/**< Mutex to protect m_Wait */
+    std::condition_variable *m_Wait;																				/**< Wait condition variable to wait for the end of an experiment */
+    bool m_ExperimentRunningFlag;																						/**< Flag which indicates if an experiment is running */
+    std::mutex m_ExperimentRunningMutex;																		/**< Mutex to protect m_ExperimentRunningFlag */
+    bool *m_PreloadDoneFlag;																								/**< Indicates if preloading is done */
+    std::mutex *m_PreloadDoneMutex;																					/**< Mutex to protect m_PreloadDoneFlag */
+    bool *m_StagesStoppedFlag;																							/**< Flag indicating if stages stopped or not. */
+    std::mutex *m_StagesStoppedMutex;																				/**< Mutex for m_StagesStoppedFlag */
+    long m_PreloadDistance;																									/**< Preload distance */
+    bool m_MeasurementValuesRecordingFlag;																	/**< Indicates if the measurement values are recorded or not. */
+    std::mutex m_MeasurementValuesRecordingMutex; 													/**< Mutex to protect m_MeasurementValuesRecordingFlag */
+    ExperimentValues *m_CurrentExperimentValues;														/**< Pointer to the current experiment values */
 };
 #endif // PROTOCOLS_H

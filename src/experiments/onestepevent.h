@@ -16,7 +16,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  mpFXYVector *vector,
                  std::mutex *vectoraccessmutex, mpFXYVector *maxlimitvector, mpFXYVector *minlimitvector,
                  MyFrame *myframe,
-                 std::string path,
+                 std::string path, long maxforcelimit, long minforcelimit, long maxdistancelimit, long mindistancelimit,
 
 
                  std::condition_variable *wait,
