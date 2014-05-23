@@ -14,7 +14,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *vector,
-                 std::mutex *vectoraccessmutex,
+                 std::mutex *vectoraccessmutex, mpFXYVector *maxlimitvector, mpFXYVector *minlimitvector,
                  MyFrame *myframe,
                  std::string path,
 
@@ -30,13 +30,13 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  long currentdistance,
                  double area,
 
-                 DistanceOrPercentage velocityDistanceOrPercentage,
+                 DistanceOrPercentage velocityDistanceOrPercentage, double velocitypercent,
                  double velocity,
                  double holdtime1,
                  long upperlimit,
                  double holdtime2,
                  long lowerlimit,
-                 DistanceOrPercentage holdDistanceOrPercentage,
+                 DistanceOrPercentage holdDistanceOrPercentage, double holddistancepercent,
                  long holddistance,
                  int cycles,
                  BehaviorAfterStop behaviorAfterStop);
@@ -110,12 +110,14 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                     lowerLimitState};		/**< Going to lower limit. */
 
     DistanceOrPercentage m_VelocityDistanceOrPercentage;
+    double m_VelocityPercent;
     double m_Velocity;
     double m_HoldTime1;
     long m_UpperLimit;
     double m_HoldTime2;
     long m_LowerLimit;
     DistanceOrPercentage m_HoldDistanceOrPercentage;
+    int m_HoldDistancePercent;
     long m_HoldDistance;
     int m_Cycles;
     BehaviorAfterStop m_BehaviorAfterStop;

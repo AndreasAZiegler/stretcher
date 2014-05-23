@@ -78,7 +78,9 @@ void Protocols::makePreview(void){
   m_StressForceTimePreviewValues.clear();
   m_TimePointLimits.clear();
   m_MaxStressForceLimits.clear();
+  m_MinStressForceLimits.clear();
   m_MaxDistanceLimits.clear();
+  m_MinDistanceLimits.clear();
 
   // Collect the preview points from the single experiments.
   for(int i = 0; i < m_Experiments.size(); ++i){
@@ -124,6 +126,10 @@ void Protocols::makePreview(void){
  * @brief Runs the protocol.
  */
 void Protocols::runProtocol(void){
+  if(false == checkProtocol()){
+
+  }
+
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
 
@@ -157,8 +163,19 @@ void Protocols::runProtocol(void){
     // Create shared_ptr's which are needed.
     std::shared_ptr<std::vector<double>> graphstressforce(&m_GraphStressForceValues, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> graphdistance(&m_GraphDistanceValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphmaxforcelimit(&m_MaxStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphminforcelimit(&m_MinStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphmaxdistancelimit(&m_MaxDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphmindistancelimit(&m_MinDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphlimitstimepoints(&m_TimePointLimits, do_nothing_deleter);
     // Start recording values.
-    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce, graphdistance);
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce,
+                                                                graphdistance,
+                                                                graphmaxforcelimit,
+                                                                graphminforcelimit,
+                                                                graphmaxdistancelimit,
+                                                                graphmindistancelimit,
+                                                                graphlimitstimepoints);
 
     m_ListBox->SetSelection(m_CurrentExperimentNr);
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
@@ -208,8 +225,19 @@ void Protocols::process(void){
     // Create shared_ptr's which are needed.
     std::shared_ptr<std::vector<double>> graphstressforce(&m_GraphStressForceValues, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> graphdistance(&m_GraphDistanceValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphmaxforcelimit(&m_MaxStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphminforcelimit(&m_MinStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphmaxdistancelimit(&m_MaxDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphmindistancelimit(&m_MinDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> graphlimitstimepoints(&m_TimePointLimits, do_nothing_deleter);
     // Start recording values.
-    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce, graphdistance);
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce,
+                                                                graphdistance,
+                                                                graphmaxforcelimit,
+                                                                graphminforcelimit,
+                                                                graphmaxdistancelimit,
+                                                                graphmindistancelimit,
+                                                                graphlimitstimepoints);
 
     m_ListBox->SetSelection(m_CurrentExperimentNr);
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
@@ -224,6 +252,23 @@ void Protocols::process(void){
     m_CurrentExperimentNr = 0;
     m_ListBox->SetSelection(m_CurrentExperimentNr);
   }
+}
+
+/**
+ * @brief Checks if protocol exceeds some limits.
+ */
+bool Protocols::checkProtocol(void){
+  for(auto i : m_StressForcePreviewValues){
+    if((i >= m_MaxForceLimit) || (i <= m_MinForceLimit)){
+      return(false);
+    }
+  }
+  for(auto i : m_DistancePreviewValues){
+    if((i >= m_MaxDistanceLimit) || (i <= m_MinDistanceLimit)){
+      return(false);
+    }
+  }
+  return(true);
 }
 
 /**

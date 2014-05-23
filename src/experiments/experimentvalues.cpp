@@ -17,6 +17,8 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
                                    std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                                    mpFXYVector *vector,
                                    std::mutex *vectoraccessmutex,
+                                   mpFXYVector *maxlimitvector,
+                                   mpFXYVector *minlimitvector,
                                    MyFrame *myframe,
 
                                    ExperimentType experimenttype,
@@ -28,6 +30,8 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_VectorLayer(vector),
     m_VectorLayerMutex(vectoraccessmutex),
+    m_MaxLimitVectorLayer(maxlimitvector),
+    m_MinLimitVectorLayer(minlimitvector),
     m_MyFrame(myframe),
     m_Area(area * 0.000000000001/*um^2*/),
     m_DisplayGraphDelay(0)
@@ -51,10 +55,24 @@ ExperimentValues::ExperimentValues(const ExperimentValues &experimentvalues)
 /**
  * @brief Registers the update methods to receive the measurement values.
  */
-void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce, std::shared_ptr<std::vector<double>> graphdistance){
+void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce,
+                                        std::shared_ptr<std::vector<double>> graphdistance,
+                                        std::shared_ptr<std::vector<double>> graphmaxforcelimitvalues,
+                                        std::shared_ptr<std::vector<double>> graphminforcelimitvalues,
+                                        std::shared_ptr<std::vector<double>> graphmaxdistancelimitvalues,
+                                        std::shared_ptr<std::vector<double>> graphmindistancelimitvalues,
+                                        std::shared_ptr<std::vector<double>> graphlimittimepoints){
   //std::cout << "Protocol graphstressforce size: " << graphstressforce->size() << " graphdistance size: " << graphdistance->size() << std::endl;
   m_GraphStressForceValues = std::move(graphstressforce);
   m_GraphDistanceValues = std::move(graphdistance);
+  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+    m_GraphMaxLimitValues = graphmaxforcelimitvalues;
+    m_GraphMinLimitValues = graphminforcelimitvalues;
+  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    m_GraphMaxLimitValues = graphmaxdistancelimitvalues;
+    m_GraphMinLimitValues = graphmindistancelimitvalues;
+  }
+  m_GraphLimitTimePoints = graphlimittimepoints;
   //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
   // clear the vectors.
   m_StressForceValues.clear();
@@ -120,6 +138,11 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
+  /*
+  m_GraphLimitTimePoints->push_back(measurementValue.timestamp);
+  m_GraphMaxLimitValues->push_back(m_GraphMaxLimitValues->back());
+  m_GraphMinLimitValues->push_back(m_GraphMinLimitValues->back());
+  */
 
   {
     m_DisplayGraphDelay++;
@@ -138,6 +161,10 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           m_GraphDistanceValues->resize(m_GraphStressForceValues->size());
         }
         m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
+        /*
+        m_MaxLimitVectorLayer->SetData(*m_GraphLimitTimePoints, *m_GraphMaxLimitValues);
+        m_MinLimitVectorLayer->SetData(*m_GraphLimitTimePoints, *m_GraphMinLimitValues);
+        */
       }
       m_MyFrame->updateGraphFromExperimentValues();
     }

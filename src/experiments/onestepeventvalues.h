@@ -11,6 +11,8 @@ class OneStepEventValues : public ExperimentValues
                        std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                        mpFXYVector *vector,
                        std::mutex *vectoraccessmutex,
+                       mpFXYVector *maxlimitvector,
+                       mpFXYVector *minlimitvector,
                        MyFrame *myframe,
                        std::string path,
 

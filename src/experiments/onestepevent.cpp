@@ -7,6 +7,8 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                            mpFXYVector *vector,
                            std::mutex *vectoraccessmutex,
+                           mpFXYVector *maxlimitvector,
+                           mpFXYVector *minlimitvector,
                            MyFrame *myframe,
                            std::string path,
 
@@ -23,12 +25,14 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            double area,
 
                            DistanceOrPercentage velocityDistanceOrPercentage,
+                           double velocitypercent,
                            double velocity,
                            double holdtime1,
                            long upperlimit,
                            double holdtime2,
                            long lowerlimit,
                            DistanceOrPercentage holdDistanceOrPercentage,
+                           double holddistancepercent,
                            long holddistance,
                            int cycles,
                            BehaviorAfterStop behaviorAfterStop)
@@ -52,6 +56,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_WaitMutex(mutex),
 
     m_VelocityDistanceOrPercentage(velocityDistanceOrPercentage),
+    m_VelocityPercent(velocitypercent),
     m_Velocity(velocity),
     m_HoldTime1(holdtime1),
     m_UpperLimit(upperlimit),
@@ -59,6 +64,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_LowerLimit(lowerlimit),
     m_Cycles(cycles),
     m_HoldDistanceOrPercentage(holdDistanceOrPercentage),
+    m_HoldDistancePercent(holddistancepercent),
     m_HoldDistance(holddistance),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_CurrentState(State::stopState),
@@ -71,6 +77,8 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                                               forcesensormessagehandler,
                                               vector,
                                               vectoraccessmutex,
+                                              maxlimitvector,
+                                              minlimitvector,
                                               myframe,
                                               path,
 
@@ -88,8 +96,13 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                                               behaviorAfterStop))
 {
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_Velocity / 100.0) * m_GageLength;
+    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength;
     m_ExperimentValues->setVelocity(m_Velocity);
+  }
+  if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
+    m_HoldDistance = static_cast<double>(m_HoldDistancePercent / 100.0) * m_GageLength;
+  }else if(DistanceOrPercentage::Distance == m_HoldDistanceOrPercentage){
+    m_HoldDistance *= 10000.0;
   }
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -106,11 +119,15 @@ OneStepEvent::~OneStepEvent(){
  * @param preloaddistance Preload distance
  */
 void OneStepEvent::setPreloadDistance(long preloaddistance){
-  m_GageLength = preloaddistance;
+  m_GageLength = m_CurrentDistance;
 
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_Velocity / 100.0) * m_GageLength;
+    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength;
     m_ExperimentValues->setVelocity(m_Velocity);
+  }
+  if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
+    m_HoldDistance = (m_HoldDistancePercent / 100.0) * m_GageLength;
+    std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
   }
 }
 

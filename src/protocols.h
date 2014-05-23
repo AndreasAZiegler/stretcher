@@ -52,6 +52,14 @@ class Protocols
      */
     void runProtocol(void);
 
+    /**
+     * @brief Checks if protocol exceeds some limits.
+     */
+    bool checkProtocol(void);
+
+    /**
+     * @brief Process the next experiments.
+     */
     void process(void);
 
     /**

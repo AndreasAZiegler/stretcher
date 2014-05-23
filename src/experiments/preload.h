@@ -31,6 +31,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
             mpFXYVector *vector,
             std::mutex *vectoraccessmutex,
+            mpFXYVector *maxlimitvector,
+            mpFXYVector *minlimitvector,
             MyFrame *myframe,
             std::string path,
 

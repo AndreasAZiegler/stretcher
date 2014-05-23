@@ -700,11 +700,24 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   m_Area = m_InitializeCrossSectionSpinCtrl->GetValue();
 
+  mpFXYVector *maxlimitvector;
+  mpFXYVector *minlimitvector;
+  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+    maxlimitvector = &m_MaxStressForceLimitVector;
+    minlimitvector = &m_MinStressForceLimitVector;
+  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    maxlimitvector = &m_MaxDistanceLimitVector;
+    minlimitvector = &m_MinDistanceLimitVector;
+  }
+
   //Experiment* experiment = new Preload(ExperimentType::Preload,
   std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
                                                      m_ForceSensorMessageHandler,
                                                      &m_VectorLayer,
                                                      &m_VectorLayerMutex,
+                                                     maxlimitvector,
+                                                     minlimitvector,
+
                                                      this,
                                                      m_StoragePath,
 
@@ -753,6 +766,16 @@ void MyFrame::OnOneStepDistance(wxCommandEvent& event){
 void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   checkProtocol();
 
+  mpFXYVector *maxlimitvector;
+  mpFXYVector *minlimitvector;
+  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+    maxlimitvector = &m_MaxStressForceLimitVector;
+    minlimitvector = &m_MinStressForceLimitVector;
+  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    maxlimitvector = &m_MaxDistanceLimitVector;
+    minlimitvector = &m_MinDistanceLimitVector;
+  }
+
   DistanceOrStressOrForce distanceOrStressOrForce;
   double holdtime1;
   long upperlimit;
@@ -785,7 +808,6 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   } else if(true == m_OneStepEndOfEventHoldPercentRadioBtn->GetValue()){
     holddistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
   }
-  long holddistance = m_OneStepEndOfEventHoldSpinCtrl->GetValue();
 
   int cycles = 1;
   if(true == m_OneStepEndOfEventRepeatCheckBox->GetValue()){
@@ -805,6 +827,8 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           m_ForceSensorMessageHandler,
                                                           &m_VectorLayer,
                                                           &m_VectorLayerMutex,
+                                                          maxlimitvector,
+                                                          minlimitvector,
                                                           this,
                                                           m_StoragePath,
 
@@ -822,12 +846,14 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
 
                                                           velocityDistanceOrPercentage,
                                                           m_OneStepStressForceVelocitySpinCtrl->GetValue(),
+                                                          m_OneStepStressForceVelocitySpinCtrl->GetValue(),
                                                           holdtime1,
                                                           upperlimit,
                                                           holdtime2,
                                                           lowerlimit,
                                                           holddistanceOrPercentage,
-                                                          holddistance,
+                                                          m_OneStepEndOfEventHoldSpinCtrl->GetValue(),
+                                                          m_OneStepEndOfEventHoldSpinCtrl->GetValue(),
                                                           cycles,
                                                           behaviorAfterStop));
 
@@ -1243,6 +1269,7 @@ void MyFrame::createValuesGraph(void){
   m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
 
   wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
+  wxPen vectorpenDistance(*wxGREEN, 2, wxSOLID);
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
@@ -1263,9 +1290,11 @@ void MyFrame::createValuesGraph(void){
   if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
     m_Graph->AddLayer(&m_MaxStressForceLimitVector);
     m_Graph->AddLayer(&m_MinStressForceLimitVector);
+    m_VectorLayer.SetPen(vectorpenStressForce);
   } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     m_Graph->AddLayer(&m_MaxDistanceLimitVector);
     m_Graph->AddLayer(&m_MinDistanceLimitVector);
+    m_VectorLayer.SetPen(vectorpenDistance);
   }
 
   m_Graph->Fit();
