@@ -111,8 +111,8 @@ void Protocols::makePreview(void){
   m_MinDistanceLimits.push_back(m_MinDistanceLimit);
 
   // Set the the vector data.
-  m_StressForcePreviewVector->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
-  m_DistancePreviewVector->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
+  m_DistancePreviewVector->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
+  m_StressForcePreviewVector->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
   m_MaxStressForceLimitVector->SetData(m_TimePointLimits, m_MaxStressForceLimits);
   m_MinStressForceLimitVector->SetData(m_TimePointLimits, m_MinStressForceLimits);
   m_MaxDistanceLimitVector->SetData(m_TimePointLimits, m_MaxDistanceLimits);

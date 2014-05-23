@@ -1270,6 +1270,7 @@ void MyFrame::createValuesGraph(void){
 
   wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
   wxPen vectorpenDistance(*wxGREEN, 2, wxSOLID);
+  wxPen vectorpenLimit(*wxRED, 2, wxSOLID);
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
@@ -1288,10 +1289,14 @@ void MyFrame::createValuesGraph(void){
   m_Graph->AddLayer(m_Y1Axis.get());
   m_Graph->AddLayer(&m_VectorLayer);
   if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+    m_MaxStressForceLimitVector.SetPen(vectorpenLimit);
+    m_MinStressForceLimitVector.SetPen(vectorpenLimit);
     m_Graph->AddLayer(&m_MaxStressForceLimitVector);
     m_Graph->AddLayer(&m_MinStressForceLimitVector);
     m_VectorLayer.SetPen(vectorpenStressForce);
   } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    m_MaxDistanceLimitVector.SetPen(vectorpenLimit);
+    m_MinDistanceLimitVector.SetPen(vectorpenLimit);
     m_Graph->AddLayer(&m_MaxDistanceLimitVector);
     m_Graph->AddLayer(&m_MinDistanceLimitVector);
     m_VectorLayer.SetPen(vectorpenDistance);
@@ -1357,6 +1362,14 @@ void MyFrame::createPreviewGraph(void){
   m_Y1Axis->SetFont(graphFont);
   m_XAxis->SetDrawOutsideMargins(false);
   m_Y1Axis->SetDrawOutsideMargins(false);
+
+  m_MaxStressForceLimitVector.SetPen(vectorpenStressForce);
+  m_MinStressForceLimitVector.SetPen(vectorpenStressForce);
+  m_MaxDistanceLimitVector.SetPen(vectorpenDistance);
+  m_MinDistanceLimitVector.SetPen(vectorpenDistance);
+
+  m_StressForcePreviewVector.SetPen(vectorpenStressForce);
+  m_DistancePreviewVector.SetPen(vectorpenDistance);
 
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
