@@ -32,9 +32,9 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 
                  DistanceOrPercentage velocityDistanceOrPercentage, double velocitypercent,
                  double velocity,
-                 double holdtime1,
+                 double holdtime1, DistanceOrPercentage upperlimitDistanceOrPercentage, double upperlimitpercent,
                  long upperlimit,
-                 double holdtime2,
+                 double holdtime2, DistanceOrPercentage lowerlimitDistanceOrPercentage, double lowerlimitpercent,
                  long lowerlimit,
                  DistanceOrPercentage holdDistanceOrPercentage, double holddistancepercent,
                  long holddistance,
@@ -113,8 +113,12 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     double m_VelocityPercent;
     double m_Velocity;
     double m_HoldTime1;
+    DistanceOrPercentage m_UpperLimitDistanceOrPercentage;
+    double m_UpperLimitPercent;
     long m_UpperLimit;
     double m_HoldTime2;
+    DistanceOrPercentage m_LowerLimitDistanceOrPercentage;
+    double m_LowerLimitPercent;
     long m_LowerLimit;
     DistanceOrPercentage m_HoldDistanceOrPercentage;
     int m_HoldDistancePercent;

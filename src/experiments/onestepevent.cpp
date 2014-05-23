@@ -28,8 +28,12 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            double velocitypercent,
                            double velocity,
                            double holdtime1,
+                           DistanceOrPercentage upperlimitDistanceOrPercentage,
+                           double upperlimitpercent,
                            long upperlimit,
                            double holdtime2,
+                           DistanceOrPercentage lowerlimitDistanceOrPercentage,
+                           double lowerlimitpercent,
                            long lowerlimit,
                            DistanceOrPercentage holdDistanceOrPercentage,
                            double holddistancepercent,
@@ -59,8 +63,12 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_VelocityPercent(velocitypercent),
     m_Velocity(velocity),
     m_HoldTime1(holdtime1),
+    m_UpperLimitDistanceOrPercentage(upperlimitDistanceOrPercentage),
+    m_UpperLimitPercent(upperlimitpercent),
     m_UpperLimit(upperlimit),
     m_HoldTime2(holdtime2),
+    m_LowerLimitDistanceOrPercentage(lowerlimitDistanceOrPercentage),
+    m_LowerLimitPercent(lowerlimitpercent),
     m_LowerLimit(lowerlimit),
     m_Cycles(cycles),
     m_HoldDistanceOrPercentage(holdDistanceOrPercentage),
@@ -99,6 +107,12 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength;
     m_ExperimentValues->setVelocity(m_Velocity);
   }
+  if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
+    m_UpperLimit = (m_UpperLimitPercent / 100.0) * m_GageLength;
+  }
+  if(DistanceOrPercentage::Percentage == m_LowerLimitDistanceOrPercentage){
+    m_LowerLimit = (m_LowerLimitPercent / 100.0) * m_GageLength;
+  }
   if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
     m_HoldDistance = static_cast<double>(m_HoldDistancePercent / 100.0) * m_GageLength;
   }else if(DistanceOrPercentage::Distance == m_HoldDistanceOrPercentage){
@@ -123,7 +137,16 @@ void OneStepEvent::setPreloadDistance(long preloaddistance){
 
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength;
+    std::cout << "OneStepEvent velocity percent: " << m_VelocityPercent << " velocity: " << m_Velocity << std::endl;
     m_ExperimentValues->setVelocity(m_Velocity);
+  }
+  if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
+    m_UpperLimit = (m_UpperLimitPercent / 100.0) * m_GageLength;
+    std::cout << "OneStepEvent upper limit percent: " << m_UpperLimitPercent << " upper limit: " << m_UpperLimit * 0.00009921875 << std::endl;
+  }
+  if(DistanceOrPercentage::Percentage == m_LowerLimitDistanceOrPercentage){
+    m_LowerLimit = (m_LowerLimitPercent / 100.0) * m_GageLength;
+    std::cout << "OneStepEvent lower limit percent: " << m_LowerLimitPercent << " lower limit: " << m_LowerLimit * 0.00009921875 << std::endl;
   }
   if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
     m_HoldDistance = (m_HoldDistancePercent / 100.0) * m_GageLength;

@@ -958,8 +958,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceUpperLimitSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>0</min>
+																				<max>1000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">
@@ -1032,8 +1032,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceLowerLimitSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>0</min>
+																				<max>1000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">
