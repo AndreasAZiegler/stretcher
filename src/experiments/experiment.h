@@ -98,9 +98,13 @@ class Experiment
 
     /**
      * @brief Sets the preload distance.
-     * @param preloaddistance Preload distance
      */
-    virtual void setPreloadDistance() = 0;
+    virtual void setPreloadDistance(void) = 0;
+
+    /**
+     * @brief Sets the start length.
+     */
+    virtual void setStartLength(void);
 
     /**
      * @brief Destructor

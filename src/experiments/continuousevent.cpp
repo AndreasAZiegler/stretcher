@@ -80,6 +80,11 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_Steps(steps),
         m_Cycles(cycles),
         m_BehaviorAfterStop(behaviorAfterStop),
+        m_CurrentState(State::stopState),
+        m_CurrentLimit(0),
+        m_CurrentCycle(0),
+        m_DecreaseSpeedFlag(false),
+        m_CheckDistanceFlag(false),
         m_ExperimentValues(new ContinuousEventValues(stageframe,
                                                      forcesensormessagehandler,
                                                      vector,
@@ -111,6 +116,17 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
     }
     m_Steps = m_MaxValueLimit / m_Increment;
   }
+
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+}
+
+/**
+ * @brief Destructor
+ */
+ContinuousEvent::~ContinuousEvent(){
+  m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
+  m_StageFrame->unregisterUpdateMethod(m_DistanceId);
 }
 
 /**
@@ -184,6 +200,8 @@ void ContinuousEvent::process(Event event){
     case stopState:
       if(Experiment::Event::evStart == event){
 
+        std::cout << "ContinuousEvent: Start experiment." << std::endl;
+
         // Perform hold if there is a hold time
         if(0 < m_HoldTime){
           std::cout << "ContinuousEvent holds for hold time: " << m_HoldTime * 1000 << " ms" << std::endl;
@@ -245,21 +263,21 @@ void ContinuousEvent::process(Event event){
           }
         }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
           if((m_CurrentDistance) - m_CurrentLimit > m_DistanceThreshold){
-            std::cout << "m_CurrentDistance - m_DistanceLimit: " << (m_CurrentDistance) - m_CurrentLimit << std::endl;
+            //std::cout << "m_CurrentDistance - m_DistanceLimit: " << (m_CurrentDistance) - m_CurrentLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
             {
               std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
               m_StageFrame->moveForward(m_Velocity);
             }
-            std::cout << "OneStepEvent moveForward" << std::endl;
+            std::cout << "ContinuousEvent: Move forward" << std::endl;
           }else if((m_CurrentLimit - (m_CurrentDistance)) > m_DistanceThreshold){
-            std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_CurrentLimit - (m_CurrentDistance) << std::endl;
+            //std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_CurrentLimit - (m_CurrentDistance) << std::endl;
             m_CurrentDirection = Direction::Backwards;
             {
               std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
               m_StageFrame->moveBackward(m_Velocity);
             }
-            std::cout << "OneStepEvent moveBackward" << std::endl;
+            std::cout << "ContinuousEvent: Move backward" << std::endl;
           }
         }
       }
@@ -271,7 +289,6 @@ void ContinuousEvent::process(Event event){
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
         m_CurrentCycle = 0;
-        m_CurrentDirection = Direction::Stop;
         {
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
@@ -526,6 +543,10 @@ void ContinuousEvent::process(Event event){
                 std::cout << "OneStepEvent moveBackward." << std::endl;
               }
             }else{
+              {
+                std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                m_StageFrame->setSpeed(m_Velocity);
+              }
               if((m_Steps - 1) <= m_CurrentStep){ // If it is the last step.
                 // Reset step counter.
                 m_CurrentStep = 0;
@@ -586,6 +607,25 @@ void ContinuousEvent::process(Event event){
                     m_StageFrame->gotoStepsDistance(m_StartLength);
                   }
                   std::cout << "ContinuousEvent: Go to start length." << std::endl;
+                }
+              } else{
+                m_CurrentStep++;
+                //std::cout << "ContinuousEvent: current cycle: " << m_CurrentStep << ", total steps: " << m_Steps << std::endl;
+                // Update current limit.
+                m_CurrentLimit += m_Increment;
+
+                // Perform hold if there is a hold time
+                if(0 < m_HoldTime){
+                  m_CurrentDirection = Direction::Stop;
+                  {
+                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                    m_StageFrame->stop();
+                  }
+                  std::cout << "ContinuousEvent: Holds for hold time: " << m_HoldTime * 1000 << " ms" << std::endl;
+                  std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
+                  t1.join();
+                  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
+                  std::cout << "ContinuousEvent: Holding over." << std::endl;
                 }
               }
             }
@@ -740,6 +780,7 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         process(Event::evStop);
       } else{
         if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){
+          //std::cout << "ContinuousEvent: update." << std::endl;
           process(Event::evUpdate);
         }
       }

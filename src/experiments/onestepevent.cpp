@@ -307,7 +307,6 @@ void OneStepEvent::process(Event event){
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
         m_CurrentCycle = 0;
-        m_CurrentDirection = Direction::Stop;
         {
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();

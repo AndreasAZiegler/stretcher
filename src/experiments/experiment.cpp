@@ -55,3 +55,10 @@ Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
 Experiment::~Experiment(){
   std::cout << "Experiment destructor finished." << std::endl;
 }
+
+/**
+ * @brief Sets the start length.
+ */
+void Experiment::setStartLength(void){
+  m_StartLength = m_CurrentDistance;
+}

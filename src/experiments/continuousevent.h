@@ -53,6 +53,11 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     BehaviorAfterStop behaviorAfterStop);
 
     /**
+     * @brief Destructor
+     */
+    ~ContinuousEvent();
+
+    /**
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */

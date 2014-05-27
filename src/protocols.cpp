@@ -252,7 +252,8 @@ void Protocols::process(void){
                                                                 graphlimitstimepoints);
 
     m_ListBox->SetSelection(m_CurrentExperimentNr);
-    std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
+    //std::cout << "Protocols: start experiment nr.: " << m_CurrentExperimentNr << std::endl;
+    std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Experiment::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.join();
     m_CurrentExperimentNr++;
@@ -492,6 +493,11 @@ void Protocols::checkFinishedExperiment(void){
     std::unique_lock<std::mutex> lck1(*m_WaitMutex);
     m_Wait->wait(lck1);
   }
+
+  for(auto i : m_Experiments){
+    i->setStartLength();
+  }
+
   {
     // Indicate that the experiment is not longer running.
     std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
