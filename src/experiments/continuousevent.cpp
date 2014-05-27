@@ -663,6 +663,16 @@ void ContinuousEvent::process(Event event){
 
           m_CheckDistanceFlag = false;
           m_CurrentState = runState;
+
+          // Perform hold if there is a hold time
+          if(0 < m_HoldTime){
+            std::cout << "ContinuousEvent holds for hold time: " << m_HoldTime * 1000 << " ms" << std::endl;
+            std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
+            t1.join();
+            //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
+            std::cout << "ContinuousEvent holding over." << std::endl;
+          }
+
           //m_CurrentDirection = Direction::Stop;
           std::cout << "ContinuousEvent:: Go to runState" << std::endl;
           process(Event::evUpdate);
