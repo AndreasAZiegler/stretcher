@@ -54,7 +54,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
-    virtual void setPreloadDistance(long preloaddistance);
+    virtual void setPreloadDistance();
 
     ~Preload();
 

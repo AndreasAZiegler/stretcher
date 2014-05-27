@@ -62,7 +62,6 @@ std::string OneStepEventValues::getExperimentSettings(void){
                      ", End of event: " + getEndOfEvent()));
 }
 
-
 /**
  * @brief Returns the end of event behavior as a std::string.
  * @return The end of event behavior as a std::string.
@@ -74,7 +73,7 @@ std::string OneStepEventValues::getEndOfEvent(void){
       break;
 
     case Experiment::BehaviorAfterStop::GoToL0:
-      return(std::string("Go to L0 "));
+      return(std::string("Go to L0."));
       break;
   }
 }

@@ -37,9 +37,10 @@ class Experiment
     /**
      * @brief Indicates the behavior after the experiment stops.
      */
-    enum BehaviorAfterStop{HoldADistance = 0,
-                           Repeat = 1,
-                           GoToL0 = 2};
+    enum class BehaviorAfterStop{Stop = 0,
+                                 HoldADistance = 1,
+                                 Repeat = 2,
+                                 GoToL0 = 3};
 
     /**
      * @brief The PreviewValue struct
@@ -64,9 +65,9 @@ class Experiment
      * @enum Direction
      * @brief Defines Forwards, Backwards and Stop
      */
-    enum Direction{Forwards,
-                   Backwards,
-                   Stop};
+    enum class Direction{Forwards,
+                         Backwards,
+                         Stop};
 
   public:
     /**
@@ -88,7 +89,8 @@ class Experiment
                ExperimentType type,
                DistanceOrStressOrForce distanceOrStressForce,
                Experiment::Direction direction,
-               long gagelength, long zerodistance,
+               long gagelength,
+               long zerodistance,
                long currentdistance,
                double area,
                double forcesStressThreshold,
@@ -98,7 +100,7 @@ class Experiment
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
-    virtual void setPreloadDistance(long preloaddistance) = 0;
+    virtual void setPreloadDistance() = 0;
 
     /**
      * @brief Destructor

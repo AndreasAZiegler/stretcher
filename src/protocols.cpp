@@ -73,31 +73,13 @@ Protocols::~Protocols(){
  */
 void Protocols::makePreview(void){
   m_PreviewValues.clear();
-  m_DistancePreviewValues.clear();
-  m_DistanceTimePreviewValues.clear();
-  m_StressForcePreviewValues.clear();
-  m_StressForceTimePreviewValues.clear();
   m_TimePointLimits.clear();
   m_MaxStressForceLimits.clear();
   m_MinStressForceLimits.clear();
   m_MaxDistanceLimits.clear();
   m_MinDistanceLimits.clear();
 
-  // Collect the preview points from the single experiments.
-  for(int i = 0; i < m_Experiments.size(); ++i){
-    m_Experiments[i]->getPreview(m_PreviewValues);
-  }
-
-  // Split preview point into stressforce and distance points.
-  for(auto i : m_PreviewValues){
-    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
-      m_DistancePreviewValues.push_back(i.value * 0.00009921875/*mm per micro step*/);
-      m_DistanceTimePreviewValues.push_back(i.timepoint);
-    } else if((DistanceOrStressOrForce::Stress ==  i.distanceOrForce) || (DistanceOrStressOrForce::Force ==  i.distanceOrForce)){
-      m_StressForcePreviewValues.push_back(i.value / 10000.0);
-      m_StressForceTimePreviewValues.push_back(i.timepoint);
-    }
-  }
+  getPreviewValues();
 
   // Create limit vectors
   m_TimePointLimits.push_back(m_PreviewValues.front().timepoint);
@@ -121,6 +103,32 @@ void Protocols::makePreview(void){
 
   // Show preview in the graph.
   m_MyFrame->showPreviewGraph();
+}
+
+/**
+ * @brief Get the preview values.
+ */
+void Protocols::getPreviewValues(void){
+  m_DistancePreviewValues.clear();
+  m_DistanceTimePreviewValues.clear();
+  m_StressForcePreviewValues.clear();
+  m_StressForceTimePreviewValues.clear();
+
+  // Collect the preview points from the single experiments.
+  for(int i = 0; i < m_Experiments.size(); ++i){
+    m_Experiments[i]->getPreview(m_PreviewValues);
+  }
+
+  // Split preview point into stressforce and distance points.
+  for(auto i : m_PreviewValues){
+    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
+      m_DistancePreviewValues.push_back(i.value * 0.00009921875/*mm per micro step*/);
+      m_DistanceTimePreviewValues.push_back(i.timepoint);
+    } else if((DistanceOrStressOrForce::Stress ==  i.distanceOrForce) || (DistanceOrStressOrForce::Force ==  i.distanceOrForce)){
+      m_StressForcePreviewValues.push_back(i.value / 10000.0);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    }
+  }
 }
 
 /**
@@ -262,16 +270,16 @@ void Protocols::process(void){
  * @brief Checks if protocol exceeds some limits.
  */
 bool Protocols::checkProtocol(void){
-  // Creat preview to generate the preview values.
-  makePreview();
+  // Get the preview values.
+  getPreviewValues();
 
   for(double i : m_StressForcePreviewValues){
-    if((i >= m_MaxForceLimit) || (i <= m_MinForceLimit)){
+    if((i > (m_MaxForceLimit)) || (i < (m_MinForceLimit))){
       return(false);
     }
   }
   for(double i : m_DistancePreviewValues){
-    if((i >= m_MaxDistanceLimit) || (i <= m_MinDistanceLimit)){
+    if((i > (m_MaxDistanceLimit)) || (i < (m_MinDistanceLimit))){
       return(false);
     }
   }
@@ -508,7 +516,7 @@ void Protocols::checkFinishedExperiment(void){
       std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
       // Set the prelod distance in all the experiments.
       for(auto i : m_Experiments){
-        i->setPreloadDistance(m_PreloadDistance);
+        i->setPreloadDistance();
       }
     }
   }

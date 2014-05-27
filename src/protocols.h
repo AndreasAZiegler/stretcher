@@ -51,6 +51,11 @@ class Protocols
     void makePreview(void);
 
     /**
+     * @brief Get the preview values.
+     */
+    void getPreviewValues(void);
+
+    /**
      * @brief Runs the protocol.
      */
     void runProtocol(void);

@@ -6,17 +6,24 @@
 #include "onestepeventvalues.h"
 #include "../updatedvaluesreceiver.h"
 
+/**
+ * @brief Representation of the One step experiment.
+ */
 class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
-  private:
-
   public:
     OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *vector,
-                 std::mutex *vectoraccessmutex, mpFXYVector *maxlimitvector, mpFXYVector *minlimitvector,
+                 std::mutex *vectoraccessmutex,
+                 mpFXYVector *maxlimitvector,
+                 mpFXYVector *minlimitvector,
                  MyFrame *myframe,
-                 std::string path, long maxforcelimit, long minforcelimit, long maxdistancelimit, long mindistancelimit,
+                 std::string path,
+                 long maxforcelimit,
+                 long minforcelimit,
+                 long maxdistancelimit,
+                 long mindistancelimit,
 
 
                  std::condition_variable *wait,
@@ -26,28 +33,38 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 
                  ExperimentType type,
                  DistanceOrStressOrForce distanceOrStressForce,
-                 long gagelength, long zerodistance,
+                 long gagelength,
+                 long zerodistance,
                  long currentdistance,
                  double area,
 
-                 DistanceOrPercentage velocityDistanceOrPercentage, double velocitypercent,
+                 DistanceOrPercentage velocityDistanceOrPercentage,
+                 double velocitypercent,
                  double velocity,
-                 double holdtime1, DistanceOrPercentage upperlimitDistanceOrPercentage, double upperlimitpercent,
+                 double holdtime1,
+                 DistanceOrPercentage upperlimitDistanceOrPercentage,
+                 double upperlimitpercent,
                  long upperlimit,
-                 double holdtime2, DistanceOrPercentage lowerlimitDistanceOrPercentage, double lowerlimitpercent,
+                 double holdtime2,
+                 DistanceOrPercentage lowerlimitDistanceOrPercentage,
+                 double lowerlimitpercent,
                  long lowerlimit,
-                 DistanceOrPercentage holdDistanceOrPercentage, double holddistancepercent,
+                 DistanceOrPercentage holdDistanceOrPercentage,
+                 double holddistancepercent,
                  long holddistance,
                  int cycles,
                  BehaviorAfterStop behaviorAfterStop);
 
+    /**
+     * @brief Destructor
+     */
     ~OneStepEvent();
 
     /**
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
-    virtual void setPreloadDistance(long preloaddistance);
+    virtual void setPreloadDistance();
 
     /**
      * @brief Returns a vector containing the points required to cread a preview graph.
@@ -76,7 +93,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @brief Returns a pointer to the experiment values.
      * @return A pointer to the experiment values.
      */
-    std::shared_ptr<ExperimentValues> getExperimentValues(void){
+    virtual std::shared_ptr<ExperimentValues> getExperimentValues(void){
       if(NULL != m_ExperimentValues){
         return(m_ExperimentValues);
       }else{
@@ -89,7 +106,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
+    virtual void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
 
   private:
 
@@ -109,36 +126,36 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     enum LimitState{upperLimitState,		/**< Going to upper limit. */
                     lowerLimitState};		/**< Going to lower limit. */
 
-    DistanceOrPercentage m_VelocityDistanceOrPercentage;
-    double m_VelocityPercent;
-    double m_Velocity;
-    double m_HoldTime1;
-    DistanceOrPercentage m_UpperLimitDistanceOrPercentage;
-    double m_UpperLimitPercent;
-    long m_UpperLimit;
-    double m_HoldTime2;
-    DistanceOrPercentage m_LowerLimitDistanceOrPercentage;
-    double m_LowerLimitPercent;
-    long m_LowerLimit;
-    DistanceOrPercentage m_HoldDistanceOrPercentage;
-    int m_HoldDistancePercent;
-    long m_HoldDistance;
-    int m_Cycles;
-    BehaviorAfterStop m_BehaviorAfterStop;
+    DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
+    double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
+    double m_Velocity;																											/**< Velocity in mm/s. */
+    double m_HoldTime1;																											/**< Hold time 1 in s. */
+    DistanceOrPercentage m_UpperLimitDistanceOrPercentage;									/**< Indicates if the upper limit is given by value or by % of L0. */
+    double m_UpperLimitPercent;																							/**< % of L0 for calculation of the upper limit. */
+    long m_UpperLimit;																											/**< Upper limit in kPa, N or mm. */
+    double m_HoldTime2;																											/**< Hold time 2 in s. */
+    DistanceOrPercentage m_LowerLimitDistanceOrPercentage;									/**< Indicates if the lower limit is given by value or by % of L0. */
+    double m_LowerLimitPercent;																							/**< % of L0 for calculation of the upper limit. */
+    long m_LowerLimit;																											/**< Lower limit in kPa, N or mm. */
+    DistanceOrPercentage m_HoldDistanceOrPercentage;												/**< Indicates if the hold distance is given by value or by % of L0. */
+    int m_HoldDistancePercent;																							/**< % of L0 for calculation of the hold distance. */
+    long m_HoldDistance;																										/**< Hold distance in mm. */
+    int m_Cycles;																														/**< Amount of cycles. */
+    BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 
-    State m_CurrentState;
-    LimitState m_CurrentLimitState;
-    long m_CurrentLimit;
-    int m_CurrentCycle;
+    State m_CurrentState;																										/**< The current experiment state. */
+    LimitState m_CurrentLimitState;																					/**< Current limit. */
+    long m_CurrentLimit;																										/**< Value of the current limit. */
+    int m_CurrentCycle;																											/**< The current cycle. */
 
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
 
-    std::mutex m_StageFrameAccessMutex;
-    bool m_CheckDistanceFlag;
+    std::mutex m_StageFrameAccessMutex;																			/**< Mutex to protect the access to the stage frame. */
+    bool m_CheckDistanceFlag;																								/**< Indicates if the distance needs to be updated. */
 
-    std::shared_ptr<OneStepEventValues> m_ExperimentValues;				/**< Pointer to the experiment values */
+    std::shared_ptr<OneStepEventValues> m_ExperimentValues;									/**< Pointer to the experiment values */
 };
 
 #endif // ONESTEPEVENT_H

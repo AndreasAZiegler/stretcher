@@ -6,6 +6,8 @@ set(SOURCE
         ./experiments/preloadvalues.cpp
         ./experiments/onestepevent.cpp
         ./experiments/onestepeventvalues.cpp
+        ./experiments/continuousevent.cpp
+        ./experiments/continuouseventvalues.cpp
         ./experiments/conditioning.cpp
         ./experiments/ramp2failure.cpp
         #./experiments/relaxation.cpp
@@ -23,6 +25,9 @@ set(HEADERS
         ./experiments/preloadvalues.h
         ./experiments/onestepevent.h
         ./experiments/onestepeventvalues.h
+        ./experiments/continuousevent.h
+        ./experiments/continuouseventvalues.h
+        ./experiments/conditioning.cpp
         ./experiments/conditioning.h
         ./experiments/ramp2failure.h
         #./experiments/relaxation.h

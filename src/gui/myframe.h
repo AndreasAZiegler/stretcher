@@ -311,6 +311,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnContinuousDistance(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user chooses max value in the contiunous event.
+     * @param event Occuring event
+     */
+    void OnContinuousMaxValue(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user chooses steps in the contiunous event.
+     * @param event Occuring event
+     */
+    void OnContinuousSteps(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event.
      * @param event Occuring event
      */
@@ -522,29 +534,31 @@ enum
 
   ID_ContinuousStressForce = 27,
   ID_ContinuousDistance = 28,
-  ID_ContinuousCancel = 29,
-  ID_ContinuousSendToProtocol = 30,
+  ID_ContinuousMaxValue = 29,
+  ID_ContinuousSteps = 30,
+  ID_ContinuousCancel = 31,
+  ID_ContinuousSendToProtocol = 32,
 
-  ID_ConditioningSpeedPercent = 31,
-  ID_ConditioningSpeedMm = 32,
-  ID_ConditioningStressLimit = 33,
-  ID_ConditioningDistanceLimit = 34,
-  ID_ConditioningSendToProtocol = 35,
-  ID_Ramp2FailureSpeedPercent = 36,
-  ID_Ramp2FailureSpeedMm = 37,
-  ID_Ramp2FailureSendToProtocol = 38,
-  ID_ClearGraph = 39,
-  ID_ExportCSV = 40,
-  ID_DeleteExperiment = 41,
-  ID_MoveUpExperiment = 42,
-  ID_MoveDownExperiment = 43,
-  ID_LoopProtocol = 44,
-  ID_Preview = 45,
-  ID_RunProtocol = 46,
-  ID_StopProtocol = 47,
-  ID_SaveProtocol = 48,
-  ID_LoadProtocol = 49,
-  ID_MakePhoto = 50
+  ID_ConditioningSpeedPercent = 33,
+  ID_ConditioningSpeedMm = 34,
+  ID_ConditioningStressLimit = 35,
+  ID_ConditioningDistanceLimit = 36,
+  ID_ConditioningSendToProtocol = 37,
+  ID_Ramp2FailureSpeedPercent = 38,
+  ID_Ramp2FailureSpeedMm = 39,
+  ID_Ramp2FailureSendToProtocol = 40,
+  ID_ClearGraph = 41,
+  ID_ExportCSV = 42,
+  ID_DeleteExperiment = 43,
+  ID_MoveUpExperiment = 44,
+  ID_MoveDownExperiment = 45,
+  ID_LoopProtocol = 46,
+  ID_Preview = 47,
+  ID_RunProtocol = 48,
+  ID_StopProtocol = 49,
+  ID_SaveProtocol = 50,
+  ID_LoadProtocol = 51,
+  ID_MakePhoto = 52
 };
 
 #endif // MYFRAME_H

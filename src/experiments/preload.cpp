@@ -94,7 +94,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
-void Preload::setPreloadDistance(long preloaddistance){
+void Preload::setPreloadDistance(){
 
 }
 
@@ -139,7 +139,7 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        std::cout << "OneStepEvent: Force limit exceeded." << std::endl;
+        std::cout << "Preload: Force limit exceeded, current force: " << m_CurrentForce << std::endl;
         process(Event::evStop);
       } else{
         process(Event::evUpdate);
@@ -149,7 +149,7 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = measurementValue.value;
       if((true == m_CheckLimitsFlag) && ((m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance))){
-        std::cout << "OneStepEvent: Distance limit exceeded." << std::endl;
+        std::cout << "Preload: Distance limit exceeded, current distance: " << m_CurrentDistance << std::endl;
         process(Event::evStop);
       }
       break;
@@ -173,6 +173,7 @@ void Preload::process(Event e){
   switch(m_CurrentState){
     case stopState:
       if(Event::evStart == e){
+        std::cout << "Preload: Start experiment." << std::endl;
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_SpeedInMM);
         m_CurrentState = runState;
@@ -181,21 +182,21 @@ void Preload::process(Event e){
         // If force based
         if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
           if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMM);
           }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_SpeedInMM);
           }
         }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
           if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMM);
           }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_SpeedInMM);
           }
