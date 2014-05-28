@@ -812,7 +812,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   }
 
   Experiment::BehaviorAfterStop behaviorAfterStop;
-  if(true == m_OneStepEndOfEventHoldMmRadioBtn->GetValue()){
+  if(true == m_OneStepEndOfEventHoldRadioBtn->GetValue()){
     behaviorAfterStop = Experiment::BehaviorAfterStop::HoldADistance;
   } else if(true == m_OneStepEndOfEventL0RadioBtn->GetValue()){
     behaviorAfterStop = Experiment::BehaviorAfterStop::GoToL0;

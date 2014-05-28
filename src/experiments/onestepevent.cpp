@@ -112,7 +112,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                                               behaviorAfterStop))
 {
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength;
+    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength * 0.00009921875/*mm per micro step*/;
     m_ExperimentValues->setVelocity(m_Velocity);
   }
   if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
@@ -147,21 +147,21 @@ void OneStepEvent::setPreloadDistance(){
   m_GageLength = m_CurrentDistance;
 
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength;
+    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength * 0.00009921875/*mm per micro step*/;
     std::cout << "OneStepEvent velocity percent: " << m_VelocityPercent << " velocity: " << m_Velocity << std::endl;
     m_ExperimentValues->setVelocity(m_Velocity);
   }
   if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
     m_UpperLimit = (m_UpperLimitPercent / 100.0) * m_GageLength;
-    std::cout << "OneStepEvent upper limit percent: " << m_UpperLimitPercent << " upper limit: " << m_UpperLimit * 0.00009921875 << std::endl;
+    //std::cout << "OneStepEvent upper limit percent: " << m_UpperLimitPercent << " upper limit: " << m_UpperLimit * 0.00009921875 << std::endl;
   }
   if(DistanceOrPercentage::Percentage == m_LowerLimitDistanceOrPercentage){
     m_LowerLimit = (m_LowerLimitPercent / 100.0) * m_GageLength;
-    std::cout << "OneStepEvent lower limit percent: " << m_LowerLimitPercent << " lower limit: " << m_LowerLimit * 0.00009921875 << std::endl;
+    //std::cout << "OneStepEvent lower limit percent: " << m_LowerLimitPercent << " lower limit: " << m_LowerLimit * 0.00009921875 << std::endl;
   }
   if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
     m_HoldDistance = (m_HoldDistancePercent / 100.0) * m_GageLength;
-    std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
+    //std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
   }
 }
 
@@ -287,7 +287,7 @@ void OneStepEvent::process(Event event){
               std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
               m_StageFrame->moveForward(m_Velocity);
             }
-            std::cout << "OneStepEvent moveForward" << std::endl;
+            //std::cout << "OneStepEvent moveForward" << std::endl;
           }else if((m_CurrentLimit - (m_CurrentDistance)) > m_DistanceThreshold){
             //std::cout << "m_DistanceLimit - m_CurrentDistance : " << m_CurrentLimit - (m_CurrentDistance) << std::endl;
             m_CurrentDirection = Direction::Backwards;
@@ -518,7 +518,7 @@ void OneStepEvent::process(Event event){
               }
             }
           }
-          //std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
+          std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
           if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Forwards;
@@ -575,10 +575,12 @@ void OneStepEvent::process(Event event){
                 switch(m_BehaviorAfterStop){
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentLimit = m_GageLength;
+                    std::cout << "OneStepEvent: Go to gage length: " << m_GageLength << std::endl;
                     m_StageFrame->gotoStepsDistance(m_GageLength);
                     break;
                   case BehaviorAfterStop::HoldADistance:
                     m_CurrentLimit = m_HoldDistance;
+                    std::cout << "OneStepEvent: Go to hold distance: " << m_HoldDistance << std::endl;
                     m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
@@ -685,8 +687,8 @@ void OneStepEvent::process(Event event){
         if(std::abs(m_CurrentLimit - m_CurrentDistance) < 0.7*m_DistanceThreshold){
           m_CheckDistanceFlag = false;
           m_CurrentState = stopState;
-          m_CurrentCycle = 0;
           m_CurrentDirection = Direction::Stop;
+          m_CurrentCycle = 0;
           //m_StageFrame->stop();
           std::cout << "OneStepEvent: Stop." << std::endl;
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
