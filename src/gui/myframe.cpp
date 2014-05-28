@@ -1005,7 +1005,8 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     velocity = m_ContinuousStressForceVelocitySpinCtrl->GetValue();
 
     if(true == m_ContinuousStressForceMaxValueRadioBtn->GetValue()){
-      steps = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() / increment;
+      steps = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() / m_ContinuousStressForceIncrementSpinCtrl->GetValue();
+      std::cout << "MyFrame: steps: " << steps << std::endl;
     } else if(true == m_ContinuousStressForceStepsRadioBtn->GetValue()){
       steps = m_ContinuousStressForceStepsSpinCtrl->GetValue();
     }
