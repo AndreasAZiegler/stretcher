@@ -167,11 +167,11 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
   } else{
    timepoint = previewvalue.back().getTimepoint();
   }
-  //previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
-  previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
-  timepoint++;
 
   for(int i = 0; i < m_Cycles; ++i){
+    // Make start point.
+    previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
+    timepoint++;
     for(int j = 0; j < m_Steps; ++j){
       // Make point if there is a hold time 1.
       if(0 < m_HoldTime){
@@ -190,8 +190,6 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
       }
       timepoint++;
     }
-    previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
-    timepoint++;
   }
 }
 

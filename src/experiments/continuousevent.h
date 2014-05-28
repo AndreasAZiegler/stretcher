@@ -120,20 +120,20 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_HoldTime;																											/**< Hold time 1 in s. */
-    DistanceOrPercentage m_IncrementDistanceOrPercentage;
-    double m_IncrementPercent;
-    long m_Increment;
-    StepsOrMaxValue m_StepsOrMaxValue;
-    DistanceOrPercentage m_MaxValueDistanceOrPercentage;
-    double m_MaxValuePercent;
-    long m_MaxValueLimit;
-    int m_Steps;
+    DistanceOrPercentage m_IncrementDistanceOrPercentage;										/**< Indicates if the increment is givyen by value or by & ov L0. */
+    double m_IncrementPercent;																							/**< % of L0 for calculation of the increment. */
+    long m_Increment;																												/**< Increment in mm or N. */
+    StepsOrMaxValue m_StepsOrMaxValue;																			/**< Indicates if the steps are given by value or if they have to be calculated from the max. value. */
+    DistanceOrPercentage m_MaxValueDistanceOrPercentage;										/**< Incdicates if the max. value is given by value or by % of L0. */
+    double m_MaxValuePercent;																								/**< % of L0 for calculation of the max. value. */
+    long m_MaxValueLimit;																										/**< Max value in mm or N. */
+    int m_Steps;																														/**< Number of steps. */
     int m_Cycles;																														/**< Amount of cycles. */
     BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 
     State m_CurrentState;																										/**< The current experiment state. */
     long m_CurrentLimit;																										/**< Value of the current limit. */
-    int m_CurrentStep;
+    int m_CurrentStep;																											/**< The current step. */
     int m_CurrentCycle;																											/**< The current cycle. */
 
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */

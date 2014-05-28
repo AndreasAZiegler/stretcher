@@ -51,15 +51,15 @@ class OneStepEventValues : public ExperimentValues
      */
     std::string getEndOfEvent(void);
 
-    DistanceOrStressOrForce m_DistanceOrStressOrForce;
-    double m_Velocity;
-    double m_HoldTime1;
-    long m_UpperLimit;
-    double m_HoldTime2;
-    long m_LowerLimit;
-    long m_HoldDistance;
-    int m_Cycles;
-    Experiment::BehaviorAfterStop m_BehaviorAfterStop;
+    DistanceOrStressOrForce m_DistanceOrStressOrForce;					/**< Defines if the experiment is distance or stress/force based. */
+    double m_Velocity;																					/**< Velocity in mm/s. */
+    double m_HoldTime1;																					/**< Hold time 1 in s. */
+    long m_UpperLimit;																					/**< Upper limit in kPa, N or mm. */
+    double m_HoldTime2;																					/**< Hold time 1 in s. */
+    long m_LowerLimit;																					/**< Lower limit in kPa, N or mm. */
+    long m_HoldDistance;																				/**< Hold distance in mm. */
+    int m_Cycles;																								/**< Amount of cycles. */
+    Experiment::BehaviorAfterStop m_BehaviorAfterStop;					/**< Defines the behavior after the experiment stops. */
 };
 
 #endif // ONESTEPEVENTVALUES_H
