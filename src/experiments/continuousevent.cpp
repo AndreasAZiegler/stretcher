@@ -151,7 +151,6 @@ void ContinuousEvent::setPreloadDistance(){
     }
     if((0 < m_MaxValueLimit) && (0 < m_Increment)){
       m_Steps = m_MaxValueLimit / m_Increment;
-      std::cout << "ContinuousEvent: steps: " << m_Steps << ", max. value limit: " << m_MaxValueLimit << ", m_Increment: " << m_Increment << std::endl;
     }
   }
 }
@@ -187,6 +186,7 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + ((j + 1) * m_Increment)));
       } else{
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (j + 1) * m_Increment));
+        //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
       }
       timepoint++;
     }
@@ -224,6 +224,7 @@ void ContinuousEvent::process(Event event){
           m_CurrentLimit = m_CurrentForce/m_Area + m_Increment;
         } else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
           m_CurrentLimit = m_CurrentForce + m_Increment;
+          std::cout << "ContinuousEvent: m_CurrentLimit: " << m_CurrentLimit << ", with m_CurrentForce: " << m_CurrentForce << " and m_Increment: " << m_Increment << std::endl;
         }
 
         {
@@ -393,6 +394,7 @@ void ContinuousEvent::process(Event event){
                 m_CurrentStep++;
                 // Update current limit.
                 m_CurrentLimit += m_Increment;
+                std::cout << "ContinuousEvent: m_CurrentLimit: " << m_CurrentLimit << ", with m_CurrentForce: " << m_CurrentForce << " and m_Increment: " << m_Increment << std::endl;
 
                 // Perform hold if there is a hold time
                 if(0 < m_HoldTime){

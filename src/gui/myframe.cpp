@@ -995,7 +995,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     distanceOrStressOrForce = m_DistanceOrStressOrForce;
     holdtime = m_ContinuousStressForceHoldTimeSpinCtrl->GetValue();
     incrementDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
-    increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue();
+    increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue() * 10000.0;
 
     if(true == m_ContinuousStressForceVelocityMmRadioBtn->GetValue()){
       velocityDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
