@@ -1180,7 +1180,7 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
-  //m_CurrentExperimentValues->exportCSV();
+  //m_CurrentProtocol->exportCSV();
 }
 
 /**
