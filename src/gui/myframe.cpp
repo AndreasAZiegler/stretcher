@@ -47,7 +47,6 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnInitializeHomeLinearStages)
   EVT_BUTTON(ID_SetMountingLength, MyFrame::OnInitializeSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
-  EVT_RADIOBOX(ID_GoTo, MyFrame::OnGoTo)
   //EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
   //EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnLimitsLoadSet1)
@@ -69,12 +68,6 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
-  EVT_SPINCTRLDOUBLE(ID_ConditioningSpeedPercent, MyFrame::OnConditioningSpeedPercentChanged)
-  EVT_SPINCTRLDOUBLE(ID_ConditioningSpeedMm, MyFrame::OnConditioningSpeedMmChanged)
-  EVT_BUTTON(ID_ConditioningSendToProtocol, MyFrame::OnConditioningSendToProtocol)
-  EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedPercent, MyFrame::OnRamp2FailureSpeedPercentChanged)
-  EVT_SPINCTRLDOUBLE(ID_Ramp2FailureSpeedMm, MyFrame::OnRamp2FailureSpeedMmChanged)
-  EVT_BUTTON(ID_Ramp2FailureSendToProtocol, MyFrame::OnRamp2FailureSendToProtocol)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
@@ -160,16 +153,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ContinuousDistanceStepsRadioBtn->SetId(ID_ContinuousSteps);
   m_ContinuousCancelButton->SetId(ID_ContinuousCancel);
   m_ContinuousSendButton->SetId(ID_ContinuousSendToProtocol);
-  m_ConditioningStressRadioBtn->SetId(ID_ConditioningStressLimit);
-  m_ConditioningDistanceRadioBtn->SetId(ID_ConditioningDistanceLimit);
   m_StopButton->SetId(ID_MotorStop);
-  m_ConditioningSpeedPreloadSpinCtrl->SetId(ID_ConditioningSpeedPercent);
-  m_ConditioningSpeedMmSpinCtrl->SetId(ID_ConditioningSpeedMm);
-  m_ConditioningSendButton->SetId(ID_ConditioningSendToProtocol);
-  m_R2FSpeedPreloadSpinCtrl->SetId(ID_Ramp2FailureSpeedPercent);
-  m_R2FSpeedMmSpinCtrl->SetId(ID_Ramp2FailureSpeedMm);
-  m_R2FSendButton->SetId(ID_Ramp2FailureSendToProtocol);
-  m_R2FAfterFailureRadioBox->SetId(ID_GoTo);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_ProtocolsXButton->SetId(ID_DeleteExperiment);
@@ -405,10 +389,6 @@ void MyFrame::startup(void){
   m_ContinuousDistanceStepsStaticText->Show(false);
   m_ContinuousDistanceStepsSpinCtrl->Show(false);
 
-  // Hide Go to options
-  m_R2FGoToSpinCtrl->Show(false);
-  m_R2FGoToRadioBox->Show(false);
-
   // Set digits for the wxSpinCtrlDouble
   m_LimitsGoToSpinCtrl->SetDigits(2);
   m_InitializeCrossSectionSpinCtrl->SetDigits(2);
@@ -438,14 +418,6 @@ void MyFrame::startup(void){
   m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
   m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
   m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
-  m_ConditioningSpeedMmSpinCtrl->SetDigits(2);
-  m_ConditioningSpeedPreloadSpinCtrl->SetDigits(2);
-  m_ConditioningStressForceLimitSpinCtrl->SetDigits(2);
-  m_ConditioningDistanceLimitSpinCtrl->SetDigits(2);
-  m_R2FSpeedPreloadSpinCtrl->SetDigits(2);
-  m_R2FSpeedMmSpinCtrl->SetDigits(2);
-  m_R2FDropBStopSpinCtrl->SetDigits(2);
-  m_R2FGoToSpinCtrl->SetDigits(2);
 }
 
 /**
@@ -505,7 +477,6 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
-    m_ConditioningStressForceLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_ForceUnit = wxT(" kPa");
 
 
@@ -525,7 +496,6 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
-    m_ConditioningStressForceLimitStaticText->SetLabelText("Force Limit [N]");
     m_ForceUnit = wxT(" N");
 
     wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
@@ -568,20 +538,6 @@ void MyFrame::OnStressLimit(wxCommandEvent& event){
   m_ConditioningDistanceLimitSpinCtrl->Show(false);
   m_ConditioningDisctanceLimitRadioBox->Show(false);
   */
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses "Go to" after failure in R2F.
- * @param event Occuring event
- */
-void MyFrame::OnGoTo(wxCommandEvent& event){
-  if(2 == m_R2FAfterFailureRadioBox->GetSelection()){
-    m_R2FGoToSpinCtrl->Show(true);
-    m_R2FGoToRadioBox->Show(true);
-  }else{
-    m_R2FGoToSpinCtrl->Show(false);
-    m_R2FGoToRadioBox->Show(false);
-  }
 }
 
 /**
@@ -1106,149 +1062,6 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              behaviorAfterStop));
 
   m_CurrentProtocol->addExperiment(experiment);
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in percent in conditioning.
- * @param event Occuring event
- */
-void MyFrame::OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event){
- //double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_ConditioningSpeedPreloadSpinCtrl->GetValue() / 100);
- //m_ConditioningSpeedMmSpinCtrl->SetValue(speedmm);
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in mm in conditioning.
- * @param event Occuring event
- */
-void MyFrame::OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event){
-  //double speedpercent = m_ConditioningSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  //m_ConditioningSpeedPreloadSpinCtrl->SetValue(speedpercent);
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in conditioning.
- * @param event Occuring event
- */
-void MyFrame::OnConditioningSendToProtocol(wxCommandEvent& event){
-
-  DistanceOrStressOrForce distanceOrStressForce;
-  if(true == m_ConditioningStressRadioBtn->GetValue()){
-    distanceOrStressForce = m_DistanceOrStressOrForce;
-  }else if(true == m_ConditioningDistanceRadioBtn->GetValue()){
-    distanceOrStressForce = DistanceOrStressOrForce::Distance;
-  }
-
-  int calculatelimit = m_ConditioningDistanceLimitSpinCtrl->GetValue();
-  Experiment::DistanceOrPercentage dp;
-  switch(m_ConditioningDisctanceLimitRadioBox->GetSelection()){
-    case 0:
-      //distancelimit = static_cast<long>(m_PreloadDistance + m_ConditioningDistanceLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
-      dp = Experiment::DistanceOrPercentage::Distance;
-      break;
-    case 1:
-      //distancelimit = ((m_ConditioningDistanceLimitSpinCtrl->GetValue() / 100) + 1.0) * m_PreloadDistance;
-      dp = Experiment::DistanceOrPercentage::Percentage;
-      break;
-  }
-
-  /*
-  std::unique_ptr<Experiment> experiment(new Conditioning(ExperimentType::Conditioning,
-                                         distanceOrStressForce,
-                                         m_StressOrForce,
-                                         m_CurrentDistance,
-                                         m_StageFrame,
-                                         m_LinearStagesMessageHandlers,
-                                         m_ForceSensorMessageHandler,
-                                         &m_VectorLayer,
-                                         &m_VectorLayerMutex,
-                                         this,
-                                         m_StoragePath,
-                                         &m_Wait,
-                                         &m_WaitMutex,
-                                         m_ConditioningStressForceLimitSpinCtrl->GetValue(),
-                                         m_ConditioningCyclesSpinCtrl->GetValue(),
-                                         dp,
-                                         calculatelimit,
-                                         m_ConditioningSpeedMmSpinCtrl->GetValue(),
-                                         m_Area));
-
-  //m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-  m_CurrentProtocol->addExperiment(experiment);
-  */
-
-  return;
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in percent in ramp 2 failure.
- * @param event Occuring event
- */
-void MyFrame::OnRamp2FailureSpeedPercentChanged(wxSpinDoubleEvent& event){
-  //double speedmm = m_PreloadDistance * 0.00009921875/*mm per micro step*/ * (m_R2FSpeedPreloadSpinCtrl->GetValue() / 100.0);
-  //m_R2FSpeedMmSpinCtrl->SetValue(speedmm);
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in mm in ramp 2 failure.
- * @param event Occuring event
- */
-void MyFrame::OnRamp2FailureSpeedMmChanged(wxSpinDoubleEvent& event){
-  //double speedpercent = m_R2FSpeedMmSpinCtrl->GetValue() / (m_PreloadDistance * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  //m_R2FSpeedPreloadSpinCtrl->SetValue(speedpercent);
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in ramp 2 failure.
- * @param event Occuring event
- */
-void MyFrame::OnRamp2FailureSendToProtocol(wxCommandEvent& event){
-
-  Ramp2Failure::BehaviorAfterFailure behavior = Ramp2Failure::BehaviorAfterFailure::PreloadPos;
-  switch(m_R2FAfterFailureRadioBox->GetSelection()){
-    case 0:
-      behavior = Ramp2Failure::BehaviorAfterFailure::PreloadPos;
-      break;
-
-    case 1:
-      behavior = Ramp2Failure::BehaviorAfterFailure::Stop;
-      break;
-
-    case 2:
-      behavior = Ramp2Failure::BehaviorAfterFailure::GoTo;
-      break;
-  }
-
-  long distanceafterfailure = 0;
-  if(0 == m_R2FGoToRadioBox->GetSelection()){
-    //distanceafterfailure = m_R2FGoToSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-  }else if(1 == m_R2FGoToRadioBox->GetSelection()){
-    //distanceafterfailure = ((m_R2FGoToSpinCtrl->GetValue() / 100) /*+ 1.0*/) * m_PreloadDistance;
-  }
-
-  /*
-  m_CurrentExperiment = new Ramp2Failure(ExperimentType::Ramp2Failure,
-                                         m_StressOrForce,
-                                         m_StageFrame,
-                                         m_LinearStagesMessageHandlers,
-                                         m_ForceSensorMessageHandler,
-                                         &m_VectorLayer,
-                                         &m_VectorLayerMutex,
-                                         this,
-                                         m_StoragePath,
-                                         &m_Wait,
-                                         &m_WaitMutex,
-                                         behavior,
-                                         m_R2FSpeedMmSpinCtrl->GetValue(),
-                                         m_R2FDropBStopSpinCtrl->GetValue(),
-                                         m_Area,
-                                         m_PreloadDistance,
-                                         distanceafterfailure);
-
-  m_CurrentExperimentValues = m_CurrentExperiment->getExperimentValues();
-  */
-
-  return;
 }
 
 /**

@@ -191,12 +191,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnStressLimit(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user chooses "Go to" after failure in R2F.
-     * @param event Occuring event
-     */
-    void OnGoTo(wxCommandEvent& event);
-
-    /**
      * @brief Method wich will be executed, when the user klicks on load stored position button.
      * @param event Occuring event
      */
@@ -327,42 +321,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnContinuousSendToProtocol(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes the speed value in percent in conditioning.
-     * @param event Occuring event
-     */
-    void OnConditioningSpeedPercentChanged(wxSpinDoubleEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes the speed value in mm in conditioning.
-     * @param event Occuring event
-     */
-    void OnConditioningSpeedMmChanged(wxSpinDoubleEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in conditioning.
-     * @param event Occuring event
-     */
-    void OnConditioningSendToProtocol(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes the speed value in percent in ramp 2 failure.
-     * @param event Occuring event
-     */
-    void OnRamp2FailureSpeedPercentChanged(wxSpinDoubleEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user changes the speed value in mm in ramp 2 failure.
-     * @param event Occuring event
-     */
-    void OnRamp2FailureSpeedMmChanged(wxSpinDoubleEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in ramp 2 failure.
-     * @param event Occuring event
-     */
-    void OnRamp2FailureSendToProtocol(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user klicks on the decrease distance button.
@@ -508,7 +466,6 @@ enum
 	ID_Ports = 2,
 	ID_FileOutput = 3,
   ID_Unit = 4,
-  ID_GoTo = 5,
   ID_MotorDecreaseDistance = 6,
   ID_MotorIncreaseDistance = 7,
   ID_MotorStop = 8,
@@ -539,14 +496,6 @@ enum
   ID_ContinuousCancel = 31,
   ID_ContinuousSendToProtocol = 32,
 
-  ID_ConditioningSpeedPercent = 33,
-  ID_ConditioningSpeedMm = 34,
-  ID_ConditioningStressLimit = 35,
-  ID_ConditioningDistanceLimit = 36,
-  ID_ConditioningSendToProtocol = 37,
-  ID_Ramp2FailureSpeedPercent = 38,
-  ID_Ramp2FailureSpeedMm = 39,
-  ID_Ramp2FailureSendToProtocol = 40,
   ID_ClearGraph = 41,
   ID_ExportCSV = 42,
   ID_DeleteExperiment = 43,
