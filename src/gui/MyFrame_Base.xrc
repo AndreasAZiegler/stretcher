@@ -1657,7 +1657,6 @@
 																			<border>5</border>
 																			<object class="wxPanel" name="m_ContinuousDistancePanel22">
 																				<style>wxTAB_TRAVERSAL</style>
-																				<hidden>1</hidden>
 																				<object class="wxBoxSizer">
 																					<orient>wxVERTICAL</orient>
 																					<object class="sizeritem">
@@ -1722,8 +1721,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousDistanceMaxValueSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>0</min>
+																				<max>1000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">

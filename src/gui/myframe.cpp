@@ -1039,10 +1039,11 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
         maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue();
         if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
           stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
-          steps = maxvalue / increment;
+          steps = maxvalue / m_ContinuousDistanceIncrementSpinCtrl->GetValue();
+          std::cout << "MyFrame: steps: " << steps << std::endl;
         }
       } else if(true == m_ContinuousDistanceMaxValuePercentRadioBtn->GetValue()){
-        maxvalueDistanceOrPercentage == Experiment::DistanceOrPercentage::Percentage;
+        maxvalueDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
         maxvaluepercent = m_ContinuousDistanceMaxValueSpinCtrl->GetValue();
       }
     } else if(true == m_ContinuousDistanceStepsRadioBtn->GetValue()){

@@ -82,6 +82,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_BehaviorAfterStop(behaviorAfterStop),
         m_CurrentState(State::stopState),
         m_CurrentLimit(0),
+        m_CurrentStep(0),
         m_CurrentCycle(0),
         m_DecreaseSpeedFlag(false),
         m_CheckDistanceFlag(false),
@@ -105,7 +106,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                                      behaviorAfterStop))
 {
   if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100) * m_GageLength;
+    m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
   }
   if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
     m_Increment = (m_IncrementPercent / 100) * m_GageLength;
@@ -114,7 +115,9 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
     if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
       m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
     }
-    m_Steps = m_MaxValueLimit / m_Increment;
+    if((0 < m_MaxValueLimit) && (0 < m_Increment)){
+      m_Steps = m_MaxValueLimit / m_Increment;
+    }
   }
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -137,7 +140,7 @@ void ContinuousEvent::setPreloadDistance(){
   m_GageLength = m_CurrentDistance;
 
   if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100) * m_GageLength;
+    m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
   }
   if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
     m_Increment = (m_IncrementPercent / 100) * m_GageLength;
@@ -146,7 +149,10 @@ void ContinuousEvent::setPreloadDistance(){
     if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
       m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
     }
-    m_Steps = m_MaxValueLimit / m_Increment;
+    if((0 < m_MaxValueLimit) && (0 < m_Increment)){
+      m_Steps = m_MaxValueLimit / m_Increment;
+      std::cout << "ContinuousEvent: steps: " << m_Steps << ", max. value limit: " << m_MaxValueLimit << ", m_Increment: " << m_Increment << std::endl;
+    }
   }
 }
 
