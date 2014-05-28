@@ -782,19 +782,19 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     }
     velocity = m_OneStepDistanceVelocitySpinCtrl->GetValue();
 
-    if(true == m_OneStepDistanceLowerLimitMmRadioBtn->GetValue()){
+    if(true == m_OneStepDistanceUpperLimitMmRadioBtn->GetValue()){
       upperlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
       upperlimit = m_OneStepDistanceUpperLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-    } else if(true == m_OneStepDistanceLowerLimitPercentRadioBtn->GetValue()){
+    } else if(true == m_OneStepDistanceUpperLimitPercentRadioBtn->GetValue()){
       upperlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
       upperlimitpercent = m_OneStepDistanceUpperLimitSpinCtrl->GetValue();
     }
     holdtime2 = m_OneStepDistanceHoldTime2SpinCtrl->GetValue();
 
-    if(true == m_OneStepDistanceUpperLimitMmRadioBtn->GetValue()){
+    if(true == m_OneStepDistanceLowerLimitMmRadioBtn->GetValue()){
       lowerlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
       lowerlimit = m_OneStepDistanceLowerLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-    } else if(true == m_OneStepDistanceUpperLimitPercentRadioBtn->GetValue()){
+    } else if(true == m_OneStepDistanceLowerLimitPercentRadioBtn->GetValue()){
       lowerlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
       lowerlimitpercent = m_OneStepDistanceLowerLimitSpinCtrl->GetValue();
     }

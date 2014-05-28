@@ -503,22 +503,22 @@ void OneStepEvent::process(Event event){
           if((m_CurrentDistance - m_CurrentLimit) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
               m_DecreaseSpeedFlag = true;
-              {
+              if(5 < m_Velocity){
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity/10);
+                std::cout << "OneStepEvent: Reduced speed." << std::endl;
               }
-              std::cout << "OneStepEvent: Reduced speed." << std::endl;
             }
           }
           // Reduce speed to a tenth if stages are close to the turn point.
           else if((m_CurrentLimit - m_CurrentDistance) < (200 * m_DistanceThreshold)){
             if(false == m_DecreaseSpeedFlag){
               m_DecreaseSpeedFlag = true;
-              {
+              if(5 < m_Velocity){
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity/10);
+                std::cout << "OneStepEvent: Reduced speed." << std::endl;
               }
-              std::cout << "OneStepEvent: Reduced speed." << std::endl;
             }
           }
           //std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
