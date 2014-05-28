@@ -1665,7 +1665,7 @@
 																						<border>5</border>
 																						<object class="wxRadioButton" name="m_ContinuousDistanceIncrementMmRadioBtn">
 																							<style>wxRB_GROUP</style>
-																							<label>mm/s</label>
+																							<label>mm</label>
 																							<value>0</value>
 																						</object>
 																					</object>
@@ -1674,7 +1674,7 @@
 																						<flag>wxALIGN_CENTER</flag>
 																						<border>5</border>
 																						<object class="wxRadioButton" name="m_ContinuousDistanceIncrementPercentRadioBtn">
-																							<label>%L0/s</label>
+																							<label>%L0</label>
 																							<value>0</value>
 																						</object>
 																					</object>

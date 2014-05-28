@@ -41,11 +41,11 @@ class ContinuousEventValues : public ExperimentValues
      */
     std::string getEndOfEvent(void);
 
-    double m_Velocity;
-    double m_HoldTime;
-    int m_Cycles;
-    int m_Steps;
-    Experiment::BehaviorAfterStop m_BehaviorAfterStop;
+    double m_Velocity;																					/**< Velocity in mm/s. */
+    double m_HoldTime;																					/**< Hold time 1 in s. */
+    int m_Cycles;																								/**< Amount of cycles. */
+    int m_Steps;																								/**< Number of steps. */
+    Experiment::BehaviorAfterStop m_BehaviorAfterStop;					/**< Defines the behavior after the experiment stops. */
 };
 
 #endif // CONTINUESEVENTVALUES_H
