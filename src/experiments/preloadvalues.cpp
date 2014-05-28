@@ -48,5 +48,5 @@ std::string PreloadValues::getExperimentSettings(void){
                      " , Stress or Force: " + getStressOrForce() +
                      ", Cross section area: " + std::to_string(m_Area) +
                      ", Stress/force limit: " + std::to_string(m_StressForceLimit) + " " + getStressOrForce() +
-                     ", Velocity: " + std::to_string(m_SpeedInMm) + "mm/s"));
+                     ", Velocity: " + std::to_string(m_SpeedInMm) + "mm/s\n\n"));
 }

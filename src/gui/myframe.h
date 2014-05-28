@@ -435,7 +435,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
-    std::unique_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
+    std::shared_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
     //Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
     //ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */

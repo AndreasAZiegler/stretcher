@@ -105,9 +105,15 @@ class Protocols
     void setStartPoint(void);
 
     /**
+     * @brief Returns the experiment names as a vector.
+     * @return The experiment names as a vector.
+     */
+    std::vector<std::string> getExperimentNames(void);
+
+    /**
      * @brief Exports the measurement data to a .csv file.
      */
-    void exportCSV(std::vector<bool> *disableexport);
+    void exportCSV(std::vector<bool> disableexport);
 
     /**
      * @brief Returns the current experiment type as a string.

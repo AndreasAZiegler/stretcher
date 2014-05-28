@@ -51,7 +51,7 @@ std::string ContinuousEventValues::getExperimentSettings(void){
                      ", Hold time: " + std::to_string(m_HoldTime) +
                      ", Steps: " + std::to_string(m_Steps) +
                      ", Cycles: " + std::to_string(m_Cycles) +
-                     ", End of event: " + getEndOfEvent()));
+                     ", End of event: " + getEndOfEvent() + "\n\n"));
 }
 
 /**

@@ -60,7 +60,7 @@ std::string OneStepEventValues::getExperimentSettings(void){
                      ", Hold time 2: " + std::to_string(m_HoldTime2) +
                      ", Lower Limit: " + std::to_string(m_LowerLimit) +
                      ", Cycles: " + std::to_string(m_Cycles) +
-                     ", End of event: " + getEndOfEvent()));
+                     ", End of event: " + getEndOfEvent() + "\n\n"));
 }
 
 /**

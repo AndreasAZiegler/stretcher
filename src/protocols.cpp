@@ -380,16 +380,30 @@ void Protocols::setStartPoint(void){
 }
 
 /**
+ * @brief Returns the experiment names as a vector.
+ * @return The experiment names as a vector.
+ */
+std::vector<std::string> Protocols::getExperimentNames(void){
+  std::vector<std::string> stringvector;
+
+  for(int i = 0; i < m_ListBox->GetCount(); ++i){
+    stringvector.push_back(m_ListBox->GetString(i).ToStdString());
+  }
+
+  return(stringvector);
+}
+
+/**
  * @brief Exports the measurement data to a .csv file.
  */
-void Protocols::exportCSV(std::vector<bool> *disableexport){
+void Protocols::exportCSV(std::vector<bool> disableexport){
   // Creating file name
   std::time_t time = std::time(NULL);
   char mbstr[100];
   std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
   std::cout << mbstr << std::endl;
   //std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
-  std::string pathAndFilename = m_StoragePath + "/" + "_" + std::string(mbstr) + ".txt";
+  std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".txt";
   std::cout << pathAndFilename << std::endl;
 
   // Creat the file
@@ -407,7 +421,7 @@ void Protocols::exportCSV(std::vector<bool> *disableexport){
 
   // Printing the experiment settings.
   for(int i = 0; i < m_ExperimentValues.size(); ++i){
-    if(false == disableexport->operator [](i)){
+    if(false == disableexport[i]){
       file << m_ExperimentValues[i]->getExperimentSettings();
     }
   }
@@ -417,7 +431,7 @@ void Protocols::exportCSV(std::vector<bool> *disableexport){
   file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in micro seconds" << std::endl;
 
   for(int i = 0; i < m_ExperimentValues.size(); ++i){
-    if(false == disableexport->operator [](i)){
+    if(false == disableexport[i]){
 
       // Get the pointer to the vectors containing the measurement values.
       std::vector<ExperimentValues::MeasurementValue>* stressForceValues = m_ExperimentValues[i]->getStressForceValues();
@@ -441,8 +455,6 @@ void Protocols::exportCSV(std::vector<bool> *disableexport){
   }
 
   file.close();
-
-  delete disableexport;
   /*
 /**
  * @brief Returns the experiment settings as a std::string.

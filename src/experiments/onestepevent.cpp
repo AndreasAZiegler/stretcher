@@ -177,13 +177,17 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   } else{
    timepoint = previewvalue.back().getTimepoint();
   }
-  previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
-  timepoint++;
+  //previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
 
   for(int i = 0; i < m_Cycles; ++i){
+    // Make start point.
+    previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
+    timepoint++;
+
     // Make point if there is a hold time 1.
     if(0 < m_HoldTime1){
-      previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
+      previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
+      //previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
       timepoint++;
     }
     // Make upper limit point.
@@ -197,9 +201,6 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
     // Make lower limit point.
     previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_LowerLimit));
     timepoint++;
-
-    // Make start point.
-    previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength));
   }
   timepoint++;
 

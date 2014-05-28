@@ -12,6 +12,7 @@
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
 #include "myfileoutput.h"
+#include "myexportdialog.h"
 #include "protocols.h"
 #include "../experiments/preload.h"
 #include "../experiments/onestepevent.h"
@@ -1180,7 +1181,10 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
-  //m_CurrentProtocol->exportCSV();
+  checkProtocol();
+  std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames()));
+  dialog->ShowModal();
+
 }
 
 /**
@@ -1432,7 +1436,7 @@ void MyFrame::createPreviewGraph(void){
  */
 void MyFrame::checkProtocol(void){
   if(nullptr == m_CurrentProtocol){
-  m_CurrentProtocol = std::unique_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
+  m_CurrentProtocol = std::shared_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
                                                                this,
                                                                &m_StagesStoppedFlag,
                                                                &m_StagesStoppedMutex,
