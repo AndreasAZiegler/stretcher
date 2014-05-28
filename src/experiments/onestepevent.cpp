@@ -506,6 +506,7 @@ void OneStepEvent::process(Event event){
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity/10);
               }
+              std::cout << "OneStepEvent: Reduced speed." << std::endl;
             }
           }
           // Reduce speed to a tenth if stages are close to the turn point.
@@ -516,9 +517,10 @@ void OneStepEvent::process(Event event){
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity/10);
               }
+              std::cout << "OneStepEvent: Reduced speed." << std::endl;
             }
           }
-          std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
+          //std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
           if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Forwards;

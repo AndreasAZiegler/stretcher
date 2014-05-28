@@ -518,6 +518,7 @@ void ContinuousEvent::process(Event event){
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->setSpeed(m_Velocity/10);
                 }
+                std::cout << "ContinuousEvent: Reduced speed." << std::endl;
               }
             }
             // Reduce speed to a tenth if stages are close to the turn point.
@@ -528,6 +529,7 @@ void ContinuousEvent::process(Event event){
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->setSpeed(m_Velocity/10);
                 }
+                std::cout << "ContinuousEvent: Reduced speed." << std::endl;
               }
             }
             //std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
