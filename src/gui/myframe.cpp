@@ -69,6 +69,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedPercent, MyFrame::OnPreloadSpeedPercentChanged)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
+  EVT_BUTTON(ID_ClearLog, MyFrame::OnClearLog)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_ExportPNG, MyFrame::OnExportPNG)
@@ -156,6 +157,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ContinuousCancelButton->SetId(ID_ContinuousCancel);
   m_ContinuousSendButton->SetId(ID_ContinuousSendToProtocol);
   m_StopButton->SetId(ID_MotorStop);
+  m_LogClearButton->SetId(ID_ClearLog);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_GraphExportPNGButton->SetId(ID_ExportPNG);
@@ -1205,6 +1207,14 @@ void MyFrame::OnExportPNG(wxCommandEvent& event){
 
   m_Graph->SaveScreenshot(pathAndFilename, wxBITMAP_TYPE_PNG);
   wxLogMessage(std::string("Graph saved in: " + pathAndFilename).c_str());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the clear log button.
+ * @param event Occuring event
+ */
+void MyFrame::OnClearLog(wxCommandEvent& event){
+  m_LogTextCtrl->Clear();
 }
 
 /**

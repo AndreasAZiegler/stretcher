@@ -353,6 +353,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnExportPNG(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the clear log button.
+     * @param event Occuring event
+     */
+    void OnClearLog(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
      * @param event Occuring event
      */
