@@ -409,10 +409,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
   std::time_t time = std::time(NULL);
   char mbstr[100];
   std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-  //std::cout << mbstr << std::endl;
-  //std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
   std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".txt";
-  //std::cout << pathAndFilename << std::endl;
 
   // Creat the file
   std::ofstream file(pathAndFilename);
