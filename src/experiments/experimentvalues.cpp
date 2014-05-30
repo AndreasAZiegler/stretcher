@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <algorithm>
 #include <wx/event.h>
 #include "../gui/myframe.h"
 #include "experimentvalues.h"
@@ -72,7 +73,7 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
     m_GraphMaxLimitValues = graphmaxdistancelimitvalues;
     m_GraphMinLimitValues = graphmindistancelimitvalues;
   }
-  m_GraphLimitTimePoints = graphlimittimepoints;
+  m_GraphForceLimitXAxisPoints = graphlimittimepoints;
   //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
   // clear the vectors.
   m_StressForceValues.clear();
@@ -130,11 +131,25 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
-        {
-          std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
-          m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+      {
+        std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
+        m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
+        m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+      }
+
+      /*
+      if(0 < m_GraphForceLimitXAxisPoints->size()){
+        if((*std::max_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) < m_GraphDistanceValues->back()) ||
+           (*std::min_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) > m_GraphDistanceValues->back())){
+          m_GraphForceLimitXAxisPoints->push_back(m_GraphDistanceValues->back());
+          m_GraphMaxLimitValues->push_back(m_GraphMaxLimitValues->back());
+          m_GraphMinLimitValues->push_back(m_GraphMinLimitValues->back());
+          wxLogMessage(std::string("MyFrame: m_GraphLimitTimePoints: " + std::to_string(m_GraphForceLimitXAxisPoints->size()) + " m_GraphMaxLimitValues: " + std::to_string(m_GraphMaxLimitValues->size())).c_str());
+          m_MaxLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMaxLimitValues);
+          m_MinLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMinLimitValues);
         }
+      }
+      */
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
@@ -161,10 +176,6 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           m_GraphDistanceValues->resize(m_GraphStressForceValues->size());
         }
         m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
-        /*
-        m_MaxLimitVectorLayer->SetData(*m_GraphLimitTimePoints, *m_GraphMaxLimitValues);
-        m_MinLimitVectorLayer->SetData(*m_GraphLimitTimePoints, *m_GraphMinLimitValues);
-        */
       }
       m_MyFrame->updateGraphFromExperimentValues();
     }

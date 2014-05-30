@@ -430,6 +430,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     mpFXYVector m_VectorLayer;									/**< Vector layer for the value graph */
     mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
     mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
+    std::vector<double> m_TimePointLimits;																	/**< Vector for the limits timepoints. */
+    std::vector<double> m_MaxStressForceLimits;															/**< Vector for the max. stress/force limits. */
+    std::vector<double> m_MinStressForceLimits;															/**< Vector for the min. stress/force limits. */
+    std::vector<double> m_MaxDistanceLimits;																/**< Vector for the max. distance limits. */
+    std::vector<double> m_MinDistanceLimits;																/**< Vector for the min. distance limits. */
     mpFXYVector m_MaxStressForceLimitVector;		/**< Vector layer to display the max stress/force limits. */
     mpFXYVector m_MinStressForceLimitVector;		/**< Vector layer to display the min stress/force limits. */
     mpFXYVector m_MaxDistanceLimitVector;				/**< Vector layer to display the max distance limits. */
