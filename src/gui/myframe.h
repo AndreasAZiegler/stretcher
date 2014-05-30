@@ -359,6 +359,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnClearLog(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the save log button.
+     * @param event Occuring event
+     */
+    void OnSaveLog(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
      * @param event Occuring event
      */

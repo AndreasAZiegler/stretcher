@@ -70,6 +70,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_SPINCTRLDOUBLE(ID_PreloadSpeedMm, MyFrame::OnPreloadSpeedMmChanged)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
   EVT_BUTTON(ID_ClearLog, MyFrame::OnClearLog)
+  EVT_BUTTON(ID_SaveLog, MyFrame::OnSaveLog)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_ExportPNG, MyFrame::OnExportPNG)
@@ -158,6 +159,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ContinuousSendButton->SetId(ID_ContinuousSendToProtocol);
   m_StopButton->SetId(ID_MotorStop);
   m_LogClearButton->SetId(ID_ClearLog);
+  m_LogSaveButton->SetId(ID_SaveLog);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_GraphExportPNGButton->SetId(ID_ExportPNG);
@@ -1215,6 +1217,23 @@ void MyFrame::OnExportPNG(wxCommandEvent& event){
  */
 void MyFrame::OnClearLog(wxCommandEvent& event){
   m_LogTextCtrl->Clear();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the save log button.
+ * @param event Occuring event
+ */
+void MyFrame::OnSaveLog(wxCommandEvent& event){
+  // Creating file name
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
+
+  std::string pathAndFilename = m_StoragePath + "/" + "Log_" + std::string(mbstr) + ".txt";
+
+  m_LogTextCtrl->SaveFile(pathAndFilename);
+
+  wxLogMessage(std::string("Log saved in: " + pathAndFilename).c_str());
 }
 
 /**
