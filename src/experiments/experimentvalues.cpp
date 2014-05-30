@@ -192,7 +192,6 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_MaxForceLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMaxForceLimitValues);
         m_MinForceLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMinForceLimitValues);
       }
-      //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
 
