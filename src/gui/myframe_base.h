@@ -212,8 +212,9 @@ protected:
  wxButton* m_ProtocolsSaveButton;
  wxButton* m_ProtocolsLoadButton;
  wxScrolledWindow* m_Results;
- wxListCtrl* m_ResultListCtrl;
- wxButton* m_ResultSaveButton;
+ wxTextCtrl* m_LogTextCtrl;
+ wxButton* m_LogClearButton;
+ wxButton* m_LogSaveButton;
  wxPanel* m_GraphPanel;
  wxBoxSizer* m_GraphSizer1;
  wxBoxSizer* m_GraphSizer2;
@@ -412,8 +413,9 @@ private:
   m_ProtocolsSaveButton = XRCCTRL(*this,"m_ProtocolsSaveButton",wxButton);
   m_ProtocolsLoadButton = XRCCTRL(*this,"m_ProtocolsLoadButton",wxButton);
   m_Results = XRCCTRL(*this,"m_Results",wxScrolledWindow);
-  m_ResultListCtrl = XRCCTRL(*this,"m_ResultListCtrl",wxListCtrl);
-  m_ResultSaveButton = XRCCTRL(*this,"m_ResultSaveButton",wxButton);
+  m_LogTextCtrl = XRCCTRL(*this,"m_LogTextCtrl",wxTextCtrl);
+  m_LogClearButton = XRCCTRL(*this,"m_LogClearButton",wxButton);
+  m_LogSaveButton = XRCCTRL(*this,"m_LogSaveButton",wxButton);
   m_GraphPanel = XRCCTRL(*this,"m_GraphPanel",wxPanel);
   m_GraphExportCSVButton = XRCCTRL(*this,"m_GraphExportCSVButton",wxButton);
   m_GraphExportPNGButton = XRCCTRL(*this,"m_GraphExportPNGButton",wxButton);

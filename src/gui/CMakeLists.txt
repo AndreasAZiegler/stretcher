@@ -7,7 +7,7 @@ set(SOURCE
         ./gui/myhomestages.cpp
         ./gui/myexportdialog.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
-        ./gui/xh_mathplotxmlhandler.cpp
+        #./gui/xh_mathplotxmlhandler.cpp
         ./gui/xh_wxmybuttonxmlhandler.cpp
         PARENT_SCOPE
 )
@@ -27,7 +27,7 @@ set(HEADERS
         ./gui/myexportdialog.h
         ./gui/myexportdialog_base.h
         ./gui/xh_wxspinctrldoublexmlhandler.h
-        ./gui/xh_mathplotxmlhandler.h
+        #./gui/xh_mathplotxmlhandler.h
         ./gui/xh_wxmybuttonxmlhandler.h
         PARENT_SCOPE
 )

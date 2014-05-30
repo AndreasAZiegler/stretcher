@@ -1,6 +1,7 @@
 // Includes
 #include <iostream>
 #include <thread>
+#include <wx/log.h>
 #include "onestepevent.h"
 
 OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
@@ -148,7 +149,8 @@ void OneStepEvent::setPreloadDistance(){
 
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength * 0.00009921875/*mm per micro step*/;
-    std::cout << "OneStepEvent velocity percent: " << m_VelocityPercent << " velocity: " << m_Velocity << std::endl;
+    wxLogMessage(std::string("OneStepEvent: Velocity percent: " + std::to_string(m_VelocityPercent) +
+                             " velocity: " + std::to_string(m_Velocity)).c_str());
     m_ExperimentValues->setVelocity(m_Velocity);
   }
   if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
@@ -224,15 +226,15 @@ void OneStepEvent::process(Event event){
     case stopState:
       if(Experiment::Event::evStart == event){
 
-        std::cout << "OneStepEvent: Start experiment." << std::endl;
+        wxLogMessage("OneStepEvent: Start experiment.");
 
         // Perform hold if there is a hold time 1
         if(0 < m_HoldTime1){
-          std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+          wxLogMessage(std::string("OneStepEvent: Hold for hold time 1: " + std::to_string(m_HoldTime1 * 1000) + " ms").c_str());
           std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime1);
           t1.join();
           //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-          std::cout << "OneStepEvent holding over." << std::endl;
+          wxLogMessage("OneStepEvent: Holding over.");
         }
 
         // Change limit.
@@ -312,7 +314,7 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
-        std::cout << "OneStepEvent: Stop." << std::endl;
+        wxLogMessage("OneStepEvent: Stop.");
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
@@ -355,11 +357,11 @@ void OneStepEvent::process(Event event){
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->stop();
                 }
-                std::cout << "OneStepEvent: Holds for hold time 2" << m_HoldTime2 * 1000 << " ms" << std::endl;
+                wxLogMessage(std::string("OneStepEvent: Holds for hold time 2" + std::to_string(m_HoldTime2 * 1000) + " ms").c_str());
                 std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime2);
                 t1.join();
                 //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
-                std::cout << "OneStepEvent: Holding over." << std::endl;
+                wxLogMessage("OneStepEvent: Holding over.");
               }
               process(Event::evUpdate);
             }else if(LimitState::lowerLimitState == m_CurrentLimitState){ // If lower limit is active.
@@ -379,7 +381,7 @@ void OneStepEvent::process(Event event){
                     m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
-                std::cout << "OneStepEvent got to end length." << std::endl;
+                wxLogMessage("OneStepEvent: Go to end length.");
                 //process(Event::evUpdate);
               } else{
                 m_CurrentCycle++;
@@ -393,18 +395,18 @@ void OneStepEvent::process(Event event){
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->stop();
                   }
-                  std::cout << "OneStepEvent: Holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+                  wxLogMessage(std::string("OneStepEvent: Holds for hold time 1: " + std::to_string(m_HoldTime1 * 1000) + " ms").c_str());
                   std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime1);
                   t1.join();
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                  std::cout << "OneStepEvent: Holding over." << std::endl;
+                  wxLogMessage("OneStepEvent: Holding over.");
                 }
                 {
                   // Go back to the start lengt.
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->gotoStepsDistance(m_StartLength);
                 }
-                std::cout << "OneStepEvent got to start length." << std::endl;
+                wxLogMessage("OneStepEvent: Go to start length.");
               }
             }
           }
@@ -444,11 +446,11 @@ void OneStepEvent::process(Event event){
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->stop();
                 }
-                std::cout << "OneStepEvent holds for hold time 2 " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                wxLogMessage(std::string("OneStepEvent: Hold for hold time 2 " + std::to_string(m_HoldTime2 * 1000) + " ms").c_str());
                 std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime2);
                 t1.join();
                 //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
-                std::cout << "OneStepEvent holding over." << std::endl;
+                wxLogMessage("OneStepEvent: Holding over.");
               }
               process(Event::evUpdate);
             }else if(LimitState::lowerLimitState == m_CurrentLimitState){ // If lower limit is active.
@@ -468,7 +470,7 @@ void OneStepEvent::process(Event event){
                     m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
-                std::cout << "OneStepEvent got to end length." << std::endl;
+                wxLogMessage("OneStepEvent: Go to end length.");
                 //process(Event::evUpdate);
               } else {
                 m_CurrentCycle++;
@@ -482,18 +484,18 @@ void OneStepEvent::process(Event event){
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->stop();
                   }
-                  std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+                  wxLogMessage(std::string("OneStepEvent: Hold for hold time 1: " + std::to_string(m_HoldTime1 * 1000) + " ms").c_str());
                   std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime1);
                   t1.join();
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                  std::cout << "OneStepEvent holding over." << std::endl;
+                  wxLogMessage("OneStepEvent: Holding over.");
                 }
                 {
                   // Go back to the start lengt.
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->gotoStepsDistance(m_StartLength);
                 }
-                std::cout << "OneStepEvent got to start length." << std::endl;
+                wxLogMessage("OneStepEvent: Go to start length.");
               }
             }
           }
@@ -506,7 +508,7 @@ void OneStepEvent::process(Event event){
               if(5 < m_Velocity){
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity/10);
-                std::cout << "OneStepEvent: Reduced speed." << std::endl;
+                wxLogMessage("OneStepEvent: Reduced speed.");
               }
             }
           }
@@ -517,7 +519,7 @@ void OneStepEvent::process(Event event){
               if(5 < m_Velocity){
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity/10);
-                std::cout << "OneStepEvent: Reduced speed." << std::endl;
+                wxLogMessage("OneStepEvent: Reduced speed.");
               }
             }
           }
@@ -561,11 +563,11 @@ void OneStepEvent::process(Event event){
                   m_StageFrame->stop();
                 }
                 //std::cout << "OneStepEvent stages should stop." << std::endl;
-                std::cout << "OneStepEvent holds for hold time 2 " << m_HoldTime2 * 1000 << " ms" << std::endl;
+                wxLogMessage(std::string("OneStepEvent: Hold for hold time 2 " + std::to_string(m_HoldTime2 * 1000) + " ms").c_str());
                 std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime2);
                 t1.join();
                 //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
-                std::cout << "OneStepEvent holding over." << std::endl;
+                wxLogMessage("OneStepEvent: Holding over.");
               }
               process(Event::evUpdate);
             }else if(LimitState::lowerLimitState == m_CurrentLimitState){ // If lower limit is active.
@@ -578,16 +580,16 @@ void OneStepEvent::process(Event event){
                 switch(m_BehaviorAfterStop){
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentLimit = m_GageLength;
-                    std::cout << "OneStepEvent: Go to gage length: " << m_GageLength << std::endl;
+                    wxLogMessage(std::string("OneStepEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
                     m_StageFrame->gotoStepsDistance(m_GageLength);
                     break;
                   case BehaviorAfterStop::HoldADistance:
                     m_CurrentLimit = m_HoldDistance;
-                    std::cout << "OneStepEvent: Go to hold distance: " << m_HoldDistance << std::endl;
+                    wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance)).c_str());
                     m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
-                std::cout << "OneStepEvent got to end length." << std::endl;
+                wxLogMessage("OneStepEvent: Go to end length.");
                 //process(Event::evUpdate);
               } else {
                 m_CurrentCycle++;
@@ -601,19 +603,19 @@ void OneStepEvent::process(Event event){
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->stop();
                   }
-                  //std::cout << "OneStepEvent stages should stop." << std::endl;
-                  std::cout << "OneStepEvent holds for hold time 1: " << m_HoldTime1 * 1000 << " ms" << std::endl;
+                  //std::cout << "OneStepEvent: stages should stop." << std::endl;
+                  wxLogMessage(std::string("OneStepEvent: Hold for hold time 1: " + std::to_string(m_HoldTime1 * 1000) + " ms").c_str());
                   std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime1);
                   t1.join();
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                  std::cout << "OneStepEvent holding over." << std::endl;
+                  wxLogMessage("OneStepEvent: Holding over.");
                 }
                 {
                   // Go back to the start lengt.
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->gotoStepsDistance(m_StartLength);
                 }
-                std::cout << "OneStepEvent got to start length." << std::endl;
+                wxLogMessage("OneStepEvent: Go to start length.");
               }
             }
           }
@@ -631,20 +633,20 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
-        std::cout << "OneStepEvent: Stop." << std::endl;
+        wxLogMessage("OneStepEvent: Stop.");
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
       if(Event::evUpdate == event){
         //std::cout << "abs(m_StartLength - m_CurrentDistance) < m_DistanceThreshold): " << std::abs(m_StartLength - m_CurrentDistance) << " < " << m_DistanceThreshold << std::endl;
         if(std::abs(m_StartLength - m_CurrentDistance) < 0.5*m_DistanceThreshold){
-          std::cout << "OneStepEvent: goStartState: Start distance reached." << std::endl;
+          wxLogMessage("OneStepEvent: goStartState: Start distance reached.");
           m_CurrentLimitState = LimitState::upperLimitState;
           m_CurrentLimit = m_UpperLimit;
           m_CheckDistanceFlag = false;
           m_CurrentState = runState;
           m_CurrentDirection = Direction::Stop;
-          std::cout << "OneStepEvent:: Go to runState" << std::endl;
+          wxLogMessage("OneStepEvent:: Go to runState");
           process(Event::evUpdate);
             //m_CurrentDirection = Direction::Stop;
             //m_StageFrame->stop();
@@ -681,7 +683,7 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
-        std::cout << "OneStepEvent: Stop." << std::endl;
+        wxLogMessage("OneStepEvent: Stop.");
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
@@ -693,7 +695,7 @@ void OneStepEvent::process(Event event){
           m_CurrentDirection = Direction::Stop;
           m_CurrentCycle = 0;
           //m_StageFrame->stop();
-          std::cout << "OneStepEvent: Stop." << std::endl;
+          wxLogMessage("OneStepEvent: Stop.");
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
           m_Wait->notify_all();
         }/*else{
@@ -730,7 +732,7 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
       m_CurrentForce = measurementValue.value;
       // Stops the experiment if the limits should be checked and a limit is exceeded.
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        std::cout << "OneStepEvent: Force limit exceeded." << std::endl;
+        wxLogWarning("OneStepEvent: Force limit exceeded.");
         process(Event::evStop);
       } else{
         if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
@@ -743,7 +745,7 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
       m_CurrentDistance = measurementValue.value;
       // Stops the experiment if the limits should be checked and a limit is exceeded.
       if((true == m_CheckLimitsFlag) && (m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance)){
-        std::cout << "OneStepEvent: Distance limit exceeded." << std::endl;
+        wxLogWarning("OneStepEvent: Distance limit exceeded.");
         process(Event::evStop);
       } else{
         if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){

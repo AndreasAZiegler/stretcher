@@ -347,6 +347,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnExportCSV(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the export png button.
+     * @param event Occuring event
+     */
+    void OnExportPNG(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
      * @param event Occuring event
      */
@@ -496,18 +502,21 @@ enum
   ID_ContinuousCancel = 31,
   ID_ContinuousSendToProtocol = 32,
 
-  ID_ClearGraph = 41,
-  ID_ExportCSV = 42,
-  ID_DeleteExperiment = 43,
-  ID_MoveUpExperiment = 44,
-  ID_MoveDownExperiment = 45,
-  ID_LoopProtocol = 46,
-  ID_Preview = 47,
-  ID_RunProtocol = 48,
-  ID_StopProtocol = 49,
-  ID_SaveProtocol = 50,
-  ID_LoadProtocol = 51,
-  ID_MakePhoto = 52
+  ID_ClearLog = 41,
+  ID_SaveLog = 42,
+  ID_ClearGraph = 43,
+  ID_ExportCSV = 44,
+  ID_ExportPNG = 45,
+  ID_DeleteExperiment = 46,
+  ID_MoveUpExperiment = 47,
+  ID_MoveDownExperiment = 48,
+  ID_LoopProtocol = 49,
+  ID_Preview = 50,
+  ID_RunProtocol = 51,
+  ID_StopProtocol = 52,
+  ID_SaveProtocol = 53,
+  ID_LoadProtocol = 54,
+  ID_MakePhoto = 55
 };
 
 #endif // MYFRAME_H

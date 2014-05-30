@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <wx/log.h>
 #include "stageframe.h"
 #include "linearstage.h"
 #include "linearstagemessagehandler.h"
@@ -144,7 +145,7 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
     std::lock_guard<std::mutex> lck{m_AccessListMutex};
     for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
       (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
-      std::cout << "Stage frame current position resetted. Current distance: " << m_CurrentDistance.value*m_Stepsize << std::endl;
+      wxLogMessage(std::string("Stage frame current position resetted. Current distance: " + std::to_string(m_CurrentDistance.value*m_Stepsize)).c_str());
     }
   }
 }

@@ -21,7 +21,7 @@ MyFileOutput::MyFileOutput(MyFrame *myframe, Settings *settings, std::string pat
  * @param event Occuring event
  */
 void MyFileOutput::OnOK(wxCommandEvent &event){
-  std::cout << m_FileOutputNameDirPicker->GetPath().ToStdString() << std::endl;
+  wxLogMessage(m_FileOutputNameDirPicker->GetPath().ToStdString().c_str());
   m_Settings->setStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
   m_MyFrame->updateStoragePath(m_FileOutputNameDirPicker->GetPath().ToStdString());
 

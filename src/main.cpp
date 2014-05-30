@@ -33,9 +33,10 @@ bool MyApp::OnInit(){
   // Get all handlers
   //  wxXmlResource::AddHandler(new wxIconXmlHandler);
   wxXmlResource::Get()->AddHandler(new wxSpinCtrlDoubleXmlHandler);
-  wxXmlResource::Get()->AddHandler(new mpWindowXmlHandler);
+  //wxXmlResource::Get()->AddHandler(new mpWindowXmlHandler);
   wxXmlResource::Get()->AddHandler(new wxMyButtonXmlHandler);
   wxXmlResource::Get()->InitAllHandlers();
+  ::wxInitAllImageHandlers();
   // Load all xrc files from the subfolder gui.
   if(false == wxXmlResource::Get()->LoadAllFiles("gui")){
     return(false);

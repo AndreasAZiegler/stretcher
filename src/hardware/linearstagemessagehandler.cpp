@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <wx/log.h>
 #include "linearstagemessagehandler.h"
 
 using namespace std;
@@ -157,7 +158,7 @@ void LinearStageMessageHandler::handler(char *message){
       m_CurrentPosition.value = calculatePosition(&message[1]);
       // Forwards the returned stored position to the stage frame.
       m_StageFrame->returnStoredPosition(m_CurrentPosition, m_Type);
-      std::cout << "LinearStageMessageHandler: " << static_cast<int>(m_Type) << " stored position is: " << m_CurrentPosition.value * 0.00009921875 << std::endl;
+      wxLogMessage(std::string("LinearStageMessageHandler: " + std::to_string(static_cast<int>(m_Type)) + " stored position is: " + std::to_string(m_CurrentPosition.value * 0.00009921875)).c_str());
       break;
   }
 }

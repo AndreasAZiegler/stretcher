@@ -1,6 +1,7 @@
 // Includes
 #include <iostream>
 #include <mutex>
+#include <wx/log.h>
 #include "preload.h"
 
 /**
@@ -139,7 +140,7 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        std::cout << "Preload: Force limit exceeded, current force: " << m_CurrentForce << std::endl;
+        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce)).c_str());
         process(Event::evStop);
       } else{
         process(Event::evUpdate);
@@ -149,7 +150,7 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = measurementValue.value;
       if((true == m_CheckLimitsFlag) && ((m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance))){
-        std::cout << "Preload: Distance limit exceeded, current distance: " << m_CurrentDistance << std::endl;
+        wxLogWarning(std::string("Preload: Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance)).c_str());
         process(Event::evStop);
       }
       break;
@@ -173,7 +174,7 @@ void Preload::process(Event e){
   switch(m_CurrentState){
     case stopState:
       if(Event::evStart == e){
-        std::cout << "Preload: Start experiment." << std::endl;
+        wxLogMessage("Preload: Start experiment.");
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_SpeedInMM);
         m_CurrentState = runState;
@@ -206,7 +207,7 @@ void Preload::process(Event e){
       break;
     case runState:
       if(Event::evStop == e){
-        std::cout << "Preload FSM switched to state: stopState." << std::endl;
+        wxLogMessage("Preload FSM switched to state: stopState.");
 
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
@@ -273,7 +274,7 @@ void Preload::process(Event e){
                 std::unique_lock<std::mutex> lck(*m_StagesStoppedMutex);
                 *m_StagesStoppedFlag = false;
               }
-              std::cout << "Stop preloading." << std::endl;
+              wxLogMessage("Stop preloading.");
               m_StageFrame->stop();
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_all();

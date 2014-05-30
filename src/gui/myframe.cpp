@@ -71,6 +71,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_PreloadSendToProtocol, MyFrame::OnPreloadSendToProtocol)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
+  EVT_BUTTON(ID_ExportPNG, MyFrame::OnExportPNG)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
   EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
@@ -157,6 +158,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_StopButton->SetId(ID_MotorStop);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
+  m_GraphExportPNGButton->SetId(ID_ExportPNG);
   m_ProtocolsXButton->SetId(ID_DeleteExperiment);
   m_ProtocolsUpButton->SetId(ID_MoveUpExperiment);
   m_ProtocolsDownButton->SetId(ID_MoveDownExperiment);
@@ -218,6 +220,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   // Load file path
   m_StoragePath = m_Settings->getStoragePath();
+
+  // Set m_LogTextCtrl as the log output.
+  wxLog::SetActiveTarget(new wxLogTextCtrl(m_LogTextCtrl));
 
   }
 
@@ -1184,7 +1189,22 @@ void MyFrame::OnExportCSV(wxCommandEvent& event){
   checkProtocol();
   std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames()));
   dialog->ShowModal();
+}
 
+/**
+ * @brief Method wich will be executed, when the user clicks on the export png button.
+ * @param event Occuring event
+ */
+void MyFrame::OnExportPNG(wxCommandEvent& event){
+  // Creating file name
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
+
+  std::string pathAndFilename = m_StoragePath + "/" + "Graph_" + std::string(mbstr) + ".png";
+
+  m_Graph->SaveScreenshot(pathAndFilename, wxBITMAP_TYPE_PNG);
+  wxLogMessage(std::string("Graph saved in: " + pathAndFilename).c_str());
 }
 
 /**

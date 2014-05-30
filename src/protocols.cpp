@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <wx/log.h>
 #include <wx/msgdlg.h>
 #include "../gui/myframe.h"
 #include "protocols.h"
@@ -401,10 +402,10 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
   std::time_t time = std::time(NULL);
   char mbstr[100];
   std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-  std::cout << mbstr << std::endl;
+  //std::cout << mbstr << std::endl;
   //std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
   std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".txt";
-  std::cout << pathAndFilename << std::endl;
+  //std::cout << pathAndFilename << std::endl;
 
   // Creat the file
   std::ofstream file(pathAndFilename);
@@ -455,6 +456,8 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
   }
 
   file.close();
+
+  wxLogMessage(std::string("Saved experiment values to: " + pathAndFilename).c_str());
   /*
 /**
  * @brief Returns the experiment settings as a std::string.
@@ -531,7 +534,7 @@ void Protocols::checkFinishedExperiment(void){
       *m_PreloadDoneFlag = true;
       // Set preload distance.
       m_PreloadDistance = m_MyFrame->getCurrentDistance();
-      std::cout << "m_PreloadDistance: " << m_PreloadDistance << std::endl;
+      wxLogMessage(std::string("m_PreloadDistance: " + std::to_string(m_PreloadDistance)).c_str());
       // Set the prelod distance in all the experiments.
       for(auto i : m_Experiments){
         i->setPreloadDistance();
