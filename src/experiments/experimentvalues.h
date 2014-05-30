@@ -196,7 +196,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
     std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;
     std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;
-    std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;
+    std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;			/**< Pointer to the vector containing the time points. */
     std::shared_ptr<std::vector<double>> m_GraphMaxDistanceLimitValues;
     std::shared_ptr<std::vector<double>> m_GraphMinDistanceLimitValues;
     std::shared_ptr<std::vector<double>> m_GraphDistanceLimitYAxisPoints;
