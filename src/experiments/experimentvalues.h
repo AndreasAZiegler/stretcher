@@ -206,6 +206,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;							/**< Pointer to the vector containing the graph max limit values. */
     std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;							/**< Pointer to the vector containing the graph min limit values. */
     std::shared_ptr<std::vector<double>> m_GraphLimitTimePoints;						/**< Pointer to the vector containing the time points. */
+    std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     int m_CurrentProtocolCycle;																							/**< The current cycle numer. */
     bool m_ResetProtocolFlag;																								/**< Indicate it the protocol stops and the recorded values should be deleted. */

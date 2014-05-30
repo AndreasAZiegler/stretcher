@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <algorithm>
 #include <wx/event.h>
 #include "../gui/myframe.h"
 #include "experimentvalues.h"
@@ -74,7 +75,7 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
     m_GraphMaxLimitValues = graphmaxdistancelimitvalues;
     m_GraphMinLimitValues = graphmindistancelimitvalues;
   }
-  m_GraphLimitTimePoints = graphlimittimepoints;
+  m_GraphForceLimitXAxisPoints = graphlimittimepoints;
   //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
   // clear the vectors.
   //m_GraphStressForceValues.clear();
@@ -156,12 +157,12 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
-        {
-          // Add new distance value.
-          std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
-          m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
-        }
+      {
+        // Add new distance value.
+        std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
+        m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
+        m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+      }
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
