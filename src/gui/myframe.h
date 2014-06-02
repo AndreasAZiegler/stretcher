@@ -147,6 +147,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
       return(m_CurrentDistance);
     }
 
+    /**
+     * @brief Returns the current force.
+     * @return The current force.
+     * @todo May move this method to a better place/class.
+     */
+    long getCurrentForce(void){
+      return(m_CurrentForce);
+    }
+
   private:
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
