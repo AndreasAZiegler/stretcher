@@ -146,6 +146,7 @@ void Protocols::runProtocol(void){
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
 
+  // Get preview values.
   m_MyFrame->createValuesGraph();
 
   // Only continue if there are expeiments in the protocol.
@@ -190,12 +191,15 @@ void Protocols::runProtocol(void){
                                                                 graphmindistancelimit,
                                                                 graphlimitstimepoints);
 
+    // Mark the running experiment in the list box.
     m_ListBox->SetSelection(m_CurrentExperimentNr);
+    // Start the experiment.
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.join();
     m_CurrentExperimentNr++;
 
+    // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
     m_ExperimentRunningThread->detach();
   }
@@ -252,13 +256,16 @@ void Protocols::process(void){
                                                                 graphmindistancelimit,
                                                                 graphlimitstimepoints);
 
+    // Mark the running experiment in the list box.
     m_ListBox->SetSelection(m_CurrentExperimentNr);
     //std::cout << "Protocols: start experiment nr.: " << m_CurrentExperimentNr << std::endl;
+    // Start the experiment.
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Experiment::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.join();
     m_CurrentExperimentNr++;
 
+    // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
     m_ExperimentRunningThread->detach();
 

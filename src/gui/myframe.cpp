@@ -1358,13 +1358,15 @@ void MyFrame::createValuesGraph(void){
     m_VectorLayer.Clear();
   }
 
-  // Add axis.
-  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-  m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
-
+  // Defines pen styles and font.
   wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
   wxPen vectorpenDistance(*wxGREEN, 2, wxSOLID);
   wxPen vectorpenLimit(*wxRED, 2, wxSOLID);
+  wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+
+  // Set up and add axis.
+  m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
@@ -1381,6 +1383,8 @@ void MyFrame::createValuesGraph(void){
   m_Graph->EnableMousePanZoom(true);
   m_Graph->AddLayer(m_XAxis.get());
   m_Graph->AddLayer(m_Y1Axis.get());
+
+  // Add vectors
   m_Graph->AddLayer(&m_VectorLayer);
   if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
     m_MaxStressForceLimitVector.SetPen(vectorpenLimit);
@@ -1396,6 +1400,7 @@ void MyFrame::createValuesGraph(void){
     m_VectorLayer.SetPen(vectorpenDistance);
   }
 
+  // Update graph.
   m_Graph->Fit();
 }
 
@@ -1437,11 +1442,12 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->DelLayer(&m_MaxDistanceLimitVector);
   m_Graph->DelLayer(&m_MinDistanceLimitVector);
 
-  // Add axis.
+  // Defines pen styles and font.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-
   wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
   wxPen vectorpenDistance(*wxGREEN, 2, wxSOLID);
+
+  // Set up and add axis.
   m_XAxis.reset(new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL));
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
@@ -1457,6 +1463,7 @@ void MyFrame::createPreviewGraph(void){
   m_XAxis->SetDrawOutsideMargins(false);
   m_Y1Axis->SetDrawOutsideMargins(false);
 
+  // Set up and add vectors.
   m_MaxStressForceLimitVector.SetPen(vectorpenStressForce);
   m_MinStressForceLimitVector.SetPen(vectorpenStressForce);
   m_MaxDistanceLimitVector.SetPen(vectorpenDistance);

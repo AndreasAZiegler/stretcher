@@ -116,12 +116,14 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
     case UpdatedValuesReceiver::ValueType::Force:
       if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
         {
+          // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Area, measurementValue.timestamp));
           m_GraphStressForceValues->push_back((measurementValue.value / 10000.0) / m_Area);
         }
       }else{
         {
+          // Add new force value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
           m_GraphStressForceValues->push_back(measurementValue.value / 10000.0);
@@ -131,6 +133,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
 
     case UpdatedValuesReceiver::ValueType::Distance:
         {
+          // Add new distance value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
           m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
@@ -138,13 +141,9 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }
-  /*
-  m_GraphLimitTimePoints->push_back(measurementValue.timestamp);
-  m_GraphMaxLimitValues->push_back(m_GraphMaxLimitValues->back());
-  m_GraphMinLimitValues->push_back(m_GraphMinLimitValues->back());
-  */
 
   {
+    // Update graph only every 5th update.
     m_DisplayGraphDelay++;
     if(5 <= m_DisplayGraphDelay){
       m_DisplayGraphDelay = 0;
@@ -161,10 +160,6 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           m_GraphDistanceValues->resize(m_GraphStressForceValues->size());
         }
         m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
-        /*
-        m_MaxLimitVectorLayer->SetData(*m_GraphLimitTimePoints, *m_GraphMaxLimitValues);
-        m_MinLimitVectorLayer->SetData(*m_GraphLimitTimePoints, *m_GraphMinLimitValues);
-        */
       }
       m_MyFrame->updateGraphFromExperimentValues();
     }
