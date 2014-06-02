@@ -66,12 +66,15 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
   //std::cout << "Protocol graphstressforce size: " << graphstressforce->size() << " graphdistance size: " << graphdistance->size() << std::endl;
   m_GraphStressForceValues = std::move(graphstressforce);
   m_GraphDistanceValues = std::move(graphdistance);
+
+  m_GraphMaxForceLimitValues = graphmaxforcelimitvalues;
+  m_GraphMinForceLimitValues = graphminforcelimitvalues;
   if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    m_GraphMaxLimitValues = graphmaxforcelimitvalues;
-    m_GraphMinLimitValues = graphminforcelimitvalues;
   } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    /*
     m_GraphMaxLimitValues = graphmaxdistancelimitvalues;
     m_GraphMinLimitValues = graphmindistancelimitvalues;
+    */
   }
   m_GraphForceLimitXAxisPoints = graphlimittimepoints;
   //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
@@ -80,6 +83,12 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
   //m_GraphStressForceValues.clear();
   m_DistanceValues.clear();
   //m_GraphDistanceValues.clear();
+
+  /*
+  m_GraphForceLimitXAxisPoints->clear();
+  m_GraphMaxLimitValues->resize(1);
+  m_GraphMinLimitValues->resize(1);
+  */
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -137,19 +146,15 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
       }
 
-      /*
-      if(0 < m_GraphForceLimitXAxisPoints->size()){
-        if((*std::max_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) < m_GraphDistanceValues->back()) ||
-           (*std::min_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) > m_GraphDistanceValues->back())){
-          m_GraphForceLimitXAxisPoints->push_back(m_GraphDistanceValues->back());
-          m_GraphMaxLimitValues->push_back(m_GraphMaxLimitValues->back());
-          m_GraphMinLimitValues->push_back(m_GraphMinLimitValues->back());
-          wxLogMessage(std::string("MyFrame: m_GraphLimitTimePoints: " + std::to_string(m_GraphForceLimitXAxisPoints->size()) + " m_GraphMaxLimitValues: " + std::to_string(m_GraphMaxLimitValues->size())).c_str());
-          m_MaxLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMaxLimitValues);
-          m_MinLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMinLimitValues);
-        }
+      if((*std::max_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) < m_GraphDistanceValues->back()) ||
+         (*std::min_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) > m_GraphDistanceValues->back())){
+        m_GraphForceLimitXAxisPoints->push_back(m_GraphDistanceValues->back());
+        m_GraphMaxForceLimitValues->push_back(m_GraphMaxForceLimitValues->back());
+        m_GraphMinForceLimitValues->push_back(m_GraphMinForceLimitValues->back());
+        //wxLogMessage(std::string("ExperimentValues: m_GraphLimitTimePoints: " + std::to_string(m_GraphForceLimitXAxisPoints->size()) + " m_GraphMaxLimitValues: " + std::to_string(m_GraphMaxForceLimitValues->size())).c_str());
+        m_MaxLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMaxForceLimitValues);
+        m_MinLimitVectorLayer->SetData(*m_GraphForceLimitXAxisPoints, *m_GraphMinForceLimitValues);
       }
-      */
       //std::cout << "Conditioning distance update." << std::endl;
       break;
   }

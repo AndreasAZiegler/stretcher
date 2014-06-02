@@ -192,8 +192,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
     std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
     std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
-    std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;
-    std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;
+    std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;
+    std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;
     std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
