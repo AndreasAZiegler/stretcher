@@ -81,10 +81,6 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
 
   m_GraphForceLimitXAxisPoints = graphforcelimittimepoints;
   m_GraphDistanceLimitYAxisPoints = graphdistancelimittimepoints;
-  //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
-  // clear the vectors.
-  //m_GraphStressForceValues.clear();
-  //m_GraphDistanceValues.clear();
 
   if(true == m_ResetProtocolFlag){
     m_ResetProtocolFlag = false;
