@@ -703,29 +703,20 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitVector;
-    minlimitvector = &m_MinStressForceLimitVector;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitVector;
-    minlimitvector = &m_MinDistanceLimitVector;
-  }
-  int limit = 0;
-  if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    limit = m_PreloadLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10;
-  } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
-    limit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitVector;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitVector;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
 
   //Experiment* experiment = new Preload(ExperimentType::Preload,
   std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
                                                      m_ForceSensorMessageHandler,
                                                      &m_VectorLayer,
                                                      &m_VectorLayerMutex,
-                                                     maxlimitvector,
-                                                     minlimitvector,
+                                                     maxforcelimitvector,
+                                                     minforcelimitvector,
+                                                     maxdistancelimitvector,
+                                                     mindistancelimitvector,
                                                      this,
                                                      m_StoragePath,
                                                      m_MaxForceLimit,
@@ -745,7 +736,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      m_CurrentDistance,
                                                      m_InitializeCrossSectionSpinCtrl->GetValue(),
 
-                                                     limit,
+                                                     m_PreloadLimitSpinCtrl->GetValue(),
                                                      m_PreloadSpeedMmSpinCtrl->GetValue()));
 
   m_CurrentProtocol->addExperiment(experiment);
@@ -778,15 +769,10 @@ void MyFrame::OnOneStepDistance(wxCommandEvent& event){
 void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitVector;
-    minlimitvector = &m_MinStressForceLimitVector;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitVector;
-    minlimitvector = &m_MinDistanceLimitVector;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitVector;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitVector;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
 
   DistanceOrStressOrForce distanceOrStressOrForce;
   Experiment::DistanceOrPercentage velocityDistanceOrPercentage;
@@ -871,8 +857,10 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           m_ForceSensorMessageHandler,
                                                           &m_VectorLayer,
                                                           &m_VectorLayerMutex,
-                                                          maxlimitvector,
-                                                          minlimitvector,
+                                                          maxforcelimitvector,
+                                                          minforcelimitvector,
+                                                          maxdistancelimitvector,
+                                                          mindistancelimitvector,
                                                           this,
                                                           m_StoragePath,
                                                           m_MaxForceLimit,
@@ -977,15 +965,10 @@ void MyFrame::OnContinuousSteps(wxCommandEvent& event){
 void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitVector;
-    minlimitvector = &m_MinStressForceLimitVector;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitVector;
-    minlimitvector = &m_MinDistanceLimitVector;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitVector;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitVector;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
 
   DistanceOrStressOrForce distanceOrStressOrForce;
   bool ramptofailureactiveflag = false;
@@ -1096,8 +1079,10 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              m_ForceSensorMessageHandler,
                                                              &m_VectorLayer,
                                                              &m_VectorLayerMutex,
-                                                             maxlimitvector,
-                                                             minlimitvector,
+                                                             maxforcelimitvector,
+                                                             minforcelimitvector,
+                                                             maxdistancelimitvector,
+                                                             mindistancelimitvector,
                                                              this,
                                                              m_StoragePath,
                                                              m_MaxForceLimit,
@@ -1326,22 +1311,19 @@ void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
 void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitVector;
-    minlimitvector = &m_MinStressForceLimitVector;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitVector;
-    minlimitvector = &m_MinDistanceLimitVector;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitVector;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitVector;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
 
   std::unique_ptr<Experiment> experiment(new Pause(m_StageFrame,
                                                    m_ForceSensorMessageHandler,
                                                    &m_VectorLayer,
                                                    &m_VectorLayerMutex,
-                                                   maxlimitvector,
-                                                   minlimitvector,
+                                                   maxforcelimitvector,
+                                                   minforcelimitvector,
+                                                   maxdistancelimitvector,
+                                                   mindistancelimitvector,
                                                    this,
                                                    m_StoragePath,
                                                    m_MaxForceLimit,
@@ -1374,22 +1356,19 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
 void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitVector;
-    minlimitvector = &m_MinStressForceLimitVector;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitVector;
-    minlimitvector = &m_MinDistanceLimitVector;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitVector;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitVector;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
 
   std::unique_ptr<Experiment> experiment(new PauseResume(m_StageFrame,
                                                          m_ForceSensorMessageHandler,
                                                          &m_VectorLayer,
                                                          &m_VectorLayerMutex,
-                                                         maxlimitvector,
-                                                         minlimitvector,
+                                                         maxforcelimitvector,
+                                                         minforcelimitvector,
+                                                         maxdistancelimitvector,
+                                                         mindistancelimitvector,
                                                          this,
                                                          m_StoragePath,
                                                          m_MaxForceLimit,
@@ -1549,16 +1528,16 @@ void MyFrame::createValuesGraph(void){
   if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
     m_MaxStressForceLimitVector.SetPen(vectorpenLimit);
     m_MinStressForceLimitVector.SetPen(vectorpenLimit);
-    m_Graph->AddLayer(&m_MaxStressForceLimitVector);
-    m_Graph->AddLayer(&m_MinStressForceLimitVector);
     m_VectorLayer.SetPen(vectorpenStressForce);
   } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     m_MaxDistanceLimitVector.SetPen(vectorpenLimit);
     m_MinDistanceLimitVector.SetPen(vectorpenLimit);
-    m_Graph->AddLayer(&m_MaxDistanceLimitVector);
-    m_Graph->AddLayer(&m_MinDistanceLimitVector);
     m_VectorLayer.SetPen(vectorpenDistance);
   }
+  m_Graph->AddLayer(&m_MaxStressForceLimitVector);
+  m_Graph->AddLayer(&m_MinStressForceLimitVector);
+  m_Graph->AddLayer(&m_MaxDistanceLimitVector);
+  m_Graph->AddLayer(&m_MinDistanceLimitVector);
 
   // Update graph.
   m_Graph->Fit();

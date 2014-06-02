@@ -58,7 +58,10 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
                      std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
-                     mpFXYVector *maxlimitvector, mpFXYVector *minlimitvector,
+                     mpFXYVector *maxforcelimitvector,
+                     mpFXYVector *minforcelimitvector,
+                     mpFXYVector *maxdistancelimitvector,
+                     mpFXYVector *mindistancelimitvector,
                      MyFrame *myframe,
 
                      ExperimentType experimenttype,
@@ -81,7 +84,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
                           std::shared_ptr<std::vector<double>> graphminforcelimitvalues,
                           std::shared_ptr<std::vector<double>> graphmaxdistancelimitvalues,
                           std::shared_ptr<std::vector<double>> graphmindistancelimitvalues,
-                          std::shared_ptr<std::vector<double>> graphlimittimepoints);
+                          std::shared_ptr<std::vector<double>> graphforcelimittimepoints,
+                          std::shared_ptr<std::vector<double>> graphdistancelimittimepoints);
 
     /**
      * @brief Unregister the update method.
@@ -196,8 +200,10 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
-    mpFXYVector *m_MaxLimitVectorLayer;																			/**< Pointer to the max. limit vector layer. */
-    mpFXYVector *m_MinLimitVectorLayer;																			/**< Pointer to the min. limit vector layer. */
+    mpFXYVector *m_MaxForceLimitVectorLayer;
+    mpFXYVector *m_MinForceLimitVectorLayer;
+    mpFXYVector *m_MaxDistanceLimitVectorLayer;
+    mpFXYVector *m_MinDistanceLimitVectorLayer;
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
@@ -206,6 +212,9 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;
     std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;
     std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;
+    std::shared_ptr<std::vector<double>> m_GraphMaxDistanceLimitValues;
+    std::shared_ptr<std::vector<double>> m_GraphMinDistanceLimitValues;
+    std::shared_ptr<std::vector<double>> m_GraphDistanceLimitYAxisPoints;
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     int m_CurrentProtocolCycle;																							/**< The current cycle numer. */
     bool m_ResetProtocolFlag;																								/**< Indicate it the protocol stops and the recorded values should be deleted. */

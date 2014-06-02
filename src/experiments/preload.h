@@ -31,8 +31,10 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
             mpFXYVector *vector,
             std::mutex *vectoraccessmutex,
-            mpFXYVector *maxlimitvector,
-            mpFXYVector *minlimitvector,
+            mpFXYVector *maxforcelimitvector,
+            mpFXYVector *minforcelimitvector,
+            mpFXYVector *maxdistancelimitvector,
+            mpFXYVector *mindistancelimitvector,
             MyFrame *myframe,
             std::string path,
             long maxforcelimit,
@@ -47,7 +49,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
             ExperimentType type,
             DistanceOrStressOrForce distanceOrStressOrForce,
-            long gagelength, long zerodistance,
+            long gagelength,
+            long zerodistance,
             long currentdistance,
             double area,
 

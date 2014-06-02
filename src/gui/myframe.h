@@ -148,6 +148,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     }
 
     /**
+     * @brief Returns the current force.
+     * @return The current force.
+     * @todo May move this method to a better place/class.
+     */
+    long getCurrentForce(void){
+      return(m_CurrentForce);
+    }
+
+    /**
      * @brief Shows pause/resume dialog.
      */
     void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
