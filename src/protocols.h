@@ -140,7 +140,8 @@ class Protocols
     mpFXYVector *m_MinStressForceLimitVector;																/**< Pointer to the vector containing the min. stress/force limits. */
     mpFXYVector *m_MaxDistanceLimitVector;																	/**< Pointer to the vector containing the max. distance limits. */
     mpFXYVector *m_MinDistanceLimitVector;																	/**< Pointer to the vector containing the min. distance limits. */
-    std::vector<double> m_TimePointLimits;																	/**< Vector for the limits timepoints. */
+    std::vector<double> m_PreviewStressForceLimitTimePoints;								/**< Vector for the preview and stress/force limits timepoints. */
+    std::vector<double> m_DistanceLimitTimePoints;													/**< Vector for the distance limits timepoints. */
     std::vector<double> m_MaxStressForceLimits;															/**< Vector for the max. stress/force limits. */
     std::vector<double> m_MinStressForceLimits;															/**< Vector for the min. stress/force limits. */
     std::vector<double> m_MaxDistanceLimits;																/**< Vector for the max. distance limits. */
