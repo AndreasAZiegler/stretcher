@@ -209,12 +209,12 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
     std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
     std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
-    std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;				/**< Pointer to the vector containing the graph max limit values. */
-    std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;				/**< Pointer to the vector containing the graph min limit values. */
-    std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;			/**< Pointer to the vector containing the time points. */
-    std::shared_ptr<std::vector<double>> m_GraphMaxDistanceLimitValues;
-    std::shared_ptr<std::vector<double>> m_GraphMinDistanceLimitValues;
-    std::shared_ptr<std::vector<double>> m_GraphDistanceLimitYAxisPoints;
+    std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;				/**< Pointer to the vector containing the max force limit graph values. */
+    std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;				/**< Pointer to the vector containing the min force limit graph values. */
+    std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;			/**< Pointer to the vector containing the values for the x-axis for the force limits. */
+    std::shared_ptr<std::vector<double>> m_GraphMaxDistanceLimitValues;			/**< Pointer to the vector containing the max distance limit graph values. */
+    std::shared_ptr<std::vector<double>> m_GraphMinDistanceLimitValues;			/**< Pointer to the vector containing the min distance limit graph vlaues. */
+    std::shared_ptr<std::vector<double>> m_GraphDistanceLimitYAxisPoints;		/**< Pointer to the vector containing the values for the x-axis for the force limits. */
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     int m_CurrentProtocolCycle;																							/**< The current cycle numer. */
     bool m_ResetProtocolFlag;																								/**< Indicate it the protocol stops and the recorded values should be deleted. */
