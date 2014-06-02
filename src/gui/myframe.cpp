@@ -1357,24 +1357,6 @@ void MyFrame::createValuesGraph(void){
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_VectorLayer.Clear();
   }
-  m_TimePointLimits.clear();
-  m_MaxStressForceLimits.clear();
-  m_MinStressForceLimits.clear();
-  m_MaxDistanceLimits.clear();
-  m_MinDistanceLimits.clear();
-
-  // Create limit vectors
-  m_TimePointLimits.push_back(m_CurrentDistance);
-  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
-  m_MinStressForceLimits.push_back(m_MinForceLimit);
-  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
-  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
-
-  m_MaxStressForceLimitVector.SetData(m_TimePointLimits, m_MaxStressForceLimits);
-  m_MinStressForceLimitVector.SetData(m_TimePointLimits, m_MinStressForceLimits);
-  wxLogMessage(std::string("MyFrame: m_TimePointLimits: " + std::to_string(m_TimePointLimits.size()) + " m_MaxStressForceLimits: " + std::to_string(m_MaxStressForceLimits.size())).c_str());
-  //m_MaxDistanceLimitVector.SetData(m_TimePointLimits, m_MaxDistanceLimits);
-  //m_MinDistanceLimitVector.SetData(m_TimePointLimits, m_MinDistanceLimits);
 
   // Defines pen styles and font.
   wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
@@ -1481,11 +1463,7 @@ void MyFrame::createPreviewGraph(void){
   m_XAxis->SetDrawOutsideMargins(false);
   m_Y1Axis->SetDrawOutsideMargins(false);
 
-<<<<<<< HEAD
   // Set up and add vectors.
-=======
-
->>>>>>> SOFT: Working on max limit vectors.
   m_MaxStressForceLimitVector.SetPen(vectorpenStressForce);
   m_MinStressForceLimitVector.SetPen(vectorpenStressForce);
   m_MaxDistanceLimitVector.SetPen(vectorpenDistance);
