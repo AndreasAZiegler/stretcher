@@ -74,6 +74,8 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
 
   m_GraphMaxForceLimitValues = graphmaxforcelimitvalues;
   m_GraphMinForceLimitValues = graphminforcelimitvalues;
+  m_GraphMaxDistanceLimitValues = graphmaxdistancelimitvalues;
+  m_GraphMinDistanceLimitValues = graphmindistancelimitvalues;
 
   m_GraphForceLimitXAxisPoints = graphforcelimittimepoints;
   m_GraphDistanceLimitYAxisPoints = graphdistancelimittimepoints;
