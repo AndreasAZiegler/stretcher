@@ -185,16 +185,16 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
     mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
-    mpFXYVector *m_MaxLimitVectorLayer;
-    mpFXYVector *m_MinLimitVectorLayer;
+    mpFXYVector *m_MaxLimitVectorLayer;																			/**< Pointer to the max. limit vector layer. */
+    mpFXYVector *m_MinLimitVectorLayer;																			/**< Pointer to the min. limit vector layer. */
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     std::vector<ExperimentValues::MeasurementValue> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
     std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
     std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
-    std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;
-    std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;
-    std::shared_ptr<std::vector<double>> m_GraphLimitTimePoints;
+    std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;							/**< Pointer to the vector containing the graph max limit values. */
+    std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;							/**< Pointer to the vector containing the graph min limit values. */
+    std::shared_ptr<std::vector<double>> m_GraphLimitTimePoints;						/**< Pointer to the vector containing the time points. */
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
 
