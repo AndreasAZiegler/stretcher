@@ -79,6 +79,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
   EVT_BUTTON(ID_Preview, MyFrame::OnPreviewProtocol)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
+  EVT_CHECKBOX(ID_LoopProtocol, MyFrame::OnLoopProtocol)
   EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
 wxEND_EVENT_TABLE()
 
@@ -1301,6 +1302,14 @@ void MyFrame::OnRunProtocol(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user activates Loop in protocol.
+ * @param event Occuring event
+ */
+void MyFrame::OnLoopProtocol(wxCommandEvent& event){
+  m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
+}
+
+/**
  * @brief Method wich will be executed, when the user clicks on the stop protocol button.
  * @param event Occuring event
  */
@@ -1499,6 +1508,8 @@ void MyFrame::checkProtocol(void){
                                                                &m_Wait,
                                                                &m_PreloadDoneFlag,
                                                                &m_PreloadDoneMutex,
+
+                                                               m_ProtocolsLoopCheckBox->GetValue(),
                                                                m_LimitsLimitMaxDistanceSpinCtrl->GetValue(),
                                                                m_LimitsLimitMinDistanceSpinCtrl->GetValue(),
                                                                m_LimitsLimitMaxForceSpinCtrl->GetValue(),

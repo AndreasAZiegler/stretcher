@@ -410,6 +410,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnRunProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user activates Loop in protocol.
+     * @param event Occuring event
+     */
+    void OnLoopProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the stop protocol button.
      * @param event Occuring event
      */
