@@ -19,6 +19,7 @@ Protocols::Protocols(wxListBox *listbox,
                      std::condition_variable *wait,
                      bool *preloaddoneflag,
                      std::mutex *preloaddonemutex,
+                     bool loopflag,
                      long maxdistance,
                      long mindistance,
                      long maxforce,
@@ -37,6 +38,7 @@ Protocols::Protocols(wxListBox *listbox,
     m_StagesStoppedMutex(stagesstoppedmutex),
     m_WaitMutex(waitmutex),
     m_Wait(wait),
+    m_LoopProtocolFlag(loopflag),
     m_StopProtocolFlag(false),
     m_PreloadDoneFlag(preloaddoneflag),
     m_PreloadDoneMutex(preloaddonemutex),
@@ -272,6 +274,10 @@ void Protocols::process(void){
   } else{
     m_CurrentExperimentNr = 0;
     m_ListBox->SetSelection(m_CurrentExperimentNr);
+
+    if(true == m_LoopProtocolFlag){
+      runProtocol();
+    }
   }
 }
 

@@ -4,6 +4,7 @@
 // Includes
 #include <vector>
 #include <wx/listbox.h>
+#include <wx/log.h>
 #include <mathplot.h>
 #include <thread>
 #include "experiments/experiment.h"
@@ -24,7 +25,7 @@ class Protocols
               std::mutex *waitmutex,
               std::condition_variable *wait,
               bool *preloaddoneflag,
-              std::mutex *preloaddonemutex,
+              std::mutex *preloaddonemutex, bool loopflag,
               long maxdistance,
               long mindistance,
               long maxforce,
@@ -131,6 +132,15 @@ class Protocols
      */
     void clearGraphStop(void);
 
+    /**
+     * @brief Sets the loop flag.
+     * @param flag
+     */
+    void setLoopFlag(bool flag){
+      m_LoopProtocolFlag = flag;
+      wxLogMessage(std::string("Protocols: LoopFlag: " + std::to_string(m_LoopProtocolFlag)).c_str());
+    }
+
   private:
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     mpFXYVector *m_ValuesVector;																						/**< Pointer to the vector containing the values. */
@@ -165,6 +175,7 @@ class Protocols
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 
+    bool m_LoopProtocolFlag;																								/**< Indicates if the protocol should be looped. */
     bool m_StopProtocolFlag;																								/**< Indicates if the protocol should be stopped. */
     std::mutex *m_WaitMutex;																								/**< Mutex to protect m_Wait */
     std::condition_variable *m_Wait;																				/**< Wait condition variable to wait for the end of an experiment */
