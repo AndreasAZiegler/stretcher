@@ -102,8 +102,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     //m_PreloadDistance(0),
     m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
     m_CurrentProtocol(nullptr),
-    //m_CurrentExperiment(NULL),
-    //m_CurrentExperimentValues(NULL),
     m_MaxDistanceLimit(0),
     m_MinDistanceLimit(0),
     m_MaxForceLimit(0),
@@ -111,10 +109,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_GageLength(0),
     m_ZeroLength(0),
     m_Area(0),
-    //m_ExperimentRunningFlag(false),
     m_PreloadDoneFlag(true),
-    //m_MeasurementValuesRecordingFlag(false),
     m_CurrentForceUpdateDelay(0),
+    m_ShowGraphFlag(false),
     m_VectorLayer(_("Vector")),
     m_XAxis(nullptr),
     m_Y1Axis(nullptr),
@@ -490,14 +487,16 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ForceUnit = wxT(" kPa");
 
 
-    wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
-    m_Graph->DelLayer(m_Y1Axis.get());
-    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
-    m_Y1Axis->SetPen(vectorpenStressForce);
-    wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_Y1Axis->SetFont(graphFont);
-    m_Graph->AddLayer(m_Y1Axis.get());
-    m_Graph->Fit();
+    if(true == m_ShowGraphFlag){
+      wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
+      m_Graph->DelLayer(m_Y1Axis.get());
+      m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+      m_Y1Axis->SetPen(vectorpenStressForce);
+      wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+      m_Y1Axis->SetFont(graphFont);
+      m_Graph->AddLayer(m_Y1Axis.get());
+      m_Graph->Fit();
+    }
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
   }else{
@@ -508,13 +507,16 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_ForceUnit = wxT(" N");
 
-    wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
-    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
-    m_Y1Axis->SetPen(vectorpenStressForce);
-    wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    m_Y1Axis->SetFont(graphFont);
-    m_Graph->AddLayer(m_Y1Axis.get());
-    m_Graph->Fit();
+    if(true == m_ShowGraphFlag){
+      wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
+      m_Graph->DelLayer(m_Y1Axis.get());
+      m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+      m_Y1Axis->SetPen(vectorpenStressForce);
+      wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+      m_Y1Axis->SetFont(graphFont);
+      m_Graph->AddLayer(m_Y1Axis.get());
+      m_Graph->Fit();
+    }
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Force;
   }
@@ -1340,6 +1342,9 @@ void MyFrame::updateForce(){
  * @brief Prepares the graph to show the experiment values.
  */
 void MyFrame::createValuesGraph(void){
+  // Indicate, that graph is active.
+  m_ShowGraphFlag = true;
+
   // Remove layers
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
@@ -1430,6 +1435,9 @@ void MyFrame::updateGraph(void){
  * @brief Creates the preview graph.
  */
 void MyFrame::createPreviewGraph(void){
+  // Indicate, that graph is active.
+  m_ShowGraphFlag = true;
+
   // Remove layers
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
