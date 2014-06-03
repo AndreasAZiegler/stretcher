@@ -75,7 +75,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     /**
      * @brief Registers the update methods to receive the measurement values.
      */
-    void startMeasurement(std::shared_ptr<std::vector<double> > graphstressforce, std::shared_ptr<std::vector<double> > graphdistance, std::shared_ptr<std::vector<double> > graphmaxforcelimitvalues, std::shared_ptr<std::vector<double> > graphminforcelimitvalues, std::shared_ptr<std::vector<double> > graphmaxdistancelimitvalues, std::shared_ptr<std::vector<double> > graphmindistancelimitvalues, std::shared_ptr<std::vector<double> > graphlimittimepoints);
+    void startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce,
+                          std::shared_ptr<std::vector<double>> graphdistance,
+                          std::shared_ptr<std::vector<double>> graphmaxforcelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphminforcelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphmaxdistancelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphmindistancelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphlimittimepoints);
 
     /**
      * @brief Unregister the update method.

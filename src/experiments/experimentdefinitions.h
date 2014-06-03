@@ -8,8 +8,7 @@ enum class ExperimentType{
   Preload = 0,
   OneStepEvent = 1,
   ContinuousEvent = 2,
-  Conditioning = 3,
-  Ramp2Failure = 4
+  Pause = 3,
 };
 
 /**

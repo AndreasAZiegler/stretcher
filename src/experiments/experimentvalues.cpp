@@ -200,12 +200,8 @@ std::string ExperimentValues::experimentTypeToString(){
       return("ContinuousEvent");
       break;
 
-    case ExperimentType::Conditioning:
-      return("Conditioning");
-      break;
-
-    case ExperimentType::Ramp2Failure:
-      return("Ramp2Failure");
+    case ExperimentType::Pause:
+      return("Pause");
       break;
   }
 }

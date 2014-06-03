@@ -8,8 +8,10 @@ set(SOURCE
         ./experiments/onestepeventvalues.cpp
         ./experiments/continuousevent.cpp
         ./experiments/continuouseventvalues.cpp
-        ./experiments/conditioning.cpp
-        ./experiments/ramp2failure.cpp
+        ./experiments/pause.cpp
+        ./experiments/pausevalues.cpp
+        #./experiments/conditioning.cpp
+        #./experiments/ramp2failure.cpp
         #./experiments/relaxation.cpp
         #./experiments/creep.cpp
         #./experiments/fatiguetesting.cpp
@@ -27,9 +29,10 @@ set(HEADERS
         ./experiments/onestepeventvalues.h
         ./experiments/continuousevent.h
         ./experiments/continuouseventvalues.h
-        ./experiments/conditioning.cpp
-        ./experiments/conditioning.h
-        ./experiments/ramp2failure.h
+        ./experiments/pause.h
+        ./experiments/pausevalues.h
+        #./experiments/conditioning.h
+        #./experiments/ramp2failure.h
         #./experiments/relaxation.h
         #./experiments/creep.h
         #./experiments/fatiguetesting.h

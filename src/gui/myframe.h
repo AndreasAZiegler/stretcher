@@ -389,6 +389,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMoveDownExperiment(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the pause experiment down button.
+     * @param event Occuring event
+     */
+    void OnPauseExperiment(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the preview protocol button.
      * @param event Occuring event
      */
@@ -529,13 +535,14 @@ enum
   ID_DeleteExperiment = 46,
   ID_MoveUpExperiment = 47,
   ID_MoveDownExperiment = 48,
-  ID_LoopProtocol = 49,
-  ID_Preview = 50,
-  ID_RunProtocol = 51,
-  ID_StopProtocol = 52,
-  ID_SaveProtocol = 53,
-  ID_LoadProtocol = 54,
-  ID_MakePhoto = 55
+  ID_PauseExperiment = 49,
+  ID_LoopProtocol = 50,
+  ID_Preview = 51,
+  ID_RunProtocol = 52,
+  ID_StopProtocol = 53,
+  ID_SaveProtocol = 54,
+  ID_LoadProtocol = 55,
+  ID_MakePhoto = 56
 };
 
 #endif // MYFRAME_H
