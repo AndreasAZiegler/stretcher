@@ -361,7 +361,7 @@ void OneStepEvent::process(Event event){
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                   m_StageFrame->stop();
                 }
-                wxLogMessage(std::string("OneStepEvent: Holds for hold time 2" + std::to_string(m_HoldTime2 * 1000) + " ms").c_str());
+                wxLogMessage(std::string("OneStepEvent: Holds for hold time 2: " + std::to_string(m_HoldTime2 * 1000) + " ms").c_str());
                 std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime2);
                 t1.join();
                 //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
