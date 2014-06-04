@@ -6,6 +6,7 @@
 #define __mypausedialog_base_h__
 
 // Includes
+#include <wx/dialog.h>
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
 #include <wx/button.h>
