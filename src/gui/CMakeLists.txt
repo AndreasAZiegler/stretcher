@@ -6,6 +6,7 @@ set(SOURCE
         ./gui/myfileoutput.cpp
         ./gui/myhomestages.cpp
         ./gui/myexportdialog.cpp
+        ./gui/mypausedialog.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
         #./gui/xh_mathplotxmlhandler.cpp
         ./gui/xh_wxmybuttonxmlhandler.cpp
@@ -26,6 +27,8 @@ set(HEADERS
         ./gui/myhomestages_base.h
         ./gui/myexportdialog.h
         ./gui/myexportdialog_base.h
+        ./gui/mypausedialog.h
+        ./gui/mypausedialog_base.h
         ./gui/xh_wxspinctrldoublexmlhandler.h
         #./gui/xh_mathplotxmlhandler.h
         ./gui/xh_wxmybuttonxmlhandler.h

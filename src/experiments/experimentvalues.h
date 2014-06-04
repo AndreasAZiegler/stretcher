@@ -58,7 +58,10 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
                      std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                      mpFXYVector *vector,
                      std::mutex *vectoraccessmutex,
-                     mpFXYVector *maxforcelimitvector, mpFXYVector *minforcelimitvector, mpFXYVector *maxdistancelimitvector, mpFXYVector *mindistancelimitvector,
+                     mpFXYVector *maxforcelimitvector,
+                     mpFXYVector *minforcelimitvector,
+                     mpFXYVector *maxdistancelimitvector,
+                     mpFXYVector *mindistancelimitvector,
                      MyFrame *myframe,
 
                      ExperimentType experimenttype,
@@ -75,7 +78,14 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     /**
      * @brief Registers the update methods to receive the measurement values.
      */
-    void startMeasurement(std::shared_ptr<std::vector<double> > graphstressforce, std::shared_ptr<std::vector<double> > graphdistance, std::shared_ptr<std::vector<double> > graphmaxforcelimitvalues, std::shared_ptr<std::vector<double> > graphminforcelimitvalues, std::shared_ptr<std::vector<double> > graphmaxdistancelimitvalues, std::shared_ptr<std::vector<double> > graphmindistancelimitvalues, std::shared_ptr<std::vector<double> > graphforcelimittimepoints, std::shared_ptr<std::vector<double> > graphdistancelimittimepoints);
+    void startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce,
+                          std::shared_ptr<std::vector<double>> graphdistance,
+                          std::shared_ptr<std::vector<double>> graphmaxforcelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphminforcelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphmaxdistancelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphmindistancelimitvalues,
+                          std::shared_ptr<std::vector<double>> graphforcelimittimepoints,
+                          std::shared_ptr<std::vector<double>> graphdistancelimittimepoints);
 
     /**
      * @brief Unregister the update method.

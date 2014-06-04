@@ -81,12 +81,6 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     virtual void resetExperiment(void);
 
     /**
-     * @brief Sleep for the amount of milliseconds.
-     * @param milliseconds
-     */
-    void sleepForMilliseconds(double seconds);
-
-    /**
      * @brief Returns a pointer to the experiment values.
      * @return A pointer to the experiment values.
      */
@@ -115,6 +109,12 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                runState,       	/**< Run state */
                goStartState,		/**< Go to start state */
                goBackState};		/**< Go back state */
+
+    /**
+     * @brief Sleep for the amount of milliseconds.
+     * @param milliseconds
+     */
+    void sleepForMilliseconds(double seconds);
 
     DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
     double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */

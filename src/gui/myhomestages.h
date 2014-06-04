@@ -26,7 +26,7 @@ class MyHomeStages : public MyHomeStages_Base
 
 enum
 {
-  ID_HomeStagesOK = 58
+  ID_HomeStagesOK = 59
 };
 
 #endif // MYHOMESTAGES_H

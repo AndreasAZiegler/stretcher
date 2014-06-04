@@ -13,13 +13,12 @@
 #include "myports.h"
 #include "myfileoutput.h"
 #include "myexportdialog.h"
+#include "mypausedialog.h"
 #include "protocols.h"
 #include "../experiments/preload.h"
 #include "../experiments/onestepevent.h"
 #include "../experiments/continuousevent.h"
-#include "../experiments/conditioning.h"
-#include "../experiments/ramp2failure.h"
-#include "../experiments/relaxation.h"
+#include "../experiments/pause.h"
 
 #include <iostream>
 
@@ -77,6 +76,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_DeleteExperiment, MyFrame::OnDeleteExperiment)
   EVT_BUTTON(ID_MoveUpExperiment, MyFrame::OnMoveUpExperiment)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
+  EVT_BUTTON(ID_PauseExperiment, MyFrame::OnPauseExperiment)
   EVT_BUTTON(ID_Preview, MyFrame::OnPreviewProtocol)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
   EVT_CHECKBOX(ID_LoopProtocol, MyFrame::OnLoopProtocol)
@@ -164,6 +164,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsXButton->SetId(ID_DeleteExperiment);
   m_ProtocolsUpButton->SetId(ID_MoveUpExperiment);
   m_ProtocolsDownButton->SetId(ID_MoveDownExperiment);
+  m_ProtocolsPauseButton->SetId(ID_PauseExperiment);
   m_ProtocolsLoopCheckBox->SetId(ID_LoopProtocol);
   m_ProtocolsPreviewButton->SetId(ID_Preview);
   m_ProtocolsRunButton->SetId(ID_RunProtocol);
@@ -1277,6 +1278,51 @@ void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
  */
 void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
   m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the pause experiment down button.
+ * @param event Occuring event
+ */
+void MyFrame::OnPauseExperiment(wxCommandEvent& event){
+  checkProtocol();
+
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitVector;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitVector;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
+
+  std::unique_ptr<Experiment> experiment(new Pause(m_StageFrame,
+                                                   m_ForceSensorMessageHandler,
+                                                   &m_VectorLayer,
+                                                   &m_VectorLayerMutex,
+                                                   maxforcelimitvector,
+                                                   minforcelimitvector,
+                                                   maxdistancelimitvector,
+                                                   mindistancelimitvector,
+                                                   this,
+                                                   m_StoragePath,
+                                                   m_MaxForceLimit,
+                                                   m_MinForceLimit,
+                                                   m_MaxDistanceLimit,
+                                                   m_MinDistanceLimit,
+
+                                                   &m_Wait,
+                                                   &m_WaitMutex,
+
+                                                   ExperimentType::Pause,
+                                                   DistanceOrStressOrForce::Distance,
+                                                   m_GageLength,
+                                                   m_ZeroLength,
+                                                   m_CurrentDistance,
+                                                   m_InitializeCrossSectionSpinCtrl->GetValue()));
+
+  Pause *ptr = dynamic_cast<Pause*>(experiment.get());
+
+  std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(ptr));
+  dialog->ShowModal();
+
+  m_CurrentProtocol->addExperiment(experiment);
 }
 
 /**

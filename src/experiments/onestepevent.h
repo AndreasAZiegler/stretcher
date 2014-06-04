@@ -84,12 +84,6 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     virtual void resetExperiment(void);
 
     /**
-     * @brief Sleep for the amount of milliseconds.
-     * @param milliseconds
-     */
-    void sleepForMilliseconds(double milliseconds);
-
-    /**
      * @brief Returns a pointer to the experiment values.
      * @return A pointer to the experiment values.
      */
@@ -125,6 +119,12 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      */
     enum LimitState{upperLimitState,		/**< Going to upper limit. */
                     lowerLimitState};		/**< Going to lower limit. */
+
+    /**
+     * @brief Sleep for the amount of milliseconds.
+     * @param milliseconds
+     */
+    void sleepForMilliseconds(double milliseconds);
 
     DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
     double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
