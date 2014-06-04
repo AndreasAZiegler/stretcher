@@ -3,6 +3,7 @@
 #include <mutex>
 #include <wx/log.h>
 #include "../gui/myframe.h"
+#include "pugixml/pugixml.hpp"
 #include "preload.h"
 
 /**
@@ -108,6 +109,19 @@ Preload::~Preload(){
   // Delete the experiment values because we don't need them for the preloading.
   //delete m_ExperimentValues;
   std::cout << "Preload destructor finished." << std::endl;
+}
+
+/**
+ * @brief Saves the experiment settings in the xml_docuement.
+ * @param xml Pointer to the xml_document.
+ */
+void Preload::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("Preload");
+
+  node.append_attribute("StressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("CrossSectionArea") = m_Area;
+  node.append_attribute("StressForceLimit") = m_StressForceLimit;
+  node.append_attribute("Velocity") = m_Velocity;
 }
 
 /**

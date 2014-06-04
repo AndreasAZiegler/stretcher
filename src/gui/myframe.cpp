@@ -88,6 +88,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
   EVT_CHECKBOX(ID_LoopProtocol, MyFrame::OnLoopProtocol)
   EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
+  EVT_BUTTON(ID_SaveProtocol, MyFrame::OnSaveProtocol)
 wxEND_EVENT_TABLE()
 
 // Costum event definitions
@@ -1761,6 +1762,14 @@ void MyFrame::OnStopProtocol(wxCommandEvent& event){
   //OnMotorStop(event);
   m_StageFrame->stop();
   m_CurrentProtocol->stopProtocol();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the save protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnSaveProtocol(wxCommandEvent& event){
+  m_CurrentProtocol->saveProtocol();
 }
 
 /**

@@ -27,6 +27,7 @@ Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
                        double distanceThreshold)
   : m_CheckLimitsFlag(false),
     m_MyFrame(myframe),
+    m_Area(area),
     m_MaxForceLimit(maxforcelimit),
     m_MinForceLimit(minforcelimit),
     m_MaxDistanceLimit(maxdistancelimit),

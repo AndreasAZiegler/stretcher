@@ -5,6 +5,7 @@
 // Includes
 #include <vector>
 #include <mathplot.h>
+#include "pugixml/pugixml.hpp"
 #include "../hardware/stageframe.h"
 #include "../hardware/forcesensormessagehandler.h"
 #include "experimentdefinitions.h"
@@ -122,8 +123,14 @@ class Experiment
     virtual ~Experiment();
 
     /**
-     * @brief Returns a vector containing the points required to cread a preview graph.
-     * @return Vector containing the preview points.
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml) = 0;
+
+    /**
+     * @brief Saves the points required to cread a preview graph in the vector..
+     * @param previewvalues Vector containing the preview values.
      */
     virtual void getPreview(std::vector<PreviewValue>& previewvalues) = 0;
 
@@ -176,6 +183,7 @@ class Experiment
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
     MyFrame *m_MyFrame;													/**< Pointer to the main frame. */
 
+    double m_Area;															/**< Cross section area. */
     bool m_CheckLimitsFlag;											/**< Indicates if the limits should be checked. */
     long m_MaxForceLimit;												/**< Maximal force limit. */
     long m_MinForceLimit;												/**< Minimal force limit. */

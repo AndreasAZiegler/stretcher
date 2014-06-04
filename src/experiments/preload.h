@@ -63,6 +63,12 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     ~Preload();
 
     /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
+
+    /**
      * @brief Returns a vector containing the points required to cread a preview graph.
      * @return Vector containing the preview points.
      */
@@ -88,6 +94,16 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * @brief Sets the area.
+     * @param x Length in x direction.
+     * @param y Length in y direction.
+     */
+    void setArea (double x, double y);
+
+    /**
+>>>>>>> SOFT: Started with save xml.
      * @brief Sets the force or stress limit.
      * @param forceStress Force or stress limit.
      */

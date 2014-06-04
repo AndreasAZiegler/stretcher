@@ -33,6 +33,5 @@ MyPauseDialog_Base(wxWindow *parent=NULL){
  }
 };
 
-void 
-InitXmlResource();
+void InitXmlResource();
 #endif

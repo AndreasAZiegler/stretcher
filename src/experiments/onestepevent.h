@@ -70,6 +70,12 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     virtual void setPreloadDistance();
 
     /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
+
+    /**
      * @brief Returns a vector containing the points required to cread a preview graph.
      * @return Vector containing the preview points.
      */
