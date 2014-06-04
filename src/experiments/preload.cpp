@@ -2,6 +2,7 @@
 #include <iostream>
 #include <mutex>
 #include <wx/log.h>
+#include "pugixml/pugixml.hpp"
 #include "preload.h"
 
 /**
@@ -70,7 +71,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
     m_StagesStoppedFlag(stagesstopped),
     m_StagesStoppedMutex(stagesstoppedmutex),
     m_StressForceLimit(stressForceLimit),
-    m_SpeedInMM(speedInMM),
+    m_Velocity(speedInMM),
     m_ExperimentValues(std::make_shared<PreloadValues>(stageframe,
                                                        forcesensormessagehandler,
                                                        vector,
@@ -105,6 +106,19 @@ Preload::~Preload(){
   // Delete the experiment values because we don't need them for the preloading.
   //delete m_ExperimentValues;
   std::cout << "Preload destructor finished." << std::endl;
+}
+
+/**
+ * @brief Saves the experiment settings in the xml_docuement.
+ * @param xml Pointer to the xml_document.
+ */
+void Preload::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("Preload");
+
+  node.append_attribute("StressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("CrossSectionArea") = m_Area;
+  node.append_attribute("StressForceLimit") = m_StressForceLimit;
+  node.append_attribute("Velocity") = m_Velocity;
 }
 
 /**
@@ -176,7 +190,7 @@ void Preload::process(Event e){
       if(Event::evStart == e){
         wxLogMessage("Preload: Start experiment.");
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
-        m_StageFrame->setSpeed(m_SpeedInMM);
+        m_StageFrame->setSpeed(m_Velocity);
         m_CurrentState = runState;
         m_CheckLimitsFlag = true;
 
@@ -185,21 +199,21 @@ void Preload::process(Event e){
           if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
-            m_StageFrame->moveBackward(m_SpeedInMM);
+            m_StageFrame->moveBackward(m_Velocity);
           }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward(m_SpeedInMM);
+            m_StageFrame->moveForward(m_Velocity);
           }
         }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
           if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
-            m_StageFrame->moveBackward(m_SpeedInMM);
+            m_StageFrame->moveBackward(m_Velocity);
           }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward(m_SpeedInMM);
+            m_StageFrame->moveForward(m_Velocity);
           }
 
         }
@@ -227,14 +241,14 @@ void Preload::process(Event e){
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward(m_SpeedInMM);
+              m_StageFrame->moveBackward(m_Velocity);
             }
           }else if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){ // Only reverse motor, if state changed
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
 
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward(m_SpeedInMM);
+              m_StageFrame->moveForward(m_Velocity);
             }
           }else{
 
@@ -256,14 +270,14 @@ void Preload::process(Event e){
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward(m_SpeedInMM);
+              m_StageFrame->moveBackward(m_Velocity);
             }
           }else if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){ // Only reverse motor, if state changed
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
 
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward(m_SpeedInMM);
+              m_StageFrame->moveForward(m_Velocity);
             }
           }else{
 

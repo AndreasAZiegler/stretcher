@@ -3,6 +3,7 @@
 #include <fstream>
 #include <chrono>
 #include <wx/log.h>
+#include "pugixml/pugixml.hpp"
 #include <wx/msgdlg.h>
 #include "../gui/myframe.h"
 #include "protocols.h"
@@ -69,6 +70,19 @@ Protocols::~Protocols(){
   m_Experiments.clear();
   m_ExperimentValues.clear();
   */
+}
+
+void Protocols::saveProtocol(void){
+  pugi::xml_document doc;
+
+  // Collect the xml attributes from the single experiments.
+  for(int i = 0; i < m_Experiments.size(); ++i){
+    m_Experiments[i]->getXML(doc);
+  }
+
+  std::string path = m_StoragePath + "/Protocol.xml";
+  doc.save_file(path.c_str());
+  wxLogMessage(std::string("Protocols: Protocol saved in: " + path).c_str());
 }
 
 /**

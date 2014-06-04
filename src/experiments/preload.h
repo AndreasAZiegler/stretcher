@@ -63,6 +63,12 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     ~Preload();
 
     /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
+
+    /**
      * @brief Returns a vector containing the points required to cread a preview graph.
      * @return Vector containing the preview points.
      */
@@ -84,17 +90,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @param mm Speed in mm/s
      */
     void setSpeedInMM(double mm){
-      m_SpeedInMM = mm;
+      m_Velocity = mm;
     }
-
-    /**
-     * @brief Sets speed.
-     * @param percent Speed in percent of the clamping distance / second.
-     */
-    void setSpeedInPercent(double percent){
-      m_SpeedInPercent = percent;
-    }
-
 
     /**
      * @brief Sets the area.
@@ -139,8 +136,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     State m_CurrentState;																		/**< Current state of the preload FSM */
 
     double m_StressForceLimit;															/**< Stress or force limit value */
-    double m_SpeedInMM;																			/**< Speed in mm/sec */
-    double m_SpeedInPercent;																/**< Speed in percent of clamping distance / sec */
+    double m_Velocity;																			/**< Speed in mm/sec */
 
 
     std::condition_variable *m_Wait;

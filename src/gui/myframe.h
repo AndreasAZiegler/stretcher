@@ -4,7 +4,7 @@
 /*************** Includes ************/
 #include <thread>
 #include <wx/event.h>
-#include <pugixml/pugixml.hpp>
+#include "pugixml/pugixml.hpp"
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
@@ -417,6 +417,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnStopProtocol(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the save protocol button.
+     * @param event Occuring event
+     */
+    void OnSaveProtocol(wxCommandEvent& event);
 
     /**
      * @brief Calculates the distance and print the value in the GUI.
