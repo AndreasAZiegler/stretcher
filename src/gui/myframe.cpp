@@ -362,7 +362,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
       if(false == m_DistanceWActuatorCollisionSetFlag){
-        if(50000.0 <= m_CurrentForce){
+        if(-50000.0 >= m_CurrentForce){
           m_StageFrame->stop();
           m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
         }
@@ -988,7 +988,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
       stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
       steps = m_ContinuousStressForceStepsSpinCtrl->GetValue();
     }
-    maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue();
+    maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() * 10000.0;
     stepsDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
 
   }else if(true == m_ContinuousDistanceRadioBtn->GetValue()){
@@ -1015,7 +1015,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
       if(true == m_ContinuousDistanceMaxValueMmRadioBtn->GetValue()){
         maxvalueDistanceOrPercentage == Experiment::DistanceOrPercentage::Distance;
-        maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue();
+        maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
         if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
           stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
           steps = maxvalue / m_ContinuousDistanceIncrementSpinCtrl->GetValue();
@@ -1080,7 +1080,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              stepsOrMaxValue,
                                                              maxvalueDistanceOrPercentage,
                                                              maxvaluepercent,
-                                                             maxvalue * 10000.0,
+                                                             maxvalue,
                                                              steps,
                                                              cycles,
                                                              behaviorAfterStop));
