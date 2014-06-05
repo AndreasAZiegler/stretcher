@@ -1104,8 +1104,12 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   m_MaxDistanceLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
   m_MinDistanceLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
-  m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
-  m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;
+  if(1 == m_InitializeUnitRadioBox->GetSelection()){
+    m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
+    m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;
+  } else if(2 == m_InitializeUnitRadioBox->GetSelection()){
+
+  }
 
   m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
