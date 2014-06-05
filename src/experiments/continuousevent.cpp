@@ -135,7 +135,11 @@ void ContinuousEvent::initParameters(void){
       m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
     }
     if((0 < m_MaxValueLimit) && (0 < m_Increment)){
-      m_Steps = m_MaxValueLimit / m_Increment;
+      if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
+      } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+        m_Steps = (m_MaxValueLimit - m_CurrentForce/m_Area) / m_Increment;
+      }
     }
   }
 }
