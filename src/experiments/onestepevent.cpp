@@ -135,8 +135,10 @@ OneStepEvent::~OneStepEvent(){
 void OneStepEvent::initParameters(void){
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength * 0.00009921875/*mm per micro step*/;
+    /*
     wxLogMessage(std::string("OneStepEvent: Velocity percent: " + std::to_string(m_VelocityPercent) +
                              " velocity: " + std::to_string(m_Velocity)).c_str());
+    */
     m_ExperimentValues->setVelocity(m_Velocity);
   }
   if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
