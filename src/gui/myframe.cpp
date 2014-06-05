@@ -493,6 +493,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dkPa]:");
+    m_ContinuousStressForceMaxValueStaticText->SetLabelText("Max. values [kPa]:");
     m_ForceUnit = wxT(" kPa");
 
 
@@ -514,6 +516,12 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dN]:");
+    m_ContinuousStressForceMaxValueStaticText->SetLabelText("Max. values [N]:");
     m_ForceUnit = wxT(" N");
 
     if(true == m_ShowGraphFlag){
