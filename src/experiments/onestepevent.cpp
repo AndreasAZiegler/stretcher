@@ -112,19 +112,8 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                                               cycles,
                                               behaviorAfterStop))
 {
-  if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength * 0.00009921875/*mm per micro step*/;
-    m_ExperimentValues->setVelocity(m_Velocity);
-  }
-  if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
-    m_UpperLimit = (m_UpperLimitPercent / 100.0) * m_GageLength;
-  }
-  if(DistanceOrPercentage::Percentage == m_LowerLimitDistanceOrPercentage){
-    m_LowerLimit = (m_LowerLimitPercent / 100.0) * m_GageLength;
-  }
-  if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
-    m_HoldDistance = static_cast<double>(m_HoldDistancePercent / 100.0) * m_GageLength;
-  }else if(DistanceOrPercentage::Distance == m_HoldDistanceOrPercentage){
+  initParameters();
+  if(DistanceOrPercentage::Distance == m_HoldDistanceOrPercentage){
     m_HoldDistance *= 10000.0;
   }
 
@@ -141,12 +130,9 @@ OneStepEvent::~OneStepEvent(){
 }
 
 /**
- * @brief Sets the preload distance.
- * @param preloaddistance Preload distance
+ * @brief Initializes the parameters.
  */
-void OneStepEvent::setPreloadDistance(){
-  m_GageLength = m_CurrentDistance;
-
+void OneStepEvent::initParameters(void){
   if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100.0) * m_GageLength * 0.00009921875/*mm per micro step*/;
     wxLogMessage(std::string("OneStepEvent: Velocity percent: " + std::to_string(m_VelocityPercent) +
@@ -166,6 +152,16 @@ void OneStepEvent::setPreloadDistance(){
     //std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
   }
 }
+
+/**
+ * @brief Sets the preload distance.
+ * @param preloaddistance Preload distance
+ */
+void OneStepEvent::setPreloadDistance(){
+  m_GageLength = m_CurrentDistance;
+
+  initParameters();
+  }
 
 /**
  * @brief Returns a vector containing the points required to cread a preview graph.
@@ -209,10 +205,10 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   // Make last point depending on the stop behavior.
   switch(m_BehaviorAfterStop){
     case BehaviorAfterStop::GoToL0:
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_GageLength));
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));
         break;
     case BehaviorAfterStop::HoldADistance:
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_HoldDistance));
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_HoldDistance));
         break;
   }
 }
@@ -761,11 +757,14 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
 * @brief Do all the required thing to stop the experiment during process.
 */
 void OneStepEvent::resetExperiment(void){
+  m_StageFrame->stop();
   m_CurrentCycle = 0;
   m_CurrentState = stopState;
   m_CheckLimitsFlag = false;
   m_CurrentDirection = Direction::Stop;
-  m_StageFrame->stop();
+  m_GageLength = m_DefaultGageLength;
+
+  initParameters();
 }
 
 /**

@@ -61,6 +61,11 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     ~OneStepEvent();
 
     /**
+     * @brief Initializes the parameters.
+     */
+    void initParameters(void);
+
+    /**
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */

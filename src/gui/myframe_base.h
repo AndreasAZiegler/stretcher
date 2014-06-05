@@ -25,20 +25,25 @@
 class MyFrame_Base : public wxFrame {
 protected:
  wxNotebook* m_Experiments;
- wxPanel* m_InitializePanel1;
+ wxPanel* m_InitializePanel;
  wxPanel* m_InitializePanel21;
  wxStaticText* m_InitializeStaticText1;
  wxButton* m_InitializeLoadStoredPositionButton;
  wxStaticText* m_InitializeStaticText2;
  wxStaticText* m_InitializeWarningStaticText;
  wxButton* m_InitializeHomeMotorsButton;
- wxPanel* m_InitializePanel22;
- wxStaticText* m_InitializeMoveStaticText;
- wxButton* m_InitializeMountingLengthButton;
  wxRadioBox* m_InitializeUnitRadioBox;
  wxPanel* m_InitializeCalculateDiameterPanel;
  wxStaticText* m_InitializeCrossSectionStaticText;
  wxSpinCtrlDouble* m_InitializeCrossSectionSpinCtrl;
+ wxPanel* m_LengthsPanel;
+ wxPanel* m_LengthsPanel21;
+ wxStaticText* m_LengthsLEStaticText;
+ wxSpinCtrlDouble* m_LengthsLESpinCtrl;
+ wxButton* m_LengthsLEButton;
+ wxPanel* m_LengthsPanel22;
+ wxStaticText* m_LengthsMoveStaticText;
+ wxButton* m_LengthsMountingLengthButton;
  wxPanel* m_LimitsPanel;
  wxPanel* m_LimitsLimitPanel;
  wxStaticText* m_LimitsLimitStaticText60;
@@ -226,20 +231,25 @@ private:
  void InitWidgetsFromXRC(wxWindow *parent){
   wxXmlResource::Get()->LoadObject(this,parent,wxT("MyFrame_Base"), wxT("wxFrame"));
   m_Experiments = XRCCTRL(*this,"m_Experiments",wxNotebook);
-  m_InitializePanel1 = XRCCTRL(*this,"m_InitializePanel1",wxPanel);
+  m_InitializePanel = XRCCTRL(*this,"m_InitializePanel",wxPanel);
   m_InitializePanel21 = XRCCTRL(*this,"m_InitializePanel21",wxPanel);
   m_InitializeStaticText1 = XRCCTRL(*this,"m_InitializeStaticText1",wxStaticText);
   m_InitializeLoadStoredPositionButton = XRCCTRL(*this,"m_InitializeLoadStoredPositionButton",wxButton);
   m_InitializeStaticText2 = XRCCTRL(*this,"m_InitializeStaticText2",wxStaticText);
   m_InitializeWarningStaticText = XRCCTRL(*this,"m_InitializeWarningStaticText",wxStaticText);
   m_InitializeHomeMotorsButton = XRCCTRL(*this,"m_InitializeHomeMotorsButton",wxButton);
-  m_InitializePanel22 = XRCCTRL(*this,"m_InitializePanel22",wxPanel);
-  m_InitializeMoveStaticText = XRCCTRL(*this,"m_InitializeMoveStaticText",wxStaticText);
-  m_InitializeMountingLengthButton = XRCCTRL(*this,"m_InitializeMountingLengthButton",wxButton);
   m_InitializeUnitRadioBox = XRCCTRL(*this,"m_InitializeUnitRadioBox",wxRadioBox);
   m_InitializeCalculateDiameterPanel = XRCCTRL(*this,"m_InitializeCalculateDiameterPanel",wxPanel);
   m_InitializeCrossSectionStaticText = XRCCTRL(*this,"m_InitializeCrossSectionStaticText",wxStaticText);
   m_InitializeCrossSectionSpinCtrl = XRCCTRL(*this,"m_InitializeCrossSectionSpinCtrl",wxSpinCtrlDouble);
+  m_LengthsPanel = XRCCTRL(*this,"m_LengthsPanel",wxPanel);
+  m_LengthsPanel21 = XRCCTRL(*this,"m_LengthsPanel21",wxPanel);
+  m_LengthsLEStaticText = XRCCTRL(*this,"m_LengthsLEStaticText",wxStaticText);
+  m_LengthsLESpinCtrl = XRCCTRL(*this,"m_LengthsLESpinCtrl",wxSpinCtrlDouble);
+  m_LengthsLEButton = XRCCTRL(*this,"m_LengthsLEButton",wxButton);
+  m_LengthsPanel22 = XRCCTRL(*this,"m_LengthsPanel22",wxPanel);
+  m_LengthsMoveStaticText = XRCCTRL(*this,"m_LengthsMoveStaticText",wxStaticText);
+  m_LengthsMountingLengthButton = XRCCTRL(*this,"m_LengthsMountingLengthButton",wxButton);
   m_LimitsPanel = XRCCTRL(*this,"m_LimitsPanel",wxPanel);
   m_LimitsLimitPanel = XRCCTRL(*this,"m_LimitsLimitPanel",wxPanel);
   m_LimitsLimitStaticText60 = XRCCTRL(*this,"m_LimitsLimitStaticText60",wxStaticText);
@@ -429,5 +439,6 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif

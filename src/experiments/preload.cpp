@@ -293,5 +293,6 @@ void Preload::process(Event e){
 void Preload::resetExperiment(void){
   m_CurrentState = stopState;
   m_CheckLimitsFlag = false;
+  m_GageLength = m_DefaultGageLength;
   m_StageFrame->stop();
 }

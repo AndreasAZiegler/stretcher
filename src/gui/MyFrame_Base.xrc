@@ -51,7 +51,7 @@
 									<object class="notebookpage">
 										<label>Initialize</label>
 										<selected>1</selected>
-										<object class="wxPanel" name="m_InitializePanel1">
+										<object class="wxPanel" name="m_InitializePanel">
 											<object class="wxFlexGridSizer">
 												<rows>7</rows>
 												<cols>1</cols>
@@ -135,40 +135,6 @@
 													</object>
 												</object>
 												<object class="sizeritem">
-													<option>1</option>
-													<flag>wxEXPAND | wxALL</flag>
-													<border>5</border>
-													<object class="wxPanel" name="m_InitializePanel22">
-														<style>wxSIMPLE_BORDER</style>
-														<object class="wxFlexGridSizer">
-															<rows>2</rows>
-															<cols>1</cols>
-															<vgap>0</vgap>
-															<hgap>0</hgap>
-															<growablecols>0</growablecols>
-															<growablerows></growablerows>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_InitializeMoveStaticText">
-																	<label>Move the stage to the mounting length manually, mount the clamps and push the button &quot;Set mounting lenght&quot;.</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxEXPAND</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_InitializeMountingLengthButton">
-																	<label>Set mounting length</label>
-																	<default>0</default>
-																</object>
-															</object>
-														</object>
-													</object>
-												</object>
-												<object class="sizeritem">
 													<option>0</option>
 													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
@@ -208,6 +174,99 @@
 																	<value>0</value>
 																	<min>0</min>
 																	<max>10000</max>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="notebookpage">
+										<label>Lengths</label>
+										<selected>0</selected>
+										<object class="wxPanel" name="m_LengthsPanel">
+											<style>wxTAB_TRAVERSAL</style>
+											<object class="wxFlexGridSizer">
+												<rows>2</rows>
+												<cols>1</cols>
+												<vgap>0</vgap>
+												<hgap>0</hgap>
+												<growablecols></growablecols>
+												<growablerows></growablerows>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_LengthsPanel21">
+														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
+														<object class="wxFlexGridSizer">
+															<rows>3</rows>
+															<cols>1</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols>0</growablecols>
+															<growablerows></growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL|wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_LengthsLEStaticText">
+																	<label>Move the stages to the distance with actuator collison, insert the distance[mm] and push the button &quot;Set Le&quot;.</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL|wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_LengthsLESpinCtrl">
+																	<value>0</value>
+																	<min>0</min>
+																	<max>150</max>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL|wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_LengthsLEButton">
+																	<label>Set Le</label>
+																	<default>0</default>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_LengthsPanel22">
+														<style>wxSIMPLE_BORDER</style>
+														<object class="wxFlexGridSizer">
+															<rows>2</rows>
+															<cols>1</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols>0</growablecols>
+															<growablerows></growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_LengthsMoveStaticText">
+																	<label>Move the stages to the mounting length manually, mount the clamps and push the button &quot;Set mounting lenght&quot;.</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_LengthsMountingLengthButton">
+																	<label>Set mounting length</label>
+																	<default>0</default>
 																</object>
 															</object>
 														</object>

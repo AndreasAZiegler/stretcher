@@ -135,7 +135,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
      * @brief Sets the zero distance.
      * @param distance Distance in microsteps.
      */
-    void setZeroDistance();
+    void setDistanceWActuatorCollision(double distance);
 
   private:
 
@@ -154,7 +154,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
     const double MM_PER_MS;               						/**< milimeter per microstep */
 
     double m_Stepsize;			     				    					/**< Stepsize of the stepper motor in millimeters */
-    long m_ZeroDistance;	 	 		   			           	  /**< Distance when the motors are on max position (resulting in smallest distance) */
+    long m_DistanceWActuatorCollision;	 	 		   			           	  /**< Distance when the motors are on max position (resulting in smallest distance) */
 
     bool m_Pos1ChangedFlag;														/**< Indicates an updated position 1 if true */
     bool m_Pos2ChangedFlag;														/**< Indicates an updated position 2 if true */
