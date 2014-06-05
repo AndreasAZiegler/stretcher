@@ -134,9 +134,15 @@ void ContinuousEvent::initParameters(void){
     if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
       m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
     }
-    if((0 < m_MaxValueLimit) && (0 < m_Increment)){
+    if((0 != m_MaxValueLimit) && (0 != m_Increment)){
       if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
         m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
+        /*
+        wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
+                                 " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
+                                 " m_CurrentForce: " + std::to_string(m_CurrentForce) +
+                                 " m_Increment: " + std::to_string(m_Increment)).c_str());
+        */
       } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
         m_Steps = (m_MaxValueLimit - m_CurrentForce/m_Area) / m_Increment;
       }
