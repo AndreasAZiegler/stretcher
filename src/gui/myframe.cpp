@@ -1349,7 +1349,9 @@ void MyFrame::OnRunProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLoopProtocol(wxCommandEvent& event){
-  m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
+  }
 }
 
 /**
