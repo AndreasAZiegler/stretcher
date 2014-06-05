@@ -105,7 +105,7 @@ void ForceSensorMessageHandler::receiver(void){
                   (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+4]));
 
       m_CurrentForce.timestamp = std::chrono::high_resolution_clock::now();
-      m_CurrentForce.value = (measforce - m_ZeroValue) / m_ScalingFactor;
+      m_CurrentForce.value = -(measforce - m_ZeroValue) / m_ScalingFactor;
       //std::cout << "PressureSensor force: " << m_CurrentForce << " at pos: " << syncPos << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};
