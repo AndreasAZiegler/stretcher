@@ -110,20 +110,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                                      steps,
                                                      behaviorAfterStop))
 {
-  if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
-  }
-  if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
-    m_Increment = (m_IncrementPercent / 100) * m_GageLength;
-  }
-  if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
-    if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
-      m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
-    }
-    if((0 < m_MaxValueLimit) && (0 < m_Increment)){
-      m_Steps = m_MaxValueLimit / m_Increment;
-    }
-  }
+  initParameters();
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -138,12 +125,9 @@ ContinuousEvent::~ContinuousEvent(){
 }
 
 /**
- * @brief Sets the preload distance.
- * @param preloaddistance Preload distance
+ * @brief Initializes the parameters.
  */
-void ContinuousEvent::setPreloadDistance(){
-  m_GageLength = m_CurrentDistance;
-
+void ContinuousEvent::initParameters(void){
   if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
   }
@@ -154,10 +138,30 @@ void ContinuousEvent::setPreloadDistance(){
     if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
       m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
     }
-    if((0 < m_MaxValueLimit) && (0 < m_Increment)){
-      m_Steps = m_MaxValueLimit / m_Increment;
+    if((0 != m_MaxValueLimit) && (0 != m_Increment)){
+      if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
+        /*
+        wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
+                                 " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
+                                 " m_CurrentForce: " + std::to_string(m_CurrentForce) +
+                                 " m_Increment: " + std::to_string(m_Increment)).c_str());
+        */
+      } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+        m_Steps = (m_MaxValueLimit - m_CurrentForce/m_Area) / m_Increment;
+      }
     }
   }
+}
+
+/**
+ * @brief Sets the preload distance.
+ * @param preloaddistance Preload distance
+ */
+void ContinuousEvent::setPreloadDistance(){
+  m_GageLength = m_CurrentDistance;
+
+  initParameters();
 }
 
 /**
@@ -775,6 +779,9 @@ void ContinuousEvent::resetExperiment(void){
   m_CurrentState = stopState;
   m_CurrentDirection = Direction::Stop;
   m_CheckLimitsFlag = false;
+  m_GageLength = m_DefaultGageLength;
+
+  initParameters();
 }
 
 /**

@@ -212,10 +212,16 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnInitializeHomeLinearStages(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the set Le button.
+     * @param event Occuring event
+     */
+    void OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the set length button.
      * @param event Occuring event
      */
-    void OnInitializeSetMountingLength(wxCommandEvent& event);
+    void OnLengthsSetMountingLength(wxCommandEvent& event);
 
     /**
      * @brief Loads limit set 1 from the configuration.
@@ -472,6 +478,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::condition_variable m_WaitMessageHandlers;/**< Wait condition variable to wait for message handlers to stop. */
     std::mutex m_WaitMessageHandlersMutex;			/**< Mutex to protect m_WaitMessageHandlers. */
     std::shared_ptr<StageFrame> m_StageFrame;		/**< Pointer to the stage frame object */
+    bool m_DistanceWActuatorCollisionSetFlag;		/**< Indicates if the distance with actuator collision is already defined. */
     double m_MaxDistanceLimit;									/**< The maximal position for the stages */
     double m_MinDistanceLimit;									/**< The minimal position for the stages */
     double m_MaxForceLimit;											/**< The maximal allowed force. */
@@ -516,47 +523,48 @@ enum
   ID_MotorStop = 8,
   ID_LoadStoredPosition = 9,
   ID_HomeStages = 10,
-  ID_SetMountingLength = 11,
-  ID_LoadLimitSet1 = 12,
-  ID_LoadLimitSet2 = 13,
-  ID_LoadLimitSet3 = 14,
-  ID_LoadLimitSet4 = 15,
-  ID_LimitsDistanceValue = 16,
-  ID_SetLimits = 17,
-  ID_LimitsDistanceGoTo = 18,
-  ID_LimitsSetL0 = 19,
-  ID_PreloadSpeedPercent = 20,
-  ID_PreloadSpeedMm = 21,
-  ID_PreloadSendToProtocol = 22,
+  ID_SetDistanceWActuatorCollision = 11,
+  ID_SetMountingLength = 12,
+  ID_LoadLimitSet1 = 13,
+  ID_LoadLimitSet2 = 14,
+  ID_LoadLimitSet3 = 15,
+  ID_LoadLimitSet4 = 16,
+  ID_LimitsDistanceValue = 17,
+  ID_SetLimits = 18,
+  ID_LimitsDistanceGoTo = 19,
+  ID_LimitsSetL0 = 20,
+  ID_PreloadSpeedPercent = 21,
+  ID_PreloadSpeedMm = 22,
+  ID_PreloadSendToProtocol = 23,
 
-  ID_OneStepStressForce = 23,
-  ID_OneStepDistance = 24,
-  ID_OneStepCancel = 25,
-  ID_OneStepSendToProtocol = 26,
+  ID_OneStepStressForce = 24,
+  ID_OneStepDistance = 25,
+  ID_OneStepCancel = 26,
+  ID_OneStepSendToProtocol = 27,
 
-  ID_ContinuousStressForce = 27,
-  ID_ContinuousDistance = 28,
-  ID_ContinuousMaxValue = 29,
-  ID_ContinuousSteps = 30,
-  ID_ContinuousCancel = 31,
-  ID_ContinuousSendToProtocol = 32,
+  ID_ContinuousStressForce = 28,
+  ID_ContinuousDistance = 29,
+  ID_ContinuousMaxValue = 30,
+  ID_ContinuousSteps = 31,
+  ID_ContinuousCancel = 32,
+  ID_ContinuousSendToProtocol = 33,
 
-  ID_ClearLog = 41,
-  ID_SaveLog = 42,
-  ID_ClearGraph = 43,
-  ID_ExportCSV = 44,
-  ID_ExportPNG = 45,
-  ID_DeleteExperiment = 46,
-  ID_MoveUpExperiment = 47,
-  ID_MoveDownExperiment = 48,
-  ID_PauseExperiment = 49,
-  ID_LoopProtocol = 50,
-  ID_Preview = 51,
-  ID_RunProtocol = 52,
-  ID_StopProtocol = 53,
-  ID_SaveProtocol = 54,
-  ID_LoadProtocol = 55,
-  ID_MakePhoto = 56
+  ID_ClearLog = 34,
+  ID_SaveLog = 35,
+  ID_ClearGraph = 36,
+  ID_ExportCSV = 37,
+  ID_ExportPNG = 38,
+  ID_DeleteExperiment = 39,
+  ID_MoveUpExperiment = 40,
+  ID_MoveDownExperiment = 41,
+  ID_PauseExperiment = 42,
+  ID_LoopProtocol = 43,
+  ID_Preview = 44,
+  ID_RunProtocol = 45,
+  ID_StopProtocol = 46,
+  ID_SaveProtocol = 47,
+  ID_LoadProtocol = 48,
+  ID_MakePhoto = 49
 };
 
 #endif // MYFRAME_H

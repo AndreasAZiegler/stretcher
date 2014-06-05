@@ -45,15 +45,13 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnInitializeLoadStoredPosition)
   EVT_BUTTON(ID_HomeStages, MyFrame::OnInitializeHomeLinearStages)
-  EVT_BUTTON(ID_SetMountingLength, MyFrame::OnInitializeSetMountingLength)
+  EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
+  EVT_BUTTON(ID_SetMountingLength, MyFrame::OnLengthsSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
-  //EVT_BUTTON(ID_MotorDecreaseDistance,	MyFrame::OnMotorDecreaseDistance)
-  //EVT_BUTTON(ID_MotorIncreaseDistance,	MyFrame::OnMotorIncreaseDistance)
   EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnLimitsLoadSet1)
   EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnLimitsLoadSet2)
   EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnLimitsLoadSet3)
   EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
-  //EVT_SPINCTRLDOUBLE(ID_MountingLength, MyFrame::OnMountingLengthChanged)
   EVT_BUTTON(ID_LimitsDistanceGoTo, MyFrame::OnLimitsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
   EVT_BUTTON(ID_LimitsSetL0, MyFrame::OnSetL0)
@@ -95,6 +93,7 @@ wxDEFINE_EVENT(EVT_MYBUTTON_UP, wxCommandEvent);
 MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
     m_Settings(settings),
+    m_DistanceWActuatorCollisionSetFlag(false),
     m_CurrentPositions{0,0},
     m_CurrentDistance(150),
     m_CurrentForce(0),
@@ -126,7 +125,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
-  m_InitializeMountingLengthButton->SetId(ID_SetMountingLength);
+  m_LengthsLEButton->SetId(ID_SetDistanceWActuatorCollision);
+  m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
   m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
   m_InitializeUnitRadioBox->SetId(ID_Unit);
   wxString str;
@@ -361,6 +361,12 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
       break;
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
+      if(false == m_DistanceWActuatorCollisionSetFlag){
+        if(50000.0 <= m_CurrentForce){
+          m_StageFrame->stop();
+          m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+        }
+      }
 
       m_CurrentForceUpdateDelay++;
       if(20 <= m_CurrentForceUpdateDelay){
@@ -399,6 +405,7 @@ void MyFrame::startup(void){
   m_ContinuousDistanceStepsSpinCtrl->Show(false);
 
   // Set digits for the wxSpinCtrlDouble
+  m_LengthsLESpinCtrl->SetDigits(2);
   m_LimitsGoToSpinCtrl->SetDigits(2);
   m_InitializeCrossSectionSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
@@ -486,6 +493,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dkPa]:");
+    m_ContinuousStressForceMaxValueStaticText->SetLabelText("Max. values [kPa]:");
     m_ForceUnit = wxT(" kPa");
 
 
@@ -507,6 +516,12 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
+    m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
+    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dN]:");
+    m_ContinuousStressForceMaxValueStaticText->SetLabelText("Max. values [N]:");
     m_ForceUnit = wxT(" N");
 
     if(true == m_ShowGraphFlag){
@@ -577,13 +592,22 @@ void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user clicks on the set Le button.
+ * @param event Occuring event
+ */
+void MyFrame::OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event){
+  m_DistanceWActuatorCollisionSetFlag = true;
+  // Set min distance.
+  m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setDistanceWActuatorCollision(m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+}
+
+/**
  * @brief Method wich will be executed, when the user clicks on the set length button.
  * @param event Occuring event
  */
-void MyFrame::OnInitializeSetMountingLength(wxCommandEvent& event){
-  m_GageLength = 0;
-  m_ZeroLength = m_CurrentDistance;
-  m_StageFrame->setZeroDistance();
+void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
+  m_GageLength = m_CurrentDistance;
   m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
 }
@@ -633,19 +657,11 @@ void MyFrame::OnLimitsLoadSet4(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user changes the clamping position value.
- * @param event Occuring event
- */
-void MyFrame::OnMountingLengthChanged(wxSpinDoubleEvent& event){
-  m_MountingLength = m_LimitsGoToSpinCtrl->GetValue();
-}
-
-/**
  * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
  * @param event Occuring event
  */
 void MyFrame::OnLimitsGoTo(wxCommandEvent& event){
-  m_StageFrame->gotoMMDistance(m_MountingLength);
+  m_StageFrame->gotoMMDistance(m_LimitsGoToSpinCtrl->GetValue());
 }
 
 /**
@@ -661,7 +677,8 @@ void MyFrame::OnSetL0(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
- double speedmm = m_MountingLength * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
+ //double speedmm = m_MountingLength * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
+ double speedmm = m_GageLength * 0.00009921875/*mm per micro step*/  * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
  m_PreloadSpeedMmSpinCtrl->SetValue(speedmm);
 }
 
@@ -670,7 +687,7 @@ void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / m_MountingLength * 100/*%*/;
+  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / (m_GageLength * 0.00009921875/*mm per micro step*/) * 100/*%*/;
   m_PreloadSpeedPreloadSpinCtrl->SetValue(speedpercent);
 }
 
@@ -964,12 +981,14 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     velocity = m_ContinuousStressForceVelocitySpinCtrl->GetValue();
 
     if(true == m_ContinuousStressForceMaxValueRadioBtn->GetValue()){
+      stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::MaxValue;
       steps = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() / m_ContinuousStressForceIncrementSpinCtrl->GetValue();
       std::cout << "MyFrame: steps: " << steps << std::endl;
     } else if(true == m_ContinuousStressForceStepsRadioBtn->GetValue()){
+      stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
       steps = m_ContinuousStressForceStepsSpinCtrl->GetValue();
     }
-    stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
+    maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue();
     stepsDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
 
   }else if(true == m_ContinuousDistanceRadioBtn->GetValue()){
@@ -1061,7 +1080,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              stepsOrMaxValue,
                                                              maxvalueDistanceOrPercentage,
                                                              maxvaluepercent,
-                                                             maxvalue,
+                                                             maxvalue * 10000.0,
                                                              steps,
                                                              cycles,
                                                              behaviorAfterStop));
@@ -1088,46 +1107,12 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user klicks on the decrease distance button.
- * @param event Occuring event
- */
-void MyFrame::OnMotorDecreaseDistance(wxCommandEvent& event){
-  std::cout << "MyFrame decrease distance" << std::endl;
-  if(0 != m_LinearStages.size()){
-    m_StageFrame->moveMM(0.25);
-
-    // If the clamping position tab is active.
-    if(1 == m_Experiments->GetSelection()){
-      m_MountingLength -= (2 * 0.25);
-      m_LimitsGoToSpinCtrl->SetValue(m_MountingLength);
-    }
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user klicks on the increase distance button.
- * @param event Occuring event
- */
-void MyFrame::OnMotorIncreaseDistance(wxCommandEvent& event){
-  std::cout << "MyFrame increase distance" << std::endl;
-  if(0 != m_LinearStages.size()){
-    m_StageFrame->moveMM(-0.25);
-  }
-
-  // If the clamping position tab is active.
-  if(1 == m_Experiments->GetSelection()){
-    m_MountingLength += (2 * 0.25);
-    m_LimitsGoToSpinCtrl->SetValue(m_MountingLength);
-  }
-}
-
-/**
  * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-  m_StageFrame->moveForward(4/*mm/s*/);
+  m_StageFrame->moveForward(1/*mm/s*/);
   event.Skip();
 }
 
@@ -1147,7 +1132,7 @@ void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
  */
 void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-  m_StageFrame->moveBackward(4/*mm/s*/);
+  m_StageFrame->moveBackward(1/*mm/s*/);
   event.Skip();
 }
 

@@ -8,7 +8,7 @@
 
 StageFrame::StageFrame()
   :	m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
-    m_ZeroDistance(0),
+    m_DistanceWActuatorCollision(0),
     MM_PER_MS(0.00009921875),
     m_Pos1ChangedFlag(false),
     m_Pos2ChangedFlag(false),
@@ -79,7 +79,7 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
           //std::cout << "Stage frame time difference: " << std::chrono::duration_cast<std::chrono::microseconds>(m_CurrentPositions[0].timestamp - m_CurrentPositions[1].timestamp).count() << " msec" << std::endl;
           m_CurrentDistance.timestamp = m_CurrentPositions[0].timestamp;
           m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                                     std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
+                                     std::abs(771029 - m_CurrentPositions[1].value) - m_DistanceWActuatorCollision);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */;
           // notify
           {
             std::lock_guard<std::mutex> lck{m_AccessListMutex};
@@ -107,7 +107,7 @@ void StageFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRe
           //std::cout << "Stage frame time difference: " << std::chrono::duration_cast<std::chrono::milliseconds>(m_CurrentPositions[1].timestamp - m_CurrentPositions[0].timestamp).count() << " msec" << std::endl;
           m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
           m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                                     std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+                                     std::abs(771029 - m_CurrentPositions[1].value) - m_DistanceWActuatorCollision);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
           {
             std::lock_guard<std::mutex> lck{m_AccessListMutex};
             for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -140,7 +140,7 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
 
   m_CurrentDistance.timestamp = m_CurrentPositions[1].timestamp;
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                             std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);//  ; //134173 /*microsteps=6.39mm offset */; // notify
+                             std::abs(771029 - m_CurrentPositions[1].value) - m_DistanceWActuatorCollision);//  ; //134173 /*microsteps=6.39mm offset */; // notify
   {
     std::lock_guard<std::mutex> lck{m_AccessListMutex};
     for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
@@ -197,7 +197,7 @@ void StageFrame::gotoMMDistance(int mmDistance){
   long dist = (mmDistance/MM_PER_MS);
   //long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
   //long amSteps = (m_CurrentDistance - dist) / 2;
-  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
+  long position = (771029 /*max. position*/ - (m_DistanceWActuatorCollision / 2) - (dist / 2));
   /*
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
@@ -213,7 +213,7 @@ void StageFrame::gotoMMDistance(int mmDistance){
  */
 void StageFrame::gotoStepsDistance(long stepsDistance){
   //long amSteps = (m_CurrentDistance - stepsDistance) / 2;
-  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (stepsDistance / 2));
+  long position = (771029 /*max. position*/ - (m_DistanceWActuatorCollision / 2) - (stepsDistance / 2));
   /*
   (m_LinearStages->at(0))->moveSteps(position);
   (m_LinearStages->at(1))->moveSteps(position);
@@ -261,7 +261,7 @@ void StageFrame::stopped(){
 long StageFrame::getCurrentDistance(void){
   return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
          std::abs(771029 /*max. position*/ - m_CurrentPositions[1].value) -
-         m_ZeroDistance);
+         m_DistanceWActuatorCollision);
 }
 
 /**
@@ -270,7 +270,7 @@ long StageFrame::getCurrentDistance(void){
  */
 void StageFrame::setMaxDistanceLimit(long limit){
   long dist = (limit/MM_PER_MS);
-  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
+  long position = (771029 /*max. position*/ - (m_DistanceWActuatorCollision / 2) - (dist / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
   (m_LinearStages.at(0))->setMinLimit(position);
@@ -285,7 +285,7 @@ void StageFrame::setMaxDistanceLimit(long limit){
  */
 void StageFrame::setMinDistanceLimit(long limit){
   long dist = (limit/MM_PER_MS);
-  long position = (771029 /*max. position*/ - (m_ZeroDistance / 2) - (dist / 2));
+  long position = (771029 /*max. position*/ - (m_DistanceWActuatorCollision / 2) - (dist / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
   (m_LinearStages.at(0))->setMaxLimit(position);
@@ -298,11 +298,11 @@ void StageFrame::setMinDistanceLimit(long limit){
  * @brief Sets the zero distance.
  * @param distance Distance in microsteps.
  */
-void StageFrame::setZeroDistance(){
-  m_ZeroDistance = m_CurrentDistance.value;
+void StageFrame::setDistanceWActuatorCollision(double distance){
+  m_DistanceWActuatorCollision = m_CurrentDistance.value - distance;
 
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
-                             std::abs(771029 - m_CurrentPositions[1].value) - m_ZeroDistance);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
+                             std::abs(771029 - m_CurrentPositions[1].value) - m_DistanceWActuatorCollision);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
   {
     std::lock_guard<std::mutex> lck{m_AccessListMutex};
     for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){

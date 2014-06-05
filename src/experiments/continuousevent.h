@@ -58,6 +58,11 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     ~ContinuousEvent();
 
     /**
+     * @brief Initializes the parameters.
+     */
+    void initParameters(void);
+
+    /**
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
