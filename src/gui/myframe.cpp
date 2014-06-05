@@ -983,7 +983,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     if(true == m_ContinuousStressForceMaxValueRadioBtn->GetValue()){
       stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::MaxValue;
       steps = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() / m_ContinuousStressForceIncrementSpinCtrl->GetValue();
-      std::cout << "MyFrame: steps: " << steps << std::endl;
+      //std::cout << "MyFrame: steps: " << steps << std::endl;
     } else if(true == m_ContinuousStressForceStepsRadioBtn->GetValue()){
       stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
       steps = m_ContinuousStressForceStepsSpinCtrl->GetValue();
@@ -1019,7 +1019,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
         if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
           stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
           steps = maxvalue / m_ContinuousDistanceIncrementSpinCtrl->GetValue();
-          std::cout << "MyFrame: steps: " << steps << std::endl;
+          //std::cout << "MyFrame: steps: " << steps << std::endl;
         }
       } else if(true == m_ContinuousDistanceMaxValuePercentRadioBtn->GetValue()){
         maxvalueDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
