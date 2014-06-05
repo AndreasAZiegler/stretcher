@@ -145,6 +145,8 @@ void ContinuousEvent::initParameters(void){
         */
       } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
         m_Steps = (m_MaxValueLimit - m_CurrentForce/m_Area) / m_Increment;
+      } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+        m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
       }
     }
   }
