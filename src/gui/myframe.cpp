@@ -1107,8 +1107,10 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   if(1 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
     m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;
-  } else if(2 == m_InitializeUnitRadioBox->GetSelection()){
-
+  } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 1000 * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000;
+    m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 1000 * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000;
+    wxLogMessage(std::string("MyFrame: m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
   }
 
   m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);

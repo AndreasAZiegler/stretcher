@@ -140,7 +140,8 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce)).c_str());
+        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
+                                 " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
         process(Event::evStop);
       } else{
         process(Event::evUpdate);
@@ -192,11 +193,11 @@ void Preload::process(Event e){
             m_StageFrame->moveForward(m_SpeedInMM);
           }
         }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+          if((m_StressForceLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMM);
-          }else if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
+          }else if(((m_CurrentForce/m_Area * 1000) - m_StressForceLimit) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_SpeedInMM);

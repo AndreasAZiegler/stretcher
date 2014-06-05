@@ -265,14 +265,14 @@ void OneStepEvent::process(Event event){
             }
           }
         }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_CurrentLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+          if((m_CurrentLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
             {
               std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
               m_StageFrame->moveBackward(m_Velocity);
             }
-          }else if((m_CurrentForce/m_Area - m_CurrentLimit) > m_ForceStressThreshold){
+          }else if(((m_CurrentForce/m_Area * 1000) - m_CurrentLimit) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
             {
@@ -409,7 +409,7 @@ void OneStepEvent::process(Event event){
             }
           }
         }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_CurrentLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+          if((m_CurrentLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
@@ -419,7 +419,7 @@ void OneStepEvent::process(Event event){
                 m_StageFrame->moveBackward(m_Velocity);
               }
             }
-          }else if((m_CurrentForce/m_Area - m_CurrentLimit) > m_ForceStressThreshold){
+          }else if(((m_CurrentForce/m_Area * 1000) - m_CurrentLimit) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
 
           if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only reverse motor, if state changed
