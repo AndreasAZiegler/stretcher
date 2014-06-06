@@ -1108,8 +1108,8 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
     m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
     m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;
   } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 1000 * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000;
-    m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 1000 * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000;
+    m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
+    m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
     wxLogMessage(std::string("MyFrame: m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
   }
 
@@ -1385,7 +1385,11 @@ void MyFrame::updateDistance(void){
  */
 void MyFrame::updateForce(){
   wxString tmp;
-  tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
+  if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    tmp << (static_cast<double>(((m_CurrentForce) / 10000.0) / m_InitializeCrossSectionSpinCtrl->GetValue()) * 1000) << m_ForceUnit;
+  } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
+    tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
+  }
   m_ForceStaticText->SetLabel(tmp);
 }
 
