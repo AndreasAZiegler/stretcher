@@ -707,6 +707,12 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     maxlimitvector = &m_MaxDistanceLimitVector;
     minlimitvector = &m_MinDistanceLimitVector;
   }
+  int limit = 0;
+  if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    limit = m_PreloadLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10;
+  } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
+    limit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
+  }
 
   //Experiment* experiment = new Preload(ExperimentType::Preload,
   std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
@@ -734,7 +740,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      m_CurrentDistance,
                                                      m_InitializeCrossSectionSpinCtrl->GetValue(),
 
-                                                     m_PreloadLimitSpinCtrl->GetValue() * 10000.0,
+                                                     limit,
                                                      m_PreloadSpeedMmSpinCtrl->GetValue()));
 
   m_CurrentProtocol->addExperiment(experiment);
@@ -1428,10 +1434,10 @@ void MyFrame::createValuesGraph(void){
   m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
 
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
   } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
   }
   m_XAxis->SetFont(graphFont);

@@ -33,7 +33,7 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
     m_MaxLimitVectorLayer(maxlimitvector),
     m_MinLimitVectorLayer(minlimitvector),
     m_MyFrame(myframe),
-    m_Area(area * 0.000000000001/*um^2*/),
+    m_Area(area),
     m_DisplayGraphDelay(0)
 {
 }
@@ -118,8 +118,13 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10000.0) / m_Area, measurementValue.timestamp));
-          m_GraphStressForceValues->push_back((measurementValue.value / 10000.0) / m_Area);
+          m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
+          m_GraphStressForceValues->push_back((measurementValue.value / 10.0) / m_Area);
+          /*
+          wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
+                                   " value: " + std::to_string(measurementValue.value) +
+                                   " m_Area: " + std::to_string(m_Area)).c_str());
+          */
         }
       }else{
         {
