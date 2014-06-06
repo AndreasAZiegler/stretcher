@@ -162,7 +162,7 @@
 																<flag>wxALIGN_CENTER|wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_InitializeCrossSectionStaticText">
-																	<label>Cross section area [um2]:</label>
+																	<label>Cross section area [mm2]:</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
@@ -404,8 +404,8 @@
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_LimitsLimitMaxForceSpinCtrl">
 																	<value>0</value>
-																	<min>-20</min>
-																	<max>20</max>
+																	<min>-50000</min>
+																	<max>50000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -432,8 +432,8 @@
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_LimitsLimitMinForceSpinCtrl">
 																	<value>0</value>
-																	<min>-20</min>
-																	<max>20</max>
+																	<min>-50000</min>
+																	<max>50000</max>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -561,8 +561,8 @@
 															<border>5</border>
 															<object class="wxSpinCtrlDouble" name="m_PreloadLimitSpinCtrl">
 																<value>0</value>
-																<min>-50</min>
-																<max>50</max>
+																<min>-50000</min>
+																<max>50000</max>
 															</object>
 														</object>
 														<object class="sizeritem">
@@ -836,8 +836,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceUpperLimitSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>-50000</min>
+																				<max>50000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">
@@ -892,8 +892,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceLowerLimitSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>-50000</min>
+																				<max>50000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">
@@ -1488,8 +1488,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousStressForceIncrementSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>-50000</min>
+																				<max>50000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">
@@ -1541,8 +1541,8 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousStressForceMaxValueSpinCtrl">
 																				<value>0</value>
-																				<min>-20</min>
-																				<max>20</max>
+																				<min>-50000</min>
+																				<max>50000</max>
 																			</object>
 																		</object>
 																		<object class="sizeritem">

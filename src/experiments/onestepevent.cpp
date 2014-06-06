@@ -252,32 +252,16 @@ void OneStepEvent::process(Event event){
         m_CheckLimitsFlag = true;
 
         // If force based
-        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+            //std::cout << "m_CurrentLimit: " << m_CurrentLimit << " m_CurrentForce: " << m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Backwards;
             {
               std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
               m_StageFrame->moveBackward(m_Velocity);
             }
           }else if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
-            m_CurrentDirection = Direction::Forwards;
-            {
-              std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-              m_StageFrame->moveForward(m_Velocity);
-            }
-          }
-        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_CurrentLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-            m_CurrentDirection = Direction::Backwards;
-            {
-              std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-              m_StageFrame->moveBackward(m_Velocity);
-            }
-          }else if((m_CurrentForce/m_Area - m_CurrentLimit) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+            //std::cout  << "m_CurrentForce: " << m_CurrentForce<< " m_CurrentLimit: " << m_CurrentLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
             {
               std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
@@ -322,7 +306,7 @@ void OneStepEvent::process(Event event){
       }
       if(Event::evUpdate == event){
         // If force based
-        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           //std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "(m_CurrentForce - m_CurrentLimit) >  m_ForceStressThreshold: " << (m_CurrentForce - m_CurrentLimit) << " " << m_ForceStressThreshold << std::endl;
@@ -398,95 +382,6 @@ void OneStepEvent::process(Event event){
                     m_StageFrame->stop();
                   }
                   wxLogMessage(std::string("OneStepEvent: Holds for hold time 1: " + std::to_string(m_HoldTime1 * 1000) + " ms").c_str());
-                  std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime1);
-                  t1.join();
-                  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                  wxLogMessage("OneStepEvent: Holding over.");
-                }
-                {
-                  // Go back to the start lengt.
-                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->gotoStepsDistance(m_StartLength);
-                }
-                wxLogMessage("OneStepEvent: Go to start length.");
-              }
-            }
-          }
-        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_CurrentLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-
-            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
-              m_CurrentDirection = Direction::Backwards;
-              {
-                std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                m_StageFrame->moveBackward(m_Velocity);
-              }
-            }
-          }else if((m_CurrentForce/m_Area - m_CurrentLimit) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
-
-          if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only reverse motor, if state changed
-              m_CurrentDirection = Direction::Forwards;
-              {
-                std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                m_StageFrame->moveForward(m_Velocity);
-              }
-            }
-          }else{
-            //m_CurrentState = goBackState;
-            //m_StageFrame->stop();
-            if(LimitState::upperLimitState == m_CurrentLimitState){ // If upper limit is active.
-              // Change to lower limit.
-              m_CurrentLimitState = LimitState::lowerLimitState;
-              m_CurrentLimit = m_LowerLimit;
-
-              // Perform hold if there is a hold time 2
-              if(0 < m_HoldTime2){
-                m_CurrentDirection = Direction::Stop;
-                {
-                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->stop();
-                }
-                wxLogMessage(std::string("OneStepEvent: Hold for hold time 2 " + std::to_string(m_HoldTime2 * 1000) + " ms").c_str());
-                std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime2);
-                t1.join();
-                //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime2 * 1000)));
-                wxLogMessage("OneStepEvent: Holding over.");
-              }
-              process(Event::evUpdate);
-            }else if(LimitState::lowerLimitState == m_CurrentLimitState){ // If lower limit is active.
-              if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
-
-                m_CurrentState = goBackState;
-                m_CheckDistanceFlag = true;
-                m_CurrentCycle = 0;
-
-                switch(m_BehaviorAfterStop){
-                  case BehaviorAfterStop::GoToL0:
-                    m_CurrentLimit = m_GageLength;
-                    m_StageFrame->gotoStepsDistance(m_GageLength);
-                    break;
-                  case BehaviorAfterStop::HoldADistance:
-                    m_CurrentLimit = m_HoldDistance;
-                    m_StageFrame->gotoStepsDistance(m_HoldDistance);
-                    break;
-                }
-                wxLogMessage("OneStepEvent: Go to end length.");
-                //process(Event::evUpdate);
-              } else {
-                m_CurrentCycle++;
-                m_CheckDistanceFlag = true;
-                m_CurrentState = goStartState;
-
-                // Perform hold if there is a hold time 1
-                if(0 < m_HoldTime1){
-                  m_CurrentDirection = Direction::Stop;
-                  {
-                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                    m_StageFrame->stop();
-                  }
-                  wxLogMessage(std::string("OneStepEvent: Hold for hold time 1: " + std::to_string(m_HoldTime1 * 1000) + " ms").c_str());
                   std::thread t1(&OneStepEvent::sleepForMilliseconds, this, m_HoldTime1);
                   t1.join();
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
@@ -737,7 +632,7 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
         wxLogWarning("OneStepEvent: Force limit exceeded.");
         process(Event::evStop);
       } else{
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           process(Event::evUpdate);
         }
       }

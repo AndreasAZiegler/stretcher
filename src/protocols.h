@@ -25,7 +25,7 @@ class Protocols
               std::mutex *waitmutex,
               std::condition_variable *wait,
               bool *preloaddoneflag,
-              std::mutex *preloaddonemutex, bool loopflag,
+              std::mutex *preloaddonemutex, bool loopflag, double area,
               long maxdistance,
               long mindistance,
               long maxforce,
@@ -161,6 +161,7 @@ class Protocols
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
     std::unique_ptr<std::thread> m_ExperimentRunningThread;									/**< Pointer to the experiment running check thread */
+    double m_Area;																													/**< Area size of the sample. */
     long m_MaxDistanceLimit;																								/**< The maximal position for the stages */
     long m_MinDistanceLimit;																								/**< The minimal position for the stages */
     long m_MaxForceLimit;																										/**< The maximal allowed force. */

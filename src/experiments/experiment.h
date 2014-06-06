@@ -184,7 +184,7 @@ class Experiment
     double m_CurrentForce;											/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
-    double m_Area;																													/**< Area size of the sample. */
+    double m_Area;															/**< Area size of the sample. */
 
 };
 

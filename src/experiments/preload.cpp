@@ -144,7 +144,8 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce)).c_str());
+        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
+                                 " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
         process(Event::evStop);
       } else{
         process(Event::evUpdate);
@@ -196,11 +197,11 @@ void Preload::process(Event e){
             m_StageFrame->moveForward(m_SpeedInMM);
           }
         }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
+          if((m_StressForceLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
             m_StageFrame->moveBackward(m_SpeedInMM);
-          }else if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){
+          }else if(((m_CurrentForce/m_Area * 1000) - m_StressForceLimit) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
             m_StageFrame->moveForward(m_SpeedInMM);
@@ -224,8 +225,8 @@ void Preload::process(Event e){
         m_Wait->notify_all();
       }
       if(Event::evUpdate == e){
-        // If force based
-        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        // If force or stress based
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
 
@@ -254,37 +255,6 @@ void Preload::process(Event e){
               m_Wait->notify_all();
             }
           }
-        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_StressForceLimit - m_CurrentForce/m_Area) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-
-            if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
-              m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward(m_SpeedInMM);
-            }
-          }else if((m_CurrentForce/m_Area - m_StressForceLimit) > m_ForceStressThreshold){ // Only reverse motor, if state changed
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
-
-            if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
-              m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward(m_SpeedInMM);
-            }
-          }else{
-
-            if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
-              m_CurrentState = stopState;
-              m_CurrentDirection = Direction::Stop;
-              {
-                std::unique_lock<std::mutex> lck(*m_StagesStoppedMutex);
-                *m_StagesStoppedFlag = false;
-              }
-              wxLogMessage("Stop preloading.");
-              m_StageFrame->stop();
-              std::lock_guard<std::mutex> lck(*m_WaitMutex);
-              m_Wait->notify_all();
-            }
-          }
-
         }
       }
       break;

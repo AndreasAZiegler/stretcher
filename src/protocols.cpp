@@ -20,6 +20,7 @@ Protocols::Protocols(wxListBox *listbox,
                      bool *preloaddoneflag,
                      std::mutex *preloaddonemutex,
                      bool loopflag,
+                     double area,
                      long maxdistance,
                      long mindistance,
                      long maxforce,
@@ -42,6 +43,7 @@ Protocols::Protocols(wxListBox *listbox,
     m_StopProtocolFlag(false),
     m_PreloadDoneFlag(preloaddoneflag),
     m_PreloadDoneMutex(preloaddonemutex),
+    m_Area(area),
     m_MaxDistanceLimit(maxdistance),
     m_MinDistanceLimit(mindistance),
     m_MaxForceLimit(maxforce),
@@ -127,8 +129,11 @@ void Protocols::getPreviewValues(void){
     if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
       m_DistancePreviewValues.push_back(i.value * 0.00009921875/*mm per micro step*/);
       m_DistanceTimePreviewValues.push_back(i.timepoint);
-    } else if((DistanceOrStressOrForce::Stress ==  i.distanceOrForce) || (DistanceOrStressOrForce::Force ==  i.distanceOrForce)){
+    } else if(DistanceOrStressOrForce::Force ==  i.distanceOrForce){
       m_StressForcePreviewValues.push_back(i.value / 10000.0);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    } else if(DistanceOrStressOrForce::Stress ==  i.distanceOrForce){
+      m_StressForcePreviewValues.push_back((i.value / 10.0) / m_Area);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
   }
