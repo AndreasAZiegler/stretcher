@@ -32,6 +32,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
 
                     ExperimentType type,
                     DistanceOrStressOrForce distanceOrStressForce,
+                    bool ramptofailureactiveflag,
                     long gagelength,
                     long zerodistance,
                     long currentdistance,
@@ -49,6 +50,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     double maxvaluepercent,
                     long maxvaluelimit,
                     int steps,
+                    double ramptofailurepercent,
                     int cycles,
                     BehaviorAfterStop behaviorAfterStop);
 
@@ -121,7 +123,8 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
      */
     void sleepForMilliseconds(double seconds);
 
-    DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
+    bool m_Ramp2FailureActiveFlag;																					/**< Indicates if the ramp to failure measurement is active. */
+    DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Indicates if the velocity is given by value or by % of L0. */
     double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_HoldTime;																											/**< Hold time 1 in s. */
@@ -133,6 +136,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     double m_MaxValuePercent;																								/**< % of L0 for calculation of the max. value. */
     long m_MaxValueLimit;																										/**< Max value in mm or N. */
     int m_Steps;																														/**< Number of steps. */
+    double m_Ramp2FailurePercentage;																				/**< Percent of the max stress/force for the R2F experiment. */
     int m_Cycles;																														/**< Amount of cycles. */
     BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 
@@ -140,6 +144,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     long m_CurrentLimit;																										/**< Value of the current limit. */
     int m_CurrentStep;																											/**< The current step. */
     int m_CurrentCycle;																											/**< The current cycle. */
+    long m_MaxStressForce;																									/**< The maximum stress/force .*/
 
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */

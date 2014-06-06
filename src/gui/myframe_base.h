@@ -155,7 +155,8 @@ protected:
  wxRadioButton* m_ContinuousStressForceStepsRadioBtn;
  wxStaticText* m_ContinuousStressForceMaxValueStaticText;
  wxSpinCtrlDouble* m_ContinuousStressForceMaxValueSpinCtrl;
- wxStaticText* m_staticText74;
+ wxRadioButton* m_ContinuousStressForceMaxValueValueRadioBtn;
+ wxRadioButton* m_ContinuousStressForceMaxValuePercentRadioBtn;
  wxStaticText* m_ContinuousStressForceStepsStaticText;
  wxSpinCtrl* m_ContinuousStressForceStepsSpinCtrl;
  wxStaticText* m_staticText76;
@@ -361,7 +362,8 @@ private:
   m_ContinuousStressForceStepsRadioBtn = XRCCTRL(*this,"m_ContinuousStressForceStepsRadioBtn",wxRadioButton);
   m_ContinuousStressForceMaxValueStaticText = XRCCTRL(*this,"m_ContinuousStressForceMaxValueStaticText",wxStaticText);
   m_ContinuousStressForceMaxValueSpinCtrl = XRCCTRL(*this,"m_ContinuousStressForceMaxValueSpinCtrl",wxSpinCtrlDouble);
-  m_staticText74 = XRCCTRL(*this,"m_staticText74",wxStaticText);
+  m_ContinuousStressForceMaxValueValueRadioBtn = XRCCTRL(*this,"m_ContinuousStressForceMaxValueValueRadioBtn",wxRadioButton);
+  m_ContinuousStressForceMaxValuePercentRadioBtn = XRCCTRL(*this,"m_ContinuousStressForceMaxValuePercentRadioBtn",wxRadioButton);
   m_ContinuousStressForceStepsStaticText = XRCCTRL(*this,"m_ContinuousStressForceStepsStaticText",wxStaticText);
   m_ContinuousStressForceStepsSpinCtrl = XRCCTRL(*this,"m_ContinuousStressForceStepsSpinCtrl",wxSpinCtrl);
   m_staticText76 = XRCCTRL(*this,"m_staticText76",wxStaticText);
