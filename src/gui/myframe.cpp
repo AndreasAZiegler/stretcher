@@ -362,7 +362,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
       if(false == m_DistanceWActuatorCollisionSetFlag){
-        if(50000.0 >= m_CurrentForce){
+        if(50000.0 <= m_CurrentForce){
           m_StageFrame->stop();
           m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
         }
