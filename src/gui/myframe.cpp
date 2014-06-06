@@ -494,7 +494,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dkPa]:");
-    m_ContinuousStressForceMaxValueStaticText->SetLabelText("Max. values [kPa]:");
+    m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("kPa");
+    m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Smax.");
     m_ForceUnit = wxT(" kPa");
 
 
@@ -521,7 +522,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dN]:");
-    m_ContinuousStressForceMaxValueStaticText->SetLabelText("Max. values [N]:");
+    m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("N");
+    m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Fmax.");
     m_ForceUnit = wxT(" N");
 
     if(true == m_ShowGraphFlag){
@@ -939,6 +941,8 @@ void MyFrame::OnContinuousMaxValue(wxCommandEvent& event){
 
   m_ContinuousStressForceMaxValueStaticText->Show(true);
   m_ContinuousStressForceMaxValueSpinCtrl->Show(true);
+  m_ContinuousStressForceMaxValueValueRadioBtn->Show(true);
+  m_ContinuousStressForceMaxValuePercentRadioBtn->Show(true);
   m_ContinuousDistanceMaxValueStaticText->Show(true);
   m_ContinuousDistanceMaxValueSpinCtrl->Show(true);
   m_ContinuousDistancePanel23->Show(true);
@@ -951,6 +955,8 @@ void MyFrame::OnContinuousMaxValue(wxCommandEvent& event){
 void MyFrame::OnContinuousSteps(wxCommandEvent& event){
   m_ContinuousStressForceMaxValueStaticText->Show(false);
   m_ContinuousStressForceMaxValueSpinCtrl->Show(false);
+  m_ContinuousStressForceMaxValueValueRadioBtn->Show(false);
+  m_ContinuousStressForceMaxValuePercentRadioBtn->Show(false);
   m_ContinuousDistanceMaxValueStaticText->Show(false);
   m_ContinuousDistanceMaxValueSpinCtrl->Show(false);
   m_ContinuousDistancePanel23->Show(false);
@@ -979,6 +985,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
   }
 
   DistanceOrStressOrForce distanceOrStressOrForce;
+  bool ramptofailureactiveflag = false;
   Experiment::DistanceOrPercentage velocityDistanceOrPercentage;
   double velocity = 0;
   double holdtime = 0;
@@ -989,6 +996,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
   Experiment::DistanceOrPercentage maxvalueDistanceOrPercentage;
   double maxvaluepercent = 0;
   double maxvalue = 0;
+  double ramptofailurepercent = 0;
   Experiment::DistanceOrPercentage stepsDistanceOrPercentage;
   int steps = 0;
   if(true == m_ContinuousStressForceRadioBtn->GetValue()){
@@ -1010,7 +1018,13 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
     if(true == m_ContinuousStressForceMaxValueRadioBtn->GetValue()){
       stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::MaxValue;
-      steps = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() / m_ContinuousStressForceIncrementSpinCtrl->GetValue();
+
+      if(true == m_ContinuousStressForceMaxValueValueRadioBtn->GetValue()){
+        steps = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() / m_ContinuousStressForceIncrementSpinCtrl->GetValue();
+      } else if(true == m_ContinuousStressForceMaxValuePercentRadioBtn->GetValue()){
+        ramptofailureactiveflag = true;
+        ramptofailurepercent = m_ContinuousStressForceMaxValueSpinCtrl->GetValue();
+      }
       //std::cout << "MyFrame: steps: " << steps << std::endl;
     } else if(true == m_ContinuousStressForceStepsRadioBtn->GetValue()){
       stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
@@ -1095,6 +1109,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
                                                              ExperimentType::ContinuousEvent,
                                                              distanceOrStressOrForce,
+                                                             ramptofailureactiveflag,
                                                              m_GageLength,
                                                              m_ZeroLength,
                                                              m_CurrentDistance,
@@ -1112,6 +1127,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              maxvaluepercent,
                                                              maxvalue,
                                                              steps,
+                                                             ramptofailurepercent,
                                                              cycles,
                                                              behaviorAfterStop));
 
