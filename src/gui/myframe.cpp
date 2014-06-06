@@ -797,9 +797,14 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
     distanceOrStressOrForce = m_DistanceOrStressOrForce;
     holdtime1 = m_OneStepStressForceHoldTime1SpinCtrl->GetValue();
-    upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * 10000.0;
     holdtime2 = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
-    lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue() * 10000.0;
+    if(0 == m_InitializeUnitRadioBox->GetSelection()){
+      upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+      lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+    } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
+      upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * 10000.0;
+      lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue() * 10000.0;
+    }
 
     if(true == m_OneStepStressForceVelocityMmRadioBtn->GetValue()){
       velocityDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
@@ -835,6 +840,8 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
       lowerlimitpercent = m_OneStepDistanceLowerLimitSpinCtrl->GetValue();
     }
   }
+  wxLogMessage(std::string("MyFrame: upper limit: " + std::to_string(upperlimit) +
+                           " lower limit: " + std::to_string(lowerlimit)).c_str());
 
   Experiment::DistanceOrPercentage holddistanceOrPercentage;
   if(true == m_OneStepEndOfEventHoldMmRadioBtn->GetValue()){
@@ -1116,7 +1123,6 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
     m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
-    wxLogMessage(std::string("MyFrame: m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
   }
 
   m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
@@ -1519,13 +1525,13 @@ void MyFrame::createPreviewGraph(void){
   // Set up and add axis.
   m_XAxis.reset(new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL));
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
+    m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
   } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
   }
-  m_Y2Axis.reset(new mpScaleY(wxT("Distance [mm]"), mpALIGN_RIGHT, true));
+  m_Y2Axis.reset(new mpScaleY(wxT("Distance [mm]"), mpALIGN_BORDER_RIGHT, true));
   m_Y2Axis->SetPen(vectorpenDistance);
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
@@ -1571,6 +1577,7 @@ void MyFrame::checkProtocol(void){
                                                                &m_PreloadDoneMutex,
 
                                                                m_ProtocolsLoopCheckBox->GetValue(),
+                                                               m_InitializeCrossSectionSpinCtrl->GetValue(),
                                                                m_LimitsLimitMaxDistanceSpinCtrl->GetValue(),
                                                                m_LimitsLimitMinDistanceSpinCtrl->GetValue(),
                                                                m_LimitsLimitMaxForceSpinCtrl->GetValue(),
