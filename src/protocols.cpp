@@ -281,7 +281,8 @@ void Protocols::process(void){
     m_ListBox->SetSelection(m_CurrentExperimentNr);
 
     if(true == m_LoopProtocolFlag){
-      runProtocol();
+      //runProtocol();
+      process();
     }
   }
 }
