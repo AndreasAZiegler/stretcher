@@ -135,7 +135,7 @@ void ContinuousEvent::initParameters(void){
       m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
     }
     if((0 != m_MaxValueLimit) && (0 != m_Increment)){
-      if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+      if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
         m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
         /*
         wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
@@ -143,8 +143,6 @@ void ContinuousEvent::initParameters(void){
                                  " m_CurrentForce: " + std::to_string(m_CurrentForce) +
                                  " m_Increment: " + std::to_string(m_Increment)).c_str());
         */
-      } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-        m_Steps = (m_MaxValueLimit - m_CurrentForce/m_Area) / m_Increment;
       } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
         m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
       }
@@ -225,11 +223,8 @@ void ContinuousEvent::process(Event event){
         // Set current limit.
         if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
           m_CurrentLimit = m_StartLength + m_Increment;
-        } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-          m_CurrentLimit = m_CurrentForce/m_Area + m_Increment;
-        } else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        } else if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
           m_CurrentLimit = m_CurrentForce + m_Increment;
-          //std::cout << "ContinuousEvent: m_CurrentLimit: " << m_CurrentLimit << ", with m_CurrentForce: " << m_CurrentForce << " and m_Increment: " << m_Increment << std::endl;
         }
 
         {
@@ -240,8 +235,8 @@ void ContinuousEvent::process(Event event){
         m_CheckLimitsFlag = true;
         //m_ExperimentValues->setStartPoint();
 
-        // If force based
-        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        // If force/stress based
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
@@ -250,22 +245,6 @@ void ContinuousEvent::process(Event event){
               m_StageFrame->moveBackward(m_Velocity);
             }
           }else if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
-            m_CurrentDirection = Direction::Forwards;
-            {
-              std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-              m_StageFrame->moveForward(m_Velocity);
-            }
-          }
-        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_CurrentLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-            m_CurrentDirection = Direction::Backwards;
-            {
-              std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-              m_StageFrame->moveBackward(m_Velocity);
-            }
-          }else if(((m_CurrentForce/m_Area * 1000) - m_CurrentLimit) > m_ForceStressThreshold){
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Forwards;
             {
@@ -310,8 +289,8 @@ void ContinuousEvent::process(Event event){
         m_Wait->notify_all();
       }
       if(Event::evUpdate == event){
-        // If force based
-        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+        // If force/stress based
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           //std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "(m_CurrentForce - m_CurrentLimit) >  m_ForceStressThreshold: " << (m_CurrentForce - m_CurrentLimit) << " " << m_ForceStressThreshold << std::endl;
@@ -400,105 +379,6 @@ void ContinuousEvent::process(Event event){
                 // Update current limit.
                 m_CurrentLimit += m_Increment;
                 //std::cout << "ContinuousEvent: m_CurrentLimit: " << m_CurrentLimit << ", with m_CurrentForce: " << m_CurrentForce << " and m_Increment: " << m_Increment << std::endl;
-
-                // Perform hold if there is a hold time
-                if(0 < m_HoldTime){
-                  m_CurrentDirection = Direction::Stop;
-                  {
-                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                    m_StageFrame->stop();
-                  }
-                  wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
-                  std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
-                  t1.join();
-                  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                  wxLogMessage("ContinuousEvent: Holding over.");
-                }
-              }
-            }
-          }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-            if((m_CurrentLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
-              //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
-
-              if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
-                m_CurrentDirection = Direction::Backwards;
-                {
-                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->moveBackward(m_Velocity);
-                }
-              }
-            }else if(((m_CurrentForce/m_Area * 1000) - m_CurrentLimit) > m_ForceStressThreshold){
-              //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
-
-              if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only reverse motor, if state changed
-                m_CurrentDirection = Direction::Forwards;
-                {
-                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->moveForward(m_Velocity);
-                }
-              }
-            }else{
-              if((m_Steps - 1) <= m_CurrentStep){ // If it is the last step.
-                // Reset step counter.
-                m_CurrentStep = 0;
-                // Reset limit
-                m_CurrentLimit = 0;
-                if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
-
-                  switch(m_BehaviorAfterStop){
-                    case BehaviorAfterStop::GoToL0:
-                      m_CurrentState = goBackState;
-                      m_CheckDistanceFlag = true;
-                      m_CurrentStep = 0;
-                      m_CurrentCycle = 0;
-                      m_CurrentLimit = m_GageLength;
-                      m_StageFrame->gotoStepsDistance(m_GageLength);
-                      break;
-                    case BehaviorAfterStop::Stop:
-                      {
-                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                        m_StageFrame->stop();
-                      }
-                      wxLogMessage("ContinuousEvent: Stop.");
-                      m_CurrentState = stopState;
-                      m_CurrentDirection = Direction::Stop;
-                      m_CheckDistanceFlag = false;
-                      m_CurrentStep = 0;
-                      m_CurrentCycle = 0;
-                      std::lock_guard<std::mutex> lck(*m_WaitMutex);
-                      m_Wait->notify_all();
-                      break;
-                  }
-                  wxLogMessage("ContinuousEvent: Go to end length.");
-                  //process(Event::evUpdate);
-                } else{
-                  m_CurrentCycle++;
-                  m_CheckDistanceFlag = true;
-                  m_CurrentState = goStartState;
-
-                  // Perform hold if there is a hold time
-                  if(0 < m_HoldTime){
-                    m_CurrentDirection = Direction::Stop;
-                    {
-                      std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                      m_StageFrame->stop();
-                    }
-                    wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
-                    std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
-                    t1.join();
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                    wxLogMessage("ContinuousEvent: Holding over.");
-                  }
-                  {
-                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                    m_StageFrame->gotoStepsDistance(m_StartLength);
-                  }
-                  wxLogMessage("ContinuousEvent: Go to start length.");
-                }
-              } else{
-                m_CurrentStep++;
-                // Update current limit.
-                m_CurrentLimit += m_Increment;
 
                 // Perform hold if there is a hold time
                 if(0 < m_HoldTime){
@@ -671,9 +551,7 @@ void ContinuousEvent::process(Event event){
           // Set current limit.
           if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
             m_CurrentLimit = m_StartLength + m_Increment;
-          } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-            m_CurrentLimit = m_CurrentForce/m_Area + m_Increment;
-          } else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+          } else if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
             m_CurrentLimit = m_CurrentForce + m_Increment;
           }
 
@@ -796,7 +674,7 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         wxLogWarning("OneStepEvent: Force limit exceeded.");
         process(Event::evStop);
       } else{
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           process(Event::evUpdate);
         }
       }
