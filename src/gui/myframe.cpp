@@ -1493,6 +1493,7 @@ void MyFrame::createValuesGraph(void){
  * @brief Method which will be called from the class ExperimentValues to update the graph. Executes updateGraph() from the main thread.
  */
 void MyFrame::updateGraphFromExperimentValues(){
+  std::lock_guard<std::mutex> lck{m_UpdateGraphMutex};
   CallAfter(&MyFrame::updateGraph);
 }
 

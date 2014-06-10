@@ -630,10 +630,14 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
       // Stops the experiment if the limits should be checked and a limit is exceeded.
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
         wxLogWarning("OneStepEvent: Force limit exceeded.");
-        process(Event::evStop);
+        std::thread t1(&OneStepEvent::process, this, Event::evStop);
+        t1.detach();
+        //process(Event::evStop);
       } else{
         if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
-          process(Event::evUpdate);
+          std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
+          t1.detach();
+          //process(Event::evUpdate);
         }
       }
       break;
@@ -643,10 +647,14 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
       // Stops the experiment if the limits should be checked and a limit is exceeded.
       if((true == m_CheckLimitsFlag) && (m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance)){
         wxLogWarning("OneStepEvent: Distance limit exceeded.");
-        process(Event::evStop);
+        std::thread t1(&OneStepEvent::process, this, Event::evStop);
+        t1.detach();
+        //process(Event::evStop);
       } else{
         if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){
-          process(Event::evUpdate);
+          std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
+          t1.detach();
+          //process(Event::evUpdate);
         }
       }
       break;

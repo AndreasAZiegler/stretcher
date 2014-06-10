@@ -93,6 +93,11 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     void stopMeasurement(void);
 
     /**
+     * @brief Reset recorded values, executed from the protocol.
+     */
+    void resetProtocol(void);
+
+    /**
      * @brief Removes the current graph.
      */
     void removeGraph(void);
@@ -152,13 +157,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Returns a pointer to the vector containing the stress/force values.
      * @return Pointer to the vector.
      */
-    std::vector<ExperimentValues::MeasurementValue>* getStressForceValues(void);
+    std::vector<std::vector<ExperimentValues::MeasurementValue>>* getStressForceValues(void);
 
     /**
      * @brief Returns a pointer to the vector containing the distance values.
      * @return Pointer to the vector.
      */
-    std::vector<ExperimentValues::MeasurementValue>* getDistanceValues(void);
+    std::vector<std::vector<MeasurementValue>> *getDistanceValues(void);
 
     /**
      * @brief Returns the experiment settings as a std::string.
@@ -200,8 +205,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     mpFXYVector *m_MaxDistanceLimitVectorLayer;
     mpFXYVector *m_MinDistanceLimitVectorLayer;
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
-    std::vector<ExperimentValues::MeasurementValue> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
-    std::vector<ExperimentValues::MeasurementValue> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
+    std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
+    std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
     std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
     std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
     std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;				/**< Pointer to the vector containing the max force limit graph values. */
@@ -211,6 +216,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<std::vector<double>> m_GraphMinDistanceLimitValues;			/**< Pointer to the vector containing the min distance limit graph vlaues. */
     std::shared_ptr<std::vector<double>> m_GraphDistanceLimitYAxisPoints;		/**< Pointer to the vector containing the values for the x-axis for the force limits. */
     std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
+    int m_CurrentProtocolCycle;																							/**< The current cycle numer. */
+    bool m_ResetProtocolFlag;																								/**< Indicate it the protocol stops and the recorded values should be deleted. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
 
 };

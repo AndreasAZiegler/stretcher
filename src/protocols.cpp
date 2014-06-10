@@ -150,6 +150,11 @@ void Protocols::runProtocol(void){
     return;
   }
 
+  // Reset recorded experiment values.
+  for(int i = 0; i < m_ExperimentValues.size(); ++i){
+    m_ExperimentValues[i]->resetProtocol();
+  }
+
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
 
@@ -473,26 +478,43 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
 
   file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in micro seconds" << std::endl;
 
-  for(int i = 0; i < m_ExperimentValues.size(); ++i){
-    if(false == disableexport[i]){
+  int length = m_ExperimentValues[0]->getStressForceValues()->size();
+  for(long j = 0; j < length; ++j){
+    for(int i = 0; i < m_ExperimentValues.size(); ++i){
+      if(false == disableexport[i]){
 
-      // Get the pointer to the vectors containing the measurement values.
-      std::vector<ExperimentValues::MeasurementValue>* stressForceValues = m_ExperimentValues[i]->getStressForceValues();
-      std::vector<ExperimentValues::MeasurementValue>* distanceValues = m_ExperimentValues[i]->getDistanceValues();
+        // Get the pointer to the vectors containing the measurement values.
+        std::vector<std::vector<ExperimentValues::MeasurementValue>>* stressForceValues = m_ExperimentValues[i]->getStressForceValues();
+        std::vector<std::vector<ExperimentValues::MeasurementValue>>* distanceValues = m_ExperimentValues[i]->getDistanceValues();
 
-      // Correct the vector size if needed.
-      if(stressForceValues->size() > distanceValues->size()){
-        stressForceValues->resize(distanceValues->size());
-      }else{
-        distanceValues->resize(stressForceValues->size());
-      }
+        // Correct the vector size if needed.
+        long length2 = 0;
+        if(stressForceValues->operator [](j).size() > distanceValues->operator [](j).size()){
+          //stressForceValues->operator [](j).resize(distanceValues->operator [](j).size());
+          length2 = stressForceValues->operator [](j).size();
+        }else if(stressForceValues->operator [](j).size() < distanceValues->operator [](j).size()){
+          //distanceValues->operator [](j).resize(stressForceValues->operator [](j).size());
+          length2 = distanceValues->operator [](j).size();
+        }else{
+          length2 = distanceValues->operator [](j).size();
+        }
 
-      // Print the measured values.
-      for(int i = 0; i < stressForceValues->size(); ++i){
-        file << distanceValues->operator [](i).value << std::string(";")
-             << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](i).timestamp - m_StartTimePoint).count() << ";"
-             << stressForceValues->operator [](i).value << ";"
-             << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](i).timestamp - m_StartTimePoint).count() << std::endl;
+        // Print the measured values.
+        for(long i = 0; i < length2; ++i){
+          if(stressForceValues->operator [](j).size() > i){
+            file << stressForceValues->operator [](j)[i].value << ";"
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
+          }else{
+            file << 0 << ";" << 0 << ";";
+          }
+          if(distanceValues->operator [](j).size() > i){
+            file << distanceValues->operator [](j)[i].value << ";"
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
+          }else{
+            file << 0 << ";" << 0 << ";";
+          }
+          file << std::endl;
+        }
       }
     }
   }
@@ -591,7 +613,6 @@ void Protocols::checkFinishedExperiment(void){
   if(true == m_StopProtocolFlag){
     m_CurrentExperimentNr = 0;
   }
-
   {
     // Indicate that the experiment is not longer running.
     std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
