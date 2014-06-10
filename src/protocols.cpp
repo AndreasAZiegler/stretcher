@@ -456,7 +456,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
   file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in micro seconds" << std::endl;
 
   int length = m_ExperimentValues[0]->getStressForceValues()->size();
-  for(int j = 0; j < length; ++j){
+  for(long j = 0; j < length; ++j){
     for(int i = 0; i < m_ExperimentValues.size(); ++i){
       if(false == disableexport[i]){
 
@@ -465,18 +465,27 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
         std::vector<std::vector<ExperimentValues::MeasurementValue>>* distanceValues = m_ExperimentValues[i]->getDistanceValues();
 
         // Correct the vector size if needed.
+        long length2 = 0;
         if(stressForceValues->operator [](j).size() > distanceValues->operator [](j).size()){
-          stressForceValues->operator [](j).resize(distanceValues->operator [](j).size());
+          //stressForceValues->operator [](j).resize(distanceValues->operator [](j).size());
+          length2 = stressForceValues->operator [](j).size();
         }else if(stressForceValues->operator [](j).size() < distanceValues->operator [](j).size()){
-          distanceValues->operator [](j).resize(stressForceValues->operator [](j).size());
+          //distanceValues->operator [](j).resize(stressForceValues->operator [](j).size());
+          length2 = distanceValues->operator [](j).size();
+        }else{
+          length2 = distanceValues->operator [](j).size();
         }
 
         // Print the measured values.
-        for(int i = 0; i < stressForceValues->operator [](j).size(); ++i){
-          file << distanceValues->operator [](j)[i].value << ";"
-               << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";"
-               << stressForceValues->operator [](j)[i].value << ";"
-               << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << std::endl;
+        for(long i = 0; i < length2; ++i){
+          file << stressForceValues->operator [](j)[i].value << ";"
+               << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
+          if(distanceValues->operator [](j).size() >= i){
+            file << distanceValues->operator [](j)[i].value << ";"
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";" << std::endl;
+          }else{
+            file << 0 << ";" << 0 << ";" << 0 << ";" << 0 << ";" << std::endl;
+          }
         }
       }
     }
