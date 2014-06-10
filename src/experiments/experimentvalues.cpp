@@ -87,6 +87,10 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
     m_DistanceValues.clear();
   }
 
+  std::vector<ExperimentValues::MeasurementValue> vec;
+  m_StressForceValues.push_back(vec);
+  m_DistanceValues.push_back(vec);
+
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
