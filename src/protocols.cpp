@@ -554,12 +554,6 @@ void Protocols::checkFinishedExperiment(void){
   for(auto i : m_Experiments){
     i->setStartLength();
   }
-
-  {
-    // Indicate that the experiment is not longer running.
-    std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
-    m_ExperimentRunningFlag = false;
-  }
   {
     // If preloading is active.
     std::lock_guard<std::mutex> lck2{*m_PreloadDoneMutex};
@@ -597,6 +591,13 @@ void Protocols::checkFinishedExperiment(void){
   if(true == m_StopProtocolFlag){
     m_CurrentExperimentNr = 0;
   }
+
+  {
+    // Indicate that the experiment is not longer running.
+    std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
+    m_ExperimentRunningFlag = false;
+  }
+
   process();
   //delete m_CurrentExperiment;
   //m_CurrentExperiment = NULL;
