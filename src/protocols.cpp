@@ -150,6 +150,11 @@ void Protocols::runProtocol(void){
     return;
   }
 
+  // Reset recorded experiment values.
+  for(int i = 0; i < m_ExperimentValues.size(); ++i){
+    m_ExperimentValues[i]->resetProtocol();
+  }
+
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
 
@@ -450,26 +455,29 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
 
   file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in micro seconds" << std::endl;
 
-  for(int i = 0; i < m_ExperimentValues.size(); ++i){
-    if(false == disableexport[i]){
+  int length = m_ExperimentValues[0]->getStressForceValues()->size();
+  for(int j = 0; j < length; ++j){
+    for(int i = 0; i < m_ExperimentValues.size(); ++i){
+      if(false == disableexport[i]){
 
-      // Get the pointer to the vectors containing the measurement values.
-      std::vector<ExperimentValues::MeasurementValue>* stressForceValues = m_ExperimentValues[i]->getStressForceValues();
-      std::vector<ExperimentValues::MeasurementValue>* distanceValues = m_ExperimentValues[i]->getDistanceValues();
+        // Get the pointer to the vectors containing the measurement values.
+        std::vector<std::vector<ExperimentValues::MeasurementValue>>* stressForceValues = m_ExperimentValues[i]->getStressForceValues();
+        std::vector<std::vector<ExperimentValues::MeasurementValue>>* distanceValues = m_ExperimentValues[i]->getDistanceValues();
 
-      // Correct the vector size if needed.
-      if(stressForceValues->size() > distanceValues->size()){
-        stressForceValues->resize(distanceValues->size());
-      }else{
-        distanceValues->resize(stressForceValues->size());
-      }
+        // Correct the vector size if needed.
+        if(stressForceValues->size() > distanceValues->size()){
+          stressForceValues->resize(distanceValues->size());
+        }else{
+          distanceValues->resize(stressForceValues->size());
+        }
 
-      // Print the measured values.
-      for(int i = 0; i < stressForceValues->size(); ++i){
-        file << distanceValues->operator [](i).value << std::string(";")
-             << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](i).timestamp - m_StartTimePoint).count() << ";"
-             << stressForceValues->operator [](i).value << ";"
-             << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](i).timestamp - m_StartTimePoint).count() << std::endl;
+        // Print the measured values.
+        for(int i = 0; i < stressForceValues->size(); ++i){
+          file << distanceValues->operator [](j)[i].value << std::string(";")
+               << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";"
+               << stressForceValues->operator [](j)[i].value << ";"
+               << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << std::endl;
+        }
       }
     }
   }

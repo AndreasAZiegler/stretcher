@@ -34,6 +34,8 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
     m_MinLimitVectorLayer(minlimitvector),
     m_MyFrame(myframe),
     m_Area(area),
+    m_CurrentProtocolCycle(0),
+    m_ResetProtocolFlag(false),
     m_DisplayGraphDelay(0)
 {
 }
@@ -75,10 +77,15 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
   m_GraphLimitTimePoints = graphlimittimepoints;
   //std::cout << "Protocol m_GraphStressForceValue size: " << m_GraphStressForceValues->size() << " m_GraphDistanceValue size: " << m_GraphDistanceValues->size() << std::endl;
   // clear the vectors.
-  m_StressForceValues.clear();
   //m_GraphStressForceValues.clear();
-  m_DistanceValues.clear();
   //m_GraphDistanceValues.clear();
+
+  if(true == m_ResetProtocolFlag){
+    m_ResetProtocolFlag = false;
+    m_CurrentProtocolCycle = 0;
+    m_StressForceValues.clear();
+    m_DistanceValues.clear();
+  }
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -90,6 +97,14 @@ void ExperimentValues::startMeasurement(std::shared_ptr<std::vector<double>> gra
 void ExperimentValues::stopMeasurement(void){
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+  m_CurrentProtocolCycle++;
+}
+
+/**
+ * @brief Reset recorded values, executed from the protocol.
+ */
+void ExperimentValues::resetProtocol(void){
+  m_ResetProtocolFlag = true;
 }
 
 /**
@@ -118,7 +133,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
+          m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
           m_GraphStressForceValues->push_back((measurementValue.value / 10.0) / m_Area);
           /*
           wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
@@ -130,7 +145,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           // Add new force value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_StressForceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
+          m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
           m_GraphStressForceValues->push_back(measurementValue.value / 10000.0);
         }
       }
@@ -140,7 +155,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         {
           // Add new distance value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-          m_DistanceValues.push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
+          m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
           m_GraphDistanceValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         }
       //std::cout << "Conditioning distance update." << std::endl;
@@ -175,7 +190,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
  * @brief Returns a pointer to the vector containing the stress/force values.
  * @return Pointer to the vector.
  */
-std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getStressForceValues(void){
+std::vector<std::vector<ExperimentValues::MeasurementValue>>* ExperimentValues::getStressForceValues(void){
   return(&m_StressForceValues);
 }
 
@@ -183,7 +198,7 @@ std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getStressForc
  * @brief Returns a pointer to the vector containing the distance values.
  * @return Pointer to the vector.
  */
-std::vector<ExperimentValues::MeasurementValue>* ExperimentValues::getDistanceValues(void){
+std::vector<std::vector<ExperimentValues::MeasurementValue>>* ExperimentValues::getDistanceValues(void){
   return(&m_DistanceValues);
 }
 
