@@ -472,7 +472,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
         }
 
         // Print the measured values.
-        for(int i = 0; i < stressForceValues->size(); ++i){
+        for(int i = 0; i < stressForceValues->operator [](j).size(); ++i){
           file << distanceValues->operator [](j)[i].value << std::string(";")
                << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";"
                << stressForceValues->operator [](j)[i].value << ";"
