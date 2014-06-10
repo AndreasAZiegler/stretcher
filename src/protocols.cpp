@@ -612,6 +612,7 @@ void Protocols::checkFinishedExperiment(void){
   if(true == m_StopProtocolFlag){
     m_CurrentExperimentNr = 0;
   }
+
   {
     // Indicate that the experiment is not longer running.
     std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};
