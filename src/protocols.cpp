@@ -465,15 +465,15 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
         std::vector<std::vector<ExperimentValues::MeasurementValue>>* distanceValues = m_ExperimentValues[i]->getDistanceValues();
 
         // Correct the vector size if needed.
-        if(stressForceValues->size() > distanceValues->size()){
-          stressForceValues->resize(distanceValues->size());
-        }else{
-          distanceValues->resize(stressForceValues->size());
+        if(stressForceValues->operator [](j).size() > distanceValues->operator [](j).size()){
+          stressForceValues->operator [](j).resize(distanceValues->operator [](j).size());
+        }else if(stressForceValues->operator [](j).size() < distanceValues->operator [](j).size()){
+          distanceValues->operator [](j).resize(stressForceValues->operator [](j).size());
         }
 
         // Print the measured values.
         for(int i = 0; i < stressForceValues->operator [](j).size(); ++i){
-          file << distanceValues->operator [](j)[i].value << std::string(";")
+          file << distanceValues->operator [](j)[i].value << ";"
                << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";"
                << stressForceValues->operator [](j)[i].value << ";"
                << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << std::endl;
