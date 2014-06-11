@@ -76,6 +76,10 @@ Protocols::~Protocols(){
  * @brief Create the preview vector and display it in the graph.
  */
 void Protocols::makePreview(void){
+  if(0 == m_Experiments.size()){
+    return;
+  }
+
   m_PreviewValues.clear();
   m_PreviewStressForceLimitTimePoints.clear();
   m_MaxStressForceLimits.clear();
