@@ -1310,7 +1310,9 @@ void MyFrame::OnDeleteExperiment(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
-  m_CurrentProtocol->moveExperimentUp(m_ProtocolsListBox->GetSelection());
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->moveExperimentUp(m_ProtocolsListBox->GetSelection());
+  }
 }
 
 /**
@@ -1318,7 +1320,9 @@ void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
-  m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
+  }
 }
 
 /**
@@ -1366,7 +1370,9 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(ptr));
   dialog->ShowModal();
 
-  m_CurrentProtocol->addExperiment(experiment);
+  if(true == dialog->getCreateExperimentFlag()){
+    m_CurrentProtocol->addExperiment(experiment);
+  }
 }
 
 /**
@@ -1435,7 +1441,9 @@ void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *m
  * @param event Occuring event
  */
 void MyFrame::OnPreviewProtocol(wxCommandEvent& event){
-  m_CurrentProtocol->makePreview();
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->makePreview();
+  }
 }
 
 /**
@@ -1449,7 +1457,9 @@ void MyFrame::OnRunProtocol(wxCommandEvent& event){
   popup->ShowModal();
   delete popup;
   */
-  m_CurrentProtocol->runProtocol();
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->runProtocol();
+  }
 }
 
 /**

@@ -11,6 +11,12 @@ class MyPauseDialog : public MyPauseDialog_Base
   public:
     MyPauseDialog(Pause *pauseExperiment);
 
+    /**
+     * @brief Returns the create exeriment flag.
+     * @return The create exeriment flag.
+     */
+    bool getCreateExperimentFlag(void);
+
   private:
 
     /**
@@ -19,7 +25,8 @@ class MyPauseDialog : public MyPauseDialog_Base
      */
     void OnOK(wxCommandEvent& event);
 
-    Pause *m_PauseExperiment;
+    Pause *m_PauseExperiment;										/**< Pointer to the pause experiment. */
+    bool m_CreateExperimentFlag;								/**< Indicates if the pause experiment should be created. */
 
     wxDECLARE_EVENT_TABLE();
 };
