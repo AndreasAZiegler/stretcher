@@ -10,6 +10,7 @@ MyPauseDialog::MyPauseDialog(Pause *pauseExperiment)
   : m_PauseExperiment(pauseExperiment),
     m_CreateExperimentFlag(false)
 {
+  wxID_PauseDialogOK->SetId(ID_PauseDialogOK);
 }
 
 
