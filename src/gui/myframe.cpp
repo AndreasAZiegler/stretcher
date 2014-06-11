@@ -1463,7 +1463,6 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   if(true == dialog->getCreateExperimentFlag()){
     m_CurrentProtocol->addExperiment(experiment);
   }
-  //dialog->Close();
 }
 
 /**
