@@ -1297,7 +1297,9 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnDeleteExperiment(wxCommandEvent& event){
-  m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
+  if(wxNOT_FOUND != m_ProtocolsListBox->GetSelection()){
+    m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
+  }
 }
 
 /**
