@@ -157,6 +157,12 @@ void ContinuousEvent::initParameters(void){
           */
         } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
           m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
+          /*
+          wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
+                                   " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
+                                   " m_CurrentDistance: " + std::to_string(m_CurrentDistance) +
+                                   " m_Increment: " + std::to_string(m_Increment)).c_str());
+          */
         }
       }
     }
@@ -197,14 +203,14 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
       // Make point if there is a hold time.
       if(0 < m_HoldTime){
         if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + (j * m_Increment)));
+          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (m_StartLength + (j * m_Increment))));
         } else{
           previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, j * m_Increment));
         }
         timepoint++;
       }
       if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + ((j + 1) * m_Increment)));
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (m_StartLength + ((j + 1) * m_Increment))));
       } else{
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (j + 1) * m_Increment));
         //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
