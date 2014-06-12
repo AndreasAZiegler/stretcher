@@ -790,6 +790,13 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitVector;
   mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitVector;
 
+  int limit = 0;
+  if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    limit = m_PreloadLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10;
+  } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
+    limit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
+  }
+
   //Experiment* experiment = new Preload(ExperimentType::Preload,
   std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
                                                      m_ForceSensorMessageHandler,
@@ -818,7 +825,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      m_CurrentDistance,
                                                      m_InitializeCrossSectionSpinCtrl->GetValue(),
 
-                                                     m_PreloadLimitSpinCtrl->GetValue(),
+                                                     limit,
                                                      m_PreloadSpeedMmSpinCtrl->GetValue()));
 
   m_CurrentProtocol->addExperiment(experiment);
