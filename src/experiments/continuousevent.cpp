@@ -140,7 +140,7 @@ void ContinuousEvent::initParameters(void){
     }
     if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
       if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
-        m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
+        m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
       }
       if((0 != m_MaxValueLimit) && (0 != m_Increment)){
         if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){

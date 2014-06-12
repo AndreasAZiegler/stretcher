@@ -2,7 +2,7 @@
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxFrame" name="MyFrame_Base">
 		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
-		<size>1212,646</size>
+		<size>1144,646</size>
 		<title>Stretcher</title>
 		<centered>1</centered>
 		<aui_managed>0</aui_managed>
@@ -282,7 +282,7 @@
 											<style>wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
 												<rows>4</rows>
-												<cols>0</cols>
+												<cols>1</cols>
 												<vgap>0</vgap>
 												<hgap>0</hgap>
 												<growablecols>0</growablecols>
@@ -297,161 +297,181 @@
 													<option>1</option>
 													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
-													<object class="wxPanel" name="m_LimitsLimitPanel">
+													<object class="wxPanel" name="m_LimitsLimitPanel1">
 														<style>wxSIMPLE_BORDER</style>
 														<object class="wxFlexGridSizer">
-															<rows>6</rows>
-															<cols>3</cols>
+															<rows>1</rows>
+															<cols>2</cols>
 															<vgap>0</vgap>
 															<hgap>0</hgap>
-															<growablecols></growablecols>
+															<growablecols>0</growablecols>
 															<growablerows></growablerows>
 															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
+																<option>1</option>
+																<flag>wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="m_LimitsLimitStaticText60">
-																	<label>Limits:</label>
-																	<wrap>-1</wrap>
+																<object class="wxFlexGridSizer">
+																	<rows>6</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols></growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LimitsLimitStaticText60">
+																			<label>Limits:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_staticText61">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LimitsLimitMaxDistanceStaticText">
+																			<label>Maximal distance [mm]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LimitsLimitMaxDistanceSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>153</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LimitsLimitMinDistanceStaticText">
+																			<label>Minimal distance [mm]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LimitsLimitMinDistanceSpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>153</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LimitsLimitMaxForceStaticText">
+																			<label>Maximal force [N]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LimitsLimitMaxForceSpinCtrl">
+																			<value>0</value>
+																			<min>-50000</min>
+																			<max>50000</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LimitsLimitMinForceStaticText">
+																			<label>Minimal force [N]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER_VERTICAL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LimitsLimitMinForceSpinCtrl">
+																			<value>0</value>
+																			<min>-50000</min>
+																			<max>50000</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_LimitsLimitSetButton">
+																			<label>Set limits</label>
+																			<default>0</default>
+																		</object>
+																	</object>
 																</object>
 															</object>
 															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
+																<option>1</option>
+																<flag>wxEXPAND | wxALL</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="m_staticText61">
-																	<label></label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_staticText71">
-																	<label></label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_LimitsLimitMaxDistanceStaticText">
-																	<label>Maximal distance [mm]:</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_LimitsLimitMaxDistanceSpinCtrl">
-																	<value>0</value>
-																	<min>0</min>
-																	<max>153</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsLimitSet1Button">
-																	<label>Load &quot;Set 1&quot; limits</label>
-																	<default>0</default>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_LimitsLimitMinDistanceStaticText">
-																	<label>Minimal distance [mm]:</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_LimitsLimitMinDistanceSpinCtrl">
-																	<value>0</value>
-																	<min>0</min>
-																	<max>153</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsLimitSet2Button">
-																	<label>Load &quot;Set 2&quot; limits</label>
-																	<default>0</default>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_LimitsLimitMaxForceStaticText">
-																	<label>Maximal force [N]:</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_LimitsLimitMaxForceSpinCtrl">
-																	<value>0</value>
-																	<min>-50000</min>
-																	<max>50000</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsLimitSet3Button">
-																	<label>Load &quot;Set 3&quot; limits</label>
-																	<default>0</default>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_LimitsLimitMinForceStaticText">
-																	<label>Minimal force [N]:</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_LimitsLimitMinForceSpinCtrl">
-																	<value>0</value>
-																	<min>-50000</min>
-																	<max>50000</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsLimitSet4Button">
-																	<label>Load &quot;Set 4&quot; limits</label>
-																	<default>0</default>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsLimitSetButton">
-																	<label>Set limits</label>
-																	<default>0</default>
+																<object class="wxPanel" name="m_LimitsLimitPanel2">
+																	<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
+																	<object class="wxFlexGridSizer">
+																		<rows>4</rows>
+																		<cols>1</cols>
+																		<vgap>0</vgap>
+																		<hgap>0</hgap>
+																		<growablecols></growablecols>
+																		<growablerows>0,1,2,3</growablerows>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALL</flag>
+																			<border>5</border>
+																			<object class="wxButton" name="m_LimitsLimitSet1Button">
+																				<label>Load &quot;Set 1&quot; limits</label>
+																				<default>0</default>
+																			</object>
+																		</object>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALL</flag>
+																			<border>5</border>
+																			<object class="wxButton" name="m_LimitsLimitSet2Button">
+																				<label>Load &quot;Set 2&quot; limits</label>
+																				<default>0</default>
+																			</object>
+																		</object>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALL</flag>
+																			<border>5</border>
+																			<object class="wxButton" name="m_LimitsLimitSet3Button">
+																				<label>Load &quot;Set 3&quot; limits</label>
+																				<default>0</default>
+																			</object>
+																		</object>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALL</flag>
+																			<border>5</border>
+																			<object class="wxButton" name="m_LimitsLimitSet4Button">
+																				<label>Load &quot;Set 4&quot; limits</label>
+																				<default>0</default>
+																			</object>
+																		</object>
+																	</object>
 																</object>
 															</object>
 														</object>

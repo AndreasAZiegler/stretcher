@@ -142,15 +142,15 @@ void OneStepEvent::initParameters(void){
     m_ExperimentValues->setVelocity(m_Velocity);
   }
   if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
-    m_UpperLimit = (m_UpperLimitPercent / 100.0) * m_GageLength;
+    m_UpperLimit = (1 + (m_UpperLimitPercent / 100.0)) * m_GageLength;
     //std::cout << "OneStepEvent upper limit percent: " << m_UpperLimitPercent << " upper limit: " << m_UpperLimit * 0.00009921875 << std::endl;
   }
   if(DistanceOrPercentage::Percentage == m_LowerLimitDistanceOrPercentage){
-    m_LowerLimit = (m_LowerLimitPercent / 100.0) * m_GageLength;
+    m_LowerLimit = (1 + (m_LowerLimitPercent / 100.0)) * m_GageLength;
     //std::cout << "OneStepEvent lower limit percent: " << m_LowerLimitPercent << " lower limit: " << m_LowerLimit * 0.00009921875 << std::endl;
   }
   if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
-    m_HoldDistance = (m_HoldDistancePercent / 100.0) * m_GageLength;
+    m_HoldDistance = (1 + (m_HoldDistancePercent / 100.0)) * m_GageLength;
     //std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
   }
 }
