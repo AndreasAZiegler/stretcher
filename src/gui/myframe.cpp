@@ -109,6 +109,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_MaxForceLimit(50000.0),
     m_MinForceLimit(-50000.0),
     m_DistanceLimitExceededFlag(false),
+    m_ForceLimitExceededFlag(false),
     m_DisableDecreaseDistanceFlag(false),
     m_DisableIncreaseDistanceFlag(false),
     m_GageLength(0),
