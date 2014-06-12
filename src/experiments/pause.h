@@ -18,7 +18,9 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
           long maxforcelimit,
           long minforcelimit,
           long maxdistancelimit,
-          long mindistancelimit, std::condition_variable *wait, std::mutex *mutex,
+          long mindistancelimit,
+          std::condition_variable
+          *wait, std::mutex *mutex,
           ExperimentType type,
           DistanceOrStressOrForce distanceOrStressOrForce,
           long gagelength,
