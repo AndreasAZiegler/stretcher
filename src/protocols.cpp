@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <wx/log.h>
 #include <wx/msgdlg.h>
 #include "../gui/myframe.h"
 #include "protocols.h"
@@ -208,7 +207,7 @@ void Protocols::runProtocol(void){
     // Start the experiment.
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
-    t1.join();
+    t1.detach();
     m_CurrentExperimentNr++;
 
     // Start checkFinishedExperiment method to catch the end of the experiment.
@@ -274,7 +273,7 @@ void Protocols::process(void){
     // Start the experiment.
     std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Experiment::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
-    t1.join();
+    t1.detach();
     m_CurrentExperimentNr++;
 
     // Start checkFinishedExperiment method to catch the end of the experiment.

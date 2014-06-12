@@ -10,6 +10,8 @@ set(SOURCE
         ./experiments/continuouseventvalues.cpp
         ./experiments/pause.cpp
         ./experiments/pausevalues.cpp
+        ./experiments/pauseresume.cpp
+        ./experiments/pauseresumevalues.cpp
         #./experiments/conditioning.cpp
         #./experiments/ramp2failure.cpp
         #./experiments/relaxation.cpp
@@ -31,6 +33,8 @@ set(HEADERS
         ./experiments/continuouseventvalues.h
         ./experiments/pause.h
         ./experiments/pausevalues.h
+        ./experiments/pauseresume.h
+        ./experiments/pauseresumevalues.h
         #./experiments/conditioning.h
         #./experiments/ramp2failure.h
         #./experiments/relaxation.h
