@@ -7,8 +7,10 @@ wxBEGIN_EVENT_TABLE(MyPauseDialog, MyPauseDialog_Base)
 wxEND_EVENT_TABLE()
 
 MyPauseDialog::MyPauseDialog(Pause *pauseExperiment)
-  : m_PauseExperiment(pauseExperiment)
+  : m_PauseExperiment(pauseExperiment),
+    m_CreateExperimentFlag(false)
 {
+  wxID_PauseDialogOK->SetId(ID_PauseDialogOK);
 }
 
 
@@ -18,6 +20,15 @@ MyPauseDialog::MyPauseDialog(Pause *pauseExperiment)
  */
 void MyPauseDialog::OnOK(wxCommandEvent &event){
   m_PauseExperiment->setPauseTime(m_PauseDialogWaitingTimeSpinCtrl->GetValue());
+  m_CreateExperimentFlag = true;
 
   Close(true);
+}
+
+/**
+ * @brief Returns the create exeriment flag.
+ * @return The create exeriment flag.
+ */
+bool MyPauseDialog::getCreateExperimentFlag(void){
+ return(m_CreateExperimentFlag);
 }

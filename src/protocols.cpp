@@ -76,6 +76,10 @@ Protocols::~Protocols(){
  * @brief Create the preview vector and display it in the graph.
  */
 void Protocols::makePreview(void){
+  if(0 == m_Experiments.size()){
+    return;
+  }
+
   m_PreviewValues.clear();
   m_PreviewStressForceLimitTimePoints.clear();
   m_MaxStressForceLimits.clear();
@@ -229,7 +233,7 @@ void Protocols::runProtocol(void){
     // Mark the running experiment in the list box.
     m_ListBox->SetSelection(m_CurrentExperimentNr);
     // Start the experiment.
-    std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Preload::Event::evStart);
+    std::thread t1(&Experiment::process, m_Experiments[m_CurrentExperimentNr], Experiment::Event::evStart);
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.detach();
     m_CurrentExperimentNr++;

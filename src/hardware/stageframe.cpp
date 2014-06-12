@@ -299,7 +299,7 @@ void StageFrame::setMinDistanceLimit(long limit){
  * @param distance Distance in microsteps.
  */
 void StageFrame::setDistanceWActuatorCollision(double distance){
-  m_DistanceWActuatorCollision = m_CurrentDistance.value - distance;
+  m_DistanceWActuatorCollision = m_CurrentDistance.value + m_DistanceWActuatorCollision - distance;
 
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
                              std::abs(771029 - m_CurrentPositions[1].value) - m_DistanceWActuatorCollision);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
