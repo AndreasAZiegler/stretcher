@@ -1485,7 +1485,7 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
                                                          &m_Wait,
                                                          &m_WaitMutex,
 
-                                                         ExperimentType::Pause,
+                                                         ExperimentType::PauseResume,
                                                          DistanceOrStressOrForce::Distance,
                                                          m_GageLength,
                                                          m_ZeroLength,
