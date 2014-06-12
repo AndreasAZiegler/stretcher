@@ -108,7 +108,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_MinDistanceLimit(0),
     m_MaxForceLimit(50000.0),
     m_MinForceLimit(-50000.0),
-    m_LimitExceededFlag(false),
+    m_DistanceLimitExceededFlag(false),
     m_DisableDecreaseDistanceFlag(false),
     m_DisableIncreaseDistanceFlag(false),
     m_GageLength(0),
@@ -365,13 +365,13 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
       m_CurrentDistance = measurementValue.value;
 
       {
-        std::lock_guard<std::mutex> lck{m_LimitExceededMutex};
+        std::lock_guard<std::mutex> lck{m_DistanceLimitExceededMutex};
         // Check if no limits exceeded yet.
-        if(false == m_LimitExceededFlag){
+        if(false == m_DistanceLimitExceededFlag){
           // Stop stages and protocol if limit exceeded and indicate, that a limit exceeded.
           if(((m_MaxDistanceLimit - 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance) ||
              ((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance)){
-            m_LimitExceededFlag = true;
+            m_DistanceLimitExceededFlag = true;
             m_StageFrame->stop();
             if(nullptr != m_CurrentProtocol){
               m_CurrentProtocol->stopProtocol();
@@ -395,8 +395,8 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           // Indicate that distance is within the limits if it is.
           if(((m_MaxDistanceLimit - 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance) &&
              ((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance)){
-            m_LimitExceededFlag = false;
-            wxLogMessage("MyFrame: Limit exceeded flag disabled.");
+            m_DistanceLimitExceededFlag = false;
+            wxLogMessage("MyFrame: Distance limit exceeded flag disabled.");
           }
         }
       }
@@ -406,19 +406,46 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
 
-      if(false == m_DistanceWActuatorCollisionSetFlag){
-        if(-50000.0 >= m_CurrentForce){
-          m_StageFrame->stop();
-          m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+      {
+        std::lock_guard<std::mutex> lck{m_ForceLimitExceededMutex};
+        /*
+        if(false == m_DistanceWActuatorCollisionSetFlag){
+          if(-50000.0 >= m_CurrentForce){
+            m_StageFrame->stop();
+            m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/    /*);
+          }
+        }else */if(false == m_ForceLimitExceededFlag){ // Check if no limits exceeded yet.
+          // Stop stages and protocol if limit exceeded and indicate, that a limit exceeded.
+          if((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce)){
+            m_ForceLimitExceededFlag = true;
+            m_StageFrame->stop();
+            if(nullptr != m_CurrentProtocol){
+              m_CurrentProtocol->stopProtocol();
+            }
+            // Disable increasing/decreasing of the distance according to the limit which exceeded.
+            if(m_MaxForceLimit < m_CurrentForce){
+              m_DisableIncreaseDistanceFlag = true;
+            }else if(m_MinForceLimit > m_CurrentForce){
+              m_DisableDecreaseDistanceFlag = true;
+            }
+            wxLogWarning(std::string("MyFrame: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
+                                     " m_MinForceLimit: " + std::to_string(m_MinForceLimit) +
+                                     " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
+          }
+        }else{ // Check if limits exceeded yet.
+
+          // Enable increasing/decreasing of the distance according to the limit which exceeded.
+          if(m_MaxForceLimit > m_CurrentForce){
+            m_DisableIncreaseDistanceFlag = false;
+          }else if(m_MinForceLimit < m_CurrentForce){
+            m_DisableDecreaseDistanceFlag = false;
+          }
+          // Indicate that distance is within the limits if it is.
+          if((m_MaxForceLimit > m_CurrentForce) && (m_MinForceLimit < m_CurrentForce)){
+            m_ForceLimitExceededFlag = false;
+            wxLogMessage("MyFrame: Force limit exceeded flag disabled.");
+          }
         }
-      }else if((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce)){
-        m_StageFrame->stop();
-        if(nullptr != m_CurrentProtocol){
-          m_CurrentProtocol->stopProtocol();
-        }
-        wxLogWarning(std::string("MyFrame: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
-                                 " m_MinForceLimit: " + std::to_string(m_MinForceLimit) +
-                                 " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
       }
 
       m_CurrentForceUpdateDelay++;
