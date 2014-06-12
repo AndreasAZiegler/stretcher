@@ -386,7 +386,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           // Enable increasing/decreasing of the distance according to the limit which exceeded.
           if((m_MaxDistanceLimit - 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance){
             m_DisableIncreaseDistanceFlag = false;
-          }else if((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance){
+          }if((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance){
             m_DisableDecreaseDistanceFlag = false;
           }
           // Indicate that distance is within the limits if it is.
@@ -434,7 +434,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           // Enable increasing/decreasing of the distance according to the limit which exceeded.
           if(m_MaxForceLimit > m_CurrentForce){
             m_DisableIncreaseDistanceFlag = false;
-          }else if(m_MinForceLimit < m_CurrentForce){
+          }if(m_MinForceLimit < m_CurrentForce){
             m_DisableDecreaseDistanceFlag = false;
           }
           // Indicate that distance is within the limits if it is.
