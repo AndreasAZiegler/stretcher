@@ -1411,6 +1411,24 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
 }
 
 /**
+ * @brief Shows pause/resume dialog.
+ */
+void MyFrame::showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex){
+  CallAfter(&MyFrame::showPauseResumeDialog, wait, mutex);
+}
+
+/**
+ * @brief Shows pause/resume dialog.
+ */
+void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex){
+  std::unique_ptr<wxMessageDialog> popup = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this, "Push the button OK to resume the protocol."));
+  popup->ShowModal();
+  std::lock_guard<std::mutex> lck(*mutex);
+  wait->notify_all();
+
+}
+
+/**
  * @brief Method wich will be executed, when the user clicks on the preview protocol button.
  * @param event Occuring event
  */

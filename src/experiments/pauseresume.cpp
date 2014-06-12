@@ -1,5 +1,6 @@
 // Includes
 #include <thread>
+#include <condition_variable>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include "pauseresume.h"
@@ -90,13 +91,15 @@ void PauseResume::process(Event event){
       if(Event::evStart == event){
         wxLogMessage("PauseRelease: Start experiment.");
         m_CurrentState = runState;
-        /*
-        wxLogMessage(std::string("Pause: Hold for: " + std::to_string(m_PauseTime * 1000) + " ms").c_str());
-        std::thread t1(&Pause::sleepForMilliseconds, this, m_PauseTime);
-        t1.join();
-        */
-        std::unique_ptr<wxMessageDialog> popup = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(m_MyFrame, "Push the button OK to resume the protocol."));
-        popup->ShowModal();
+
+        // Create conditonal variable and mutex to wait for resume.
+        std::condition_variable wait;
+        std::mutex mutex;
+        // Open dialog from the GUI class in the GUI thread.
+        m_MyFrame->showPauseResumeDialogFromPauseResume(&wait, &mutex);
+        // Wait for resume
+        std::unique_lock<std::mutex> lck(mutex);
+        wait.wait(lck);
 
         if(State::runState == m_CurrentState){
           std::lock_guard<std::mutex> lck(*m_WaitMutex);

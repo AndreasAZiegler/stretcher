@@ -147,6 +147,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
       return(m_CurrentDistance);
     }
 
+    /**
+     * @brief Shows pause/resume dialog.
+     */
+    void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
+
   private:
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
@@ -405,6 +410,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnPauseResumeExperiment(wxCommandEvent& event);
+
+    /**
+     * @brief Shows pause/resume dialog.
+     */
+    void showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the preview protocol button.
