@@ -139,21 +139,25 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
+      /*
       if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
         wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
                                  " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
         process(Event::evStop);
       } else{
+      */
         process(Event::evUpdate);
-      }
+      //}
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = measurementValue.value;
+      /*
       if((true == m_CheckLimitsFlag) && ((m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance))){
         wxLogWarning(std::string("Preload: Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance)).c_str());
         process(Event::evStop);
       }
+      */
       break;
   }
 }
