@@ -500,6 +500,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_MinDistanceLimit;									/**< The minimal position for the stages */
     double m_MaxForceLimit;											/**< The maximal allowed force. */
     double m_MinForceLimit;											/**< The minimal allowed force. */
+    bool m_LimitExceededFlag;										/**< Indicates if a limit exceeded. */
+    std::mutex m_LimitExceededMutex;						/**< Mutex to protect m_LimitExceededFlag. */
+    bool m_DisableIncreaseDistanceFlag;					/**< Indicates if increasing of the distance should be disabled. */
+    bool m_DisableDecreaseDistanceFlag;					/**< Indicates if decreasing of the distance should be disabled. */
     std::shared_ptr<ForceSensor> m_ForceSensor;	/**< Pointer to the force sensor */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
