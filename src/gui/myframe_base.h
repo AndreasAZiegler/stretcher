@@ -210,7 +210,7 @@ protected:
  wxButton* m_ProtocolsXButton;
  wxButton* m_ProtocolsPauseButton;
  wxButton* m_ProtocolsDownButton;
- wxStaticText* m_staticText325;
+ wxButton* m_ProtocolsPauseResumeButton;
  wxCheckBox* m_ProtocolsLoopCheckBox;
  wxButton* m_ProtocolsPreviewButton;
  wxButton* m_ProtocolsRunButton;
@@ -417,7 +417,7 @@ private:
   m_ProtocolsXButton = XRCCTRL(*this,"m_ProtocolsXButton",wxButton);
   m_ProtocolsPauseButton = XRCCTRL(*this,"m_ProtocolsPauseButton",wxButton);
   m_ProtocolsDownButton = XRCCTRL(*this,"m_ProtocolsDownButton",wxButton);
-  m_staticText325 = XRCCTRL(*this,"m_staticText325",wxStaticText);
+  m_ProtocolsPauseResumeButton = XRCCTRL(*this,"m_ProtocolsPauseResumeButton",wxButton);
   m_ProtocolsLoopCheckBox = XRCCTRL(*this,"m_ProtocolsLoopCheckBox",wxCheckBox);
   m_ProtocolsPreviewButton = XRCCTRL(*this,"m_ProtocolsPreviewButton",wxButton);
   m_ProtocolsRunButton = XRCCTRL(*this,"m_ProtocolsRunButton",wxButton);
@@ -441,5 +441,6 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif
