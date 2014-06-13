@@ -33,3 +33,12 @@ PauseResumeValues::PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
 std::string PauseResumeValues::getExperimentSettings(void){
   return(std::string("Experiment: " + experimentTypeToString()));
 }
+
+
+/**
+ * @brief Returns the experiment settings in a short form, usable for the experiment name.
+ * @return The experiment settings in a short form.
+ */
+std::string PauseResumeValues::experimentSettingsForName(void){
+  return(std::string(""));
+}

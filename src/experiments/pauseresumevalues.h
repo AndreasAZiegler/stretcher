@@ -24,6 +24,12 @@ class PauseResumeValues : public ExperimentValues
      */
     virtual std::string getExperimentSettings(void);
 
+    /**
+     * @brief Returns the experiment settings in a short form, usable for the experiment name.
+     * @return The experiment settings in a short form.
+     */
+    virtual std::string experimentSettingsForName(void);
+
 };
 
 #endif // PAUSERESUMEVALUES_H
