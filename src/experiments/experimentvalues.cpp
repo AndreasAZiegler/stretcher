@@ -45,6 +45,22 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
 {
 }
 
+/**
+ * @brief Normalizes the value according to the experiment.
+ * @param value
+ * @return
+ */
+double ExperimentValues::normalizeValue(double value){
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    value /= 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    value = (value / 10) / m_Area;
+  }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    value *= 0.00009921875/*mm per micro step*/;
+  }
+  return(value);
+}
+
 /*
 ExperimentValues::ExperimentValues(const ExperimentValues &experimentvalues)
   : m_ExperimentType(experimentvalues.m_ExperimentType),

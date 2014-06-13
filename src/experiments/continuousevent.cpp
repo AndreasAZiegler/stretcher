@@ -111,8 +111,8 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
 
                                                      velocity,
                                                      holdtime,
-                                                     cycles,
                                                      steps,
+                                                     cycles,
                                                      behaviorAfterStop))
 {
   initParameters();
@@ -135,16 +135,19 @@ ContinuousEvent::~ContinuousEvent(){
 void ContinuousEvent::initParameters(void){
   if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
+    m_ExperimentValues->setVelocity(m_Velocity);
   }
 
   // Only set increment and steps parameter if experiment is not a ramp to failure experiment.
   if(false == m_Ramp2FailureActiveFlag){
     if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
       m_Increment = (m_IncrementPercent / 100) * m_GageLength;
+      m_ExperimentValues->setIncrement(m_Increment);
     }
     if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
       if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
-        m_MaxValueLimit = (m_MaxValuePercent / 100) * m_GageLength;
+        m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
+        m_ExperimentValues->setMaxValue(m_MaxValueLimit);
       }
       if((0 != m_MaxValueLimit) && (0 != m_Increment)){
         if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
@@ -164,11 +167,14 @@ void ContinuousEvent::initParameters(void){
                                    " m_Increment: " + std::to_string(m_Increment)).c_str());
           */
         }
+        m_ExperimentValues->setSteps(m_Steps);
       }
     }
   } else if(true == m_Ramp2FailureActiveFlag){
     m_Increment = 0;
+    m_ExperimentValues->setIncrement(m_Increment);
     m_Steps = 1;
+    m_ExperimentValues->setSteps(m_Steps);
   }
 }
 

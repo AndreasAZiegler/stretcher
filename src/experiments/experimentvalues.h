@@ -1,6 +1,11 @@
 
 #ifndef EXPERIMENTVALUES_H
 #define EXPERIMENTVALUES_H
+
+// Includes
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <vector>
 #include <chrono>
 #include <mathplot.h>
@@ -175,7 +180,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Returns the current experiment type as a string.
      * @return The current experiment type as a string.
      */
-    std::string experimentTypeToString();
+    std::string experimentTypeToString(void);
+
+    /**
+     * @brief Returns the experiment settings in a short form, usable for the experiment name.
+     * @return The experiment settings in a short form.
+     */
+    virtual std::string experimentSettingsForName(void) = 0;
 
     /**
      * @brief Returns the measurement unit (stress/force).
@@ -190,6 +201,28 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::string getDistanceOrStressForce(void);
 
   protected:
+
+    /**
+     * @brief Normalizes the value according to the experiment.
+     * @param value
+     * @return
+     */
+    double normalizeValue(double value);
+
+    /**
+     * @brief A wrapper of std::to_string to set precission.
+     * @param a_value Variable which will be converted.
+     * @param n Precision
+     * @return Return value.
+     */
+    template <typename T>
+    std::string to_string_wp(const T a_value, const int n = 6){
+      std::ostringstream outstr;
+      outstr.precision(n);
+      outstr << a_value;
+      return(outstr.str());
+    }
+
     double m_Area;																													/**< Area size of the sample. */
     DistanceOrStressOrForce m_DistanceOrStressOrForce;										  /**< Defines if the experiment is distance of stress/force based. */
 
