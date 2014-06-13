@@ -383,7 +383,7 @@ void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
   m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
 
   // Add string in list box.
-  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString());
+  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString() + ":" + m_ExperimentValues.back()->experimentSettingsForName());
   m_ListBox->Append(tmp);
 }
 
