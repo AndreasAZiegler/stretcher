@@ -35,3 +35,11 @@ std::string PauseValues::getExperimentSettings(void){
   return(std::string("Experiment: " + experimentTypeToString() +
                      ", Pause time: " + std::to_string(m_PauseTime) + "sec\n\n"));
 }
+
+/**
+ * @brief Returns the experiment settings in a short form, usable for the experiment name.
+ * @return The experiment settings in a short form.
+ */
+std::string PauseValues::experimentSettingsForName(void){
+  return(std::string("PT:" + to_string_wp(m_PauseTime, 2) + "sec"));
+}
