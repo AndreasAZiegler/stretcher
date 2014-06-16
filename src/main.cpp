@@ -48,7 +48,6 @@ bool MyApp::OnInit(){
   // Create the main frame and show it
   MyFrame *m_MyFrame = new MyFrame("Stretcher", &m_MySettings);
   m_MyFrame->Show(true);
-  m_MyFrame->startup();
 
   // Create the linear motor objects.
   std::vector<std::shared_ptr<LinearStage>> m_LinearStages;
@@ -121,6 +120,8 @@ bool MyApp::OnInit(){
   // Run the receiver of the force sensor in seperate threads.
   m_ForceSensorReceiver = std::thread(&ForceSensorMessageHandler::receiver, m_ForceSensorMessageHandler);
   m_ForceSensorReceiver.detach();
+
+  m_MyFrame->startup();
 
   return(true);
 }

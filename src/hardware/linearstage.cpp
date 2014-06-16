@@ -257,7 +257,7 @@ void LinearStage::loadStoredPosition(void){
 
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
-    m_SerialPort.Writev(buffer, 6, 5/*ms*/);
+    m_SerialPort.Writev(buffer, 6, 25/*ms*/);
   }
   /*
   std::cout << "LinearStage set max limit: 0x" << hex << static_cast<int>(buffer[0]) << " "

@@ -196,16 +196,22 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnStressLimit(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed when the user clicks on load stored positions.
+     * @param event Occuring event
+     */
+    void OnLoadStoredPositions(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user klicks on load stored position button.
      * @param event Occuring event
      */
-    void OnInitializeLoadStoredPosition(wxCommandEvent& event);
+    void loadStoredPositions(void);
 
     /**
      * @brief Method wich will be executed, when the user klicks on the home stage button.
      * @param event Occuring event
      */
-    void OnInitializeHomeLinearStages(wxCommandEvent& event);
+    void OnHomeLinearStages(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the set Le button.
@@ -260,12 +266,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnLimitsGoTo(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the "Set L0" button in limits.
-     * @param event Occuring event
-     */
-    void OnSetL0(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
@@ -507,15 +507,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
+    long m_MountingLength;											/**< The mounting length. */
     long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
-    long m_ZeroLength;													/**< Zero length. */
+    long m_MaxPosDistance;											/**< Distance when the motors are on max position (resulting in smallest distance) */
     double m_Area;															/**< Area of the sample */
 
     DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
     int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
-    double m_MountingLength;									/**< Clamping distance */
     std::string m_StoragePath;									/**< Path were the measurement values will be saved as a std::string. */
 
     wxDECLARE_EVENT_TABLE();
@@ -541,7 +541,6 @@ enum
   ID_LimitsDistanceValue = 17,
   ID_SetLimits = 18,
   ID_LimitsDistanceGoTo = 19,
-  ID_LimitsSetL0 = 20,
   ID_PreloadSpeedPercent = 21,
   ID_PreloadSpeedMm = 22,
   ID_PreloadSendToProtocol = 23,

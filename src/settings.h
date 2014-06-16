@@ -297,6 +297,38 @@ class Settings
     }
 
     /**
+     * @brief Returns the maximum position distance.
+     * @return The maximum position distance.
+     */
+    long getMaxPosDistance(void){
+      return(m_MaxPosDistance);
+    }
+
+    /**
+     * @brief Returns the mounting length.
+     * @return The mounting length.
+     */
+    long getMountingLength(void){
+      return(m_MountingLength);
+    }
+
+    /**
+     * @brief Returns the gage length.
+     * @return The gage length.
+     */
+    long getGageLength(void){
+      return(m_GageLength);
+    }
+
+    /**
+     * @brief Returns the current distance.
+     * @return The current distance.
+     */
+    long getCurrentDistance(void){
+      return(m_CurrentDistance);
+    }
+
+    /**
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
      */
@@ -402,6 +434,38 @@ class Settings
       m_MeasurementValuesStoragePath = storagePath;
     }
 
+    /**
+     * @brief Returns the maximum position distance.
+     * @return The maximum position distance.
+     */
+    long setMaxPosDistance(long maxposdistance){
+      m_MaxPosDistance = maxposdistance;
+    }
+
+    /**
+     * @brief Returns the mounting length.
+     * @return The mounting length.
+     */
+    long setMountingLength(long mountinglength){
+      m_MountingLength = mountinglength;
+    }
+
+    /**
+     * @brief Returns the gage length.
+     * @return The gage length.
+     */
+    long setGageLength(long gagelength){
+      m_GageLength = gagelength;
+    }
+
+    /**
+     * @brief Returns the current distance.
+     * @return The current distance.
+     */
+    long setCurrentDistance(long currentdistance){
+      m_CurrentDistance = currentdistance;
+    }
+
   private:
 
     libconfig::Config m_CurrentConfig;												/**< Current configuration */
@@ -431,32 +495,38 @@ class Settings
     libconfig::Setting* m_MeasurementValuesStoragePathSetting;/**< Storage path for the measurement values */
 
     libconfig::Setting* m_Set1Settings;
-    libconfig::Setting* m_Set1NameSettings;
-    libconfig::Setting* m_Set1MaxDistanceSettings;
-    libconfig::Setting* m_Set1MinDistanceSettings;
-    libconfig::Setting* m_Set1MaxForceSettings;
-    libconfig::Setting* m_Set1MinForceSettings;
+    libconfig::Setting* m_Set1NameSetting;
+    libconfig::Setting* m_Set1MaxDistanceSetting;
+    libconfig::Setting* m_Set1MinDistanceSetting;
+    libconfig::Setting* m_Set1MaxForceSetting;
+    libconfig::Setting* m_Set1MinForceSetting;
 
     libconfig::Setting* m_Set2Settings;
-    libconfig::Setting* m_Set2NameSettings;
-    libconfig::Setting* m_Set2MaxDistanceSettings;
-    libconfig::Setting* m_Set2MinDistanceSettings;
-    libconfig::Setting* m_Set2MaxForceSettings;
-    libconfig::Setting* m_Set2MinForceSettings;
+    libconfig::Setting* m_Set2NameSetting;
+    libconfig::Setting* m_Set2MaxDistanceSetting;
+    libconfig::Setting* m_Set2MinDistanceSetting;
+    libconfig::Setting* m_Set2MaxForceSetting;
+    libconfig::Setting* m_Set2MinForceSetting;
 
     libconfig::Setting* m_Set3Settings;
-    libconfig::Setting* m_Set3NameSettings;
-    libconfig::Setting* m_Set3MaxDistanceSettings;
-    libconfig::Setting* m_Set3MinDistanceSettings;
-    libconfig::Setting* m_Set3MaxForceSettings;
-    libconfig::Setting* m_Set3MinForceSettings;
+    libconfig::Setting* m_Set3NameSetting;
+    libconfig::Setting* m_Set3MaxDistanceSetting;
+    libconfig::Setting* m_Set3MinDistanceSetting;
+    libconfig::Setting* m_Set3MaxForceSetting;
+    libconfig::Setting* m_Set3MinForceSetting;
 
     libconfig::Setting* m_Set4Settings;
-    libconfig::Setting* m_Set4NameSettings;
-    libconfig::Setting* m_Set4MaxDistanceSettings;
-    libconfig::Setting* m_Set4MinDistanceSettings;
-    libconfig::Setting* m_Set4MaxForceSettings;
-    libconfig::Setting* m_Set4MinForceSettings;
+    libconfig::Setting* m_Set4NameSetting;
+    libconfig::Setting* m_Set4MaxDistanceSetting;
+    libconfig::Setting* m_Set4MinDistanceSetting;
+    libconfig::Setting* m_Set4MaxForceSetting;
+    libconfig::Setting* m_Set4MinForceSetting;
+
+    libconfig::Setting* m_StartUpSettings;
+    libconfig::Setting* m_MaxPosDistanceSetting;
+    libconfig::Setting* m_MountingLengthSetting;
+    libconfig::Setting* m_GageLengthSetting;
+    libconfig::Setting* m_CurrentDistanceSetting;
 
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;															/**< The com port for the second linear stage motor */
@@ -475,29 +545,34 @@ class Settings
     std::string m_ConfigurationStoragePath;										/**< Folder where the configuration file will be saved */
     std::string m_MeasurementValuesStoragePath;								/**< Folder where the images and the data will be saved */
 
-    std::string m_Set1Name;
-    int m_Set1MaxDistance;
-    int m_Set1MinDistance;
-    int m_Set1MaxForce;
-    int m_Set1MinForce;
+    std::string m_Set1Name;																		/**< Name for the first limit set. */
+    int m_Set1MaxDistance;																		/**< Maximum distance limit value. */
+    int m_Set1MinDistance;																		/**< Minimum distance limit value. */
+    int m_Set1MaxForce;																				/**< Maximum force limit value. */
+    int m_Set1MinForce;																				/**< Minimum force limit value. */
 
-    std::string m_Set2Name;
-    int m_Set2MaxDistance;
-    int m_Set2MinDistance;
-    int m_Set2MaxForce;
-    int m_Set2MinForce;
+    std::string m_Set2Name;																		/**< Name for the second limit set. */
+    int m_Set2MaxDistance;																		/**< Maximum distance limit value. */
+    int m_Set2MinDistance;																		/**< Minimum distance limit value. */
+    int m_Set2MaxForce;																				/**< Maximum force limit value. */
+    int m_Set2MinForce;																				/**< Minimum force limit value. */
 
-    std::string m_Set3Name;
-    int m_Set3MaxDistance;
-    int m_Set3MinDistance;
-    int m_Set3MaxForce;
-    int m_Set3MinForce;
+    std::string m_Set3Name;																		/**< Name for the third limit set. */
+    int m_Set3MaxDistance;																		/**< Maximum distance limit value. */
+    int m_Set3MinDistance;																		/**< Minimum distance limit value. */
+    int m_Set3MaxForce;																				/**< Maximum force limit value. */
+    int m_Set3MinForce;																				/**< Minimum force limit value. */
 
-    std::string m_Set4Name;
-    int m_Set4MaxDistance;
-    int m_Set4MinDistance;
-    int m_Set4MaxForce;
-    int m_Set4MinForce;
+    std::string m_Set4Name;																		/**< Name for the fourth limit set. */
+    int m_Set4MaxDistance;																		/**< Maximum distance limit value. */
+    int m_Set4MinDistance;																		/**< Minimum distance limit value. */
+    int m_Set4MaxForce;																				/**< Maximum force limit value. */
+    int m_Set4MinForce;																				/**< Minimum force limit value. */
+
+    long long m_MaxPosDistance;
+    long long m_MountingLength;
+    long long m_GageLength;
+    long long m_CurrentDistance;
 
 };
 

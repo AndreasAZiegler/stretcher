@@ -23,6 +23,17 @@
 					<help></help>
 				</object>
 			</object>
+			<object class="wxMenu" name="m_AdvancedMenu">
+				<label>Advanced</label>
+				<object class="wxMenuItem" name="m_HomeStagesMenuItem">
+					<label>Home Stages</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_LoadStoredPositionsMenuItem">
+					<label>Load stored positions</label>
+					<help></help>
+				</object>
+			</object>
 		</object>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
@@ -66,70 +77,175 @@
 													<object class="wxPanel" name="m_InitializePanel21">
 														<style>wxSIMPLE_BORDER</style>
 														<object class="wxFlexGridSizer">
-															<rows>7</rows>
+															<rows>5</rows>
 															<cols>1</cols>
 															<vgap>0</vgap>
 															<hgap>0</hgap>
 															<growablecols>0</growablecols>
-															<growablerows>6</growablerows>
-															<object class="spacer">
-																<option>1</option>
-																<flag>wxEXPAND</flag>
+															<growablerows></growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
-																<size>0,10</size>
+																<object class="wxStaticText" name="m_InitializePresetStaticText">
+																	<label>Please load a preset if you want to load defined settings.</label>
+																	<wrap>-1</wrap>
+																</object>
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
 																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="m_InitializeStaticText1">
-																	<style>wxALIGN_CENTRE</style>
-																	<label>Should the stored position be used as the current position.</label>
-																	<wrap>-1</wrap>
+																<object class="wxFilePickerCtrl" name="m_InitializePresetFilePicker">
+																	<value></value>
+																	<message>Select a file</message>
+																	<wildcard>*.*</wildcard>
+																	<style>wxFLP_DEFAULT_STYLE</style>
 																</object>
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxEXPAND</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_InitializeLoadStoredPositionButton">
-																	<label>Load stored position</label>
-																	<default>0</default>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_InitializeStaticText2">
-																	<label>Or</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>1</option>
 																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxStaticText" name="m_InitializeWarningStaticText">
-																	<style>wxALIGN_CENTRE</style>
-																	<label>Should the stages be homed.</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxEXPAND</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_InitializeHomeMotorsButton">
-																	<label>Home stages</label>
+																<object class="wxButton" name="m_InitializeApplyPresetButton">
+																	<label>Apply</label>
 																	<default>0</default>
 																</object>
 															</object>
-															<object class="spacer">
+															<object class="sizeritem">
 																<option>1</option>
 																<flag>wxEXPAND</flag>
 																<border>5</border>
-																<size>0,0</size>
+																<object class="wxFlexGridSizer">
+																	<rows>1</rows>
+																	<cols>4</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>0,1,2,3</growablecols>
+																	<growablerows>0</growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMaxPosStaticText">
+																			<label>Distance at max. positions:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMaxPosShowStaticText">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMountingLengthStaticText">
+																			<label>Mounting length:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMountingLengthShowStaticText">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>1</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxFlexGridSizer">
+																	<rows>1</rows>
+																	<cols>8</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>0,1,2,3,4,5,6,7</growablecols>
+																	<growablerows>0</growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMinDistanceStaticText">
+																			<label>Min. Distance:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMinDistanceShowStaticText">
+																			<style>wxSUNKEN_BORDER</style>
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMaxDistanceStaticText">
+																			<label>Max. Distance:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMaxDistanceShowStaticText">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMinForceStaticText">
+																			<label>Min. Force:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMinForceShowStaticText">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMaxForceStaticText">
+																			<label>Max. Force:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeMaxForceShowStaticText">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																</object>
 															</object>
 														</object>
 													</object>
@@ -231,7 +347,7 @@
 																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
 																<object class="wxButton" name="m_LengthsLEButton">
-																	<label>Set Le</label>
+																	<label>Set distance with actuator collision</label>
 																	<default>0</default>
 																</object>
 															</object>
@@ -256,17 +372,53 @@
 																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_LengthsMoveStaticText">
-																	<label>Move the stages to the mounting length manually, mount the clamps and push the button &quot;Set mounting lenght&quot;.</label>
+																	<label>Move the stages to the mounting length manually and/or use the distance input and &quot;Go to&quot; button,\nmount the clamps and push the button &quot;Set mounting lenght&quot;.</label>
 																	<wrap>-1</wrap>
 																</object>
 															</object>
 															<object class="sizeritem">
-																<option>0</option>
+																<option>1</option>
 																<flag>wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxButton" name="m_LengthsMountingLengthButton">
-																	<label>Set mounting length</label>
-																	<default>0</default>
+																<object class="wxBoxSizer">
+																	<orient>wxHORIZONTAL</orient>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALIGN_CENTER|wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LengthsGoToStaticText">
+																			<label>Distance [mm]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LengthsGoToSpinCtrl">
+																			<value>150</value>
+																			<min>0</min>
+																			<max>200</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_LengthsGoToButton">
+																			<label>Go to</label>
+																			<default>0</default>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_LengthsMountingLengthButton">
+																			<label>Set mounting length</label>
+																			<default>0</default>
+																		</object>
+																	</object>
 																</object>
 															</object>
 														</object>
@@ -287,12 +439,6 @@
 												<hgap>0</hgap>
 												<growablecols>0</growablecols>
 												<growablerows>3</growablerows>
-												<object class="spacer">
-													<option>1</option>
-													<flag></flag>
-													<border>5</border>
-													<size>0,10</size>
-												</object>
 												<object class="sizeritem">
 													<option>1</option>
 													<flag>wxEXPAND | wxALL</flag>
@@ -477,54 +623,6 @@
 														</object>
 													</object>
 												</object>
-												<object class="sizeritem">
-													<option>1</option>
-													<flag>wxEXPAND | wxALL</flag>
-													<border>5</border>
-													<object class="wxPanel" name="m_LimitsL0Panel">
-														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
-														<object class="wxBoxSizer">
-															<orient>wxHORIZONTAL</orient>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
-																<border>5</border>
-																<object class="wxStaticText" name="m_LimitsGoToStaticText">
-																	<label>Distance [mm]:</label>
-																	<wrap>-1</wrap>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxSpinCtrlDouble" name="m_LimitsGoToSpinCtrl">
-																	<value>150</value>
-																	<min>0</min>
-																	<max>200</max>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsGoToButton">
-																	<label>Go to</label>
-																	<default>0</default>
-																</object>
-															</object>
-															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL</flag>
-																<border>5</border>
-																<object class="wxButton" name="m_LimitsSetL0Button">
-																	<label>Set L0</label>
-																	<default>0</default>
-																</object>
-															</object>
-														</object>
-													</object>
-												</object>
 												<object class="spacer">
 													<option>1</option>
 													<flag>wxEXPAND</flag>
@@ -622,7 +720,7 @@
 																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_PreloadSpeedPreloadStaticText">
-																			<label>% L0/sec.</label>
+																			<label>% mounting length/sec.</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
