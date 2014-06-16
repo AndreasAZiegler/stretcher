@@ -153,6 +153,21 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
 
   private:
+
+    /**
+     * @brief A wrapper of std::to_string to set precission.
+     * @param a_value Variable which will be converted.
+     * @param n Precision
+     * @return Return value.
+     */
+    template <typename T>
+    std::string to_string_wp(const T a_value, const int n = 6){
+      std::ostringstream outstr;
+      outstr.precision(n);
+      outstr << a_value;
+      return(outstr.str());
+    }
+
     /**
      * @brief Method wich will be executed, when the software will be closed by the user.
      * @param event Occuring event

@@ -344,7 +344,10 @@ MyFrame::~MyFrame(){
   m_Settings->setMaxPosDistance(m_MaxPosDistance);
   m_Settings->setMountingLength(m_MountingLength);
   m_Settings->setGageLength(m_GageLength);
-  m_Settings->setCurrentDistance(m_CurrentDistance);
+  m_Settings->setMinDistanceLimit(m_MinDistanceLimit);
+  m_Settings->setMaxDistanceLimit(m_MaxDistanceLimit);
+  m_Settings->setMinForceLimit(m_MinForceLimit);
+  m_Settings->setMaxForceLimit(m_MaxForceLimit);
 
   // Delete linear stage objects.
   /*
@@ -531,9 +534,17 @@ void MyFrame::startup(void){
     m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
     // Load L0.
     m_GageLength = m_Settings->getGageLength();
-    // Load current distance.
-    m_CurrentDistance = m_Settings->getCurrentDistance();
-    updateDistance();
+
+    // Load limits
+    m_MinDistanceLimit = m_Settings->getMinDistanceLimit();
+    m_MaxDistanceLimit = m_Settings->getMaxDistanceLimit();
+    m_MinForceLimit = m_Settings->getMinForceLimit();
+    m_MaxForceLimit = m_Settings->getMaxForceLimit();
+    m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
+    m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
+
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
 
   }
@@ -589,6 +600,8 @@ void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
  */
 void MyFrame::OnUnit(wxCommandEvent& event){
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    m_InitializeMinForceStaticText->SetLabelText("Min. stress [kPa]:");
+    m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
@@ -615,6 +628,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
   }else{
+    m_InitializeMinForceStaticText->SetLabelText("Min. force [N]:");
+    m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
@@ -1250,6 +1265,12 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   m_MaxDistanceLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
   m_MinDistanceLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
+
+  m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit, 2));
+  m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit, 2));
+  m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit, 2));
+  m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit, 2));
+
   if(1 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
     m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;

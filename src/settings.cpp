@@ -65,7 +65,10 @@ Settings::Settings()
     m_MaxPosDistance(0),
     m_MountingLength(0),
     m_GageLength(0),
-    m_CurrentDistance(0)
+    m_MinDistanceLimit(0),
+    m_MaxDistanceLimit(0),
+    m_MinForceLimit(0),
+    m_MaxForceLimit(0)
 {
   readSettings();
 }
@@ -202,7 +205,10 @@ bool Settings::readSettings ()
       m_StartUpSettings->lookupValue("MaxPosDistance", m_MaxPosDistance);
       m_StartUpSettings->lookupValue("MountingLength", m_MountingLength);
       m_StartUpSettings->lookupValue("GageLength", m_GageLength);
-      m_StartUpSettings->lookupValue("CurrentDistance", m_CurrentDistance);
+      m_StartUpSettings->lookupValue("MinDistanceLimit", m_MinDistanceLimit);
+      m_StartUpSettings->lookupValue("MaxDistanceLimit", m_MaxDistanceLimit);
+      m_StartUpSettings->lookupValue("MinForceLimit", m_MinForceLimit);
+      m_StartUpSettings->lookupValue("MaxForceLimit", m_MaxForceLimit);
     }catch(const SettingNotFoundException &nfex){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
@@ -581,12 +587,36 @@ bool Settings::writeSettings(){
     m_StartUpSettings->add("GageLength", Setting::TypeInt64) = m_GageLength;
   }
 
-  // Writing the current distance setting.
-  if(m_StartUpSettings->exists("CurrentDistance")){
-    m_CurrentDistanceSetting = &m_StartUpSettings->operator []("CurrentDistance");
-    *m_CurrentDistanceSetting = m_CurrentDistance;
+  // Writing the minimum distance limit setting.
+  if(m_StartUpSettings->exists("MinDistanceLimit")){
+    m_MinDistanceLimitSetting = &m_StartUpSettings->operator []("MinDistanceLimit");
+    *m_MinDistanceLimitSetting = m_MinDistanceLimit;
   }else{
-    m_StartUpSettings->add("CurrentDistance", Setting::TypeInt64) = m_CurrentDistance;
+    m_StartUpSettings->add("MinDistanceLimit", Setting::TypeInt64) = m_MinDistanceLimit;
+  }
+
+  // Writing the maximum distance limit setting.
+  if(m_StartUpSettings->exists("MaxDistanceLimit")){
+    m_MaxDistanceLimitSetting = &m_StartUpSettings->operator []("MaxDistanceLimit");
+    *m_MaxDistanceLimitSetting = m_MaxDistanceLimit;
+  }else{
+    m_StartUpSettings->add("MaxDistanceLimit", Setting::TypeInt64) = m_MaxDistanceLimit;
+  }
+
+  // Writing the minimum force limit setting.
+  if(m_StartUpSettings->exists("MinForceLimit")){
+    m_MinForceLimitSetting = &m_StartUpSettings->operator []("MinForceLimit");
+    *m_MinForceLimitSetting = m_MinForceLimit;
+  }else{
+    m_StartUpSettings->add("MinForceLimit", Setting::TypeInt64) = m_MinForceLimit;
+  }
+
+  // Writing the maximum force limit setting.
+  if(m_StartUpSettings->exists("MaxForceLimit")){
+    m_MaxForceLimitSetting = &m_StartUpSettings->operator []("MaxForceLimit");
+    *m_MaxForceLimitSetting = m_MaxForceLimit;
+  }else{
+    m_StartUpSettings->add("MaxForceLimit", Setting::TypeInt64) = m_MaxForceLimit;
   }
 
   // Finally try to write the configuration to the file.

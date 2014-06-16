@@ -321,11 +321,35 @@ class Settings
     }
 
     /**
-     * @brief Returns the current distance.
-     * @return The current distance.
+     * @brief Returns the minimum distance limit.
+     * @return The minimum distance limit.
      */
-    long getCurrentDistance(void){
-      return(m_CurrentDistance);
+    long getMinDistanceLimit(void){
+      return(m_MinDistanceLimit);
+    }
+
+    /**
+     * @brief Returns the maximum distance limit.
+     * @return The maximum distance limit.
+     */
+    long getMaxDistanceLimit(void){
+      return(m_MaxDistanceLimit);
+    }
+
+    /**
+     * @brief Returns the minimum force limit.
+     * @return The minimum force limit.
+     */
+    long getMinForceLimit(void){
+      return(m_MinForceLimit);
+    }
+
+    /**
+     * @brief Returns the maximum force limit.
+     * @return The maximum force limit.
+     */
+    long getMaxForceLimit(void){
+      return(m_MaxForceLimit);
     }
 
     /**
@@ -426,44 +450,67 @@ class Settings
     }
 
     /**
-     * @brief Set the storage place for images and data
+     * @brief Sets the storage place for images and data
      * @param Storage place as a string
-     * @return true if sucessfull, false otherwise.
      */
     void setStoragePath(std::string storagePath){
       m_MeasurementValuesStoragePath = storagePath;
     }
 
     /**
-     * @brief Returns the maximum position distance.
-     * @return The maximum position distance.
+     * @brief Sets the maximum position distance.
+     * @param maxposdistance Maximum position distance.
      */
-    long setMaxPosDistance(long maxposdistance){
+    void setMaxPosDistance(long maxposdistance){
       m_MaxPosDistance = maxposdistance;
     }
 
     /**
-     * @brief Returns the mounting length.
-     * @return The mounting length.
+     * @brief Sets the mounting length.
+     * @param mountinglength Mounting length
      */
-    long setMountingLength(long mountinglength){
+    void setMountingLength(long mountinglength){
       m_MountingLength = mountinglength;
     }
 
     /**
-     * @brief Returns the gage length.
-     * @return The gage length.
+     * @brief Sets the gage length.
+     * @param gagelength Gage length.
      */
-    long setGageLength(long gagelength){
+    void setGageLength(long gagelength){
       m_GageLength = gagelength;
     }
 
     /**
-     * @brief Returns the current distance.
-     * @return The current distance.
+     * @brief Sets the minimum distance limit.
+     * @param mindistancelimit Minimum distance limit.
      */
-    long setCurrentDistance(long currentdistance){
-      m_CurrentDistance = currentdistance;
+    void setMinDistanceLimit(long mindistancelimit){
+      m_MinDistanceLimit = mindistancelimit;
+    }
+
+    /**
+     * @brief Sets the maximum distance limit.
+     * @param maxdistancelimit Maximum distance limit.
+     */
+    void setMaxDistanceLimit(long maxdistancelimit){
+      m_MaxDistanceLimit = maxdistancelimit;
+    }
+
+    /**
+     * @brief Sets the minimum force limit.
+     * @param minforcelimit Minimum force limit.
+     */
+    void setMinForceLimit(long minforcelimit){
+      m_MinForceLimit = minforcelimit;
+    }
+
+    /**
+     * @brief Sets the maximum force limit.
+     * @param maxforcelimit Maximum force limit.
+     */
+    void setMaxForceLimit(long maxforcelimit){
+      m_MaxForceLimit = maxforcelimit;
     }
 
   private:
@@ -526,7 +573,10 @@ class Settings
     libconfig::Setting* m_MaxPosDistanceSetting;
     libconfig::Setting* m_MountingLengthSetting;
     libconfig::Setting* m_GageLengthSetting;
-    libconfig::Setting* m_CurrentDistanceSetting;
+    libconfig::Setting* m_MinDistanceLimitSetting;
+    libconfig::Setting* m_MaxDistanceLimitSetting;
+    libconfig::Setting* m_MinForceLimitSetting;
+    libconfig::Setting* m_MaxForceLimitSetting;
 
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;															/**< The com port for the second linear stage motor */
@@ -572,7 +622,10 @@ class Settings
     long long m_MaxPosDistance;
     long long m_MountingLength;
     long long m_GageLength;
-    long long m_CurrentDistance;
+    long long m_MinDistanceLimit;
+    long long m_MaxDistanceLimit;
+    long long m_MinForceLimit;
+    long long m_MaxForceLimit;
 
 };
 
