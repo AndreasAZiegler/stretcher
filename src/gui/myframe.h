@@ -193,6 +193,24 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnFileOutputSettings(wxCommandEvent& event);
 
     /**
+     * @brief Method which will be executed, when the user click on the file picker to load a preset.
+     * @param event Occuring event
+     */
+    void OnLoadPreset(wxFileDirPickerEvent &event);
+
+    /**
+     * @brief Method which will be executed, when the user applies a preset.
+     * @param event Occuring event
+     */
+    void OnApplyPreset(wxCommandEvent& event);
+
+    /**
+     * @brief Method which will be executed, when the user saves a preset.
+     * @param event Occuring event
+     */
+    void OnSavePreset(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user changes unit.
      * @param event Occuring event
      */
@@ -501,6 +519,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_MinDistanceLimit;									/**< The minimal position for the stages */
     double m_MaxForceLimit;											/**< The maximal allowed force. */
     double m_MinForceLimit;											/**< The minimal allowed force. */
+    double m_TempMinDistanceLimit;
+    double m_TempMaxDistanceLimit;
+    double m_TempMinForceLimit;
+    double m_TempMaxForceLimit;
     bool m_DistanceLimitExceededFlag;						/**< Indicates if a distance limit exceeded. */
     std::mutex m_DistanceLimitExceededMutex;		/**< Mutex to protect m_DistanceLimitExceededFlag. */
     bool m_ForceLimitExceededFlag;							/**< Indicates if a force limit exceeded. */
@@ -523,8 +545,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     long m_MountingLength;											/**< The mounting length. */
+    double m_TempMountingLength;
     long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
+    double m_TempGageLength;
     long m_MaxPosDistance;											/**< Distance when the motors are on max position (resulting in smallest distance) */
+    double m_TempMaxPosDistance;
     double m_Area;															/**< Area of the sample */
 
     DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */
@@ -541,54 +566,57 @@ enum
 	ID_SamplingFrequency = 1,
 	ID_Ports = 2,
 	ID_FileOutput = 3,
-  ID_Unit = 4,
-  ID_MotorDecreaseDistance = 6,
-  ID_MotorIncreaseDistance = 7,
-  ID_MotorStop = 8,
-  ID_LoadStoredPosition = 9,
-  ID_HomeStages = 10,
-  ID_SetDistanceWActuatorCollision = 11,
-  ID_SetMountingLength = 12,
-  ID_LoadLimitSet1 = 13,
-  ID_LoadLimitSet2 = 14,
-  ID_LoadLimitSet3 = 15,
-  ID_LoadLimitSet4 = 16,
-  ID_LimitsDistanceValue = 17,
-  ID_SetLimits = 18,
-  ID_LimitsDistanceGoTo = 19,
-  ID_PreloadSpeedPercent = 21,
-  ID_PreloadSpeedMm = 22,
-  ID_PreloadSendToProtocol = 23,
+  ID_LoadStoredPosition = 4,
+  ID_HomeStages = 5,
+  ID_Unit = 6,
+  ID_MotorDecreaseDistance = 7,
+  ID_MotorIncreaseDistance = 8,
+  ID_MotorStop = 9,
+  ID_LoadPreset = 10,
+  ID_ApplyPreset = 11,
+  ID_SavePreset = 12,
+  ID_SetDistanceWActuatorCollision = 13,
+  ID_SetMountingLength = 14,
+  ID_LoadLimitSet1 = 15,
+  ID_LoadLimitSet2 = 16,
+  ID_LoadLimitSet3 = 17,
+  ID_LoadLimitSet4 = 18,
+  ID_LimitsDistanceValue = 19,
+  ID_SetLimits = 20,
+  ID_LimitsDistanceGoTo = 21,
+  ID_PreloadSpeedPercent = 22,
+  ID_PreloadSpeedMm = 23,
+  ID_PreloadSendToProtocol = 24,
 
-  ID_OneStepStressForce = 24,
-  ID_OneStepDistance = 25,
-  ID_OneStepCancel = 26,
-  ID_OneStepSendToProtocol = 27,
+  ID_OneStepStressForce = 25,
+  ID_OneStepDistance = 26,
+  ID_OneStepCancel = 27,
+  ID_OneStepSendToProtocol = 28,
 
-  ID_ContinuousStressForce = 28,
-  ID_ContinuousDistance = 29,
-  ID_ContinuousMaxValue = 30,
-  ID_ContinuousSteps = 31,
-  ID_ContinuousCancel = 32,
-  ID_ContinuousSendToProtocol = 33,
+  ID_ContinuousStressForce = 29,
+  ID_ContinuousDistance = 30,
+  ID_ContinuousMaxValue = 31,
+  ID_ContinuousSteps = 32,
+  ID_ContinuousCancel = 33,
+  ID_ContinuousSendToProtocol = 34,
 
-  ID_ClearLog = 34,
-  ID_SaveLog = 35,
-  ID_ClearGraph = 36,
-  ID_ExportCSV = 37,
-  ID_ExportPNG = 38,
-  ID_DeleteExperiment = 39,
-  ID_MoveUpExperiment = 40,
-  ID_MoveDownExperiment = 41,
-  ID_PauseExperiment = 42,
-  ID_PauseResumeExperiment = 43,
-  ID_LoopProtocol = 44,
-  ID_Preview = 45,
-  ID_RunProtocol = 46,
-  ID_StopProtocol = 47,
-  ID_SaveProtocol = 48,
-  ID_LoadProtocol = 49,
-  ID_MakePhoto = 50
+  ID_ClearLog = 35,
+  ID_SaveLog = 36,
+  ID_ClearGraph = 37,
+  ID_ExportCSV = 38,
+  ID_ExportPNG = 39,
+  ID_DeleteExperiment = 40,
+  ID_MoveUpExperiment = 41,
+  ID_MoveDownExperiment = 42,
+  ID_PauseExperiment = 43,
+  ID_PauseResumeExperiment = 44,
+  ID_LoopProtocol = 45,
+  ID_Preview = 46,
+  ID_RunProtocol = 47,
+  ID_StopProtocol = 48,
+  ID_SaveProtocol = 49,
+  ID_LoadProtocol = 50,
+  ID_MakePhoto = 51
 };
 
 #endif // MYFRAME_H

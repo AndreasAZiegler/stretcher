@@ -30,6 +30,7 @@ protected:
  wxStaticText* m_InitializePresetStaticText;
  wxFilePickerCtrl* m_InitializePresetFilePicker;
  wxButton* m_InitializeApplyPresetButton;
+ wxButton* m_InitializeSavePresetButton;
  wxStaticText* m_InitializeMaxPosStaticText;
  wxStaticText* m_InitializeMaxPosShowStaticText;
  wxStaticText* m_InitializeMountingLengthStaticText;
@@ -245,6 +246,7 @@ private:
   m_InitializePresetStaticText = XRCCTRL(*this,"m_InitializePresetStaticText",wxStaticText);
   m_InitializePresetFilePicker = XRCCTRL(*this,"m_InitializePresetFilePicker",wxFilePickerCtrl);
   m_InitializeApplyPresetButton = XRCCTRL(*this,"m_InitializeApplyPresetButton",wxButton);
+  m_InitializeSavePresetButton = XRCCTRL(*this,"m_InitializeSavePresetButton",wxButton);
   m_InitializeMaxPosStaticText = XRCCTRL(*this,"m_InitializeMaxPosStaticText",wxStaticText);
   m_InitializeMaxPosShowStaticText = XRCCTRL(*this,"m_InitializeMaxPosShowStaticText",wxStaticText);
   m_InitializeMountingLengthStaticText = XRCCTRL(*this,"m_InitializeMountingLengthStaticText",wxStaticText);

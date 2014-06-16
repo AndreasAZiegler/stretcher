@@ -104,12 +104,34 @@
 																</object>
 															</object>
 															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL|wxEXPAND</flag>
+																<option>1</option>
+																<flag>wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxButton" name="m_InitializeApplyPresetButton">
-																	<label>Apply</label>
-																	<default>0</default>
+																<object class="wxFlexGridSizer">
+																	<rows>0</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>0,1</growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_InitializeApplyPresetButton">
+																			<label>Apply</label>
+																			<default>0</default>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_InitializeSavePresetButton">
+																			<label>Save</label>
+																			<default>0</default>
+																		</object>
+																	</object>
 																</object>
 															</object>
 															<object class="sizeritem">
@@ -177,7 +199,7 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_InitializeMinDistanceStaticText">
-																			<label>Min. Distance:</label>
+																			<label>Min. distance [mm]:</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
@@ -196,7 +218,7 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_InitializeMaxDistanceStaticText">
-																			<label>Max. Distance:</label>
+																			<label>Max. distance [mm]:</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
@@ -214,7 +236,7 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_InitializeMinForceStaticText">
-																			<label>Min. Force:</label>
+																			<label>Min. force [N]:</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
@@ -232,7 +254,7 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_InitializeMaxForceStaticText">
-																			<label>Max. Force:</label>
+																			<label>Max. force [N]:</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>

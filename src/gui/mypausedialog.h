@@ -33,7 +33,7 @@ class MyPauseDialog : public MyPauseDialog_Base
 
 enum
 {
-  ID_PauseDialogOK = 54
+  ID_PauseDialogOK = 55
 };
 
 #endif // MYPAUSEDIALOG_H

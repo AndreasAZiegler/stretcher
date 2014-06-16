@@ -2,6 +2,7 @@ set(SOURCE
 	${SOURCE}
         ./gui/mybutton.cpp
         ./gui/myframe.cpp
+        ./gui/myframe_presets.cpp
         ./gui/myports.cpp
         ./gui/myfileoutput.cpp
         ./gui/myhomestages.cpp

@@ -46,6 +46,9 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_HomeStagesMenuItem"), MyFrame::OnHomeLinearStages)
   EVT_MENU(XRCID("m_LoadStoredPositionsMenuItem"), MyFrame::OnLoadStoredPositions)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
+  EVT_FILEPICKER_CHANGED(ID_LoadPreset, MyFrame::OnLoadPreset)
+  EVT_BUTTON(ID_ApplyPreset, MyFrame::OnApplyPreset)
+  EVT_BUTTON(ID_SavePreset, MyFrame::OnSavePreset)
   EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
   EVT_BUTTON(ID_SetMountingLength, MyFrame::OnLengthsSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
@@ -100,19 +103,26 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
+    m_TempMountingLength(0),
     //m_PreloadDistance(0),
     m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
     m_CurrentProtocol(nullptr),
     m_MaxDistanceLimit(50 / 0.00009921875/*mm per micro step*/),
+    m_TempMaxDistanceLimit(0),
     m_MinDistanceLimit(0),
+    m_TempMinDistanceLimit(0),
     m_MaxForceLimit(50000.0),
+    m_TempMaxForceLimit(0),
     m_MinForceLimit(-50000.0),
+    m_TempMinForceLimit(0),
     m_DistanceLimitExceededFlag(false),
     m_ForceLimitExceededFlag(false),
     m_DisableDecreaseDistanceFlag(false),
     m_DisableIncreaseDistanceFlag(false),
     m_GageLength(0),
+    m_TempGageLength(0),
     m_MaxPosDistance(0),
+    m_TempMaxPosDistance(0),
     m_Area(0),
     m_PreloadDoneFlag(true),
     m_CurrentForceUpdateDelay(0),
@@ -127,6 +137,9 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   SetIcon(wxICON(sample));
 
   // Set the required ID's
+  m_InitializePresetFilePicker->SetId(ID_LoadPreset);
+  m_InitializeApplyPresetButton->SetId(ID_ApplyPreset);
+  m_InitializeSavePresetButton->SetId(ID_SavePreset);
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_LengthsLEButton->SetId(ID_SetDistanceWActuatorCollision);
@@ -742,8 +755,8 @@ void MyFrame::OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event){
 void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
   m_MountingLength = m_CurrentDistance;
   m_GageLength = m_CurrentDistance;
-  m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
 }
 
 /**
@@ -1268,15 +1281,17 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
 
   m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit, 2));
   m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit, 2));
-  m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit, 2));
-  m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit, 2));
 
   if(1 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
     m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
     m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   }
 
   m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
