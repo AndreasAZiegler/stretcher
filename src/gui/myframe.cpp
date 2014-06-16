@@ -12,6 +12,7 @@
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
 #include "myfileoutput.h"
+#include "mystartupdialog.h"
 #include "myexportdialog.h"
 #include "mypausedialog.h"
 #include "protocols.h"
@@ -43,10 +44,14 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
   EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
+  EVT_MENU(XRCID("m_StartUpDialogMenuItem"), MyFrame::OnOpenStartUpDialog)
+  EVT_MENU(XRCID("m_LoadStoredPositionsMenuItem"), MyFrame::OnLoadStoredPositions)
+  EVT_MENU(XRCID("m_HomeStagesMenuItem"), MyFrame::OnHomeLinearStages)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
-  EVT_BUTTON(ID_LoadStoredPosition, MyFrame::OnInitializeLoadStoredPosition)
-  EVT_BUTTON(ID_HomeStages, MyFrame::OnInitializeHomeLinearStages)
-  EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
+  EVT_FILEPICKER_CHANGED(ID_LoadPreset, MyFrame::OnLoadPreset)
+  EVT_BUTTON(ID_ApplyPreset, MyFrame::OnApplyPreset)
+  EVT_BUTTON(ID_SavePreset, MyFrame::OnSavePreset)
+  //EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
   EVT_BUTTON(ID_SetMountingLength, MyFrame::OnLengthsSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
   EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnLimitsLoadSet1)
@@ -55,7 +60,6 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
   EVT_BUTTON(ID_LimitsDistanceGoTo, MyFrame::OnLimitsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
-  EVT_BUTTON(ID_LimitsSetL0, MyFrame::OnSetL0)
   EVT_RADIOBUTTON(ID_OneStepStressForce, MyFrame::OnOneStepStressForce)
   EVT_RADIOBUTTON(ID_OneStepDistance, MyFrame::OnOneStepDistance)
   EVT_BUTTON(ID_OneStepSendToProtocol, MyFrame::OnOneStepSendToProtocol)
@@ -101,18 +105,26 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
+    m_TempMountingLength(0),
     //m_PreloadDistance(0),
     m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
     m_CurrentProtocol(nullptr),
     m_MaxDistanceLimit(50 / 0.00009921875/*mm per micro step*/),
+    m_TempMaxDistanceLimit(0),
     m_MinDistanceLimit(0),
+    m_TempMinDistanceLimit(0),
     m_MaxForceLimit(50000.0),
+    m_TempMaxForceLimit(0),
     m_MinForceLimit(-50000.0),
+    m_TempMinForceLimit(0),
     m_DistanceLimitExceededFlag(false),
+    m_ForceLimitExceededFlag(false),
     m_DisableDecreaseDistanceFlag(false),
     m_DisableIncreaseDistanceFlag(false),
     m_GageLength(0),
-    m_ZeroLength(0),
+    m_TempGageLength(0),
+    m_MaxPosDistance(0),
+    m_TempMaxPosDistance(0),
     m_Area(0),
     m_PreloadDoneFlag(true),
     m_CurrentForceUpdateDelay(0),
@@ -127,24 +139,23 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   SetIcon(wxICON(sample));
 
   // Set the required ID's
+  m_InitializePresetFilePicker->SetId(ID_LoadPreset);
+  m_InitializeApplyPresetButton->SetId(ID_ApplyPreset);
+  m_InitializeSavePresetButton->SetId(ID_SavePreset);
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
-  m_InitializeHomeMotorsButton->SetId(ID_HomeStages);
-  m_LengthsLEButton->SetId(ID_SetDistanceWActuatorCollision);
   m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
-  m_InitializeLoadStoredPositionButton->SetId(ID_LoadStoredPosition);
   m_InitializeUnitRadioBox->SetId(ID_Unit);
   wxString str;
-  str << m_LimitsGoToSpinCtrl->GetValue();
-  m_LimitsGoToSpinCtrl->SetValue(str + " mm");
+  str << m_LengthsGoToSpinCtrl->GetValue();
+  m_LengthsGoToSpinCtrl->SetValue(str + " mm");
   m_LimitsLimitSet1Button->SetId(ID_LoadLimitSet1);
   m_LimitsLimitSet2Button->SetId(ID_LoadLimitSet2);
   m_LimitsLimitSet3Button->SetId(ID_LoadLimitSet3);
   m_LimitsLimitSet4Button->SetId(ID_LoadLimitSet4);
-  m_LimitsGoToSpinCtrl->SetId(ID_LimitsDistanceValue);
+  m_LengthsGoToSpinCtrl->SetId(ID_LimitsDistanceValue);
   m_LimitsLimitSetButton->SetId(ID_SetLimits);
-  m_LimitsGoToButton->SetId((ID_LimitsDistanceGoTo));
-  m_LimitsSetL0Button->SetId(ID_LimitsSetL0);
+  m_LengthsGoToButton->SetId((ID_LimitsDistanceGoTo));
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
   m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
   m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
@@ -343,6 +354,15 @@ MyFrame::~MyFrame(){
     std::cout << "MyFrame all 3 handlers should be finished." << std::endl;
   }
 
+  // Save start up settings.
+  m_Settings->setMaxPosDistance(m_MaxPosDistance);
+  m_Settings->setMountingLength(m_MountingLength);
+  m_Settings->setGageLength(m_GageLength);
+  m_Settings->setMinDistanceLimit(m_MinDistanceLimit);
+  m_Settings->setMaxDistanceLimit(m_MaxDistanceLimit);
+  m_Settings->setMinForceLimit(m_MinForceLimit);
+  m_Settings->setMaxForceLimit(m_MaxForceLimit);
+
   // Delete linear stage objects.
   /*
   // Not needed because destructor of main.cpp deletes them.
@@ -462,12 +482,6 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
  * 				sets digits for the wxSpinCtrlDouble.
  */
 void MyFrame::startup(void){
-  // Hide distance limit options
-  /*
-  m_ConditioningDistanceLimitStaticText->Show(false);
-  m_ConditioningDistanceLimitSpinCtrl->Show(false);
-  m_ConditioningDisctanceLimitRadioBox->Show(false);
-  */
   // Change the limit set butten names
   const wxString label1 = "Load " + m_Settings->getSet1Name() + " limits";
   m_LimitsLimitSet1Button->SetLabelText(label1);
@@ -485,8 +499,7 @@ void MyFrame::startup(void){
   m_ContinuousDistanceStepsSpinCtrl->Show(false);
 
   // Set digits for the wxSpinCtrlDouble
-  m_LengthsLESpinCtrl->SetDigits(2);
-  m_LimitsGoToSpinCtrl->SetDigits(2);
+  m_LengthsGoToSpinCtrl->SetDigits(2);
   m_InitializeCrossSectionSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
   m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
@@ -514,6 +527,41 @@ void MyFrame::startup(void){
   m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
   m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
   m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
+
+  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this,
+                                                                                                 "Does the mechanical set up changed since the last use?",
+                                                                                                 wxMessageBoxCaptionStr,
+                                                                                                 wxYES_NO));
+  // Ask if the mechanical set up changed.
+  int answer = dialog->ShowModal();
+  // If the set up didn't change, load Le, L0, current distance, limits and load stored positions.
+  if(wxID_NO == answer){
+    loadStoredPositions();
+    // Load Le
+    m_MaxPosDistance = m_Settings->getMaxPosDistance();
+    // set max pos distance in stage frame.
+    m_StageFrame->setMaxPosDistance(m_MaxPosDistance);
+    m_InitializeMaxPosShowStaticText->SetLabelText(std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/));
+    // Load mounting length.
+    m_MountingLength = m_Settings->getMountingLength();
+    m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
+    // Load L0.
+    m_GageLength = m_Settings->getGageLength();
+
+    // Load limits
+    m_MinDistanceLimit = m_Settings->getMinDistanceLimit();
+    m_MaxDistanceLimit = m_Settings->getMaxDistanceLimit();
+    m_MinForceLimit = m_Settings->getMinForceLimit();
+    m_MaxForceLimit = m_Settings->getMaxForceLimit();
+    m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
+    m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
+
+  }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
+    std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
+    dialog->ShowModal();
+  }
 }
 
 /**
@@ -561,11 +609,22 @@ void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user opens the start up dialog.
+ * @param event Occuring event
+ */
+void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
+  std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
+  dialog->ShowModal();
+}
+
+/**
  * @brief Method wich will be executed, when the user chooses stress as unit.
  * @param event Occuring event
  */
 void MyFrame::OnUnit(wxCommandEvent& event){
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    m_InitializeMinForceStaticText->SetLabelText("Min. stress [kPa]:");
+    m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
@@ -592,6 +651,8 @@ void MyFrame::OnUnit(wxCommandEvent& event){
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
   }else{
+    m_InitializeMinForceStaticText->SetLabelText("Min. force [N]:");
+    m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
@@ -652,10 +713,17 @@ void MyFrame::OnStressLimit(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user klicks on load stored position button.
+ * @brief Method wich will be executed when the user clicks on load stored positions.
  * @param event Occuring event
  */
-void MyFrame::OnInitializeLoadStoredPosition(wxCommandEvent& event){
+void MyFrame::OnLoadStoredPositions(wxCommandEvent& event){
+  loadStoredPositions();
+}
+
+/**
+ * @brief Method wich will be executed at start up when the set up didn't change.
+ */
+void MyFrame::loadStoredPositions(void){
   (m_LinearStages.at(0))->loadStoredPosition();
   (m_LinearStages.at(1))->loadStoredPosition();
 }
@@ -664,7 +732,7 @@ void MyFrame::OnInitializeLoadStoredPosition(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user klicks on the home stage button.
  * @param event Occuring event
  */
-void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
+void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
   /*
   (m_LinearStages->at(0))->home();
   (m_LinearStages->at(1))->home();
@@ -680,13 +748,13 @@ void MyFrame::OnInitializeHomeLinearStages(wxCommandEvent& event){
 
 /**
  * @brief Method wich will be executed, when the user clicks on the set Le button.
- * @param event Occuring event
  */
-void MyFrame::OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event){
+void MyFrame::setDistanceWActuatorCollision(double le){
+  //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min distance.
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setDistanceWActuatorCollision(m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+  m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
 }
 
 /**
@@ -694,9 +762,10 @@ void MyFrame::OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
+  m_MountingLength = m_CurrentDistance;
   m_GageLength = m_CurrentDistance;
-  m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
 }
 
 /**
@@ -748,15 +817,7 @@ void MyFrame::OnLimitsLoadSet4(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLimitsGoTo(wxCommandEvent& event){
-  m_StageFrame->gotoMMDistance(m_LimitsGoToSpinCtrl->GetValue());
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Set L0" button in limits.
- * @param event Occuring event
- */
-void MyFrame::OnSetL0(wxCommandEvent& event){
-  m_GageLength = m_CurrentDistance;
+  m_StageFrame->gotoMMDistance(m_LengthsGoToSpinCtrl->GetValue());
 }
 
 /**
@@ -821,7 +882,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      ExperimentType::Preload,
                                                      m_DistanceOrStressOrForce,
                                                      m_GageLength,
-                                                     m_ZeroLength,
+                                                     m_MaxPosDistance,
                                                      m_CurrentDistance,
                                                      m_InitializeCrossSectionSpinCtrl->GetValue(),
 
@@ -965,7 +1026,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           ExperimentType::OneStepEvent,
                                                           distanceOrStressOrForce,
                                                           m_GageLength,
-                                                          m_ZeroLength,
+                                                          m_MaxPosDistance,
                                                           m_CurrentDistance,
                                                           m_InitializeCrossSectionSpinCtrl->GetValue(),
 
@@ -1188,7 +1249,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              distanceOrStressOrForce,
                                                              ramptofailureactiveflag,
                                                              m_GageLength,
-                                                             m_ZeroLength,
+                                                             m_MaxPosDistance,
                                                              m_CurrentDistance,
                                                              m_InitializeCrossSectionSpinCtrl->GetValue(),
 
@@ -1218,12 +1279,20 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   m_MaxDistanceLimit = m_LimitsLimitMaxDistanceSpinCtrl->GetValue();
   m_MinDistanceLimit = m_LimitsLimitMinDistanceSpinCtrl->GetValue();
+
+  m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit, 2));
+  m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit, 2));
+
   if(1 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * 10000.0;
     m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * 10000.0;
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
     m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
     m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   }
 
   m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
@@ -1440,7 +1509,7 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
                                                    ExperimentType::Pause,
                                                    DistanceOrStressOrForce::Distance,
                                                    m_GageLength,
-                                                   m_ZeroLength,
+                                                   m_MaxPosDistance,
                                                    m_CurrentDistance,
                                                    m_InitializeCrossSectionSpinCtrl->GetValue()));
 
@@ -1488,7 +1557,7 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
                                                          ExperimentType::PauseResume,
                                                          DistanceOrStressOrForce::Distance,
                                                          m_GageLength,
-                                                         m_ZeroLength,
+                                                         m_MaxPosDistance,
                                                          m_CurrentDistance,
                                                          m_InitializeCrossSectionSpinCtrl->GetValue()));
 
