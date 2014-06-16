@@ -4,16 +4,26 @@
 
 #ifndef __mystartupdialog_base_h__
 #define __mystartupdialog_base_h__
+
+// Includes
+#include <wx/dialog.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/stattext.h>
+#include "mybutton.h"
+#include <wx/spinctrl.h>
+
 class MyStartUpDialog_Base : public wxDialog {
 protected:
  wxPanel* m_StartUpDialogPanel1;
  wxStaticText* m_StartUpHomingStaticText;
  wxStaticText* m_StartUpLEStaticText;
  wxPanel* m_StartUpDialogPanel2;
- wxButton* m_StartUpDecreaseDistanceButton;
- wxButton* m_StartUpIncreaseDistanceButton;
+ wxMyButton* m_StartUpDecreaseDistanceButton;
+ wxMyButton* m_StartUpIncreaseDistanceButton;
  wxSpinCtrlDouble* m_StartUpInputSpinCtrl;
  wxButton* m_StartUpSetButton;
+ wxButton* wxID_StartUpOK;
+ wxButton* wxID_StartUpCANCEL;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -22,10 +32,12 @@ private:
   m_StartUpHomingStaticText = XRCCTRL(*this,"m_StartUpHomingStaticText",wxStaticText);
   m_StartUpLEStaticText = XRCCTRL(*this,"m_StartUpLEStaticText",wxStaticText);
   m_StartUpDialogPanel2 = XRCCTRL(*this,"m_StartUpDialogPanel2",wxPanel);
-  m_StartUpDecreaseDistanceButton = XRCCTRL(*this,"m_StartUpDecreaseDistanceButton",wxButton);
-  m_StartUpIncreaseDistanceButton = XRCCTRL(*this,"m_StartUpIncreaseDistanceButton",wxButton);
+  m_StartUpDecreaseDistanceButton = XRCCTRL(*this,"m_StartUpDecreaseDistanceButton",wxMyButton);
+  m_StartUpIncreaseDistanceButton = XRCCTRL(*this,"m_StartUpIncreaseDistanceButton",wxMyButton);
   m_StartUpInputSpinCtrl = XRCCTRL(*this,"m_StartUpInputSpinCtrl",wxSpinCtrlDouble);
   m_StartUpSetButton = XRCCTRL(*this,"m_StartUpSetButton",wxButton);
+  wxID_StartUpOK = XRCCTRL(*this,"wxID_OK",wxButton);
+  wxID_StartUpCANCEL = XRCCTRL(*this,"wxID_CANCEL",wxButton);
  }
 public:
 MyStartUpDialog_Base(wxWindow *parent=NULL){

@@ -12,6 +12,7 @@
 #include "mysamplingfrequency_base.h"
 #include "myports.h"
 #include "myfileoutput.h"
+#include "mystartupdialog.h"
 #include "myexportdialog.h"
 #include "mypausedialog.h"
 #include "protocols.h"
@@ -43,13 +44,14 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
   EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
-  EVT_MENU(XRCID("m_HomeStagesMenuItem"), MyFrame::OnHomeLinearStages)
+  EVT_MENU(XRCID("m_StartUpDialogMenuItem"), MyFrame::OnOpenStartUpDialog)
   EVT_MENU(XRCID("m_LoadStoredPositionsMenuItem"), MyFrame::OnLoadStoredPositions)
+  EVT_MENU(XRCID("m_HomeStagesMenuItem"), MyFrame::OnHomeLinearStages)
   EVT_BUTTON(ID_MotorStop,	MyFrame::OnMotorStop)
   EVT_FILEPICKER_CHANGED(ID_LoadPreset, MyFrame::OnLoadPreset)
   EVT_BUTTON(ID_ApplyPreset, MyFrame::OnApplyPreset)
   EVT_BUTTON(ID_SavePreset, MyFrame::OnSavePreset)
-  EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
+  //EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
   EVT_BUTTON(ID_SetMountingLength, MyFrame::OnLengthsSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
   EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnLimitsLoadSet1)
@@ -142,7 +144,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_InitializeSavePresetButton->SetId(ID_SavePreset);
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
-  m_LengthsLEButton->SetId(ID_SetDistanceWActuatorCollision);
   m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
   m_InitializeUnitRadioBox->SetId(ID_Unit);
   wxString str;
@@ -498,7 +499,6 @@ void MyFrame::startup(void){
   m_ContinuousDistanceStepsSpinCtrl->Show(false);
 
   // Set digits for the wxSpinCtrlDouble
-  m_LengthsLESpinCtrl->SetDigits(2);
   m_LengthsGoToSpinCtrl->SetDigits(2);
   m_InitializeCrossSectionSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
@@ -559,7 +559,8 @@ void MyFrame::startup(void){
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
 
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
-
+    std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
+    dialog->ShowModal();
   }
 }
 
@@ -605,6 +606,15 @@ void MyFrame::OnPortsSettings(wxCommandEvent& event){
 void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
   MyFileOutput *fileOutput = new MyFileOutput(this, m_Settings, m_StoragePath, this);
 	fileOutput->Show();
+}
+
+/**
+ * @brief Method wich will be executed, when the user opens the start up dialog.
+ * @param event Occuring event
+ */
+void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
+  std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
+  dialog->ShowModal();
 }
 
 /**
@@ -738,14 +748,13 @@ void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
 
 /**
  * @brief Method wich will be executed, when the user clicks on the set Le button.
- * @param event Occuring event
  */
-void MyFrame::OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event){
+void MyFrame::setDistanceWActuatorCollision(double le){
   //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min distance.
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
-  m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/);
+  m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
 }
 
 /**

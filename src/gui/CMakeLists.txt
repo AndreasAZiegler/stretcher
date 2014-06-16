@@ -3,6 +3,7 @@ set(SOURCE
         ./gui/mybutton.cpp
         ./gui/myframe.cpp
         ./gui/myframe_presets.cpp
+        ./gui/mystartupdialog.cpp
         ./gui/myports.cpp
         ./gui/myfileoutput.cpp
         ./gui/myhomestages.cpp
@@ -19,6 +20,8 @@ set(HEADERS
         ./gui/mybutton.h
         ./gui/myfileoutput_base.h
         ./gui/myframe_base.h
+        ./gui/mystartupdialog.h
+        ./gui/mystartupdialog_base.h
         ./gui/myports_base.h
         ./gui/mysamplingfrequency_base.h
         ./gui/myframe.h

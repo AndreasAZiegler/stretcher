@@ -139,6 +139,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMotorIncreaseDistanceStop(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the set Le button.
+     * @param event Occuring event
+     */
+    void setDistanceWActuatorCollision(double le);
+
+    /**
      * @brief Returns the current distance.
      * @return The current distance.
      * @todo May move this method to a better place/class.
@@ -193,6 +199,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnFileOutputSettings(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user opens the start up dialog.
+     * @param event Occuring event
+     */
+    void OnOpenStartUpDialog(wxCommandEvent& event);
+
+    /**
      * @brief Method which will be executed, when the user click on the file picker to load a preset.
      * @param event Occuring event
      */
@@ -245,12 +257,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnHomeLinearStages(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user clicks on the set Le button.
-     * @param event Occuring event
-     */
-    void OnLengthsSetDistanceWActuatorCollision(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the set length button.
