@@ -72,6 +72,13 @@ void ForceSensor::setScaleFactor(double nominalforce, double nominalvalue, doubl
 }
 
 /**
+ * @brief Sets force zero.
+ */
+void ForceSensor::setZeroForce(void){
+  m_MessageHandler.setZeroForce();
+}
+
+/**
   * @brief Returns the pointer to the message handler.
   * @return Pointer to the message handler.
   */

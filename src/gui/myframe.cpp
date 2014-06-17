@@ -786,7 +786,7 @@ void MyFrame::OnLengthsZeroDistance(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLengthsZeroForceStress(wxCommandEvent& event){
-
+  m_ForceSensor->setZeroForce();
 }
 
 /**
