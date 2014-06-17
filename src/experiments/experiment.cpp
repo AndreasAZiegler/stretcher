@@ -58,6 +58,20 @@ Experiment::~Experiment(){
 }
 
 /**
+ * @brief Set new limits and forwards them to the experiments.
+ * @param mindistancelimit Value for the minimal distance limit.
+ * @param maxdistancelimit Value for the maximal distance limit.
+ * @param minforcelimit Value for the minimal force limit.
+ * @param maxforcelimit Value for the maximal force limit.
+ */
+void Experiment::setLimits(long mindistancelimit, long maxdistancelimit, long minforcelimit, long maxforcelimit){
+  m_MinDistanceLimit = mindistancelimit;
+  m_MaxDistanceLimit = maxdistancelimit;
+  m_MinForceLimit = minforcelimit;
+  m_MaxForceLimit = maxdistancelimit;
+}
+
+/**
  * @brief Sets the start length.
  */
 void Experiment::setStartLength(void){

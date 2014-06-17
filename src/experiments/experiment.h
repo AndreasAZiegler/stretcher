@@ -97,6 +97,15 @@ class Experiment
                double distanceThreshold);
 
     /**
+     * @brief Set new limits and forwards them to the experiments.
+     * @param mindistancelimit Value for the minimal distance limit.
+     * @param maxdistancelimit Value for the maximal distance limit.
+     * @param minforcelimit Value for the minimal force limit.
+     * @param maxforcelimit Value for the maximal force limit.
+     */
+    void setLimits(long mindistancelimit, long maxdistancelimit, long minforcelimit, long maxforcelimit);
+
+    /**
      * @brief Sets the preload distance.
      */
     virtual void setPreloadDistance(void) = 0;

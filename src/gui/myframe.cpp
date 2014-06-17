@@ -1309,6 +1309,9 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
   m_MaxDistanceLimit /= 0.00009921875/*mm per micro step*/;
   m_MinDistanceLimit /= 0.00009921875/*mm per micro step*/;
+
+  checkProtocol();
+  m_CurrentProtocol->setLimits(m_MinDistanceLimit, m_MaxDistanceLimit, m_MinForceLimit, m_MaxForceLimit);
 }
 
 /**
