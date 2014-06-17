@@ -1842,10 +1842,10 @@ void MyFrame::checkProtocol(void){
 
                                                                m_ProtocolsLoopCheckBox->GetValue(),
                                                                m_InitializeCrossSectionSpinCtrl->GetValue(),
-                                                               m_LimitsLimitMaxDistanceSpinCtrl->GetValue(),
-                                                               m_LimitsLimitMinDistanceSpinCtrl->GetValue(),
-                                                               m_LimitsLimitMaxForceSpinCtrl->GetValue(),
-                                                               m_LimitsLimitMinForceSpinCtrl->GetValue(),
+                                                               m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/,
+                                                               m_MinDistanceLimit * 0.00009921875/*mm per micro step*/,
+                                                               m_MaxForceLimit / 10000.0,
+                                                               m_MinForceLimit / 10000.0,
 
                                                                &m_VectorLayer,
                                                                &m_StressForcePreviewVector,
