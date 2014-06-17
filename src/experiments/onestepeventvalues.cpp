@@ -103,6 +103,10 @@ std::string OneStepEventValues::experimentSettingsForName(void){
  */
 std::string OneStepEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
+    case Experiment::BehaviorAfterStop::Stop:
+      return(std::string("Stop."));
+      break;
+
     case Experiment::BehaviorAfterStop::HoldADistance:
       return(std::string("Hold a distance: " + to_string_wp(m_HoldDistance * 0.00009921875/*mm per micro step*/, 2) + " mm"));
       break;
