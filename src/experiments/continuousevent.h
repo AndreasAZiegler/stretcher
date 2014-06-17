@@ -33,7 +33,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     ExperimentType type,
                     DistanceOrStressOrForce distanceOrStressForce,
                     bool ramptofailureactiveflag,
-                    long gagelength,
+                    long gagelength, long mountinglength,
                     long zerodistance,
                     long currentdistance,
                     double area,

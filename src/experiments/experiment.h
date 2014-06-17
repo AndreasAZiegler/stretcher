@@ -39,8 +39,10 @@ class Experiment
      */
     enum class BehaviorAfterStop{Stop = 0,
                                  HoldADistance = 1,
-                                 Repeat = 2,
-                                 GoToL0 = 3};
+                                 HoldAForce = 2,
+                                 Repeat = 3,
+                                 GoToL0 = 4,
+                                 GoToML = 5};
 
     /**
      * @brief The PreviewValue struct
@@ -90,6 +92,7 @@ class Experiment
                DistanceOrStressOrForce distanceOrStressForce,
                Experiment::Direction direction,
                long gagelength,
+               long mountinglength,
                long zerodistance,
                long currentdistance,
                double area,
@@ -186,6 +189,7 @@ class Experiment
     DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */
 
     long m_GageLength;													/**< Preload distance of the stage frame */
+    long m_MountingLength;											/**< Mountinglength of the stage frame */
     long m_DefaultGageLength;										/**< Default preload distance of the stage frame. */
     long m_ZeroDistance;												/**< Zero distance */
     long m_StartLength;													/**< Distance where the experiment starts. */

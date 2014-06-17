@@ -34,6 +34,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  ExperimentType type,
                  DistanceOrStressOrForce distanceOrStressForce,
                  long gagelength,
+                 long mountinglength,
                  long zerodistance,
                  long currentdistance,
                  double area,

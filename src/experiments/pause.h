@@ -23,7 +23,7 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
           *wait, std::mutex *mutex,
           ExperimentType type,
           DistanceOrStressOrForce distanceOrStressOrForce,
-          long gagelength,
+          long gagelength, long mountinglength,
           long zerodistance,
           long currentdistance,
           double area,

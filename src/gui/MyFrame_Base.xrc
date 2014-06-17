@@ -368,7 +368,7 @@
 																		<flag>wxALL</flag>
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_LimitsLimitStaticText60">
-																			<label>Limits in absolute values:</label>
+																			<label>Limits:</label>
 																			<wrap>-1</wrap>
 																		</object>
 																	</object>
@@ -619,30 +619,52 @@
 													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
 													<object class="wxPanel" name="m_LengthsPanel22">
-														<style>wxSTATIC_BORDER|wxTAB_TRAVERSAL</style>
+														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
 														<object class="wxFlexGridSizer">
-															<rows>0</rows>
-															<cols>2</cols>
+															<rows>2</rows>
+															<cols>1</cols>
 															<vgap>0</vgap>
 															<hgap>0</hgap>
-															<growablecols>0,1</growablecols>
+															<growablecols>0</growablecols>
 															<growablerows></growablerows>
 															<object class="sizeritem">
 																<option>0</option>
 																<flag>wxALL|wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxButton" name="m_LengthsSetDistanceZeroButton">
-																	<label>Zero distance</label>
-																	<default>0</default>
+																<object class="wxStaticText" name="m_LengthsZeroStaticText">
+																	<label>Set distance and/or stress/force to zero if you wish. Limits will be relative to this values.</label>
+																	<wrap>-1</wrap>
 																</object>
 															</object>
 															<object class="sizeritem">
-																<option>0</option>
-																<flag>wxALL|wxEXPAND</flag>
+																<option>1</option>
+																<flag>wxEXPAND</flag>
 																<border>5</border>
-																<object class="wxButton" name="m_LengthsSetForceZeroButton">
-																	<label>Zero force</label>
-																	<default>0</default>
+																<object class="wxFlexGridSizer">
+																	<rows>0</rows>
+																	<cols>2</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>0,1</growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_LengthsSetDistanceZeroButton">
+																			<label>Zero distance</label>
+																			<default>0</default>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxButton" name="m_LengthsSetForceZeroButton">
+																			<label>Zero force</label>
+																			<default>0</default>
+																		</object>
+																	</object>
 																</object>
 															</object>
 														</object>
@@ -1281,15 +1303,15 @@
 													<object class="wxPanel" name="m_OneStepPanel22">
 														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
 														<object class="wxFlexGridSizer">
-															<rows>5</rows>
+															<rows>6</rows>
 															<cols>3</cols>
 															<vgap>0</vgap>
 															<hgap>0</hgap>
 															<growablecols></growablecols>
-															<growablerows>4</growablerows>
+															<growablerows></growablerows>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxCheckBox" name="m_OneStepEndOfEventRepeatCheckBox">
 																	<label>Repeat [cycles]:</label>
@@ -1298,7 +1320,7 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrl" name="m_OneStepEndOfEventRepeatSpinCtrl">
 																	<value>0</value>
@@ -1308,7 +1330,7 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALL</flag>
+																<flag></flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_staticText75">
 																	<label></label>
@@ -1344,17 +1366,44 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
+																<flag></flag>
+																<border>5</border>
+																<object class="wxRadioButton" name="m_OneStepEndOfEventStopRadioBtn">
+																	<style>wxRB_GROUP</style>
+																	<label>Stop</label>
+																	<value>0</value>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText84">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText85">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxRadioButton" name="m_OneStepEndOfEventHoldRadioBtn">
-																	<style>wxRB_GROUP</style>
 																	<label>Hold a distance:</label>
 																	<value>0</value>
 																</object>
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrlDouble" name="m_OneStepEndOfEventHoldSpinCtrl">
 																	<value>0</value>
@@ -1364,7 +1413,7 @@
 															</object>
 															<object class="sizeritem">
 																<option>1</option>
-																<flag>wxEXPAND | wxALL</flag>
+																<flag></flag>
 																<border>5</border>
 																<object class="wxPanel" name="m_OneStepPanel3">
 																	<style>wxTAB_TRAVERSAL</style>
@@ -1372,7 +1421,7 @@
 																		<orient>wxVERTICAL</orient>
 																		<object class="sizeritem">
 																			<option>0</option>
-																			<flag>wxALIGN_CENTER|wxALL</flag>
+																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
 																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldMmRadioBtn">
 																				<style>wxRB_GROUP</style>
@@ -1382,7 +1431,7 @@
 																		</object>
 																		<object class="sizeritem">
 																			<option>0</option>
-																			<flag>wxALIGN_CENTER|wxALL</flag>
+																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
 																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldPercentRadioBtn">
 																				<label>%L0</label>
@@ -1394,10 +1443,37 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxRadioButton" name="m_OneStepEndOfEventL0RadioBtn">
 																	<label>Go to L0</label>
+																	<value>0</value>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText803">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText81">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxRadioButton" name="m_OneStepEndOfEventMLRadioBtn">
+																	<label>Go to mounting l.</label>
 																	<value>0</value>
 																</object>
 															</object>
@@ -2019,15 +2095,15 @@
 													<object class="wxPanel" name="m_ContinuousPanel22">
 														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
 														<object class="wxFlexGridSizer">
-															<rows>5</rows>
+															<rows>6</rows>
 															<cols>2</cols>
 															<vgap>0</vgap>
 															<hgap>0</hgap>
 															<growablecols></growablecols>
-															<growablerows>4</growablerows>
+															<growablerows></growablerows>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxCheckBox" name="m_ContinuousEndOfEventRepeatCheckBox">
 																	<label>Repeat [cycles]:</label>
@@ -2036,7 +2112,7 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxSpinCtrl" name="m_ContinuousEndOfEventRepeatSpinCtrl">
 																	<value>0</value>
@@ -2046,7 +2122,7 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALL|wxEXPAND</flag>
+																<flag>wxALL</flag>
 																<border>5</border>
 																<object class="wxStaticText" name="m_OneStepEndOfEventStaticText1">
 																	<label>End of event:</label>
@@ -2064,7 +2140,7 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxRadioButton" name="m_ContinuousEndOfEventStopRadioBtn">
 																	<style>wxRB_GROUP</style>
@@ -2083,18 +2159,59 @@
 															</object>
 															<object class="sizeritem">
 																<option>0</option>
-																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
 																<border>5</border>
 																<object class="wxRadioButton" name="m_ContinuousEndOfEventL0RadioBtn">
 																	<label>Go to L0</label>
 																	<value>0</value>
 																</object>
 															</object>
-															<object class="spacer">
-																<option>1</option>
-																<flag>wxEXPAND</flag>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
 																<border>5</border>
-																<size>0,0</size>
+																<object class="wxStaticText" name="m_staticText83">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxRadioButton" name="m_ContinuousEndOfEventMLRadioBtn">
+																	<label>Go to mounting length</label>
+																	<value>0</value>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_staticText86">
+																	<label></label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxRadioButton" name="m_ContinuousEndOfEventHoldRadioBtn">
+																	<label>Hold [N]:</label>
+																	<value>0</value>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_ContinuousEndOfEventHoldSpinCtrl">
+																	<style></style>
+																	<value>0</value>
+																	<min>0</min>
+																	<max>10</max>
+																</object>
 															</object>
 														</object>
 													</object>

@@ -25,6 +25,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            ExperimentType type,
                            DistanceOrStressOrForce distanceOrStressForce,
                            long gagelength,
+                           long mountinglength,
                            long zerodistance,
                            long currentdistance,
                            double area,
@@ -60,6 +61,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                distanceOrStressForce,
                Direction::Stop,
                gagelength,
+               mountinglength,
                zerodistance,
                currentdistance,
                area,
@@ -209,6 +211,9 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
 
   // Make last point depending on the stop behavior.
   switch(m_BehaviorAfterStop){
+    case BehaviorAfterStop::Stop:
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_UpperLimit));
+        break;
     case BehaviorAfterStop::GoToL0:
         previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));
         break;
@@ -357,9 +362,28 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
 
                 switch(m_BehaviorAfterStop){
+                  case BehaviorAfterStop::Stop:
+                    {
+                      m_CurrentState = stopState;
+                      m_CurrentDirection = Direction::Stop;
+                      m_CurrentCycle = 0;
+                      {
+                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                        m_StageFrame->stop();
+                      }
+                      wxLogMessage("OneStepEvent: Stop.");
+                      std::lock_guard<std::mutex> lck(*m_WaitMutex);
+                      m_Wait->notify_all();
+                      break;
+                    }
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentLimit = m_GageLength;
                     m_StageFrame->gotoStepsDistance(m_GageLength);
+                    break;
+                  case BehaviorAfterStop::GoToML:
+                    m_CurrentLimit = m_MountingLength;
+                    wxLogMessage(std::string("OneStepEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    m_StageFrame->gotoStepsDistance(m_MountingLength);
                     break;
                   case BehaviorAfterStop::HoldADistance:
                     m_CurrentLimit = m_HoldDistance;
@@ -474,10 +498,29 @@ void OneStepEvent::process(Event event){
                 m_CurrentCycle = 0;
 
                 switch(m_BehaviorAfterStop){
+                  case BehaviorAfterStop::Stop:
+                    {
+                      m_CurrentState = stopState;
+                      m_CurrentDirection = Direction::Stop;
+                      m_CurrentCycle = 0;
+                      {
+                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                        m_StageFrame->stop();
+                      }
+                      wxLogMessage("OneStepEvent: Stop.");
+                      std::lock_guard<std::mutex> lck(*m_WaitMutex);
+                      m_Wait->notify_all();
+                      break;
+                    }
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentLimit = m_GageLength;
                     wxLogMessage(std::string("OneStepEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
                     m_StageFrame->gotoStepsDistance(m_GageLength);
+                    break;
+                  case BehaviorAfterStop::GoToML:
+                    m_CurrentLimit = m_MountingLength;
+                    wxLogMessage(std::string("OneStepEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    m_StageFrame->gotoStepsDistance(m_MountingLength);
                     break;
                   case BehaviorAfterStop::HoldADistance:
                     m_CurrentLimit = m_HoldDistance;

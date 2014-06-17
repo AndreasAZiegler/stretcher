@@ -27,6 +27,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                  DistanceOrStressOrForce distanceOrStressForce,
                                  bool ramptofailureactiveflag,
                                  long gagelength,
+                                 long mountinglength,
                                  long zerodistance,
                                  long currentdistance,
                                  double area,
@@ -61,6 +62,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                    distanceOrStressForce,
                    Direction::Stop,
                    gagelength,
+                   mountinglength,
                    zerodistance,
                    currentdistance,
                    area,
@@ -406,16 +408,28 @@ void ContinuousEvent::process(Event event){
               //std::cout << "Go to preload distance" << std::endl;
               if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
+                m_CurrentStep = 0;
+                m_CurrentCycle = 0;
+
                 switch(m_BehaviorAfterStop){
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
-                    m_CurrentStep = 0;
-                    m_CurrentCycle = 0;
                     m_CurrentLimit = m_GageLength;
+                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_GageLength);
+                    }
+                    break;
+                  case BehaviorAfterStop::GoToML:
+                    m_CurrentState = goBackState;
+                    m_CheckDistanceFlag = true;
+                    m_CurrentLimit = m_MountingLength;
+                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    {
+                      std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                      m_StageFrame->gotoStepsDistance(m_MountingLength);
                     }
                     break;
                   case BehaviorAfterStop::Stop:
@@ -427,8 +441,6 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = stopState;
                     m_CurrentDirection = Direction::Stop;
                     m_CheckDistanceFlag = false;
-                    m_CurrentStep = 0;
-                    m_CurrentCycle = 0;
                     std::lock_guard<std::mutex> lck(*m_WaitMutex);
                     m_Wait->notify_all();
                     break;
@@ -535,19 +547,30 @@ void ContinuousEvent::process(Event event){
                 m_CurrentLimit = 0;
                 if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
+                  m_CurrentStep = 0;
+                  m_CurrentCycle = 0;
+
                   switch(m_BehaviorAfterStop){
                     case BehaviorAfterStop::GoToL0:
                       m_CurrentState = goBackState;
                       m_CheckDistanceFlag = true;
-                      m_CurrentStep = 0;
-                      m_CurrentCycle = 0;
                       m_CurrentLimit = m_GageLength;
+                      wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
                       {
                         std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                         m_StageFrame->gotoStepsDistance(m_GageLength);
                       }
                       break;
-
+                    case BehaviorAfterStop::GoToML:
+                      m_CurrentState = goBackState;
+                      m_CheckDistanceFlag = true;
+                      m_CurrentLimit = m_MountingLength;
+                      wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                      {
+                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                        m_StageFrame->gotoStepsDistance(m_MountingLength);
+                      }
+                      break;
                     case BehaviorAfterStop::Stop:
                       {
                         std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
@@ -557,8 +580,6 @@ void ContinuousEvent::process(Event event){
                       m_CurrentState = stopState;
                       m_CurrentDirection = Direction::Stop;
                       m_CheckDistanceFlag = false;
-                      m_CurrentStep = 0;
-                      m_CurrentCycle = 0;
                       std::lock_guard<std::mutex> lck(*m_WaitMutex);
                       m_Wait->notify_all();
                       break;

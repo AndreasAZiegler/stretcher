@@ -47,7 +47,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
             ExperimentType type,
             DistanceOrStressOrForce distanceOrStressOrForce,
-            long gagelength, long zerodistance,
+            long gagelength, long mountinglength, long zerodistance,
             long currentdistance,
             double area,
 

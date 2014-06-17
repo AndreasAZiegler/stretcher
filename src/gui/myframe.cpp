@@ -905,6 +905,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      ExperimentType::Preload,
                                                      m_DistanceOrStressOrForce,
                                                      m_GageLength,
+                                                     m_MountingLength,
                                                      m_MaxPosDistance,
                                                      m_CurrentDistance,
                                                      m_InitializeCrossSectionSpinCtrl->GetValue(),
@@ -1027,8 +1028,12 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   Experiment::BehaviorAfterStop behaviorAfterStop;
   if(true == m_OneStepEndOfEventHoldRadioBtn->GetValue()){
     behaviorAfterStop = Experiment::BehaviorAfterStop::HoldADistance;
-  } else if(true == m_OneStepEndOfEventL0RadioBtn->GetValue()){
+  }else if(true == m_OneStepEndOfEventL0RadioBtn->GetValue()){
     behaviorAfterStop = Experiment::BehaviorAfterStop::GoToL0;
+  }else if(true == m_OneStepEndOfEventStopRadioBtn->GetValue()){
+    behaviorAfterStop = Experiment::BehaviorAfterStop::Stop;
+  }else if(true == m_OneStepEndOfEventMLRadioBtn->GetValue()){
+    behaviorAfterStop = Experiment::BehaviorAfterStop::GoToML;
   }
 
   std::unique_ptr<Experiment> experiment(new OneStepEvent(m_StageFrame,
@@ -1052,6 +1057,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           ExperimentType::OneStepEvent,
                                                           distanceOrStressOrForce,
                                                           m_GageLength,
+                                                          m_MountingLength,
                                                           m_MaxPosDistance,
                                                           m_CurrentDistance,
                                                           m_InitializeCrossSectionSpinCtrl->GetValue(),
@@ -1252,8 +1258,12 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
   Experiment::BehaviorAfterStop behaviorAfterStop;
   if(true == m_ContinuousEndOfEventStopRadioBtn->GetValue()){
     behaviorAfterStop = Experiment::BehaviorAfterStop::Stop;
-  } else if(true == m_ContinuousEndOfEventL0RadioBtn->GetValue()){
+  }else if(true == m_ContinuousEndOfEventL0RadioBtn->GetValue()){
     behaviorAfterStop = Experiment::BehaviorAfterStop::GoToL0;
+  }else if(true == m_ContinuousEndOfEventMLRadioBtn->GetValue()){
+    behaviorAfterStop = Experiment::BehaviorAfterStop::GoToML;
+  }else if(true == m_ContinuousEndOfEventHoldRadioBtn->GetValue()){
+    behaviorAfterStop = Experiment::BehaviorAfterStop::HoldAForce;
   }
 
   std::unique_ptr<Experiment> experiment(new ContinuousEvent(m_StageFrame,
@@ -1278,6 +1288,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              distanceOrStressOrForce,
                                                              ramptofailureactiveflag,
                                                              m_GageLength,
+                                                             m_MountingLength,
                                                              m_MaxPosDistance,
                                                              m_CurrentDistance,
                                                              m_InitializeCrossSectionSpinCtrl->GetValue(),
@@ -1544,6 +1555,7 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
                                                    ExperimentType::Pause,
                                                    DistanceOrStressOrForce::Distance,
                                                    m_GageLength,
+                                                   m_MountingLength,
                                                    m_MaxPosDistance,
                                                    m_CurrentDistance,
                                                    m_InitializeCrossSectionSpinCtrl->GetValue()));
@@ -1595,6 +1607,7 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
                                                          ExperimentType::Pause,
                                                          DistanceOrStressOrForce::Distance,
                                                          m_GageLength,
+                                                         m_MountingLength,
                                                          m_MaxPosDistance,
                                                          m_CurrentDistance,
                                                          m_InitializeCrossSectionSpinCtrl->GetValue()));
