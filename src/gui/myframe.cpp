@@ -58,8 +58,10 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnLimitsLoadSet2)
   EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnLimitsLoadSet3)
   EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
-  EVT_BUTTON(ID_LimitsDistanceGoTo, MyFrame::OnLimitsGoTo)
+  EVT_BUTTON(ID_LengthsDistanceGoTo, MyFrame::OnLimitsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
+  EVT_BUTTON(ID_SetZeroDistance, MyFrame::OnLengthsZeroDistance)
+  EVT_BUTTON(ID_SetZeroForceStress, MyFrame::OnLengthsZeroForceStress)
   EVT_RADIOBUTTON(ID_OneStepStressForce, MyFrame::OnOneStepStressForce)
   EVT_RADIOBUTTON(ID_OneStepDistance, MyFrame::OnOneStepDistance)
   EVT_BUTTON(ID_OneStepSendToProtocol, MyFrame::OnOneStepSendToProtocol)
@@ -144,7 +146,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_InitializeSavePresetButton->SetId(ID_SavePreset);
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
-  m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
   m_InitializeUnitRadioBox->SetId(ID_Unit);
   wxString str;
   str << m_LengthsGoToSpinCtrl->GetValue();
@@ -153,9 +154,11 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_LimitsLimitSet2Button->SetId(ID_LoadLimitSet2);
   m_LimitsLimitSet3Button->SetId(ID_LoadLimitSet3);
   m_LimitsLimitSet4Button->SetId(ID_LoadLimitSet4);
-  m_LengthsGoToSpinCtrl->SetId(ID_LimitsDistanceValue);
   m_LimitsLimitSetButton->SetId(ID_SetLimits);
-  m_LengthsGoToButton->SetId((ID_LimitsDistanceGoTo));
+  m_LengthsGoToButton->SetId((ID_LengthsDistanceGoTo));
+  m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
+  m_LengthsSetDistanceZeroButton->SetId(ID_SetZeroDistance);
+  m_LengthsSetForceZeroButton->SetId(ID_SetZeroForceStress);
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
   m_PreloadSpeedMmSpinCtrl->SetId(ID_PreloadSpeedMm);
   m_PreloadSendButton->SetId(ID_PreloadSendToProtocol);
@@ -627,6 +630,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
+    m_LengthsSetForceZeroButton->SetLabelText("Zero stress");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
@@ -655,6 +659,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
+    m_LengthsSetForceZeroButton->SetLabelText("Zero force");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
     m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
@@ -766,6 +771,22 @@ void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
   m_GageLength = m_CurrentDistance;
   //m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   //m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the zero distance button.
+ * @param event Occuring event
+ */
+void MyFrame::OnLengthsZeroDistance(wxCommandEvent& event){
+  m_StageFrame->setZeroDistance();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the zero force/stress button.
+ * @param event Occuring event
+ */
+void MyFrame::OnLengthsZeroForceStress(wxCommandEvent& event){
+
 }
 
 /**

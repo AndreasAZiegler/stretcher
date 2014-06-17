@@ -72,6 +72,9 @@ protected:
  wxSpinCtrlDouble* m_LengthsGoToSpinCtrl;
  wxButton* m_LengthsGoToButton;
  wxButton* m_LengthsMountingLengthButton;
+ wxPanel* m_LengthsPanel22;
+ wxButton* m_LengthsSetDistanceZeroButton;
+ wxButton* m_LengthsSetForceZeroButton;
  wxPanel* m_PreloadPanel;
  wxPanel* m_PreloadCalculateDiameterPanel;
  wxStaticText* m_PreloadLimitStaticText;
@@ -284,6 +287,9 @@ private:
   m_LengthsGoToSpinCtrl = XRCCTRL(*this,"m_LengthsGoToSpinCtrl",wxSpinCtrlDouble);
   m_LengthsGoToButton = XRCCTRL(*this,"m_LengthsGoToButton",wxButton);
   m_LengthsMountingLengthButton = XRCCTRL(*this,"m_LengthsMountingLengthButton",wxButton);
+  m_LengthsPanel22 = XRCCTRL(*this,"m_LengthsPanel22",wxPanel);
+  m_LengthsSetDistanceZeroButton = XRCCTRL(*this,"m_LengthsSetDistanceZeroButton",wxButton);
+  m_LengthsSetForceZeroButton = XRCCTRL(*this,"m_LengthsSetForceZeroButton",wxButton);
   m_PreloadPanel = XRCCTRL(*this,"m_PreloadPanel",wxPanel);
   m_PreloadCalculateDiameterPanel = XRCCTRL(*this,"m_PreloadCalculateDiameterPanel",wxPanel);
   m_PreloadLimitStaticText = XRCCTRL(*this,"m_PreloadLimitStaticText",wxStaticText);
