@@ -535,7 +535,7 @@ void MyFrame::startup(void){
   std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this,
                                                                                                  "Does the mechanical set up changed since the last use?",
                                                                                                  wxMessageBoxCaptionStr,
-                                                                                                 wxYES_NO));
+                                                                                                 wxYES_NO|wxNO_DEFAULT));
   // Ask if the mechanical set up changed.
   int answer = dialog->ShowModal();
   // If the set up didn't change, load Le, L0, current distance, limits and load stored positions.

@@ -259,8 +259,22 @@ void ContinuousEvent::process(Event event){
         // Perform hold if there is a hold time
         if(0 < m_HoldTime){
           wxLogMessage(std::string("ContinuousEvent: Hold for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+          /*
+          {
+            std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+            m_WaitActive = true;
+          }
+          */
           std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
           t1.join();
+          /*
+          {
+            std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+            m_WaitActive = false;
+          }
+          */
+
           //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
           wxLogMessage("ContinuousEvent: Holding over.");
         }
@@ -421,8 +435,22 @@ void ContinuousEvent::process(Event event){
                   m_StageFrame->stop();
                 }
                 wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                /*
+                {
+                  std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                  m_WaitActive = true;
+                }
+                */
                 std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                 t1.join();
+                /*
+                {
+                  std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                  m_WaitActive = false;
+                }
+                */
+
                 //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                 wxLogMessage("ContinuousEvent: Holding over.");
               }
@@ -542,8 +570,22 @@ void ContinuousEvent::process(Event event){
                       m_StageFrame->stop();
                     }
                     wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = true;
+                    }
+                    */
                     std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                     t1.join();
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = false;
+                    }
+                    */
+
                     //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                     wxLogMessage("ContinuousEvent: Holding over.");
                   }
@@ -567,8 +609,22 @@ void ContinuousEvent::process(Event event){
                     m_StageFrame->stop();
                   }
                   wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = true;
+                  }
+                  */
                   std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                   t1.join();
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = false;
+                  }
+                  */
+
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                   wxLogMessage("ContinuousEvent: Holding over.");
                 }
@@ -706,7 +762,22 @@ void ContinuousEvent::process(Event event){
                     }
                     //std::cout << "ContinuousEvent: stages should stop." << std::endl;
                     wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
-                    std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime); t1.join();
+
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = true;
+                    }
+                    */
+                    std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
+                    t1.join();
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = false;
+                    }
+                    */
+
                     //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                     wxLogMessage("ContinuousEvent: Holding over.");
                   }
@@ -730,8 +801,22 @@ void ContinuousEvent::process(Event event){
                     m_StageFrame->stop();
                   }
                   wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = true;
+                  }
+                  */
                   std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                   t1.join();
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = false;
+                  }
+                  */
+
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                   wxLogMessage("ContinuousEvent: Holding over.");
                 }
@@ -774,8 +859,22 @@ void ContinuousEvent::process(Event event){
           // Perform hold if there is a hold time
           if(0 < m_HoldTime){
             wxLogMessage(std::string("ContinuousEvent: Hold for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+            /*
+            {
+              std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+              m_WaitActive = true;
+            }
+            */
             std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
             t1.join();
+            /*
+            {
+              std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+              m_WaitActive = false;
+            }
+            */
+
             //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
             wxLogMessage("ContinuousEvent: Holding over.");
           }
@@ -950,14 +1049,18 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
       }
 
       {
-        std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+        //std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+        m_WaitActiveMutex.lock();
         if(((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) ||
            (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) ||
            (true == m_Ramp2FailureActiveFlag)) && (false == m_WaitActive)){
+          m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
           //t1.detach();
           t1.join();
           //process(Event::evUpdate);
+        }else{
+          m_WaitActiveMutex.unlock();
         }
       }
       //}
@@ -975,12 +1078,16 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
       } else{
       */
       {
-        std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+        //std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+        m_WaitActiveMutex.lock();
         if(((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
+          m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
           //t1.detach();
           t1.join();
           //process(Event::evUpdate);
+        }else{
+          m_WaitActiveMutex.unlock();
         }
       }
       //}
