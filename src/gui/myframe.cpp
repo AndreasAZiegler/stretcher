@@ -557,6 +557,10 @@ void MyFrame::startup(void){
     m_MaxDistanceLimit = m_Settings->getMaxDistanceLimit();
     m_MinForceLimit = m_Settings->getMinForceLimit();
     m_MaxForceLimit = m_Settings->getMaxForceLimit();
+    // Set limits to the stages
+    m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit);
+    m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
+    // Display limits
     m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
     m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
@@ -589,8 +593,8 @@ void MyFrame::OnExit(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
-  MySamplingFrequency_Base *samplingFrequency = new MySamplingFrequency_Base(this);
-  samplingFrequency->Show();
+  std::unique_ptr<MySamplingFrequency_Base> samplingFrequency = std::unique_ptr<MySamplingFrequency_Base>(new MySamplingFrequency_Base(this));
+  samplingFrequency->ShowModal();
 }
 
 /**
@@ -598,9 +602,9 @@ void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPortsSettings(wxCommandEvent& event){
-  MyPorts *ports = new MyPorts(m_Settings, m_LinearStages, m_ForceSensor, this);
+  std::unique_ptr<MyPorts> ports = std::unique_ptr<MyPorts>(new MyPorts(m_Settings, m_LinearStages, m_ForceSensor, this));
 
-	ports->Show();
+  ports->ShowModal();
 }
 
 /**
@@ -608,8 +612,8 @@ void MyFrame::OnPortsSettings(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
-  MyFileOutput *fileOutput = new MyFileOutput(this, m_Settings, m_StoragePath, this);
-	fileOutput->Show();
+  std::unique_ptr<MyFileOutput> fileOutput = std::unique_ptr<MyFileOutput>(new MyFileOutput(this, m_Settings, m_StoragePath, this));
+  fileOutput->ShowModal();
 }
 
 /**
@@ -1431,7 +1435,7 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
   checkProtocol();
-  std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames()));
+  std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
   dialog->ShowModal();
 }
 
@@ -1447,8 +1451,16 @@ void MyFrame::OnExportPNG(wxCommandEvent& event){
 
   std::string pathAndFilename = m_StoragePath + "/" + "Graph_" + std::string(mbstr) + ".png";
 
-  m_Graph->SaveScreenshot(pathAndFilename, wxBITMAP_TYPE_PNG);
-  wxLogMessage(std::string("Graph saved in: " + pathAndFilename).c_str());
+  // Let user choose path and file name.
+  wxFileDialog saveFileDialog(this, _("Save png file"), "", "", "PNG files (*.png)|*.png", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+  saveFileDialog.SetPath(pathAndFilename);
+
+  if(wxID_CANCEL == saveFileDialog.ShowModal()){
+    return;
+  }
+
+  m_Graph->SaveScreenshot(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
+  wxLogMessage(std::string("Graph saved in: " + saveFileDialog.GetPath()).c_str());
 }
 
 /**
@@ -1471,9 +1483,17 @@ void MyFrame::OnSaveLog(wxCommandEvent& event){
 
   std::string pathAndFilename = m_StoragePath + "/" + "Log_" + std::string(mbstr) + ".txt";
 
-  m_LogTextCtrl->SaveFile(pathAndFilename);
+  // Let user choose path and file name.
+  wxFileDialog saveFileDialog(this, _("Save png file"), "", "", "LOG files (*.txt)|*.txt", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+  saveFileDialog.SetPath(pathAndFilename);
 
-  wxLogMessage(std::string("Log saved in: " + pathAndFilename).c_str());
+  if(wxID_CANCEL == saveFileDialog.ShowModal()){
+    return;
+  }
+
+  m_LogTextCtrl->SaveFile(saveFileDialog.GetPath());
+
+  wxLogMessage(std::string("Log saved in: " + saveFileDialog.GetPath()).c_str());
 }
 
 /**
@@ -1888,10 +1908,10 @@ void MyFrame::checkProtocol(void){
 
                                                                m_ProtocolsLoopCheckBox->GetValue(),
                                                                m_InitializeCrossSectionSpinCtrl->GetValue(),
-                                                               m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/,
-                                                               m_MinDistanceLimit * 0.00009921875/*mm per micro step*/,
-                                                               m_MaxForceLimit / 10000.0,
-                                                               m_MinForceLimit / 10000.0,
+                                                               m_MaxDistanceLimit,
+                                                               m_MinDistanceLimit,
+                                                               m_MaxForceLimit,
+                                                               m_MinForceLimit,
 
                                                                &m_VectorLayer,
                                                                &m_StressForcePreviewVector,

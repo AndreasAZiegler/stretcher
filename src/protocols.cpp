@@ -110,14 +110,14 @@ void Protocols::makePreview(void){
   // Create limit vectors
   m_TimePointLimits.push_back(m_PreviewValues.front().timepoint);
   m_TimePointLimits.push_back(m_PreviewValues.back().timepoint);
-  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
-  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
-  m_MinStressForceLimits.push_back(m_MinForceLimit);
-  m_MinStressForceLimits.push_back(m_MinForceLimit);
-  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
-  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
-  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
-  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
+  m_MinStressForceLimits.push_back(m_MinForceLimit / 10000.0);
+  m_MinStressForceLimits.push_back(m_MinForceLimit / 10000.0);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
 
   // Set the the vector data.
   m_DistancePreviewVector->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
@@ -442,19 +442,11 @@ std::vector<std::string> Protocols::getExperimentNames(void){
 /**
  * @brief Exports the measurement data to a .csv file.
  */
-void Protocols::exportCSV(std::vector<bool> disableexport){
-  // Creating file name
-  std::time_t time = std::time(NULL);
-  char mbstr[100];
-  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-  //std::cout << mbstr << std::endl;
-  //std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
-  std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".txt";
+void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname){
   //std::cout << pathAndFilename << std::endl;
 
   // Creat the file
-  std::ofstream file(pathAndFilename);
-  //std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::ofstream file(pathname);
 
   // Open the file
   if(false == file.is_open()){
@@ -463,6 +455,9 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
   }
 
   // Printing header
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
   file << "Protocol: " <<  "Date/Time: " << std::string(mbstr) << std::endl << std::endl;
 
   // Printing the experiment settings.
@@ -519,7 +514,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
 
   file.close();
 
-  wxLogMessage(std::string("Saved experiment values to: " + pathAndFilename).c_str());
+  wxLogMessage(std::string("Saved experiment values to: " + pathname).c_str());
   /*
 /**
  * @brief Returns the experiment settings as a std::string.

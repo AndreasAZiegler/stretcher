@@ -123,7 +123,7 @@ class Protocols
     /**
      * @brief Exports the measurement data to a .csv file.
      */
-    void exportCSV(std::vector<bool> disableexport);
+    void exportCSV(std::vector<bool> disableexport, std::string pathname = "");
 
     /**
      * @brief Returns the current experiment type as a string.

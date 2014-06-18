@@ -6,17 +6,37 @@
 		<title></title>
 		<centered>1</centered>
 		<object class="wxFlexGridSizer">
-			<rows>3</rows>
+			<rows>5</rows>
 			<cols>1</cols>
 			<vgap>0</vgap>
 			<hgap>0</hgap>
 			<growablecols>0</growablecols>
-			<growablerows>1</growablerows>
+			<growablerows>4</growablerows>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxStaticText" name="m_ExportDialog1StaticText">
+					<label>Please select a folder and filename.</label>
+					<wrap>-1</wrap>
+				</object>
+			</object>
 			<object class="sizeritem">
 				<option>0</option>
 				<flag>wxALL</flag>
 				<border>5</border>
-				<object class="wxStaticText" name="m_ExportDialogStaticText">
+				<object class="wxFilePickerCtrl" name="m_ExportDialogFilePicker">
+					<value></value>
+					<message>Choose a folder and insert a filename.</message>
+					<wildcard>*.txt</wildcard>
+					<style>wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE</style>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL</flag>
+				<border>5</border>
+				<object class="wxStaticText" name="m_ExportDialog2StaticText">
 					<label>Please select the experiments from which you don&apos;t want to export the measurement values.</label>
 					<wrap>-1</wrap>
 				</object>
