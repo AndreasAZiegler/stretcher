@@ -90,6 +90,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_CurrentLimitState(LimitState::upperLimitState),
     m_CurrentLimit(0),
     m_CurrentCycle(0),
+    m_WaitActive(false),
     m_DecreaseSpeedFlag(false),
     m_CheckDistanceFlag(false),
     m_ExperimentValues(new OneStepEventValues(stageframe,
@@ -381,15 +382,17 @@ void OneStepEvent::process(Event event){
                     }
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentLimit = m_GageLength;
+                    wxLogMessage(std::string("OneStepEvent: Go to gage length: " + std::to_string(m_GageLength * 0.00009921875/*mm per micro step*/)).c_str());
                     m_StageFrame->gotoStepsDistance(m_GageLength);
                     break;
                   case BehaviorAfterStop::GoToML:
                     m_CurrentLimit = m_MountingLength;
-                    wxLogMessage(std::string("OneStepEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    wxLogMessage(std::string("OneStepEvent: Go to mounting length: " + std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/)).c_str());
                     m_StageFrame->gotoStepsDistance(m_MountingLength);
                     break;
                   case BehaviorAfterStop::HoldADistance:
                     m_CurrentLimit = m_HoldDistance;
+                    wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance * 0.00009921875/*mm per micro step*/)).c_str());
                     m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
@@ -517,17 +520,17 @@ void OneStepEvent::process(Event event){
                     }
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentLimit = m_GageLength;
-                    wxLogMessage(std::string("OneStepEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
+                    wxLogMessage(std::string("OneStepEvent: Go to gage length: " + std::to_string(m_GageLength * 0.00009921875/*mm per micro step*/)).c_str());
                     m_StageFrame->gotoStepsDistance(m_GageLength);
                     break;
                   case BehaviorAfterStop::GoToML:
                     m_CurrentLimit = m_MountingLength;
-                    wxLogMessage(std::string("OneStepEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    wxLogMessage(std::string("OneStepEvent: Go to mounting length: " + std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/)).c_str());
                     m_StageFrame->gotoStepsDistance(m_MountingLength);
                     break;
                   case BehaviorAfterStop::HoldADistance:
                     m_CurrentLimit = m_HoldDistance;
-                    wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance)).c_str());
+                    wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance * 0.00009921875/*mm per micro step*/)).c_str());
                     m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
@@ -681,11 +684,15 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
         //process(Event::evStop);
       } else{
       */
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
-          std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
-          t1.detach();
-          //process(Event::evUpdate);
-        }
+      m_WaitActiveMutex.lock();
+      if(((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)) && (false == m_WaitActive)){
+        m_WaitActiveMutex.unlock();
+        std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
+        t1.detach();
+        //process(Event::evUpdate);
+      }else{
+        m_WaitActiveMutex.unlock();
+      }
       //}
       break;
 
@@ -700,12 +707,16 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
         //process(Event::evStop);
       } else{
       */
-        if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){
-          std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
-          t1.detach();
-          //process(Event::evUpdate);
-        }
-      //}
+      m_WaitActiveMutex.lock();
+      if(((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
+        m_WaitActiveMutex.unlock();
+        std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
+        t1.detach();
+        //process(Event::evUpdate);
+      }else{
+        m_WaitActiveMutex.unlock();
+      }
+    //}
       break;
   }
   //process(Event::evUpdate);
@@ -730,5 +741,13 @@ void OneStepEvent::resetExperiment(void){
  * @param milliseconds
  */
 void OneStepEvent::sleepForMilliseconds(double seconds){
+  {
+    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+    m_WaitActive = true;
+  }
   std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(seconds * 1000)));
+  {
+    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+    m_WaitActive = false;
+  }
 }

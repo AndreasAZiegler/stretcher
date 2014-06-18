@@ -154,6 +154,9 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     long m_CurrentLimit;																										/**< Value of the current limit. */
     int m_CurrentCycle;																											/**< The current cycle. */
 
+    bool m_WaitActive;																											/**< Indicates if a hold is active. */
+    std::mutex m_WaitActiveMutex;																						/**< Mutex to protect m_WaitActive. */
+
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */
     std::mutex *m_WaitMutex;																								/**< Pointer to the mutex for m_Wait */
