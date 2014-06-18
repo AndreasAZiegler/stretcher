@@ -217,6 +217,9 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
     case BehaviorAfterStop::GoToL0:
         previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));
         break;
+    case BehaviorAfterStop::GoToML:
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_MountingLength));
+        break;
     case BehaviorAfterStop::HoldADistance:
         previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_HoldDistance));
         break;

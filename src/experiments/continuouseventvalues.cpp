@@ -102,5 +102,9 @@ std::string ContinuousEventValues::getEndOfEvent(void){
     case Experiment::BehaviorAfterStop::GoToML:
       return(std::string("Go to mounting length."));
       break;
+
+    case Experiment::BehaviorAfterStop::HoldAForce:
+      return(std::string("Stop at force/stress."));
+      break;
   }
 }

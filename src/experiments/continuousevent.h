@@ -33,7 +33,8 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     ExperimentType type,
                     DistanceOrStressOrForce distanceOrStressForce,
                     bool ramptofailureactiveflag,
-                    long gagelength, long mountinglength,
+                    long gagelength,
+                    long mountinglength,
                     long zerodistance,
                     long currentdistance,
                     double area,
@@ -52,7 +53,8 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     int steps,
                     double ramptofailurepercent,
                     int cycles,
-                    BehaviorAfterStop behaviorAfterStop);
+                    BehaviorAfterStop behaviorAfterStop,
+                    long holdforce);
 
     /**
      * @brief Destructor
@@ -112,10 +114,11 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @enum State
      * @brief Defines the states of the Conditioning FSM.
      */
-    enum State{stopState,       /**< Stop state */
-               runState,       	/**< Run state */
-               goStartState,		/**< Go to start state */
-               goBackState};		/**< Go back state */
+    enum State{stopState,					/**< Stop state */
+               runState,					/**< Run state */
+               goStartState,			/**< Go to start state */
+               goBackState,				/**< Go back state */
+               goBackForceState}; /**< Go back to force state */
 
     /**
      * @brief Sleep for the amount of milliseconds.
@@ -145,6 +148,10 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     int m_CurrentStep;																											/**< The current step. */
     int m_CurrentCycle;																											/**< The current cycle. */
     long m_MaxStressForce;																									/**< The maximum stress/force .*/
+    long m_HoldForce;																												/**< The hold force. */
+
+    bool m_WaitActive;																											/**< Indicates if a hold is active. */
+    std::mutex m_WaitActiveMutex;																						/**< Mutex to protect m_WaitActive. */
 
     bool m_DecreaseSpeedFlag;																								/**< Indicates if speed was decreased */
     std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment */

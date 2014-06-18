@@ -530,6 +530,7 @@ void MyFrame::startup(void){
   m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
   m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
   m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
+  m_ContinuousEndOfEventHoldSpinCtrl->SetDigits(2);
 
   std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this,
                                                                                                  "Does the mechanical set up changed since the last use?",
@@ -639,6 +640,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dkPa]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("kPa");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Smax.");
+    m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [kPa]:");
     m_ForceUnit = wxT(" kPa");
 
 
@@ -670,6 +672,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dN]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("N");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Fmax.");
+    m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [N]:");
     m_ForceUnit = wxT(" N");
 
     if(true == m_ShowGraphFlag){
@@ -769,6 +772,7 @@ void MyFrame::setDistanceWActuatorCollision(double le){
 void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
   m_MountingLength = m_CurrentDistance;
   m_GageLength = m_CurrentDistance;
+  m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
   //m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   //m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
 }
@@ -1266,6 +1270,13 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     behaviorAfterStop = Experiment::BehaviorAfterStop::HoldAForce;
   }
 
+  long stopatforce = 0;
+  if(0 == m_InitializeUnitRadioBox->GetSelection()){
+    stopatforce = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+  } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
+    stopatforce = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * 10000.0;
+  }
+
   std::unique_ptr<Experiment> experiment(new ContinuousEvent(m_StageFrame,
                                                              m_ForceSensorMessageHandler,
                                                              &m_VectorLayer,
@@ -1307,7 +1318,8 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              steps,
                                                              ramptofailurepercent,
                                                              cycles,
-                                                             behaviorAfterStop));
+                                                             behaviorAfterStop,
+                                                             stopatforce));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
