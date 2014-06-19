@@ -138,6 +138,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     DistanceOrPercentage m_MaxValueDistanceOrPercentage;										/**< Incdicates if the max. value is given by value or by % of L0. */
     double m_MaxValuePercent;																								/**< % of L0 for calculation of the max. value. */
     long m_MaxValueLimit;																										/**< Max value in mm or N. */
+    long m_InitRelMaxValueLimit;																						/**< Initial maximal value limit to calculate relative maximal value limit. */
     int m_Steps;																														/**< Number of steps. */
     double m_Ramp2FailurePercentage;																				/**< Percent of the max stress/force for the R2F experiment. */
     int m_Cycles;																														/**< Amount of cycles. */

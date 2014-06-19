@@ -31,8 +31,9 @@ class Experiment
      * @enum DistanceOrPercentage
      * @brief Defines if the distance is given as distance or as percentage of the preload.
      */
-    enum class DistanceOrPercentage{Distance = 0,
-                                    Percentage = 1};
+    enum class DistanceOrPercentage{DistanceRelative = 0,
+                                    Distance = 1,
+                                    Percentage = 2};
 
     /**
      * @brief Indicates the behavior after the experiment stops.

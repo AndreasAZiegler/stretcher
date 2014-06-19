@@ -197,8 +197,12 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         //std::cout << "ExperimentValues stress/force: " << m_GraphStressForceValues.size() << " distance: " << m_GraphDistanceValues.size() << std::endl;
         if(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
           //m_GraphStressForceValues->resize(m_GraphDistanceValues->size());
-          while(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
-            m_GraphDistanceValues->push_back(m_GraphDistanceValues->back());
+          if(false == m_GraphDistanceValues->empty()){
+            while(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
+              m_GraphDistanceValues->push_back(m_GraphDistanceValues->back());
+            }
+          }else{
+            m_GraphStressForceValues->resize(m_GraphDistanceValues->size());
           }
         }else{
           m_GraphDistanceValues->resize(m_GraphStressForceValues->size());

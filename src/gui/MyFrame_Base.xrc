@@ -1003,7 +1003,7 @@
 																			<option>0</option>
 																			<flag>wxALL</flag>
 																			<border>5</border>
-																			<object class="wxCheckBox" name="m_OneStepStressForceHoldUpperLimitm_CheckBox">
+																			<object class="wxCheckBox" name="m_OneStepStressForceHoldUpperLimitCheckBox">
 																				<label>Hold</label>
 																				<checked>0</checked>
 																			</object>
@@ -1169,17 +1169,26 @@
 																				<orient>wxVERTICAL</orient>
 																				<object class="sizeritem">
 																					<option>0</option>
-																					<flag>wxALIGN_CENTER</flag>
+																					<flag>wxALIGN_LEFT</flag>
+																					<border>5</border>
+																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitMmRelRadioBtn">
+																						<style>wxRB_GROUP</style>
+																						<label>mm rel.</label>
+																						<value>0</value>
+																					</object>
+																				</object>
+																				<object class="sizeritem">
+																					<option>0</option>
+																					<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitMmRadioBtn">
-																						<style>wxRB_GROUP</style>
 																						<label>mm</label>
 																						<value>0</value>
 																					</object>
 																				</object>
 																				<object class="sizeritem">
 																					<option>0</option>
-																					<flag>wxALIGN_CENTER</flag>
+																					<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																					<border>5</border>
 																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitPercentRadioBtn">
 																						<label>%L0</label>
@@ -1356,17 +1365,26 @@
 																		<orient>wxVERTICAL</orient>
 																		<object class="sizeritem">
 																			<option>0</option>
-																			<flag>wxALIGN_CENTER</flag>
+																			<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
+																			<border>5</border>
+																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldMmRelRadioBtn">
+																				<style>wxRB_GROUP</style>
+																				<label>mm rel.</label>
+																				<value>0</value>
+																			</object>
+																		</object>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																			<border>5</border>
 																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldMmRadioBtn">
-																				<style>wxRB_GROUP</style>
 																				<label>mm</label>
 																				<value>0</value>
 																			</object>
 																		</object>
 																		<object class="sizeritem">
 																			<option>0</option>
-																			<flag>wxALIGN_CENTER</flag>
+																			<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																			<border>5</border>
 																			<object class="wxRadioButton" name="m_OneStepEndOfEventHoldPercentRadioBtn">
 																				<label>%L0</label>
@@ -1546,7 +1564,7 @@
 																		<vgap>0</vgap>
 																		<hgap>0</hgap>
 																		<growablecols></growablecols>
-																		<growablerows>6</growablerows>
+																		<growablerows></growablerows>
 																		<object class="sizeritem">
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
@@ -1886,17 +1904,16 @@
 																					<orient>wxVERTICAL</orient>
 																					<object class="sizeritem">
 																						<option>0</option>
-																						<flag>wxALIGN_CENTER</flag>
+																						<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																						<border>5</border>
 																						<object class="wxRadioButton" name="m_ContinuousDistanceIncrementMmRadioBtn">
-																							<style>wxRB_GROUP</style>
 																							<label>mm</label>
 																							<value>0</value>
 																						</object>
 																					</object>
 																					<object class="sizeritem">
 																						<option>0</option>
-																						<flag>wxALIGN_CENTER</flag>
+																						<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																						<border>5</border>
 																						<object class="wxRadioButton" name="m_ContinuousDistanceIncrementPercentRadioBtn">
 																							<label>%L0</label>
@@ -1960,17 +1977,26 @@
 																					<orient>wxVERTICAL</orient>
 																					<object class="sizeritem">
 																						<option>0</option>
-																						<flag>wxALIGN_CENTER</flag>
+																						<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
+																						<border>5</border>
+																						<object class="wxRadioButton" name="m_ContinuousDistanceMaxValueMmRelRadioBtn">
+																							<style>wxRB_GROUP</style>
+																							<label>mm rel</label>
+																							<value>0</value>
+																						</object>
+																					</object>
+																					<object class="sizeritem">
+																						<option>0</option>
+																						<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																						<border>5</border>
 																						<object class="wxRadioButton" name="m_ContinuousDistanceMaxValueMmRadioBtn">
-																							<style>wxRB_GROUP</style>
 																							<label>mm</label>
 																							<value>0</value>
 																						</object>
 																					</object>
 																					<object class="sizeritem">
 																						<option>0</option>
-																						<flag>wxALIGN_CENTER</flag>
+																						<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																						<border>5</border>
 																						<object class="wxRadioButton" name="m_ContinuousDistanceMaxValuePercentRadioBtn">
 																							<label>%L0</label>

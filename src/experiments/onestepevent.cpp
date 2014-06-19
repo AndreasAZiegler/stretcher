@@ -75,12 +75,14 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
     m_UpperLimitDistanceOrPercentage(upperlimitDistanceOrPercentage),
     m_UpperLimitPercent(upperlimitpercent),
     m_UpperLimit(upperlimit),
+    m_InitRelUpperLimit(upperlimit),
     m_Dwell(dwell),
     m_HoldUpperLimitFlag(holdupperlimit),
     m_Cycles(cycles),
     m_HoldDistanceOrPercentage(holdDistanceOrPercentage),
     m_HoldDistancePercent(holddistancepercent),
     m_HoldDistance(holddistance),
+    m_InitRelHoldDistance(holddistance),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_CurrentState(State::stopState),
     m_CurrentLimit(0),
@@ -110,9 +112,11 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                                               behaviorAfterStop))
 {
   initParameters();
+  /*
   if(DistanceOrPercentage::Distance == m_HoldDistanceOrPercentage){
     m_HoldDistance *= 10000.0;
   }
+  */
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
@@ -138,12 +142,22 @@ void OneStepEvent::initParameters(void){
     */
     m_ExperimentValues->setVelocity(m_Velocity);
   }
-  if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
-    m_UpperLimit = (1 + (m_UpperLimitPercent / 100.0)) * m_GageLength;
-    m_ExperimentValues->setUpperLimit(m_UpperLimit);
-    //std::cout << "OneStepEvent upper limit percent: " << m_UpperLimitPercent << " upper limit: " << m_UpperLimit * 0.00009921875 << std::endl;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    if(DistanceOrPercentage::DistanceRelative == m_UpperLimitDistanceOrPercentage){
+      m_UpperLimit = m_StartLength + m_InitRelUpperLimit;
+      std::cout << "OneStepEvent: upper limit: " << m_UpperLimit * 0.00009921875/*mm per micro step*/ << std::endl;
+      m_ExperimentValues->setUpperLimit(m_UpperLimit);
+    }else if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
+      m_UpperLimit = (1 + (m_UpperLimitPercent / 100.0)) * m_GageLength;
+      m_ExperimentValues->setUpperLimit(m_UpperLimit);
+      //std::cout << "OneStepEvent upper limit percent: " << m_UpperLimitPercent << " upper limit: " << m_UpperLimit * 0.00009921875 << std::endl;
+    }
   }
-  if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
+
+  if(DistanceOrPercentage::DistanceRelative == m_HoldDistanceOrPercentage){
+    m_HoldDistance = m_StartLength + m_InitRelHoldDistance;
+    m_ExperimentValues->setHoldDistance(m_HoldDistance);
+  }else if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
     m_HoldDistance = (1 + (m_HoldDistancePercent / 100.0)) * m_GageLength;
     m_ExperimentValues->setHoldDistance(m_HoldDistance);
     //std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
@@ -512,7 +526,7 @@ void OneStepEvent::process(Event event){
               }
               wxLogMessage("OneStepEvent: Go to end length.");
               //process(Event::evUpdate);
-            } else {
+            }else{
               m_CurrentCycle++;
               m_CheckDistanceFlag = true;
               m_CurrentState = goStartState;

@@ -967,7 +967,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     distanceOrStressOrForce = m_DistanceOrStressOrForce;
     delay = m_OneStepStressForceHoldTime1SpinCtrl->GetValue();
     dwell = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
-    holdupperlimit = m_OneStepStressForceHoldUpperLimitm_CheckBox->GetValue();
+    holdupperlimit = m_OneStepStressForceHoldUpperLimitCheckBox->GetValue();
     if(0 == m_InitializeUnitRadioBox->GetSelection()){
       upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
     } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
@@ -991,10 +991,13 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     }
     velocity = m_OneStepDistanceVelocitySpinCtrl->GetValue();
 
-    if(true == m_OneStepDistanceUpperLimitMmRadioBtn->GetValue()){
+    if(true == m_OneStepDistanceUpperLimitMmRelRadioBtn->GetValue()){
+      upperlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::DistanceRelative;
+      upperlimit = m_OneStepDistanceUpperLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+    }else if(true == m_OneStepDistanceUpperLimitMmRadioBtn->GetValue()){
       upperlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
       upperlimit = m_OneStepDistanceUpperLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-    } else if(true == m_OneStepDistanceUpperLimitPercentRadioBtn->GetValue()){
+    }else if(true == m_OneStepDistanceUpperLimitPercentRadioBtn->GetValue()){
       upperlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
       upperlimitpercent = m_OneStepDistanceUpperLimitSpinCtrl->GetValue();
     }
@@ -1003,9 +1006,11 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   wxLogMessage(std::string("MyFrame: upper limit: " + std::to_string(upperlimit)).c_str());
 
   Experiment::DistanceOrPercentage holddistanceOrPercentage;
-  if(true == m_OneStepEndOfEventHoldMmRadioBtn->GetValue()){
+  if(true == m_OneStepEndOfEventHoldMmRelRadioBtn->GetValue()){
+    holddistanceOrPercentage = Experiment::DistanceOrPercentage::DistanceRelative;
+  }else if(true == m_OneStepEndOfEventHoldMmRadioBtn->GetValue()){
     holddistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
-  } else if(true == m_OneStepEndOfEventHoldPercentRadioBtn->GetValue()){
+  }else if(true == m_OneStepEndOfEventHoldPercentRadioBtn->GetValue()){
     holddistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
   }
 
@@ -1062,7 +1067,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           holdupperlimit,
                                                           holddistanceOrPercentage,
                                                           m_OneStepEndOfEventHoldSpinCtrl->GetValue(),
-                                                          m_OneStepEndOfEventHoldSpinCtrl->GetValue(),
+                                                          m_OneStepEndOfEventHoldSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/,
                                                           cycles,
                                                           behaviorAfterStop));
 
@@ -1219,7 +1224,16 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     if(true == m_ContinuousDistanceMaxValueRadioBtn->GetValue()){
       stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::MaxValue;
 
-      if(true == m_ContinuousDistanceMaxValueMmRadioBtn->GetValue()){
+      if(true == m_ContinuousDistanceMaxValueMmRelRadioBtn->GetValue()){
+        maxvalueDistanceOrPercentage == Experiment::DistanceOrPercentage::DistanceRelative;
+        maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+        if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
+          stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
+          steps = (m_CurrentDistance + maxvalue) / increment;
+          //std::cout << "MyFrame: steps: " << steps << std::endl;
+        }
+
+      }else if(true == m_ContinuousDistanceMaxValueMmRadioBtn->GetValue()){
         maxvalueDistanceOrPercentage == Experiment::DistanceOrPercentage::Distance;
         maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
         if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
@@ -1227,7 +1241,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
           steps = maxvalue / increment;
           //std::cout << "MyFrame: steps: " << steps << std::endl;
         }
-      } else if(true == m_ContinuousDistanceMaxValuePercentRadioBtn->GetValue()){
+      }else if(true == m_ContinuousDistanceMaxValuePercentRadioBtn->GetValue()){
         maxvalueDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
         maxvaluepercent = m_ContinuousDistanceMaxValueSpinCtrl->GetValue();
       }
@@ -1494,8 +1508,8 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_VectorLayer.Clear();
-    std::cout << "MyFrame cleared graph." << std::endl;
   }
+  wxLogMessage("MyFrame cleared graph.");
   m_Graph->Fit();
   //delete m_CurrentExperimentValues;
 }

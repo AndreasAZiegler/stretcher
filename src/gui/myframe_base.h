@@ -102,7 +102,7 @@ protected:
  wxStaticText* m_staticText78;
  wxStaticText* m_OneStepStressForceUpperLimitStaticText;
  wxSpinCtrlDouble* m_OneStepStressForceUpperLimitSpinCtrl;
- wxCheckBox* m_OneStepStressForceHoldUpperLimitm_CheckBox;
+ wxCheckBox* m_OneStepStressForceHoldUpperLimitCheckBox;
  wxStaticText* m_OneStepStressForceHoldTime2StaticText;
  wxSpinCtrlDouble* m_OneStepStressForceHoldTime2SpinCtrl;
  wxStaticText* m_staticText82;
@@ -117,6 +117,7 @@ protected:
  wxStaticText* m_staticText781;
  wxStaticText* m_OneStepDistanceUpperLimitStaticText;
  wxSpinCtrlDouble* m_OneStepDistanceUpperLimitSpinCtrl;
+ wxRadioButton* m_OneStepDistanceUpperLimitMmRelRadioBtn;
  wxRadioButton* m_OneStepDistanceUpperLimitMmRadioBtn;
  wxRadioButton* m_OneStepDistanceUpperLimitPercentRadioBtn;
  wxStaticText* m_OneStepDistanceHoldTime2StaticText;
@@ -136,6 +137,7 @@ protected:
  wxRadioButton* m_OneStepEndOfEventHoldRadioBtn;
  wxSpinCtrlDouble* m_OneStepEndOfEventHoldSpinCtrl;
  wxPanel* m_OneStepPanel3;
+ wxRadioButton* m_OneStepEndOfEventHoldMmRelRadioBtn;
  wxRadioButton* m_OneStepEndOfEventHoldMmRadioBtn;
  wxRadioButton* m_OneStepEndOfEventHoldPercentRadioBtn;
  wxRadioButton* m_OneStepEndOfEventL0RadioBtn;
@@ -189,6 +191,7 @@ protected:
  wxStaticText* m_ContinuousDistanceMaxValueStaticText;
  wxSpinCtrlDouble* m_ContinuousDistanceMaxValueSpinCtrl;
  wxPanel* m_ContinuousDistancePanel23;
+ wxRadioButton* m_ContinuousDistanceMaxValueMmRelRadioBtn;
  wxRadioButton* m_ContinuousDistanceMaxValueMmRadioBtn;
  wxRadioButton* m_ContinuousDistanceMaxValuePercentRadioBtn;
  wxStaticText* m_ContinuousDistanceStepsStaticText;
@@ -323,7 +326,7 @@ private:
   m_staticText78 = XRCCTRL(*this,"m_staticText78",wxStaticText);
   m_OneStepStressForceUpperLimitStaticText = XRCCTRL(*this,"m_OneStepStressForceUpperLimitStaticText",wxStaticText);
   m_OneStepStressForceUpperLimitSpinCtrl = XRCCTRL(*this,"m_OneStepStressForceUpperLimitSpinCtrl",wxSpinCtrlDouble);
-  m_OneStepStressForceHoldUpperLimitm_CheckBox = XRCCTRL(*this,"m_OneStepStressForceHoldUpperLimitm_CheckBox",wxCheckBox);
+  m_OneStepStressForceHoldUpperLimitCheckBox = XRCCTRL(*this,"m_OneStepStressForceHoldUpperLimitCheckBox",wxCheckBox);
   m_OneStepStressForceHoldTime2StaticText = XRCCTRL(*this,"m_OneStepStressForceHoldTime2StaticText",wxStaticText);
   m_OneStepStressForceHoldTime2SpinCtrl = XRCCTRL(*this,"m_OneStepStressForceHoldTime2SpinCtrl",wxSpinCtrlDouble);
   m_staticText82 = XRCCTRL(*this,"m_staticText82",wxStaticText);
@@ -338,6 +341,7 @@ private:
   m_staticText781 = XRCCTRL(*this,"m_staticText781",wxStaticText);
   m_OneStepDistanceUpperLimitStaticText = XRCCTRL(*this,"m_OneStepDistanceUpperLimitStaticText",wxStaticText);
   m_OneStepDistanceUpperLimitSpinCtrl = XRCCTRL(*this,"m_OneStepDistanceUpperLimitSpinCtrl",wxSpinCtrlDouble);
+  m_OneStepDistanceUpperLimitMmRelRadioBtn = XRCCTRL(*this,"m_OneStepDistanceUpperLimitMmRelRadioBtn",wxRadioButton);
   m_OneStepDistanceUpperLimitMmRadioBtn = XRCCTRL(*this,"m_OneStepDistanceUpperLimitMmRadioBtn",wxRadioButton);
   m_OneStepDistanceUpperLimitPercentRadioBtn = XRCCTRL(*this,"m_OneStepDistanceUpperLimitPercentRadioBtn",wxRadioButton);
   m_OneStepDistanceHoldTime2StaticText = XRCCTRL(*this,"m_OneStepDistanceHoldTime2StaticText",wxStaticText);
@@ -357,6 +361,7 @@ private:
   m_OneStepEndOfEventHoldRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldRadioBtn",wxRadioButton);
   m_OneStepEndOfEventHoldSpinCtrl = XRCCTRL(*this,"m_OneStepEndOfEventHoldSpinCtrl",wxSpinCtrlDouble);
   m_OneStepPanel3 = XRCCTRL(*this,"m_OneStepPanel3",wxPanel);
+  m_OneStepEndOfEventHoldMmRelRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldMmRelRadioBtn",wxRadioButton);
   m_OneStepEndOfEventHoldMmRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldMmRadioBtn",wxRadioButton);
   m_OneStepEndOfEventHoldPercentRadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventHoldPercentRadioBtn",wxRadioButton);
   m_OneStepEndOfEventL0RadioBtn = XRCCTRL(*this,"m_OneStepEndOfEventL0RadioBtn",wxRadioButton);
@@ -410,6 +415,7 @@ private:
   m_ContinuousDistanceMaxValueStaticText = XRCCTRL(*this,"m_ContinuousDistanceMaxValueStaticText",wxStaticText);
   m_ContinuousDistanceMaxValueSpinCtrl = XRCCTRL(*this,"m_ContinuousDistanceMaxValueSpinCtrl",wxSpinCtrlDouble);
   m_ContinuousDistancePanel23 = XRCCTRL(*this,"m_ContinuousDistancePanel23",wxPanel);
+  m_ContinuousDistanceMaxValueMmRelRadioBtn = XRCCTRL(*this,"m_ContinuousDistanceMaxValueMmRelRadioBtn",wxRadioButton);
   m_ContinuousDistanceMaxValueMmRadioBtn = XRCCTRL(*this,"m_ContinuousDistanceMaxValueMmRadioBtn",wxRadioButton);
   m_ContinuousDistanceMaxValuePercentRadioBtn = XRCCTRL(*this,"m_ContinuousDistanceMaxValuePercentRadioBtn",wxRadioButton);
   m_ContinuousDistanceStepsStaticText = XRCCTRL(*this,"m_ContinuousDistanceStepsStaticText",wxStaticText);

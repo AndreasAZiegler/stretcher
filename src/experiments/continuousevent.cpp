@@ -85,6 +85,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_MaxValueDistanceOrPercentage(maxvalueDistanceOrPercentage),
         m_MaxValuePercent(maxvaluepercent),
         m_MaxValueLimit(maxvaluelimit),
+        m_InitRelMaxValueLimit(maxvaluelimit),
         m_Steps(steps),
         m_Ramp2FailurePercentage(ramptofailurepercent),
         m_Cycles(cycles),
@@ -147,20 +148,23 @@ void ContinuousEvent::initParameters(void){
       m_ExperimentValues->setIncrement(m_Increment);
     }
     if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
-      if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
-        m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
-        m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+      if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+        if(Experiment::DistanceOrPercentage::DistanceRelative == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_StartLength + m_InitRelMaxValueLimit;
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+        }else if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+        }
       }
       if((0 != m_MaxValueLimit) && (0 != m_Increment)){
         if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
-          /*
           wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
                                    " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
                                    " m_CurrentForce: " + std::to_string(m_CurrentForce) +
                                    " m_Increment: " + std::to_string(m_Increment)).c_str());
-          */
-        } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
           m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
         }
         m_ExperimentValues->setSteps(m_Steps);
@@ -295,7 +299,6 @@ void ContinuousEvent::process(Event event){
         //m_ExperimentValues->setStartPoint();
 
         // If ramp2failure
-        std::cout << "ContinuousEvent: m_Ramp2FailureActiveFlag: " << m_Ramp2FailureActiveFlag << std::endl;
         if(true == m_Ramp2FailureActiveFlag){
           m_CurrentDirection = Direction::Backwards;
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
@@ -422,7 +425,7 @@ void ContinuousEvent::process(Event event){
               }
               wxLogMessage("ContinuousEvent: Went to end length.");
               //process(Event::evUpdate);
-            } else{
+            }else{
               m_CurrentCycle++;
               m_CheckDistanceFlag = true;
               m_CurrentState = goStartState;
@@ -880,7 +883,7 @@ void ContinuousEvent::process(Event event){
           }
 
           //m_CurrentDirection = Direction::Stop;
-          wxLogMessage("ContinuousEvent:: Go to runState");
+          wxLogMessage("ContinuousEvent: Go to runState");
           process(Event::evUpdate);
           //m_CurrentDirection = Direction::Stop;
           //m_StageFrame->stop();
@@ -1044,7 +1047,7 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         //process(Event::evStop);
       } else{
       */
-      if(std::abs(measurementValue.value) > std::abs(m_MaxStressForce)){
+      if(measurementValue.value > m_MaxStressForce){
         m_MaxStressForce = measurementValue.value;
       }
 
