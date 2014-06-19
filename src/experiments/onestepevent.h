@@ -42,14 +42,11 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  DistanceOrPercentage velocityDistanceOrPercentage,
                  double velocitypercent,
                  double velocity,
-                 double holdtime1,
+                 double delay,
                  DistanceOrPercentage upperlimitDistanceOrPercentage,
                  double upperlimitpercent,
                  long upperlimit,
-                 double holdtime2,
-                 DistanceOrPercentage lowerlimitDistanceOrPercentage,
-                 double lowerlimitpercent,
-                 long lowerlimit,
+                 double dwell, bool holdupperlimit,
                  DistanceOrPercentage holdDistanceOrPercentage,
                  double holddistancepercent,
                  long holddistance,
@@ -116,6 +113,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      */
     enum State{stopState,       /**< Stop state */
                runState,       	/**< Run state */
+               holdForceState,	/**< Hold force state */
                goStartState,		/**< Go to start state */
                goBackState};		/**< Go back state */
 
@@ -135,14 +133,12 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
     double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
     double m_Velocity;																											/**< Velocity in mm/s. */
-    double m_HoldTime1;																											/**< Hold time 1 in s. */
+    double m_Delay;																													/**< Hold time 1 in s. */
     DistanceOrPercentage m_UpperLimitDistanceOrPercentage;									/**< Indicates if the upper limit is given by value or by % of L0. */
     double m_UpperLimitPercent;																							/**< % of L0 for calculation of the upper limit. */
     long m_UpperLimit;																											/**< Upper limit in kPa, N or mm. */
-    double m_HoldTime2;																											/**< Hold time 2 in s. */
-    DistanceOrPercentage m_LowerLimitDistanceOrPercentage;									/**< Indicates if the lower limit is given by value or by % of L0. */
-    double m_LowerLimitPercent;																							/**< % of L0 for calculation of the upper limit. */
-    long m_LowerLimit;																											/**< Lower limit in kPa, N or mm. */
+    double m_Dwell;																													/**< Hold time 2 in s. */
+    bool m_HoldUpperLimitFlag;																							/**< Indicates if the upper force limit should be hold during waiting. */
     DistanceOrPercentage m_HoldDistanceOrPercentage;												/**< Indicates if the hold distance is given by value or by % of L0. */
     int m_HoldDistancePercent;																							/**< % of L0 for calculation of the hold distance. */
     long m_HoldDistance;																										/**< Hold distance in mm. */
@@ -150,7 +146,6 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 
     State m_CurrentState;																										/**< The current experiment state. */
-    LimitState m_CurrentLimitState;																					/**< Current limit. */
     long m_CurrentLimit;																										/**< Value of the current limit. */
     int m_CurrentCycle;																											/**< The current cycle. */
 

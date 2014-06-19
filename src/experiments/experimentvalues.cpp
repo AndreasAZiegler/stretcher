@@ -189,13 +189,17 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       m_DisplayGraphDelay = 0;
 
       std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
+      // Sets data for the graph if the stress/force vector and the distance vector have the same lengths.
       if(m_GraphStressForceValues->size() == m_GraphDistanceValues->size()){
         std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
         m_VectorLayer->SetData(*m_GraphDistanceValues, *m_GraphStressForceValues);
-      }else{
+      }else{ // Otherwise correct the length.
         //std::cout << "ExperimentValues stress/force: " << m_GraphStressForceValues.size() << " distance: " << m_GraphDistanceValues.size() << std::endl;
         if(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
-          m_GraphStressForceValues->resize(m_GraphDistanceValues->size());
+          //m_GraphStressForceValues->resize(m_GraphDistanceValues->size());
+          while(m_GraphStressForceValues->size() > m_GraphDistanceValues->size()){
+            m_GraphDistanceValues->push_back(m_GraphDistanceValues->back());
+          }
         }else{
           m_GraphDistanceValues->resize(m_GraphStressForceValues->size());
         }

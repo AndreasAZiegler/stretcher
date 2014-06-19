@@ -18,7 +18,6 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        double holdtime1,
                                        long upperlimit,
                                        double holdtime2,
-                                       long lowerlimit,
                                        long holddistance,
                                        int cycles,
                                        Experiment::BehaviorAfterStop behaviorAfterStop)
@@ -38,13 +37,11 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
     m_DelayTime(holdtime1),
     m_UpperLimit(upperlimit),
     m_DwellTime(holdtime2),
-    m_LowerLimit(lowerlimit),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_HoldDistance(holddistance),
     m_Cycles(cycles)
 {
   m_UpperLimit = normalizeValue(m_UpperLimit);
-  m_LowerLimit = normalizeValue(m_LowerLimit);
 }
 
 /**
@@ -53,14 +50,6 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
  */
 void OneStepEventValues::setUpperLimit(double upperlimit){
   m_UpperLimit = normalizeValue(upperlimit);
-}
-
-/**
- * @brief Sets the lower limit.
- * @param lowerlimit Lower limit.
- */
-void OneStepEventValues::setLowerLimit(double lowerlimit){
-  m_LowerLimit = normalizeValue(lowerlimit);
 }
 
 /**
@@ -73,10 +62,9 @@ std::string OneStepEventValues::getExperimentSettings(void){
                      ", Stress or Force: " + getStressOrForce() +
                      ", Cross section area: " + std::to_string(m_Area) +
                      ", Velocity: " + std::to_string(m_Velocity) +
-                     ", Hold time 1: " + std::to_string(m_DelayTime) +
+                     ", Delay: " + std::to_string(m_DelayTime) +
                      ", UpperLimit: " + std::to_string(m_UpperLimit) +
-                     ", Hold time 2: " + std::to_string(m_DwellTime) +
-                     ", Lower Limit: " + std::to_string(m_LowerLimit) +
+                     ", Dwell: " + std::to_string(m_DwellTime) +
                      ", Cycles: " + std::to_string(m_Cycles) +
                      ", End of event: " + getEndOfEvent() + "\n\n"));
 }
@@ -92,7 +80,6 @@ std::string OneStepEventValues::experimentSettingsForName(void){
                      " De:" + to_string_wp(m_DelayTime, 2) +
                      " UL:" + to_string_wp(m_UpperLimit, 2) +
                      " Dw:" + to_string_wp(m_DwellTime, 2) +
-                     " LL:" + to_string_wp(m_LowerLimit, 2) +
                      " C:" + to_string_wp(m_Cycles, 2) +
                      " EoE:" + getEndOfEvent()));
 }

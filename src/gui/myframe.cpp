@@ -515,12 +515,10 @@ void MyFrame::startup(void){
   m_OneStepStressForceHoldTime1SpinCtrl->SetDigits(2);
   m_OneStepStressForceUpperLimitSpinCtrl->SetDigits(2);
   m_OneStepStressForceHoldTime2SpinCtrl->SetDigits(2);
-  m_OneStepStressForceLowerLimitSpinCtrl->SetDigits(2);
   m_OneStepDistanceVelocitySpinCtrl->SetDigits(2);
   m_OneStepDistanceHoldTime1SpinCtrl->SetDigits(2);
   m_OneStepDistanceUpperLimitSpinCtrl->SetDigits(2);
   m_OneStepDistanceHoldTime2SpinCtrl->SetDigits(2);
-  m_OneStepDistanceLowerLimitSpinCtrl->SetDigits(2);
   m_OneStepEndOfEventHoldSpinCtrl->SetDigits(2);
   m_ContinuousStressForceVelocitySpinCtrl->SetDigits(2);
   m_ContinuousStressForceHoldTimeSpinCtrl->SetDigits(2);
@@ -638,9 +636,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_LengthsSetForceZeroButton->SetLabelText("Zero stress");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
-    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [kPa]:");
-    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [kPa]:");
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dkPa]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("kPa");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Smax.");
@@ -667,12 +663,9 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
     m_LengthsSetForceZeroButton->SetLabelText("Zero force");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
-    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
-    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_OneStepStressForceUpperLimitStaticText->SetLabelText("Upper limit [N]:");
-    m_OneStepStressForceLowerLimitStaticText->SetLabelText("Lower limit [N]:");
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dN]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("N");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Fmax.");
@@ -964,24 +957,21 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   DistanceOrStressOrForce distanceOrStressOrForce;
   Experiment::DistanceOrPercentage velocityDistanceOrPercentage;
   double velocity = 0;
-  double holdtime1 = 0;
+  double delay = 0;
   Experiment::DistanceOrPercentage upperlimitDistanceOrPercentage;
   double upperlimitpercent = 0;
   long upperlimit = 0;
-  double holdtime2 = 0;
-  Experiment::DistanceOrPercentage lowerlimitDistanceOrPercentage;
-  double lowerlimitpercent = 0;
-  long lowerlimit = 0;
+  double dwell = 0;
+  bool holdupperlimit = false;
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
     distanceOrStressOrForce = m_DistanceOrStressOrForce;
-    holdtime1 = m_OneStepStressForceHoldTime1SpinCtrl->GetValue();
-    holdtime2 = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
+    delay = m_OneStepStressForceHoldTime1SpinCtrl->GetValue();
+    dwell = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
+    holdupperlimit = m_OneStepStressForceHoldUpperLimitm_CheckBox->GetValue();
     if(0 == m_InitializeUnitRadioBox->GetSelection()){
       upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
-      lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
     } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
       upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * 10000.0;
-      lowerlimit = m_OneStepStressForceLowerLimitSpinCtrl->GetValue() * 10000.0;
     }
 
     if(true == m_OneStepStressForceVelocityMmRadioBtn->GetValue()){
@@ -992,7 +982,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     velocity = m_OneStepStressForceVelocitySpinCtrl->GetValue();
   }else if(true == m_OneStepDistanceRadioBtn->GetValue()){
     distanceOrStressOrForce = DistanceOrStressOrForce::Distance;
-    holdtime1 = m_OneStepDistanceHoldTime1SpinCtrl->GetValue();
+    delay = m_OneStepDistanceHoldTime1SpinCtrl->GetValue();
 
     if(true == m_OneStepDistanceVelocityMmRadioBtn->GetValue()){
       velocityDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
@@ -1008,18 +998,9 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
       upperlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
       upperlimitpercent = m_OneStepDistanceUpperLimitSpinCtrl->GetValue();
     }
-    holdtime2 = m_OneStepDistanceHoldTime2SpinCtrl->GetValue();
-
-    if(true == m_OneStepDistanceLowerLimitMmRadioBtn->GetValue()){
-      lowerlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
-      lowerlimit = m_OneStepDistanceLowerLimitSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
-    } else if(true == m_OneStepDistanceLowerLimitPercentRadioBtn->GetValue()){
-      lowerlimitDistanceOrPercentage = Experiment::DistanceOrPercentage::Percentage;
-      lowerlimitpercent = m_OneStepDistanceLowerLimitSpinCtrl->GetValue();
-    }
+    dwell = m_OneStepDistanceHoldTime2SpinCtrl->GetValue();
   }
-  wxLogMessage(std::string("MyFrame: upper limit: " + std::to_string(upperlimit) +
-                           " lower limit: " + std::to_string(lowerlimit)).c_str());
+  wxLogMessage(std::string("MyFrame: upper limit: " + std::to_string(upperlimit)).c_str());
 
   Experiment::DistanceOrPercentage holddistanceOrPercentage;
   if(true == m_OneStepEndOfEventHoldMmRadioBtn->GetValue()){
@@ -1073,14 +1054,12 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           velocityDistanceOrPercentage,
                                                           velocity,
                                                           velocity,
-                                                          holdtime1,
+                                                          delay,
                                                           upperlimitDistanceOrPercentage,
                                                           upperlimitpercent,
                                                           upperlimit,
-                                                          holdtime2,
-                                                          lowerlimitDistanceOrPercentage,
-                                                          lowerlimitpercent,
-                                                          lowerlimit,
+                                                          dwell,
+                                                          holdupperlimit,
                                                           holddistanceOrPercentage,
                                                           m_OneStepEndOfEventHoldSpinCtrl->GetValue(),
                                                           m_OneStepEndOfEventHoldSpinCtrl->GetValue(),

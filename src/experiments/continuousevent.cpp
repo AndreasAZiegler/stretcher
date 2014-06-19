@@ -1056,8 +1056,8 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
            (true == m_Ramp2FailureActiveFlag)) && (false == m_WaitActive)){
           m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
-          //t1.detach();
-          t1.join();
+          t1.detach();
+          //t1.join();
           //process(Event::evUpdate);
         }else{
           m_WaitActiveMutex.unlock();
@@ -1083,8 +1083,8 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         if(((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
           m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
-          //t1.detach();
-          t1.join();
+          t1.detach();
+          //t1.join();
           //process(Event::evUpdate);
         }else{
           m_WaitActiveMutex.unlock();
