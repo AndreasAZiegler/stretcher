@@ -822,6 +822,7 @@ void ContinuousEvent::process(Event event){
 
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                   wxLogMessage("ContinuousEvent: Holding over.");
+                  process(Event::evUpdate);
                 }
               }
             }

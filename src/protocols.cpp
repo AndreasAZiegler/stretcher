@@ -585,7 +585,7 @@ void Protocols::checkFinishedExperiment(void){
       *m_PreloadDoneFlag = true;
       // Set preload distance.
       m_PreloadDistance = m_MyFrame->getCurrentDistance();
-      wxLogMessage(std::string("m_PreloadDistance: " + std::to_string(m_PreloadDistance)).c_str());
+      wxLogMessage(std::string("Protocols: Preload distance: " + std::to_string(m_PreloadDistance * 0.00009921875/*mm per micro step*/)).c_str());
       // Set the prelod distance in all the experiments.
       for(auto i : m_Experiments){
         i->setPreloadDistance();

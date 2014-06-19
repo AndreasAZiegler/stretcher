@@ -547,6 +547,7 @@ void MyFrame::startup(void){
     // Load mounting length.
     m_MountingLength = m_Settings->getMountingLength();
     m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
+    m_LengthsGoToSpinCtrl->SetValue(m_MountingLength * 0.00009921875/*mm per micro step*/);
     // Load L0.
     m_GageLength = m_Settings->getGageLength();
 
@@ -759,7 +760,9 @@ void MyFrame::setDistanceWActuatorCollision(double le){
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min distance.
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
+  m_LengthsGoToSpinCtrl->SetValue(m_MaxPosDistance);
 }
 
 /**
@@ -1227,11 +1230,13 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
       if(true == m_ContinuousDistanceMaxValueMmRelRadioBtn->GetValue()){
         maxvalueDistanceOrPercentage == Experiment::DistanceOrPercentage::DistanceRelative;
         maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+        /*
         if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
           stepsOrMaxValue = ContinuousEvent::StepsOrMaxValue::Steps;
           steps = (m_CurrentDistance + maxvalue) / increment;
           //std::cout << "MyFrame: steps: " << steps << std::endl;
         }
+        */
 
       }else if(true == m_ContinuousDistanceMaxValueMmRadioBtn->GetValue()){
         maxvalueDistanceOrPercentage == Experiment::DistanceOrPercentage::Distance;
