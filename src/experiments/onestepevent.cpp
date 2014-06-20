@@ -2,6 +2,8 @@
 #include <iostream>
 #include <thread>
 #include <wx/log.h>
+#include <wx/msgdlg.h>
+#include "../gui/myframe.h"
 #include "onestepevent.h"
 
 OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
@@ -47,6 +49,7 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            BehaviorAfterStop behaviorAfterStop)
   : Experiment(stageframe,
                forcesensormessagehandler,
+               myframe,
                maxforcelimit,
                minforcelimit,
                maxdistancelimit,
@@ -141,6 +144,7 @@ void OneStepEvent::initParameters(void){
     */
     m_ExperimentValues->setVelocity(m_Velocity);
   }
+
   if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     if(DistanceOrPercentage::DistanceRelative == m_UpperLimitDistanceOrPercentage){
       m_UpperLimit = m_StartLength + m_InitRelUpperLimit;
@@ -171,7 +175,7 @@ void OneStepEvent::setPreloadDistance(){
   m_GageLength = m_CurrentDistance;
 
   initParameters();
-  }
+}
 
 /**
  * @brief Returns a vector containing the points required to cread a preview graph.
@@ -234,6 +238,14 @@ void OneStepEvent::process(Event event){
   switch(m_CurrentState){
     case stopState:
       if(Experiment::Event::evStart == event){
+
+        // Show a warning pop up dialog if the velocity is high.
+        if(11 < m_Velocity){
+          if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
+            m_Velocity = 11;
+            std::cout << "OneStepEvent: Velocity set to 11." << std::endl;
+          }
+        }
 
         wxLogMessage("OneStepEvent: Start experiment.");
 

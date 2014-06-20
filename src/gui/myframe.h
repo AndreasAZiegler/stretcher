@@ -158,6 +158,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
 
+    /**
+     * @brief Opens a pop-up warning dialog.
+     */
+    bool showHighVelocityWarningFromExperiments(void);
+
   private:
 
     /**
@@ -474,6 +479,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex);
 
     /**
+     * @brief Shows velocity warining dialog.
+     */
+    void showHighVelocityWarning(void);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the preview protocol button.
      * @param event Occuring event
      */
@@ -544,10 +554,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_MinDistanceLimit;									/**< The minimal position for the stages */
     double m_MaxForceLimit;											/**< The maximal allowed force. */
     double m_MinForceLimit;											/**< The minimal allowed force. */
-    double m_TempMinDistanceLimit;
-    double m_TempMaxDistanceLimit;
-    double m_TempMinForceLimit;
-    double m_TempMaxForceLimit;
+    double m_TempMinDistanceLimit;							/**< From the template loaded minimal distance limit. */
+    double m_TempMaxDistanceLimit;							/**< From the template loaded maximal distance limit. */
+    double m_TempMinForceLimit;									/**< From the template loaded minimal force limit. */
+    double m_TempMaxForceLimit;									/**< From the template loaded maximal force limit. */
     bool m_DistanceLimitExceededFlag;						/**< Indicates if a distance limit exceeded. */
     std::mutex m_DistanceLimitExceededMutex;		/**< Mutex to protect m_DistanceLimitExceededFlag. */
     bool m_ForceLimitExceededFlag;							/**< Indicates if a force limit exceeded. */
@@ -559,8 +569,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
     std::shared_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
-    //Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
-    //ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
@@ -570,12 +578,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     long m_MountingLength;											/**< The mounting length. */
-    double m_TempMountingLength;
+    double m_TempMountingLength;								/**< From the template loaded mounting length. */
     long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
-    double m_TempGageLength;
+    double m_TempGageLength;										/**< From the template loaded gage length. */
     long m_MaxPosDistance;											/**< Distance when the motors are on max position (resulting in smallest distance) */
-    double m_TempMaxPosDistance;
+    double m_TempMaxPosDistance;								/**< From the template loaded distance at maximal position. */
     double m_Area;															/**< Area of the sample */
+    std::condition_variable m_WaitHighVelocity;	/**< Wait conditional variable to wait for high velocity dialog result. */
+    std::mutex m_WaitHighVelocityMutex;					/**< Mutex for m_WaitHighVelocity. */
+    bool m_HighVelocityAbort;										/**< Indicates if experiment should be aborted because of the high velocity. */
 
     DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */

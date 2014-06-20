@@ -80,6 +80,7 @@ class Experiment
      */
     Experiment(std::shared_ptr<StageFrame> stageframe,
                std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+               MyFrame *myframe,
                long maxforcelimit,
                long minforcelimit,
                long maxdistancelimit,
@@ -173,6 +174,7 @@ class Experiment
 
     std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
+    MyFrame *m_MyFrame;													/**< Pointer to the main frame. */
 
     bool m_CheckLimitsFlag;											/**< Indicates if the limits should be checked. */
     long m_MaxForceLimit;												/**< Maximal force limit. */

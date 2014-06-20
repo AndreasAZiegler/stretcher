@@ -108,7 +108,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
-    m_TempMountingLength(0),
     //m_PreloadDistance(0),
     m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
     m_CurrentProtocol(nullptr),
@@ -137,7 +136,8 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_XAxis(nullptr),
     m_Y1Axis(nullptr),
     m_Y2Axis(nullptr),
-    m_MessageHandlersFinishedNumber(0)
+    m_MessageHandlersFinishedNumber(0),
+    m_HighVelocityAbort(false)
 {
 
   SetIcon(wxICON(sample));
@@ -518,20 +518,25 @@ void MyFrame::startup(void){
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
+  m_PreloadSpeedMmSpinCtrl->SetRange(0.05, 11);
   m_OneStepStressForceVelocitySpinCtrl->SetDigits(2);
+  m_OneStepStressForceVelocitySpinCtrl->SetRange(0.05, 1000);
   m_OneStepStressForceHoldTime1SpinCtrl->SetDigits(2);
   m_OneStepStressForceUpperLimitSpinCtrl->SetDigits(2);
   m_OneStepStressForceHoldTime2SpinCtrl->SetDigits(2);
   m_OneStepDistanceVelocitySpinCtrl->SetDigits(2);
+  m_OneStepDistanceVelocitySpinCtrl->SetRange(0.05, 1000);
   m_OneStepDistanceHoldTime1SpinCtrl->SetDigits(2);
   m_OneStepDistanceUpperLimitSpinCtrl->SetDigits(2);
   m_OneStepDistanceHoldTime2SpinCtrl->SetDigits(2);
   m_OneStepEndOfEventHoldSpinCtrl->SetDigits(2);
   m_ContinuousStressForceVelocitySpinCtrl->SetDigits(2);
+  m_ContinuousStressForceVelocitySpinCtrl->SetRange(0.05, 1000);
   m_ContinuousStressForceHoldTimeSpinCtrl->SetDigits(2);
   m_ContinuousStressForceIncrementSpinCtrl->SetDigits(2);
   m_ContinuousStressForceMaxValueSpinCtrl->SetDigits(2);
   m_ContinuousDistanceVelocitySpinCtrl->SetDigits(2);
+  m_ContinuousDistanceVelocitySpinCtrl->SetRange(0.05, 1000);
   m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
   m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
   m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
@@ -1677,6 +1682,18 @@ void MyFrame::showPauseResumeDialogFromPauseResume(std::condition_variable *wait
 }
 
 /**
+ * @brief Opens a pop-up warning dialog.
+ */
+bool MyFrame::showHighVelocityWarningFromExperiments(void){
+  CallAfter(&MyFrame::showHighVelocityWarning);
+
+  // Wait until dialog is closed.
+  std::unique_lock<std::mutex> lck(m_WaitHighVelocityMutex);
+  m_WaitHighVelocity.wait(lck);
+  return(m_HighVelocityAbort);
+}
+
+/**
  * @brief Shows pause/resume dialog.
  */
 void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex){
@@ -1684,7 +1701,20 @@ void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *m
   popup->ShowModal();
   std::lock_guard<std::mutex> lck(*mutex);
   wait->notify_all();
+}
 
+/**
+ * @brief Shows velocity warining dialog.
+ */
+void MyFrame::showHighVelocityWarning(void){
+  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this, "Velocity is a bit high. Set to maximal velocity (11 mm/s)?", wxMessageBoxCaptionStr, wxOK|wxCANCEL));
+  if(wxID_CANCEL == dialog->ShowModal()){
+    m_HighVelocityAbort = true;
+  }else{
+    m_HighVelocityAbort = false;
+  }
+  std::lock_guard<std::mutex> lck(m_WaitHighVelocityMutex);
+  m_WaitHighVelocity.notify_all();
 }
 
 /**

@@ -30,6 +30,7 @@ Pause::Pause(std::shared_ptr<StageFrame> stageframe,
              int pausetime)
   : Experiment(stageframe,
                forcesensormessagehandler,
+               myframe,
                maxforcelimit,
                minforcelimit,
                maxdistancelimit,

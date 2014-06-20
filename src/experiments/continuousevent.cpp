@@ -4,6 +4,8 @@
 #include <mutex>
 #include <chrono>
 #include <wx/log.h>
+#include <wx/msgdlg.h>
+#include "../gui/myframe.h"
 #include "continuousevent.h"
 
 ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
@@ -52,6 +54,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                  long holdforce)
       : Experiment(stageframe,
                    forcesensormessagehandler,
+                   myframe,
                    maxforcelimit,
                    minforcelimit,
                    maxdistancelimit,
@@ -138,6 +141,11 @@ void ContinuousEvent::initParameters(void){
   if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
     m_ExperimentValues->setVelocity(m_Velocity);
+  }
+
+  // Show a warning pop up dialog if the velocity is high.
+  if(11 < m_Velocity){
+    m_MyFrame->showHighVelocityWarningFromExperiments();
   }
 
   // Only set increment and steps parameter if experiment is not a ramp to failure experiment.
@@ -256,6 +264,14 @@ void ContinuousEvent::process(Event event){
   switch(m_CurrentState){
     case stopState:
       if(Experiment::Event::evStart == event){
+
+        // Show a warning pop up dialog if the velocity is high.
+        if(11 < m_Velocity){
+          if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
+            m_Velocity = 11;
+            std::cout << "OneStepEvent: Velocity set to 11." << std::endl;
+          }
+        }
 
         wxLogMessage("ContinuousEvent: Start experiment.");
 

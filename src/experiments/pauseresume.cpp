@@ -32,6 +32,7 @@ PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
                          double area)
   : Experiment(stageframe,
                forcesensormessagehandler,
+               myframe,
                maxforcelimit,
                minforcelimit,
                maxdistancelimit,

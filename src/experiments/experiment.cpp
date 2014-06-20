@@ -9,6 +9,7 @@
  */
 Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
                        std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+                       MyFrame *myframe,
                        long maxforcelimit,
                        long minforcelimit,
                        long maxdistancelimit,
@@ -25,6 +26,7 @@ Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
                        double forcesStressThreshold,
                        double distanceThreshold)
   : m_CheckLimitsFlag(false),
+    m_MyFrame(myframe),
     m_MaxForceLimit(maxforcelimit),
     m_MinForceLimit(minforcelimit),
     m_MaxDistanceLimit(maxdistancelimit),

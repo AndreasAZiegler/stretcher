@@ -84,15 +84,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @param mm Speed in mm/s
      */
     void setSpeedInMM(double mm){
-      m_SpeedInMM = mm;
-    }
-
-    /**
-     * @brief Sets speed.
-     * @param percent Speed in percent of the clamping distance / second.
-     */
-    void setSpeedInPercent(double percent){
-      m_SpeedInPercent = percent;
+      m_Velocity = mm;
     }
 
     /**
@@ -131,8 +123,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     State m_CurrentState;																		/**< Current state of the preload FSM */
 
     double m_StressForceLimit;															/**< Stress or force limit value */
-    double m_SpeedInMM;																			/**< Speed in mm/sec */
-    double m_SpeedInPercent;																/**< Speed in percent of clamping distance / sec */
+    double m_Velocity;																			/**< Speed in mm/sec */
 
 
     std::condition_variable *m_Wait;
