@@ -81,7 +81,18 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Sets the gage lengt.
      * @param gagelength The gage length.
      */
-    void setGageLength(long gagelength);
+    void setGageLength(long gagelength){
+      m_GageLength = gagelength;
+    }
+
+    /**
+     * @brief Sets the cross section area.
+     * @param crosssectionarea The cross section area.
+     */
+    void setCrossSectionArea(double crosssectionarea){
+      m_Area = crosssectionarea;
+    }
+
 
     /**
      * @brief Registers the update methods to receive the measurement values.

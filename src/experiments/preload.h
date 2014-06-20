@@ -95,14 +95,6 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
       m_SpeedInPercent = percent;
     }
 
-
-    /**
-     * @brief Sets the area.
-     * @param x Length in x direction.
-     * @param y Length in y direction.
-     */
-    void setArea (double x, double y);
-
     /**
      * @brief Sets the force or stress limit.
      * @param forceStress Force or stress limit.

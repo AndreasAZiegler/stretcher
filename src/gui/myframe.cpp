@@ -54,6 +54,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   //EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
   EVT_BUTTON(ID_SetMountingLength, MyFrame::OnLengthsSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
+  EVT_SPINCTRLDOUBLE(ID_CrossSectionArea, MyFrame::OnCrossSectionAreaChange)
   EVT_BUTTON(ID_LoadLimitSet1, MyFrame::OnLimitsLoadSet1)
   EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnLimitsLoadSet2)
   EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnLimitsLoadSet3)
@@ -148,6 +149,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_DecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_InitializeUnitRadioBox->SetId(ID_Unit);
+  m_InitializeCrossSectionSpinCtrl->SetId(ID_CrossSectionArea);
   wxString str;
   str << m_LengthsGoToSpinCtrl->GetValue();
   m_LengthsGoToSpinCtrl->SetValue(str + " mm");
@@ -690,6 +692,17 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     }
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Force;
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user changes the cross section area.
+ * @param event Occuring event
+ */
+void MyFrame::OnCrossSectionAreaChange(wxSpinDoubleEvent& event){
+  m_Area = m_InitializeCrossSectionSpinCtrl->GetValue();
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->setCrossSectionArea(m_Area);
   }
 }
 

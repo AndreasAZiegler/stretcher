@@ -92,6 +92,18 @@ void Protocols::setLimits(long mindistancelimit, long maxdistancelimit, long min
 }
 
 /**
+ * @brief Sets the cross section area.
+ * @param crosssectionarea The cross section area.
+ */
+void Protocols::setCrossSectionArea(double crosssectionarea){
+  m_Area = crosssectionarea;
+
+  for(auto i : m_ExperimentValues){
+    i->setCrossSectionArea(m_Area);
+  }
+}
+
+/**
  * @brief Create the preview vector and display it in the graph.
  */
 void Protocols::makePreview(void){

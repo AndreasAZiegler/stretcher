@@ -39,7 +39,7 @@ class MyExportDialog : public MyExportDialog_Base
 
 enum
 {
-  ID_ExportDialogOK = 53
+  ID_ExportDialogOK = 54
 };
 
 #endif // MYEXPORTDIALOG_H

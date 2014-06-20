@@ -55,6 +55,12 @@ class Protocols
      */
     void setLimits(long mindistancelimit, long maxdistancelimit, long minforcelimit, long maxforcelimit);
 
+    /**
+     * @brief Sets the cross section area.
+     * @param crosssectionarea The cross section area.
+     */
+    void setCrossSectionArea(double crosssectionarea);
+
     void loadProtocol(void);
 
     void saveProtocol(void);

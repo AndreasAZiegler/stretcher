@@ -43,8 +43,8 @@ Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
     m_ZeroDistance(zerodistance),
     m_CurrentPositions{0, 0},
     m_StartLength(currentdistance),
-    m_CurrentDistance(currentdistance),
-    m_Area(area * 0.000000000001/*um^2*/)
+    m_CurrentDistance(currentdistance)
+    //m_Area(area * 0.000000000001/*um^2*/)
 {
 }
 
