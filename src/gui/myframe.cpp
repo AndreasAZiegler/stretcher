@@ -900,7 +900,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
   }
   int limit = 0;
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    limit = m_PreloadLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10;
+    limit = m_PreloadLimitSpinCtrl->GetValue() * m_Area * 10;
   } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
     limit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
   }
@@ -931,7 +931,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                      m_MountingLength,
                                                      m_MaxPosDistance,
                                                      m_CurrentDistance,
-                                                     m_InitializeCrossSectionSpinCtrl->GetValue(),
+                                                     m_Area,
 
                                                      limit,
                                                      m_PreloadSpeedMmSpinCtrl->GetValue()));
@@ -991,7 +991,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     dwell = m_OneStepStressForceHoldTime2SpinCtrl->GetValue();
     holdupperlimit = m_OneStepStressForceHoldUpperLimitCheckBox->GetValue();
     if(0 == m_InitializeUnitRadioBox->GetSelection()){
-      upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+      upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * m_Area * 10.0;
     } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
       upperlimit = m_OneStepStressForceUpperLimitSpinCtrl->GetValue() * 10000.0;
     }
@@ -1077,7 +1077,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                           m_MountingLength,
                                                           m_MaxPosDistance,
                                                           m_CurrentDistance,
-                                                          m_InitializeCrossSectionSpinCtrl->GetValue(),
+                                                          m_Area,
 
                                                           velocityDistanceOrPercentage,
                                                           velocity,
@@ -1192,7 +1192,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     holdtime = m_ContinuousStressForceHoldTimeSpinCtrl->GetValue();
     incrementDistanceOrPercentage = Experiment::DistanceOrPercentage::Distance;
     if(0 == m_InitializeUnitRadioBox->GetSelection()){
-      increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+      increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue() * m_Area * 10.0;
     } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
       increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue() * 10000.0;
     }
@@ -1219,7 +1219,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
       steps = m_ContinuousStressForceStepsSpinCtrl->GetValue();
     }
     if(0 == m_InitializeUnitRadioBox->GetSelection()){
-      maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+      maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() * m_Area * 10.0;
     } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
       maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue() * 10000.0;
     }
@@ -1294,7 +1294,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
   long stopatforce = 0;
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    stopatforce = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() * 10.0;
+    stopatforce = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_Area * 10.0;
   } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
     stopatforce = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * 10000.0;
   }
@@ -1325,7 +1325,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                              m_MountingLength,
                                                              m_MaxPosDistance,
                                                              m_CurrentDistance,
-                                                             m_InitializeCrossSectionSpinCtrl->GetValue(),
+                                                             m_Area,
 
                                                              velocityDistanceOrPercentage,
                                                              velocity,
@@ -1364,8 +1364,8 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
-    m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
+    m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+    m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   }
@@ -1611,7 +1611,7 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
                                                    m_MountingLength,
                                                    m_MaxPosDistance,
                                                    m_CurrentDistance,
-                                                   m_InitializeCrossSectionSpinCtrl->GetValue()));
+                                                   m_Area));
 
   Pause *ptr = dynamic_cast<Pause*>(experiment.get());
 
@@ -1664,7 +1664,7 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
                                                          m_MountingLength,
                                                          m_MaxPosDistance,
                                                          m_CurrentDistance,
-                                                         m_InitializeCrossSectionSpinCtrl->GetValue()));
+                                                         m_Area));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
@@ -1749,7 +1749,7 @@ void MyFrame::updateDistance(void){
 void MyFrame::updateForce(){
   wxString tmp;
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    tmp << (static_cast<double>(((m_CurrentForce) / 10000.0) / m_InitializeCrossSectionSpinCtrl->GetValue()) * 1000) << m_ForceUnit;
+    tmp << (static_cast<double>(((m_CurrentForce) / 10000.0) / m_Area) * 1000) << m_ForceUnit;
   } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
     tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   }
@@ -1935,7 +1935,7 @@ void MyFrame::checkProtocol(void){
                                                                &m_PreloadDoneMutex,
 
                                                                m_ProtocolsLoopCheckBox->GetValue(),
-                                                               m_InitializeCrossSectionSpinCtrl->GetValue(),
+                                                               m_Area,
                                                                m_MaxDistanceLimit,
                                                                m_MinDistanceLimit,
                                                                m_MaxForceLimit,
