@@ -4,7 +4,8 @@
 
 PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
                              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                             mpFXYVector *vector,
+                             mpFXYVector *forceStressDistanceGraph,
+                             mpFXYVector *forceStressDisplacementGraph,
                              std::mutex *vectoraccessmutex,
                              mpFXYVector *maxforcelimitvector,
                              mpFXYVector *minforcelimitvector,
@@ -15,12 +16,14 @@ PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
                              ExperimentType experimentType,
                              DistanceOrStressOrForce distanceOrStressOrForce,
                              double area,
+                             long gagelength,
 
                              double stressForceLimit,
                              double speedInMm)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
-                     vector,
+                     forceStressDistanceGraph,
+                     forceStressDisplacementGraph,
                      vectoraccessmutex,
                      maxforcelimitvector,
                      minforcelimitvector,
@@ -30,7 +33,8 @@ PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
 
                      experimentType,
                      distanceOrStressOrForce,
-                     area),
+                     area,
+                     gagelength),
     m_StressForceLimit(stressForceLimit/10000.0),
     m_SpeedInMm(speedInMm)
 {

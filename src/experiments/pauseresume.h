@@ -9,7 +9,7 @@ class PauseResume : public Experiment, virtual public UpdatedValuesReceiver
   public:
     PauseResume(std::shared_ptr<StageFrame> stageframe,
                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                mpFXYVector *vector,
+                mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
                 std::mutex *vectoraccessmutex,
                 mpFXYVector *maxforcelimitvector,
                 mpFXYVector *minforcelimitvector, mpFXYVector *maxdistancelimitvector, mpFXYVector *mindistancelimitvector,
@@ -24,6 +24,7 @@ class PauseResume : public Experiment, virtual public UpdatedValuesReceiver
                 ExperimentType type,
                 DistanceOrStressOrForce distanceOrStressOrForce,
                 long gagelength,
+                long mountinglength,
                 long zerodistance,
                 long currentdistance,
                 double area);

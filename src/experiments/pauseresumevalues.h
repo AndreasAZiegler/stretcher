@@ -9,7 +9,8 @@ class PauseResumeValues : public ExperimentValues
   public:
     PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
                       std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                      mpFXYVector *vector,
+                      mpFXYVector *forceStressDistanceGraph,
+                      mpFXYVector *forceStressDisplacementGraph,
                       std::mutex *vectoraccessmutex,
                       mpFXYVector *maxforcelimitvector,
                       mpFXYVector *minforcelimitvector,
@@ -18,7 +19,8 @@ class PauseResumeValues : public ExperimentValues
                       MyFrame *myframe,
                       ExperimentType experimentType,
                       DistanceOrStressOrForce distanceOrStressOrForce,
-                      double area);
+                      double area,
+                      long gagelength);
 
     /**
      * @brief Returns the experiment settings as a std::string.

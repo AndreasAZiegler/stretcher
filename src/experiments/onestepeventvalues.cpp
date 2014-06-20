@@ -3,7 +3,8 @@
 
 OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                                       mpFXYVector *vector,
+                                       mpFXYVector *forceStressDistanceGraph,
+                                       mpFXYVector *forceStressDisplacementGraph,
                                        std::mutex *vectoraccessmutex,
                                        mpFXYVector *maxforcelimitvector,
                                        mpFXYVector *minforcelimitvector,
@@ -15,18 +16,19 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        ExperimentType experimentType,
                                        DistanceOrStressOrForce distanceOrStressOrForce,
                                        double area,
+                                       long gagelength,
 
                                        double velocity,
                                        double holdtime1,
                                        long upperlimit,
                                        double holdtime2,
-                                       long lowerlimit,
                                        long holddistance,
                                        int cycles,
                                        Experiment::BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
-                     vector,
+                     forceStressDistanceGraph,
+                     forceStressDisplacementGraph,
                      vectoraccessmutex,
                      maxforcelimitvector,
                      minforcelimitvector,
@@ -36,19 +38,18 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
 
                      experimentType,
                      distanceOrStressOrForce,
-                     area),
+                     area,
+                     gagelength),
     m_DistanceOrStressOrForce(distanceOrStressOrForce),
     m_Velocity(velocity),
     m_DelayTime(holdtime1),
     m_UpperLimit(upperlimit),
     m_DwellTime(holdtime2),
-    m_LowerLimit(lowerlimit),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_HoldDistance(holddistance),
     m_Cycles(cycles)
 {
   m_UpperLimit = normalizeValue(m_UpperLimit);
-  m_LowerLimit = normalizeValue(m_LowerLimit);
 }
 
 /**
@@ -57,14 +58,6 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
  */
 void OneStepEventValues::setUpperLimit(double upperlimit){
   m_UpperLimit = normalizeValue(upperlimit);
-}
-
-/**
- * @brief Sets the lower limit.
- * @param lowerlimit Lower limit.
- */
-void OneStepEventValues::setLowerLimit(double lowerlimit){
-  m_LowerLimit = normalizeValue(lowerlimit);
 }
 
 /**
@@ -77,10 +70,9 @@ std::string OneStepEventValues::getExperimentSettings(void){
                      ", Stress or Force: " + getStressOrForce() +
                      ", Cross section area: " + std::to_string(m_Area) +
                      ", Velocity: " + std::to_string(m_Velocity) +
-                     ", Hold time 1: " + std::to_string(m_DelayTime) +
+                     ", Delay: " + std::to_string(m_DelayTime) +
                      ", UpperLimit: " + std::to_string(m_UpperLimit) +
-                     ", Hold time 2: " + std::to_string(m_DwellTime) +
-                     ", Lower Limit: " + std::to_string(m_LowerLimit) +
+                     ", Dwell: " + std::to_string(m_DwellTime) +
                      ", Cycles: " + std::to_string(m_Cycles) +
                      ", End of event: " + getEndOfEvent() + "\n\n"));
 }
@@ -96,7 +88,6 @@ std::string OneStepEventValues::experimentSettingsForName(void){
                      " De:" + to_string_wp(m_DelayTime, 2) +
                      " UL:" + to_string_wp(m_UpperLimit, 2) +
                      " Dw:" + to_string_wp(m_DwellTime, 2) +
-                     " LL:" + to_string_wp(m_LowerLimit, 2) +
                      " C:" + to_string_wp(m_Cycles, 2) +
                      " EoE:" + getEndOfEvent()));
 }
@@ -107,12 +98,20 @@ std::string OneStepEventValues::experimentSettingsForName(void){
  */
 std::string OneStepEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
+    case Experiment::BehaviorAfterStop::Stop:
+      return(std::string("Stop."));
+      break;
+
     case Experiment::BehaviorAfterStop::HoldADistance:
       return(std::string("Hold a distance: " + to_string_wp(m_HoldDistance * 0.00009921875/*mm per micro step*/, 2) + " mm"));
       break;
 
     case Experiment::BehaviorAfterStop::GoToL0:
       return(std::string("Go to L0."));
+      break;
+
+    case Experiment::BehaviorAfterStop::GoToML:
+      return(std::string("Go to mounting length."));
       break;
   }
 }

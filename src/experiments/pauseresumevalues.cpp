@@ -2,7 +2,8 @@
 
 PauseResumeValues::PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
                                      std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                                     mpFXYVector *vector,
+                                     mpFXYVector *forceStressDistanceGraph,
+                                     mpFXYVector *forceStressDisplacementGraph,
                                      std::mutex *vectoraccessmutex,
                                      mpFXYVector *maxforcelimitvector,
                                      mpFXYVector *minforcelimitvector,
@@ -12,10 +13,12 @@ PauseResumeValues::PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
 
                                      ExperimentType experimentType,
                                      DistanceOrStressOrForce distanceOrStressOrForce,
-                                     double area)
+                                     double area,
+                                     long gagelength)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
-                     vector,
+                     forceStressDistanceGraph,
+                     forceStressDisplacementGraph,
                      vectoraccessmutex,
                      maxforcelimitvector,
                      minforcelimitvector,
@@ -25,7 +28,8 @@ PauseResumeValues::PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
 
                      experimentType,
                      distanceOrStressOrForce,
-                     area)
+                     area,
+                     gagelength)
 {
 }
 
