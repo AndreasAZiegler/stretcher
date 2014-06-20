@@ -9,7 +9,7 @@
 class MyExportDialog : public MyExportDialog_Base
 {
   public:
-    MyExportDialog(std::shared_ptr<Protocols> &protocols, std::vector<std::string> stringvector);
+    MyExportDialog(std::shared_ptr<Protocols> &protocols, std::vector<std::string> stringvector, std::string storagepath);
 
   private:
 
@@ -25,14 +25,21 @@ class MyExportDialog : public MyExportDialog_Base
      */
     void OnOK(wxCommandEvent& event);
 
+    /**
+     * @brief Method wich will be executed, when the user has choosen a path and a file name.
+     * @param event Occuring event
+     */
+    void OnChangePathAndName(wxFileDirPickerEvent& event);
+
     std::shared_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
+    std::string m_PathAndFileName;															/**< Choosen path and file name as std::string. */
 
     wxDECLARE_EVENT_TABLE();
 };
 
 enum
 {
-  ID_ExportDialogOK = 52
+  ID_ExportDialogOK = 54
 };
 
 #endif // MYEXPORTDIALOG_H

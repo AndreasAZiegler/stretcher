@@ -25,22 +25,41 @@ class Protocols
               std::mutex *waitmutex,
               std::condition_variable *wait,
               bool *preloaddoneflag,
-              std::mutex *preloaddonemutex, bool loopflag, double area,
+              std::mutex *preloaddonemutex,
+              bool loopflag,
+              double area,
               long maxdistance,
               long mindistance,
               long maxforce,
               long minforce,
-              mpFXYVector *valuesvector,
-              mpFXYVector *stressforcevector,
-              mpFXYVector *distancevector,
-              mpFXYVector *maxstressforcelimitvector, mpFXYVector *minstressforcelimitvector,
-              mpFXYVector *maxdistancelimitvector, mpFXYVector *mindistancelimitvector,
+              mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+              mpFXYVector *stressForceGraph,
+              mpFXYVector *distanceGraph,
+              mpFXYVector *maxStressForceLimitGraph,
+              mpFXYVector *minStressForceLimitGraph,
+              mpFXYVector *maxDistanceLimitGraph,
+              mpFXYVector *minDistanceLimitGraph,
               std::string path);
 
     /**
      * @brief Destructor
      */
     ~Protocols();
+
+    /**
+     * @brief Set new limits and forwards them to the experiments.
+     * @param mindistancelimit Value for the minimal distance limit.
+     * @param maxdistancelimit Value for the maximal distance limit.
+     * @param minforcelimit Value for the minimal force limit.
+     * @param maxforcelimit Value for the maximal force limit.
+     */
+    void setLimits(long mindistancelimit, long maxdistancelimit, long minforcelimit, long maxforcelimit);
+
+    /**
+     * @brief Sets the cross section area.
+     * @param crosssectionarea The cross section area.
+     */
+    void setCrossSectionArea(double crosssectionarea);
 
     void loadProtocol(void);
 
@@ -114,7 +133,7 @@ class Protocols
     /**
      * @brief Exports the measurement data to a .csv file.
      */
-    void exportCSV(std::vector<bool> disableexport);
+    void exportCSV(std::vector<bool> disableexport, std::string pathname = "");
 
     /**
      * @brief Returns the current experiment type as a string.
@@ -143,13 +162,14 @@ class Protocols
 
   private:
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
-    mpFXYVector *m_ValuesVector;																						/**< Pointer to the vector containing the values. */
-    mpFXYVector *m_StressForcePreviewVector;																/**< Pointer to the vector containing the stress/force preview values. */
-    mpFXYVector *m_DistancePreviewVector;																		/**< Pointer to the vector containing the distance preview values. */
-    mpFXYVector *m_MaxStressForceLimitVector;																/**< Pointer to the vector containing the max. stress/force limits. */
-    mpFXYVector *m_MinStressForceLimitVector;																/**< Pointer to the vector containing the min. stress/force limits. */
-    mpFXYVector *m_MaxDistanceLimitVector;																	/**< Pointer to the vector containing the max. distance limits. */
-    mpFXYVector *m_MinDistanceLimitVector;																	/**< Pointer to the vector containing the min. distance limits. */
+    mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the vector containing the force/stress - distance values. */
+    mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the vector containing the force/stress - displacement values. */
+    mpFXYVector *m_StressForcePreviewGraph;																	/**< Pointer to the vector containing the stress/force preview values. */
+    mpFXYVector *m_DistancePreviewGraph;																		/**< Pointer to the vector containing the distance preview values. */
+    mpFXYVector *m_MaxStressForceLimitGraph;																/**< Pointer to the vector containing the max. stress/force limits. */
+    mpFXYVector *m_MinStressForceLimitGraph;																/**< Pointer to the vector containing the min. stress/force limits. */
+    mpFXYVector *m_MaxDistanceLimitGraph;																		/**< Pointer to the vector containing the max. distance limits. */
+    mpFXYVector *m_MinDistanceLimitGraph;																		/**< Pointer to the vector containing the min. distance limits. */
     std::vector<double> m_TimePointLimits;																	/**< Vector for the limits timepoints. */
     std::vector<double> m_MaxStressForceLimits;															/**< Vector for the max. stress/force limits. */
     std::vector<double> m_MinStressForceLimits;															/**< Vector for the min. stress/force limits. */
@@ -171,8 +191,9 @@ class Protocols
     std::vector<double> m_DistancePreviewValues;														/**< Vector containing the distance preview values. */
     std::vector<double> m_StressForceTimePreviewValues;											/**< Vector containing the time points for the stress/force values. */
     std::vector<double> m_DistanceTimePreviewValues;												/**< Vector containing the time points for the distance values. */
-    std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
-    std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
+    std::vector<double> m_StressForceGraphValues;														/**< Vector containing only the stress/force values */
+    std::vector<double> m_DistanceGraphValues;															/**< Vector containing only the distance values */
+    std::vector<double> m_DisplacementGraphValues;													/**< Vector containing only the displacment values */
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 

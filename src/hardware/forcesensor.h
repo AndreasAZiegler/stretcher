@@ -40,12 +40,17 @@ class ForceSensor : public SerialInterface
     void setScaleFactor(double nominalforce, double nominalvalue, double inputsensitivity, double measureendvalue, int zerovalue);
 
     /**
+     * @brief Sets force zero.
+     */
+    void setZeroForce(void);
+
+    /**
       * @brief Returns the pointer to the message handler.
       * @return Pointer to the message handler.
       */
     std::shared_ptr<ForceSensorMessageHandler> getMessageHandler(void);
 
-    double getForce ();
+    double getForce();
 
 
   private:

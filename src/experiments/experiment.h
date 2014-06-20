@@ -31,16 +31,19 @@ class Experiment
      * @enum DistanceOrPercentage
      * @brief Defines if the distance is given as distance or as percentage of the preload.
      */
-    enum class DistanceOrPercentage{Distance = 0,
-                                    Percentage = 1};
+    enum class DistanceOrPercentage{DistanceRelative = 0,
+                                    Distance = 1,
+                                    Percentage = 2};
 
     /**
      * @brief Indicates the behavior after the experiment stops.
      */
     enum class BehaviorAfterStop{Stop = 0,
                                  HoldADistance = 1,
-                                 Repeat = 2,
-                                 GoToL0 = 3};
+                                 HoldAForce = 2,
+                                 Repeat = 3,
+                                 GoToL0 = 4,
+                                 GoToML = 5};
 
     /**
      * @brief The PreviewValue struct
@@ -77,10 +80,7 @@ class Experiment
      */
     Experiment(std::shared_ptr<StageFrame> stageframe,
                std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-               mpFXYVector *vector,
-               std::mutex *vectoraccessmutex,
                MyFrame *myframe,
-               std::string path,
                long maxforcelimit,
                long minforcelimit,
                long maxdistancelimit,
@@ -90,11 +90,21 @@ class Experiment
                DistanceOrStressOrForce distanceOrStressForce,
                Experiment::Direction direction,
                long gagelength,
+               long mountinglength,
                long zerodistance,
                long currentdistance,
                double area,
                double forcesStressThreshold,
                double distanceThreshold);
+
+    /**
+     * @brief Set new limits and forwards them to the experiments.
+     * @param mindistancelimit Value for the minimal distance limit.
+     * @param maxdistancelimit Value for the maximal distance limit.
+     * @param minforcelimit Value for the minimal force limit.
+     * @param maxforcelimit Value for the maximal force limit.
+     */
+    void setLimits(long mindistancelimit, long maxdistancelimit, long minforcelimit, long maxforcelimit);
 
     /**
      * @brief Sets the preload distance.
@@ -164,6 +174,7 @@ class Experiment
 
     std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;									/**< Pointer to the message handler object */
+    MyFrame *m_MyFrame;													/**< Pointer to the main frame. */
 
     bool m_CheckLimitsFlag;											/**< Indicates if the limits should be checked. */
     long m_MaxForceLimit;												/**< Maximal force limit. */
@@ -177,6 +188,7 @@ class Experiment
     DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */
 
     long m_GageLength;													/**< Preload distance of the stage frame */
+    long m_MountingLength;											/**< Mountinglength of the stage frame */
     long m_DefaultGageLength;										/**< Default preload distance of the stage frame. */
     long m_ZeroDistance;												/**< Zero distance */
     long m_StartLength;													/**< Distance where the experiment starts. */
@@ -184,7 +196,6 @@ class Experiment
     double m_CurrentForce;											/**< Current force */
     std::vector<long> m_CurrentPositions;				/**< Vector with the current stage positions */
     bool m_ExitFlag;														/**< Flag indicating that the experiment should stop imediatly */
-    double m_Area;															/**< Area size of the sample. */
 
 };
 

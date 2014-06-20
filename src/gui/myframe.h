@@ -158,6 +158,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
 
+    /**
+     * @brief Opens a pop-up warning dialog.
+     */
+    bool showHighVelocityWarningFromExperiments(void);
+
   private:
 
     /**
@@ -229,6 +234,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnUnit(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the cross section area.
+     * @param event Occuring event
+     */
+    void OnCrossSectionAreaChange(wxSpinDoubleEvent &event);
+
+    /**
      * @brief Method wich will be executed, when the user chooses distance as limit.
      * @param event Occuring event
      */
@@ -263,6 +274,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnLengthsSetMountingLength(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the zero distance button.
+     * @param event Occuring event
+     */
+    void OnLengthsZeroDistance(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the zero force/stress button.
+     * @param event Occuring event
+     */
+    void OnLengthsZeroForceStress(wxCommandEvent& event);
 
     /**
      * @brief Loads limit set 1 from the configuration.
@@ -456,6 +479,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex);
 
     /**
+     * @brief Shows velocity warining dialog.
+     */
+    void showHighVelocityWarning(void);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the preview protocol button.
      * @param event Occuring event
      */
@@ -502,13 +530,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::unique_ptr<mpWindow> m_Graph;					/**< Pointer to the graph */
     std::mutex m_UpdateGraphMutex;							/**< Mutex to protect the graph update. */
     bool m_ShowGraphFlag;												/**< Indicates if the graph is active or not. */
-    mpFXYVector m_VectorLayer;									/**< Vector layer for the value graph */
-    mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
-    mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
-    mpFXYVector m_MaxStressForceLimitVector;		/**< Vector layer to display the max stress/force limits. */
-    mpFXYVector m_MinStressForceLimitVector;		/**< Vector layer to display the min stress/force limits. */
-    mpFXYVector m_MaxDistanceLimitVector;				/**< Vector layer to display the max distance limits. */
-    mpFXYVector m_MinDistanceLimitVector;				/**< Vector layer to display the min distance limits. */
+    mpFXYVector m_ForceStressDistanceGraph;			/**< Vector layer for the value graph */
+    mpFXYVector m_ForceStressDisplacementGraph;	/**< Vector layer for the value graph */
+    mpFXYVector m_StressForcePreviewGraph;			/**< Vector layer for the stress/force preview graph. */
+    mpFXYVector m_DistancePreviewGraph;					/**< Vector layer for the distance preview graph. */
+    mpFXYVector m_MaxStressForceLimitGraph;			/**< Vector layer to display the max stress/force limits. */
+    mpFXYVector m_MinStressForceLimitGraph;			/**< Vector layer to display the min stress/force limits. */
+    mpFXYVector m_MaxDistanceLimitGraph;				/**< Vector layer to display the max distance limits. */
+    mpFXYVector m_MinDistanceLimitGraph;				/**< Vector layer to display the min distance limits. */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     std::unique_ptr<mpScaleX> m_XAxis;					/**< Pointer to the X axis */
     std::unique_ptr<mpScaleY> m_Y1Axis;					/**< Pointer to the left Y axis */
@@ -525,10 +554,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_MinDistanceLimit;									/**< The minimal position for the stages */
     double m_MaxForceLimit;											/**< The maximal allowed force. */
     double m_MinForceLimit;											/**< The minimal allowed force. */
-    double m_TempMinDistanceLimit;
-    double m_TempMaxDistanceLimit;
-    double m_TempMinForceLimit;
-    double m_TempMaxForceLimit;
+    double m_TempMinDistanceLimit;							/**< From the template loaded minimal distance limit. */
+    double m_TempMaxDistanceLimit;							/**< From the template loaded maximal distance limit. */
+    double m_TempMinForceLimit;									/**< From the template loaded minimal force limit. */
+    double m_TempMaxForceLimit;									/**< From the template loaded maximal force limit. */
     bool m_DistanceLimitExceededFlag;						/**< Indicates if a distance limit exceeded. */
     std::mutex m_DistanceLimitExceededMutex;		/**< Mutex to protect m_DistanceLimitExceededFlag. */
     bool m_ForceLimitExceededFlag;							/**< Indicates if a force limit exceeded. */
@@ -540,8 +569,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
     long m_CurrentDistance; 										/**< Current distance */
     std::shared_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
-    //Experiment *m_CurrentExperiment;						/**< Pointer to the current experiment */
-    //ExperimentValues *m_CurrentExperimentValues;/**< Pointer to the current experiment values */
     std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
     std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
     bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
@@ -551,12 +578,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
     long m_MountingLength;											/**< The mounting length. */
-    double m_TempMountingLength;
+    double m_TempMountingLength;								/**< From the template loaded mounting length. */
     long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
-    double m_TempGageLength;
+    double m_TempGageLength;										/**< From the template loaded gage length. */
     long m_MaxPosDistance;											/**< Distance when the motors are on max position (resulting in smallest distance) */
-    double m_TempMaxPosDistance;
+    double m_TempMaxPosDistance;								/**< From the template loaded distance at maximal position. */
     double m_Area;															/**< Area of the sample */
+    std::condition_variable m_WaitHighVelocity;	/**< Wait conditional variable to wait for high velocity dialog result. */
+    std::mutex m_WaitHighVelocityMutex;					/**< Mutex for m_WaitHighVelocity. */
+    bool m_HighVelocityAbort;										/**< Indicates if experiment should be aborted because of the high velocity. */
 
     DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;												/**< Current force */
@@ -574,55 +604,57 @@ enum
 	ID_FileOutput = 3,
   ID_LoadStoredPosition = 4,
   ID_HomeStages = 5,
-  ID_Unit = 6,
-  ID_MotorDecreaseDistance = 7,
-  ID_MotorIncreaseDistance = 8,
-  ID_MotorStop = 9,
-  ID_LoadPreset = 10,
-  ID_ApplyPreset = 11,
-  ID_SavePreset = 12,
-  ID_SetDistanceWActuatorCollision = 13,
-  ID_SetMountingLength = 14,
+  ID_MotorDecreaseDistance = 6,
+  ID_MotorIncreaseDistance = 7,
+  ID_MotorStop = 8,
+  ID_Unit = 9,
+  ID_CrossSectionArea = 10,
+  ID_SetDistanceWActuatorCollision = 11,
+  ID_LoadPreset = 12,
+  ID_ApplyPreset = 13,
+  ID_SavePreset = 14,
   ID_LoadLimitSet1 = 15,
   ID_LoadLimitSet2 = 16,
   ID_LoadLimitSet3 = 17,
   ID_LoadLimitSet4 = 18,
-  ID_LimitsDistanceValue = 19,
-  ID_SetLimits = 20,
-  ID_LimitsDistanceGoTo = 21,
-  ID_PreloadSpeedPercent = 22,
-  ID_PreloadSpeedMm = 23,
-  ID_PreloadSendToProtocol = 24,
+  ID_SetLimits = 19,
+  ID_LengthsDistanceGoTo = 20,
+  ID_SetMountingLength = 21,
+  ID_SetZeroDistance = 22,
+  ID_SetZeroForceStress = 23,
+  ID_PreloadSpeedPercent = 24,
+  ID_PreloadSpeedMm = 25,
+  ID_PreloadSendToProtocol = 26,
 
-  ID_OneStepStressForce = 25,
-  ID_OneStepDistance = 26,
-  ID_OneStepCancel = 27,
-  ID_OneStepSendToProtocol = 28,
+  ID_OneStepStressForce = 27,
+  ID_OneStepDistance = 28,
+  ID_OneStepCancel = 29,
+  ID_OneStepSendToProtocol = 30,
 
-  ID_ContinuousStressForce = 29,
-  ID_ContinuousDistance = 30,
-  ID_ContinuousMaxValue = 31,
-  ID_ContinuousSteps = 32,
-  ID_ContinuousCancel = 33,
-  ID_ContinuousSendToProtocol = 34,
+  ID_ContinuousStressForce = 31,
+  ID_ContinuousDistance = 32,
+  ID_ContinuousMaxValue = 33,
+  ID_ContinuousSteps = 34,
+  ID_ContinuousCancel = 35,
+  ID_ContinuousSendToProtocol = 36,
 
-  ID_ClearLog = 35,
-  ID_SaveLog = 36,
-  ID_ClearGraph = 37,
-  ID_ExportCSV = 38,
-  ID_ExportPNG = 39,
-  ID_DeleteExperiment = 40,
-  ID_MoveUpExperiment = 41,
-  ID_MoveDownExperiment = 42,
-  ID_PauseExperiment = 43,
-  ID_PauseResumeExperiment = 44,
-  ID_LoopProtocol = 45,
-  ID_Preview = 46,
-  ID_RunProtocol = 47,
-  ID_StopProtocol = 48,
-  ID_SaveProtocol = 49,
-  ID_LoadProtocol = 50,
-  ID_MakePhoto = 51
+  ID_ClearLog = 37,
+  ID_SaveLog = 38,
+  ID_ClearGraph = 39,
+  ID_ExportCSV = 40,
+  ID_ExportPNG = 41,
+  ID_DeleteExperiment = 42,
+  ID_MoveUpExperiment = 43,
+  ID_MoveDownExperiment = 44,
+  ID_PauseExperiment = 45,
+  ID_PauseResumeExperiment = 46,
+  ID_LoopProtocol = 47,
+  ID_Preview = 48,
+  ID_RunProtocol = 49,
+  ID_StopProtocol = 50,
+  ID_SaveProtocol = 51,
+  ID_LoadProtocol = 52,
+  ID_MakePhoto = 53
 };
 
 #endif // MYFRAME_H

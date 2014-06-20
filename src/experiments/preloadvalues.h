@@ -9,7 +9,7 @@ class PreloadValues : public ExperimentValues
   public:
     PreloadValues(std::shared_ptr<StageFrame> stageframe,
                   std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                  mpFXYVector *vector,
+                  mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
                   std::mutex *vectoraccessmutex,
                   mpFXYVector *maxlimitvector,
                   mpFXYVector *minlimitvector,
@@ -17,7 +17,7 @@ class PreloadValues : public ExperimentValues
 
                   ExperimentType experimentType,
                   DistanceOrStressOrForce distanceOrStressOrForce,
-                  double area,
+                  double area, long gagelength,
 
                   double stressForceLimit,
                   double speedInMm);

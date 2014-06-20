@@ -24,13 +24,14 @@ Protocols::Protocols(wxListBox *listbox,
                      long mindistance,
                      long maxforce,
                      long minforce,
-                     mpFXYVector *valuesvector,
-                     mpFXYVector *stressforcevector,
-                     mpFXYVector *distancevector,
-                     mpFXYVector *maxstressforcelimitvector,
-                     mpFXYVector *minstressforcelimitvector,
-                     mpFXYVector *maxdistancelimitvector,
-                     mpFXYVector *mindistancelimitvector,
+                     mpFXYVector *forceStressDistanceGraph,
+                     mpFXYVector *forceStressDisplacementGraph,
+                     mpFXYVector *stressForceGraph,
+                     mpFXYVector *distanceGraph,
+                     mpFXYVector *maxStressForceLimitGraph,
+                     mpFXYVector *minStressForceLimitGraph,
+                     mpFXYVector *maxDistanceLimitGraph,
+                     mpFXYVector *minDistanceLimitGraph,
                      std::string path)
   : m_ListBox(listbox),
     m_MyFrame(myframe),
@@ -47,13 +48,13 @@ Protocols::Protocols(wxListBox *listbox,
     m_MinDistanceLimit(mindistance),
     m_MaxForceLimit(maxforce),
     m_MinForceLimit(minforce),
-    m_ValuesVector(valuesvector),
-    m_StressForcePreviewVector(stressforcevector),
-    m_DistancePreviewVector(distancevector),
-    m_MaxStressForceLimitVector(maxstressforcelimitvector),
-    m_MinStressForceLimitVector(minstressforcelimitvector),
-    m_MaxDistanceLimitVector(maxdistancelimitvector),
-    m_MinDistanceLimitVector(mindistancelimitvector),
+    m_ForceStressDistanceGraph(forceStressDistanceGraph),
+    m_StressForcePreviewGraph(stressForceGraph),
+    m_DistancePreviewGraph(distanceGraph),
+    m_MaxStressForceLimitGraph(maxStressForceLimitGraph),
+    m_MinStressForceLimitGraph(minStressForceLimitGraph),
+    m_MaxDistanceLimitGraph(maxDistanceLimitGraph),
+    m_MinDistanceLimitGraph(minDistanceLimitGraph),
     m_StoragePath(path),
     m_PreloadDistance(0),
     m_ExperimentRunningFlag(false),
@@ -70,6 +71,36 @@ Protocols::~Protocols(){
   m_Experiments.clear();
   m_ExperimentValues.clear();
   */
+}
+
+/**
+ * @brief Set new limits and forwards them to the experiments.
+ * @param mindistancelimit Value for the minimal distance limit.
+ * @param maxdistancelimit Value for the maximal distance limit.
+ * @param minforcelimit Value for the minimal force limit.
+ * @param maxforcelimit Value for the maximal force limit.
+ */
+void Protocols::setLimits(long mindistancelimit, long maxdistancelimit, long minforcelimit, long maxforcelimit){
+  m_MinDistanceLimit = mindistancelimit;
+  m_MaxDistanceLimit = maxdistancelimit;
+  m_MinForceLimit = minforcelimit;
+  m_MaxForceLimit = maxdistancelimit;
+
+  for(auto i : m_Experiments){
+    i->setLimits(mindistancelimit, maxdistancelimit, minforcelimit, maxforcelimit);
+  }
+}
+
+/**
+ * @brief Sets the cross section area.
+ * @param crosssectionarea The cross section area.
+ */
+void Protocols::setCrossSectionArea(double crosssectionarea){
+  m_Area = crosssectionarea;
+
+  for(auto i : m_ExperimentValues){
+    i->setCrossSectionArea(m_Area);
+  }
 }
 
 /**
@@ -92,22 +123,22 @@ void Protocols::makePreview(void){
   // Create limit vectors
   m_TimePointLimits.push_back(m_PreviewValues.front().timepoint);
   m_TimePointLimits.push_back(m_PreviewValues.back().timepoint);
-  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
-  m_MaxStressForceLimits.push_back(m_MaxForceLimit);
-  m_MinStressForceLimits.push_back(m_MinForceLimit);
-  m_MinStressForceLimits.push_back(m_MinForceLimit);
-  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
-  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit);
-  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
-  m_MinDistanceLimits.push_back(m_MinDistanceLimit);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
+  m_MinStressForceLimits.push_back(m_MinForceLimit / 10000.0);
+  m_MinStressForceLimits.push_back(m_MinForceLimit / 10000.0);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
 
   // Set the the vector data.
-  m_DistancePreviewVector->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
-  m_StressForcePreviewVector->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
-  m_MaxStressForceLimitVector->SetData(m_TimePointLimits, m_MaxStressForceLimits);
-  m_MinStressForceLimitVector->SetData(m_TimePointLimits, m_MinStressForceLimits);
-  m_MaxDistanceLimitVector->SetData(m_TimePointLimits, m_MaxDistanceLimits);
-  m_MinDistanceLimitVector->SetData(m_TimePointLimits, m_MinDistanceLimits);
+  m_DistancePreviewGraph->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
+  m_StressForcePreviewGraph->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
+  m_MaxStressForceLimitGraph->SetData(m_TimePointLimits, m_MaxStressForceLimits);
+  m_MinStressForceLimitGraph->SetData(m_TimePointLimits, m_MinStressForceLimits);
+  m_MaxDistanceLimitGraph->SetData(m_TimePointLimits, m_MaxDistanceLimits);
+  m_MinDistanceLimitGraph->SetData(m_TimePointLimits, m_MinDistanceLimits);
 
   // Show preview in the graph.
   m_MyFrame->showPreviewGraph();
@@ -187,23 +218,26 @@ void Protocols::runProtocol(void){
       m_MeasurementValuesRecordingFlag = true;
     }
     // Clear graph vectors.
-    m_GraphStressForceValues.clear();
-    m_GraphDistanceValues.clear();
+    m_StressForceGraphValues.clear();
+    m_DistanceGraphValues.clear();
+    m_DisplacementGraphValues.clear();
     // Create shared_ptr's which are needed.
-    std::shared_ptr<std::vector<double>> graphstressforce(&m_GraphStressForceValues, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphdistance(&m_GraphDistanceValues, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphmaxforcelimit(&m_MaxStressForceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphminforcelimit(&m_MinStressForceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphmaxdistancelimit(&m_MaxDistanceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphmindistancelimit(&m_MinDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> stressforcegraph(&m_StressForceGraphValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> distancegraph(&m_DistanceGraphValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> displacementgraph(&m_DisplacementGraphValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> maxforcelimitgraph(&m_MaxStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> minforcelimitgraph(&m_MinStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> maxdistancelimitgraph(&m_MaxDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> mindistancelimitgraph(&m_MinDistanceLimits, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> graphlimitstimepoints(&m_TimePointLimits, do_nothing_deleter);
     // Start recording values.
-    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce,
-                                                                graphdistance,
-                                                                graphmaxforcelimit,
-                                                                graphminforcelimit,
-                                                                graphmaxdistancelimit,
-                                                                graphmindistancelimit,
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(stressforcegraph,
+                                                                distancegraph,
+                                                                displacementgraph,
+                                                                maxforcelimitgraph,
+                                                                minforcelimitgraph,
+                                                                maxdistancelimitgraph,
+                                                                mindistancelimitgraph,
                                                                 graphlimitstimepoints);
 
     // Mark the running experiment in the list box.
@@ -255,21 +289,23 @@ void Protocols::process(void){
     }
 
     // Create shared_ptr's which are needed.
-    std::shared_ptr<std::vector<double>> graphstressforce(&m_GraphStressForceValues, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphdistance(&m_GraphDistanceValues, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphmaxforcelimit(&m_MaxStressForceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphminforcelimit(&m_MinStressForceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphmaxdistancelimit(&m_MaxDistanceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphmindistancelimit(&m_MinDistanceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphlimitstimepoints(&m_TimePointLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> stressforcegraph(&m_StressForceGraphValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> distancegraph(&m_DistanceGraphValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> displacementgraph(&m_DisplacementGraphValues, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> maxforcelimitgraph(&m_MaxStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> minforcelimitgraph(&m_MinStressForceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> maxdistancelimitgraph(&m_MaxDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> mindistancelimitgraph(&m_MinDistanceLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> limitstimepointsgraph(&m_TimePointLimits, do_nothing_deleter);
     // Start recording values.
-    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(graphstressforce,
-                                                                graphdistance,
-                                                                graphmaxforcelimit,
-                                                                graphminforcelimit,
-                                                                graphmaxdistancelimit,
-                                                                graphmindistancelimit,
-                                                                graphlimitstimepoints);
+    m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(stressforcegraph,
+                                                                distancegraph,
+                                                                displacementgraph,
+                                                                maxforcelimitgraph,
+                                                                minforcelimitgraph,
+                                                                maxdistancelimitgraph,
+                                                                mindistancelimitgraph,
+                                                                limitstimepointsgraph);
 
     // Mark the running experiment in the list box.
     m_ListBox->SetSelection(m_CurrentExperimentNr);
@@ -424,19 +460,11 @@ std::vector<std::string> Protocols::getExperimentNames(void){
 /**
  * @brief Exports the measurement data to a .csv file.
  */
-void Protocols::exportCSV(std::vector<bool> disableexport){
-  // Creating file name
-  std::time_t time = std::time(NULL);
-  char mbstr[100];
-  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-  //std::cout << mbstr << std::endl;
-  //std::string pathAndFilename = m_StoragePath + "/" + experimentTypeToString() + "_" + std::string(mbstr) + ".txt";
-  std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".txt";
+void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname){
   //std::cout << pathAndFilename << std::endl;
 
   // Creat the file
-  std::ofstream file(pathAndFilename);
-  //std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::ofstream file(pathname);
 
   // Open the file
   if(false == file.is_open()){
@@ -445,6 +473,9 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
   }
 
   // Printing header
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
   file << "Protocol: " <<  "Date/Time: " << std::string(mbstr) << std::endl << std::endl;
 
   // Printing the experiment settings.
@@ -501,7 +532,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport){
 
   file.close();
 
-  wxLogMessage(std::string("Saved experiment values to: " + pathAndFilename).c_str());
+  wxLogMessage(std::string("Saved experiment values to: " + pathname).c_str());
   /*
 /**
  * @brief Returns the experiment settings as a std::string.
@@ -572,7 +603,7 @@ void Protocols::checkFinishedExperiment(void){
       *m_PreloadDoneFlag = true;
       // Set preload distance.
       m_PreloadDistance = m_MyFrame->getCurrentDistance();
-      wxLogMessage(std::string("m_PreloadDistance: " + std::to_string(m_PreloadDistance)).c_str());
+      wxLogMessage(std::string("Protocols: Preload distance: " + std::to_string(m_PreloadDistance * 0.00009921875/*mm per micro step*/)).c_str());
       // Set the prelod distance in all the experiments.
       for(auto i : m_Experiments){
         i->setPreloadDistance();

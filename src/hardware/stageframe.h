@@ -144,6 +144,11 @@ class StageFrame : virtual public UpdatedValuesReceiver
      */
     void setMaxPosDistance(long maxposdistance);
 
+    /**
+     * @brief Zero distance.
+     */
+    void setZeroDistance(void);
+
   private:
 
     /**
@@ -162,6 +167,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
 
     double m_Stepsize;			     				    					/**< Stepsize of the stepper motor in millimeters */
     long m_MaxPosDistance;							 	 		     	  /**< Distance when the motors are on max position (resulting in smallest distance) */
+    long m_ZeroDistanceOffset;												/**< Offset distance for zero distance. */
 
     bool m_Pos1ChangedFlag;														/**< Indicates an updated position 1 if true */
     bool m_Pos2ChangedFlag;														/**< Indicates an updated position 2 if true */

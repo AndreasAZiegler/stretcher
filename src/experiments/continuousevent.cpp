@@ -1,13 +1,17 @@
 // Includes
 #include <iostream>
 #include <thread>
+#include <mutex>
 #include <chrono>
 #include <wx/log.h>
+#include <wx/msgdlg.h>
+#include "../gui/myframe.h"
 #include "continuousevent.h"
 
 ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                                 mpFXYVector *vector,
+                                 mpFXYVector *forceStressDistanceGraph,
+                                 mpFXYVector *forceStressDisplacementGraph,
                                  std::mutex *vectoraccessmutex,
                                  mpFXYVector *maxlimitvector,
                                  mpFXYVector *minlimitvector,
@@ -27,6 +31,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                  DistanceOrStressOrForce distanceOrStressForce,
                                  bool ramptofailureactiveflag,
                                  long gagelength,
+                                 long mountinglength,
                                  long zerodistance,
                                  long currentdistance,
                                  double area,
@@ -45,13 +50,11 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                  int steps,
                                  double ramptofailurepercent,
                                  int cycles,
-                                 BehaviorAfterStop behaviorAfterStop)
+                                 BehaviorAfterStop behaviorAfterStop,
+                                 long holdforce)
       : Experiment(stageframe,
                    forcesensormessagehandler,
-                   vector,
-                   vectoraccessmutex,
                    myframe,
-                   path,
                    maxforcelimit,
                    minforcelimit,
                    maxdistancelimit,
@@ -61,6 +64,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                    distanceOrStressForce,
                    Direction::Stop,
                    gagelength,
+                   mountinglength,
                    zerodistance,
                    currentdistance,
                    area,
@@ -81,6 +85,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_MaxValueDistanceOrPercentage(maxvalueDistanceOrPercentage),
         m_MaxValuePercent(maxvaluepercent),
         m_MaxValueLimit(maxvaluelimit),
+        m_InitRelMaxValueLimit(maxvaluelimit),
         m_Steps(steps),
         m_Ramp2FailurePercentage(ramptofailurepercent),
         m_Cycles(cycles),
@@ -90,11 +95,14 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_CurrentStep(0),
         m_CurrentCycle(0),
         m_MaxStressForce(0),
+        m_HoldForce(holdforce),
+        m_WaitActive(false),
         m_DecreaseSpeedFlag(false),
         m_CheckDistanceFlag(false),
         m_ExperimentValues(new ContinuousEventValues(stageframe,
                                                      forcesensormessagehandler,
-                                                     vector,
+                                                     forceStressDistanceGraph,
+                                                     forceStressDisplacementGraph,
                                                      vectoraccessmutex,
                                                      maxlimitvector,
                                                      minlimitvector,
@@ -104,6 +112,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                                      type,
                                                      distanceOrStressForce,
                                                      area,
+                                                     gagelength,
 
                                                      velocity,
                                                      holdtime,
@@ -134,6 +143,11 @@ void ContinuousEvent::initParameters(void){
     m_ExperimentValues->setVelocity(m_Velocity);
   }
 
+  // Show a warning pop up dialog if the velocity is high.
+  if(11 < m_Velocity){
+    m_MyFrame->showHighVelocityWarningFromExperiments();
+  }
+
   // Only set increment and steps parameter if experiment is not a ramp to failure experiment.
   if(false == m_Ramp2FailureActiveFlag){
     if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
@@ -141,20 +155,23 @@ void ContinuousEvent::initParameters(void){
       m_ExperimentValues->setIncrement(m_Increment);
     }
     if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
-      if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
-        m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
-        m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+      if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+        if(Experiment::DistanceOrPercentage::DistanceRelative == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_StartLength + m_InitRelMaxValueLimit;
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+        }else if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+        }
       }
       if((0 != m_MaxValueLimit) && (0 != m_Increment)){
         if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
           m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
-          /*
           wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
                                    " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
                                    " m_CurrentForce: " + std::to_string(m_CurrentForce) +
                                    " m_Increment: " + std::to_string(m_Increment)).c_str());
-          */
-        } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
           m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
         }
         m_ExperimentValues->setSteps(m_Steps);
@@ -212,6 +229,27 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
         //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
       }
       timepoint++;
+
+      // Make last point depending on the stop behavior.
+      switch(m_BehaviorAfterStop){
+        case BehaviorAfterStop::Stop:
+          if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+            previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + ((j + 1) * m_Increment)));
+          } else{
+            previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (j + 1) * m_Increment));
+            //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
+          }
+          break;
+        case BehaviorAfterStop::GoToL0:
+          previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));
+          break;
+        case BehaviorAfterStop::GoToML:
+          previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_MountingLength));
+          break;
+        case BehaviorAfterStop::HoldAForce:
+          previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Force, m_HoldForce));
+          break;
+      }
     }
   }
 }
@@ -227,13 +265,35 @@ void ContinuousEvent::process(Event event){
     case stopState:
       if(Experiment::Event::evStart == event){
 
+        // Show a warning pop up dialog if the velocity is high.
+        if(11 < m_Velocity){
+          if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
+            m_Velocity = 11;
+            std::cout << "OneStepEvent: Velocity set to 11." << std::endl;
+          }
+        }
+
         wxLogMessage("ContinuousEvent: Start experiment.");
 
         // Perform hold if there is a hold time
         if(0 < m_HoldTime){
           wxLogMessage(std::string("ContinuousEvent: Hold for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+          /*
+          {
+            std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+            m_WaitActive = true;
+          }
+          */
           std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
           t1.join();
+          /*
+          {
+            std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+            m_WaitActive = false;
+          }
+          */
+
           //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
           wxLogMessage("ContinuousEvent: Holding over.");
         }
@@ -254,7 +314,6 @@ void ContinuousEvent::process(Event event){
         //m_ExperimentValues->setStartPoint();
 
         // If ramp2failure
-        std::cout << "ContinuousEvent: m_Ramp2FailureActiveFlag: " << m_Ramp2FailureActiveFlag << std::endl;
         if(true == m_Ramp2FailureActiveFlag){
           m_CurrentDirection = Direction::Backwards;
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
@@ -319,16 +378,27 @@ void ContinuousEvent::process(Event event){
           if(std::abs(m_CurrentForce) < ((m_Ramp2FailurePercentage / 100.0) * std::abs(m_MaxStressForce))){
             if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
+              m_CurrentStep = 0;
+              m_CurrentCycle = 0;
+
               switch(m_BehaviorAfterStop){
                 case BehaviorAfterStop::GoToL0:
                   m_CurrentState = goBackState;
                   m_CheckDistanceFlag = true;
-                  m_CurrentStep = 0;
-                  m_CurrentCycle = 0;
                   m_CurrentLimit = m_GageLength;
                   {
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->gotoStepsDistance(m_GageLength);
+                  }
+                  break;
+                case BehaviorAfterStop::GoToML:
+                  m_CurrentState = goBackState;
+                  m_CheckDistanceFlag = true;
+                  m_CurrentLimit = m_MountingLength;
+                  wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                  {
+                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                    m_StageFrame->gotoStepsDistance(m_MountingLength);
                   }
                   break;
                 case BehaviorAfterStop::Stop:
@@ -340,15 +410,37 @@ void ContinuousEvent::process(Event event){
                   m_CurrentState = stopState;
                   m_CurrentDirection = Direction::Stop;
                   m_CheckDistanceFlag = false;
-                  m_CurrentStep = 0;
-                  m_CurrentCycle = 0;
-                  std::lock_guard<std::mutex> lck(*m_WaitMutex);
-                  m_Wait->notify_all();
+                  {
+                    std::lock_guard<std::mutex> lck(*m_WaitMutex);
+                    m_Wait->notify_all();
+                  }
+                  break;
+                case BehaviorAfterStop::HoldAForce:
+                  m_CurrentState = goBackForceState;
+                  m_CheckDistanceFlag = true;
+                  m_CurrentLimit = m_HoldForce;
+                  wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_HoldForce / 10000.0)).c_str());
+
+                  if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
+                    //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+                    m_CurrentDirection = Direction::Backwards;
+                    {
+                      std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                      m_StageFrame->moveBackward(m_Velocity);
+                    }
+                  }else if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
+                    //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+                    m_CurrentDirection = Direction::Forwards;
+                    {
+                      std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                      m_StageFrame->moveForward(m_Velocity);
+                    }
+                  }
                   break;
               }
               wxLogMessage("ContinuousEvent: Went to end length.");
               //process(Event::evUpdate);
-            } else{
+            }else{
               m_CurrentCycle++;
               m_CheckDistanceFlag = true;
               m_CurrentState = goStartState;
@@ -361,8 +453,22 @@ void ContinuousEvent::process(Event event){
                   m_StageFrame->stop();
                 }
                 wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                /*
+                {
+                  std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                  m_WaitActive = true;
+                }
+                */
                 std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                 t1.join();
+                /*
+                {
+                  std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                  m_WaitActive = false;
+                }
+                */
+
                 //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                 wxLogMessage("ContinuousEvent: Holding over.");
               }
@@ -406,16 +512,28 @@ void ContinuousEvent::process(Event event){
               //std::cout << "Go to preload distance" << std::endl;
               if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
+                m_CurrentStep = 0;
+                m_CurrentCycle = 0;
+
                 switch(m_BehaviorAfterStop){
                   case BehaviorAfterStop::GoToL0:
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
-                    m_CurrentStep = 0;
-                    m_CurrentCycle = 0;
                     m_CurrentLimit = m_GageLength;
+                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_GageLength);
+                    }
+                    break;
+                  case BehaviorAfterStop::GoToML:
+                    m_CurrentState = goBackState;
+                    m_CheckDistanceFlag = true;
+                    m_CurrentLimit = m_MountingLength;
+                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    {
+                      std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                      m_StageFrame->gotoStepsDistance(m_MountingLength);
                     }
                     break;
                   case BehaviorAfterStop::Stop:
@@ -427,10 +545,32 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = stopState;
                     m_CurrentDirection = Direction::Stop;
                     m_CheckDistanceFlag = false;
-                    m_CurrentStep = 0;
-                    m_CurrentCycle = 0;
-                    std::lock_guard<std::mutex> lck(*m_WaitMutex);
-                    m_Wait->notify_all();
+                    {
+                      std::lock_guard<std::mutex> lck(*m_WaitMutex);
+                      m_Wait->notify_all();
+                    }
+                    break;
+                  case BehaviorAfterStop::HoldAForce:
+                    m_CurrentState = goBackForceState;
+                    m_CheckDistanceFlag = true;
+                    m_CurrentLimit = m_HoldForce;
+                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_HoldForce / 10000.0)).c_str());
+
+                    if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
+                      //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+                      m_CurrentDirection = Direction::Backwards;
+                      {
+                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                        m_StageFrame->moveBackward(m_Velocity);
+                      }
+                    }else if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
+                      //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+                      m_CurrentDirection = Direction::Forwards;
+                      {
+                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                        m_StageFrame->moveForward(m_Velocity);
+                      }
+                    }
                     break;
                 }
                 wxLogMessage("ContinuousEvent: Went to end length.");
@@ -448,8 +588,22 @@ void ContinuousEvent::process(Event event){
                       m_StageFrame->stop();
                     }
                     wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = true;
+                    }
+                    */
                     std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                     t1.join();
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = false;
+                    }
+                    */
+
                     //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                     wxLogMessage("ContinuousEvent: Holding over.");
                   }
@@ -473,8 +627,22 @@ void ContinuousEvent::process(Event event){
                     m_StageFrame->stop();
                   }
                   wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = true;
+                  }
+                  */
                   std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                   t1.join();
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = false;
+                  }
+                  */
+
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                   wxLogMessage("ContinuousEvent: Holding over.");
                 }
@@ -535,19 +703,30 @@ void ContinuousEvent::process(Event event){
                 m_CurrentLimit = 0;
                 if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
+                  m_CurrentStep = 0;
+                  m_CurrentCycle = 0;
+
                   switch(m_BehaviorAfterStop){
                     case BehaviorAfterStop::GoToL0:
                       m_CurrentState = goBackState;
                       m_CheckDistanceFlag = true;
-                      m_CurrentStep = 0;
-                      m_CurrentCycle = 0;
                       m_CurrentLimit = m_GageLength;
+                      wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
                       {
                         std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                         m_StageFrame->gotoStepsDistance(m_GageLength);
                       }
                       break;
-
+                    case BehaviorAfterStop::GoToML:
+                      m_CurrentState = goBackState;
+                      m_CheckDistanceFlag = true;
+                      m_CurrentLimit = m_MountingLength;
+                      wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                      {
+                        std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                        m_StageFrame->gotoStepsDistance(m_MountingLength);
+                      }
+                      break;
                     case BehaviorAfterStop::Stop:
                       {
                         std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
@@ -557,10 +736,32 @@ void ContinuousEvent::process(Event event){
                       m_CurrentState = stopState;
                       m_CurrentDirection = Direction::Stop;
                       m_CheckDistanceFlag = false;
-                      m_CurrentStep = 0;
-                      m_CurrentCycle = 0;
-                      std::lock_guard<std::mutex> lck(*m_WaitMutex);
-                      m_Wait->notify_all();
+                      {
+                        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+                        m_Wait->notify_all();
+                      }
+                      break;
+                    case BehaviorAfterStop::HoldAForce:
+                      m_CurrentState = goBackForceState;
+                      m_CheckDistanceFlag = true;
+                      m_CurrentLimit = m_HoldForce;
+                      wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_HoldForce / 10000.0)).c_str());
+
+                      if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
+                        //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
+                        m_CurrentDirection = Direction::Backwards;
+                        {
+                          std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                          m_StageFrame->moveBackward(m_Velocity);
+                        }
+                      }else if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
+                        //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_ForceStressLimit - m_CurrentForce << std::endl;
+                        m_CurrentDirection = Direction::Forwards;
+                        {
+                          std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                          m_StageFrame->moveForward(m_Velocity);
+                        }
+                      }
                       break;
                   }
                   wxLogMessage("ContinuousEvent: Went to end length.");
@@ -579,7 +780,22 @@ void ContinuousEvent::process(Event event){
                     }
                     //std::cout << "ContinuousEvent: stages should stop." << std::endl;
                     wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
-                    std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime); t1.join();
+
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = true;
+                    }
+                    */
+                    std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
+                    t1.join();
+                    /*
+                    {
+                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                      m_WaitActive = false;
+                    }
+                    */
+
                     //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                     wxLogMessage("ContinuousEvent: Holding over.");
                   }
@@ -603,10 +819,25 @@ void ContinuousEvent::process(Event event){
                     m_StageFrame->stop();
                   }
                   wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = true;
+                  }
+                  */
                   std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                   t1.join();
+                  /*
+                  {
+                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+                    m_WaitActive = false;
+                  }
+                  */
+
                   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                   wxLogMessage("ContinuousEvent: Holding over.");
+                  process(Event::evUpdate);
                 }
               }
             }
@@ -647,14 +878,28 @@ void ContinuousEvent::process(Event event){
           // Perform hold if there is a hold time
           if(0 < m_HoldTime){
             wxLogMessage(std::string("ContinuousEvent: Hold for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+            /*
+            {
+              std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+              m_WaitActive = true;
+            }
+            */
             std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
             t1.join();
+            /*
+            {
+              std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+              m_WaitActive = false;
+            }
+            */
+
             //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
             wxLogMessage("ContinuousEvent: Holding over.");
           }
 
           //m_CurrentDirection = Direction::Stop;
-          wxLogMessage("ContinuousEvent:: Go to runState");
+          wxLogMessage("ContinuousEvent: Go to runState");
           process(Event::evUpdate);
           //m_CurrentDirection = Direction::Stop;
           //m_StageFrame->stop();
@@ -727,6 +972,59 @@ void ContinuousEvent::process(Event event){
         */
       }
       break;
+
+    case goBackForceState:
+      if(Event::evStop == event){
+        //std::cout << "Conditioning FSM switched to state: stopState." << std::endl;
+        m_CurrentState = stopState;
+        m_CurrentDirection = Direction::Stop;
+        m_CurrentCycle = 0;
+        {
+          std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+          m_StageFrame->stop();
+        }
+        wxLogMessage("ContinuousEvent: Stop.");
+        std::lock_guard<std::mutex> lck(*m_WaitMutex);
+        m_Wait->notify_all();
+      }
+      if(Event::evUpdate == event){
+
+        if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
+          //std::cout << "(m_CurrentForce - m_CurrentLimit) >  m_ForceStressThreshold: " << (m_CurrentForce - m_CurrentLimit) << " " << m_ForceStressThreshold << std::endl;
+
+          if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
+            m_CurrentDirection = Direction::Backwards;
+            {
+              std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+              m_StageFrame->moveBackward(m_Velocity);
+            }
+          }
+        }else if((m_CurrentForce - m_CurrentLimit) > m_ForceStressThreshold){
+          //std::cout << "(m_CurrentLimit - m_CurrentForce) >  m_ForceStressThreshold: " << (m_CurrentLimit - m_CurrentForce) << " " << m_ForceStressThreshold << std::endl;
+
+          if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only reverse motor, if state changed
+            m_CurrentDirection = Direction::Forwards;
+            {
+              std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+              m_StageFrame->moveForward(m_Velocity);
+            }
+          }
+        }else{
+
+          {
+            std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+            m_StageFrame->stop();
+          }
+          wxLogMessage("ContinuousEvent: Stop.");
+          m_CurrentState = stopState;
+          m_CurrentDirection = Direction::Stop;
+          m_CheckDistanceFlag = false;
+          std::lock_guard<std::mutex> lck(*m_WaitMutex);
+          m_Wait->notify_all();
+        }
+      }
+
+      break;
   }
 }
 
@@ -765,16 +1063,25 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         //process(Event::evStop);
       } else{
       */
-        if(std::abs(measurementValue.value) > std::abs(m_MaxStressForce)){
-          m_MaxStressForce = measurementValue.value;
-        }
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) ||
+      if(measurementValue.value > m_MaxStressForce){
+        m_MaxStressForce = measurementValue.value;
+      }
+
+      {
+        //std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+        m_WaitActiveMutex.lock();
+        if(((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) ||
            (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) ||
-           (true == m_Ramp2FailureActiveFlag)){
+           (true == m_Ramp2FailureActiveFlag)) && (false == m_WaitActive)){
+          m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
           t1.detach();
+          //t1.join();
           //process(Event::evUpdate);
+        }else{
+          m_WaitActiveMutex.unlock();
         }
+      }
       //}
       break;
 
@@ -789,11 +1096,19 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         //process(Event::evStop);
       } else{
       */
-        if((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)){
+      {
+        //std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+        m_WaitActiveMutex.lock();
+        if(((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
+          m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
           t1.detach();
+          //t1.join();
           //process(Event::evUpdate);
+        }else{
+          m_WaitActiveMutex.unlock();
         }
+      }
       //}
       break;
   }
@@ -804,5 +1119,13 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
  * @param seconds
  */
 void ContinuousEvent::sleepForMilliseconds(double seconds){
+  {
+    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+    m_WaitActive = true;
+  }
   std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(seconds * 1000)));
+  {
+    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
+    m_WaitActive = false;
+  }
 }

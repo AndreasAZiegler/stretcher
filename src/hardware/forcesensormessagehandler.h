@@ -35,6 +35,11 @@ class ForceSensorMessageHandler : virtual public MessageHandler
     void setScaleFactor(double scalingfactor, double zerovalue);
 
     /**
+     * @brief Sets force zero.
+     */
+    void setZeroForce(void);
+
+    /**
      * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
      */
     virtual void receiver(void);
@@ -59,6 +64,7 @@ class ForceSensorMessageHandler : virtual public MessageHandler
 
     double m_ScalingFactor;                  			/**< Sensor scaling factor */
     double m_ZeroValue;                      			/**< Zero value */
+    double m_ZeroForceOffset;											/**< Offset force for zero force. */
 
 };
 

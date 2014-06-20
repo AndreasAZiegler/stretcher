@@ -34,6 +34,13 @@ void ForceSensorMessageHandler::setScaleFactor(double scalingfactor, double zero
 }
 
 /**
+ * @brief Sets force zero.
+ */
+void ForceSensorMessageHandler::setZeroForce(void){
+  m_ZeroForceOffset = m_CurrentForce.value;
+}
+
+/**
   * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
   */
 void ForceSensorMessageHandler::receiver(void){
@@ -105,7 +112,7 @@ void ForceSensorMessageHandler::receiver(void){
                   (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+4]));
 
       m_CurrentForce.timestamp = std::chrono::high_resolution_clock::now();
-      m_CurrentForce.value = -(measforce - m_ZeroValue) / m_ScalingFactor;
+      m_CurrentForce.value = -(measforce - m_ZeroValue) / m_ScalingFactor - m_ZeroForceOffset;
       //std::cout << "PressureSensor force: " << m_CurrentForce << " at pos: " << syncPos << std::endl;
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};

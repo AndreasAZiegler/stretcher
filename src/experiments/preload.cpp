@@ -2,6 +2,7 @@
 #include <iostream>
 #include <mutex>
 #include <wx/log.h>
+#include "../gui/myframe.h"
 #include "preload.h"
 
 /**
@@ -17,7 +18,8 @@
  */
 Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                 mpFXYVector *vector,
+                 mpFXYVector *forceStressDistanceGraph,
+                 mpFXYVector *forceStressDisplacementGraph,
                  std::mutex *vectoraccessmutex,
                  mpFXYVector *maxlimitvector,
                  mpFXYVector *minlimitvector,
@@ -36,6 +38,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  ExperimentType type,
                  DistanceOrStressOrForce distanceOrStressOrForce,
                  long gagelength,
+                 long mountinglength,
                  long zerodistance,
                  long currentdistance,
                  double area,
@@ -44,10 +47,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  double speedInMM)
   : Experiment(stageframe,
                forcesensormessagehandler,
-               vector,
-               vectoraccessmutex,
                myframe,
-               path,
                maxforcelimit,
                minforcelimit,
                maxdistancelimit,
@@ -57,6 +57,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                distanceOrStressOrForce,
                Direction::Stop,
                gagelength,
+               mountinglength,
                zerodistance,
                currentdistance,
                area,
@@ -70,10 +71,11 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
     m_StagesStoppedFlag(stagesstopped),
     m_StagesStoppedMutex(stagesstoppedmutex),
     m_StressForceLimit(stressForceLimit),
-    m_SpeedInMM(speedInMM),
+    m_Velocity(speedInMM),
     m_ExperimentValues(std::make_shared<PreloadValues>(stageframe,
                                                        forcesensormessagehandler,
-                                                       vector,
+                                                       forceStressDistanceGraph,
+                                                       forceStressDisplacementGraph,
                                                        vectoraccessmutex,
                                                        maxlimitvector,
                                                        minlimitvector,
@@ -83,6 +85,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                                                        type,
                                                        distanceOrStressOrForce,
                                                        area,
+                                                       gagelength,
 
                                                        stressForceLimit,
                                                        speedInMM))
@@ -119,15 +122,6 @@ void Preload::getPreview(std::vector<PreviewValue> &previewvalue){
    timepoint =  previewvalue.back().getTimepoint() + 1;
   }
   previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StressForceLimit));
-}
-
-/**
- * @brief Sets the area.
- * @param x Length in x direction.
- * @param y Length in y direction.
- */
-void Preload::setArea(double x, double y){
-  m_Area = x * y;
 }
 
 /**
@@ -179,34 +173,29 @@ void Preload::process(Event e){
   switch(m_CurrentState){
     case stopState:
       if(Event::evStart == e){
+
+        // Show a warning pop up dialog if the velocity is high.
+        if(11 < m_Velocity){
+          if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
+            m_Velocity = 11;
+            std::cout << "OneStepEvent: Velocity set to 11." << std::endl;
+          }
+        }
+
         wxLogMessage("Preload: Start experiment.");
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
-        m_StageFrame->setSpeed(m_SpeedInMM);
+        m_StageFrame->setSpeed(m_Velocity);
         m_CurrentState = runState;
         m_CheckLimitsFlag = true;
 
-        // If force based
-        if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-          if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
-            m_CurrentDirection = Direction::Backwards;
-            m_StageFrame->moveBackward(m_SpeedInMM);
-          }else if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
-            m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward(m_SpeedInMM);
-          }
-        }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){ // If stress based
-          if((m_StressForceLimit - (m_CurrentForce/m_Area * 1000)) > m_ForceStressThreshold){
-            //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
-            m_CurrentDirection = Direction::Backwards;
-            m_StageFrame->moveBackward(m_SpeedInMM);
-          }else if(((m_CurrentForce/m_Area * 1000) - m_StressForceLimit) > m_ForceStressThreshold){
-            //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
-            m_CurrentDirection = Direction::Forwards;
-            m_StageFrame->moveForward(m_SpeedInMM);
-          }
-
+        if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
+          //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
+          m_CurrentDirection = Direction::Backwards;
+          m_StageFrame->moveBackward(m_Velocity);
+        }else if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){
+          //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
+          m_CurrentDirection = Direction::Forwards;
+          m_StageFrame->moveForward(m_Velocity);
         }
       }
       break;
@@ -232,14 +221,14 @@ void Preload::process(Event e){
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
               m_CurrentDirection = Direction::Backwards;
-              m_StageFrame->moveBackward(m_SpeedInMM);
+              m_StageFrame->moveBackward(m_Velocity);
             }
           }else if((m_CurrentForce - m_StressForceLimit) > m_ForceStressThreshold){ // Only reverse motor, if state changed
             //std::cout << "m_ForceStressLimit - m_CurrentForce: " << m_StressForceLimit - m_CurrentForce << std::endl;
 
             if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){
               m_CurrentDirection = Direction::Forwards;
-              m_StageFrame->moveForward(m_SpeedInMM);
+              m_StageFrame->moveForward(m_Velocity);
             }
           }else{
 
