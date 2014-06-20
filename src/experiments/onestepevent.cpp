@@ -168,6 +168,7 @@ void OneStepEvent::initParameters(void){
 }
 
 /**
+<<<<<<< HEAD
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
@@ -178,6 +179,8 @@ void OneStepEvent::setPreloadDistance(){
 }
 
 /**
+=======
+>>>>>>> fc62a1c25b6928ce6d955f3d7823498ba28c1d46
  * @brief Saves the experiment settings in the xml_docuement.
  * @param xml Pointer to the xml_document.
  */

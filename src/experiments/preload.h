@@ -95,7 +95,10 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> fc62a1c25b6928ce6d955f3d7823498ba28c1d46
      * @brief Sets the area.
      * @param x Length in x direction.
      * @param y Length in y direction.
