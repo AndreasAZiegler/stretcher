@@ -514,13 +514,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::unique_ptr<mpWindow> m_Graph;					/**< Pointer to the graph */
     std::mutex m_UpdateGraphMutex;							/**< Mutex to protect the graph update. */
     bool m_ShowGraphFlag;												/**< Indicates if the graph is active or not. */
-    mpFXYVector m_VectorLayer;									/**< Vector layer for the value graph */
-    mpFXYVector m_StressForcePreviewVector;			/**< Vector layer for the stress/force preview graph. */
-    mpFXYVector m_DistancePreviewVector;				/**< Vector layer for the distance preview graph. */
-    mpFXYVector m_MaxStressForceLimitVector;		/**< Vector layer to display the max stress/force limits. */
-    mpFXYVector m_MinStressForceLimitVector;		/**< Vector layer to display the min stress/force limits. */
-    mpFXYVector m_MaxDistanceLimitVector;				/**< Vector layer to display the max distance limits. */
-    mpFXYVector m_MinDistanceLimitVector;				/**< Vector layer to display the min distance limits. */
+    mpFXYVector m_ForceStressDistanceGraph;			/**< Vector layer for the value graph */
+    mpFXYVector m_ForceStressDisplacementGraph;	/**< Vector layer for the value graph */
+    mpFXYVector m_StressForcePreviewGraph;			/**< Vector layer for the stress/force preview graph. */
+    mpFXYVector m_DistancePreviewGraph;					/**< Vector layer for the distance preview graph. */
+    mpFXYVector m_MaxStressForceLimitGraph;			/**< Vector layer to display the max stress/force limits. */
+    mpFXYVector m_MinStressForceLimitGraph;			/**< Vector layer to display the min stress/force limits. */
+    mpFXYVector m_MaxDistanceLimitGraph;				/**< Vector layer to display the max distance limits. */
+    mpFXYVector m_MinDistanceLimitGraph;				/**< Vector layer to display the min distance limits. */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     std::unique_ptr<mpScaleX> m_XAxis;					/**< Pointer to the X axis */
     std::unique_ptr<mpScaleY> m_Y1Axis;					/**< Pointer to the left Y axis */

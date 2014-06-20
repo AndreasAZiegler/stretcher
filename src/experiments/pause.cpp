@@ -5,7 +5,8 @@
 
 Pause::Pause(std::shared_ptr<StageFrame> stageframe,
              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-             mpFXYVector *vector,
+             mpFXYVector *forceStressDistanceGraph,
+             mpFXYVector *forceStressDisplacementGraph,
              std::mutex *vectoraccessmutex,
              mpFXYVector *maxlimitvector,
              mpFXYVector *minlimitvector,
@@ -29,10 +30,6 @@ Pause::Pause(std::shared_ptr<StageFrame> stageframe,
              int pausetime)
   : Experiment(stageframe,
                forcesensormessagehandler,
-               vector,
-               vectoraccessmutex,
-               myframe,
-               path,
                maxforcelimit,
                minforcelimit,
                maxdistancelimit,
@@ -54,7 +51,8 @@ Pause::Pause(std::shared_ptr<StageFrame> stageframe,
       m_PauseTime(pausetime),
       m_ExperimentValues(std::make_shared<PauseValues>(stageframe,
                                                        forcesensormessagehandler,
-                                                       vector,
+                                                       forceStressDistanceGraph,
+                                                       forceStressDisplacementGraph,
                                                        vectoraccessmutex,
                                                        maxlimitvector,
                                                        minlimitvector,
@@ -63,7 +61,8 @@ Pause::Pause(std::shared_ptr<StageFrame> stageframe,
 
                                                        type,
                                                        distanceOrStressOrForce,
-                                                       area))
+                                                       area,
+                                                       gagelength))
 {
 }
 

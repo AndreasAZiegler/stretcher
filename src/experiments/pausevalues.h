@@ -9,14 +9,15 @@ class PauseValues : public ExperimentValues
   public:
     PauseValues(std::shared_ptr<StageFrame> stageframe,
                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                mpFXYVector *vector,
+                mpFXYVector *forceStressDistanceGraph,
+                mpFXYVector *forceStressDisplacementGraph,
                 std::mutex *vectoraccessmutex,
                 mpFXYVector *maxlimitvector,
                 mpFXYVector *minlimitvector,
                 MyFrame *myframe,
                 ExperimentType experimentType,
                 DistanceOrStressOrForce distanceOrStressOrForce,
-                double area,
+                double area, long gagelength,
                 int pausetime = 0);
 
     /**

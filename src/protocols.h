@@ -25,16 +25,20 @@ class Protocols
               std::mutex *waitmutex,
               std::condition_variable *wait,
               bool *preloaddoneflag,
-              std::mutex *preloaddonemutex, bool loopflag, double area,
+              std::mutex *preloaddonemutex,
+              bool loopflag,
+              double area,
               long maxdistance,
               long mindistance,
               long maxforce,
               long minforce,
-              mpFXYVector *valuesvector,
-              mpFXYVector *stressforcevector,
-              mpFXYVector *distancevector,
-              mpFXYVector *maxstressforcelimitvector, mpFXYVector *minstressforcelimitvector,
-              mpFXYVector *maxdistancelimitvector, mpFXYVector *mindistancelimitvector,
+              mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+              mpFXYVector *stressForceGraph,
+              mpFXYVector *distanceGraph,
+              mpFXYVector *maxStressForceLimitGraph,
+              mpFXYVector *minStressForceLimitGraph,
+              mpFXYVector *maxDistanceLimitGraph,
+              mpFXYVector *minDistanceLimitGraph,
               std::string path);
 
     /**
@@ -152,13 +156,14 @@ class Protocols
 
   private:
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
-    mpFXYVector *m_ValuesVector;																						/**< Pointer to the vector containing the values. */
-    mpFXYVector *m_StressForcePreviewVector;																/**< Pointer to the vector containing the stress/force preview values. */
-    mpFXYVector *m_DistancePreviewVector;																		/**< Pointer to the vector containing the distance preview values. */
-    mpFXYVector *m_MaxStressForceLimitVector;																/**< Pointer to the vector containing the max. stress/force limits. */
-    mpFXYVector *m_MinStressForceLimitVector;																/**< Pointer to the vector containing the min. stress/force limits. */
-    mpFXYVector *m_MaxDistanceLimitVector;																	/**< Pointer to the vector containing the max. distance limits. */
-    mpFXYVector *m_MinDistanceLimitVector;																	/**< Pointer to the vector containing the min. distance limits. */
+    mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the vector containing the force/stress - distance values. */
+    mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the vector containing the force/stress - displacement values. */
+    mpFXYVector *m_StressForcePreviewGraph;																	/**< Pointer to the vector containing the stress/force preview values. */
+    mpFXYVector *m_DistancePreviewGraph;																		/**< Pointer to the vector containing the distance preview values. */
+    mpFXYVector *m_MaxStressForceLimitGraph;																/**< Pointer to the vector containing the max. stress/force limits. */
+    mpFXYVector *m_MinStressForceLimitGraph;																/**< Pointer to the vector containing the min. stress/force limits. */
+    mpFXYVector *m_MaxDistanceLimitGraph;																		/**< Pointer to the vector containing the max. distance limits. */
+    mpFXYVector *m_MinDistanceLimitGraph;																		/**< Pointer to the vector containing the min. distance limits. */
     std::vector<double> m_TimePointLimits;																	/**< Vector for the limits timepoints. */
     std::vector<double> m_MaxStressForceLimits;															/**< Vector for the max. stress/force limits. */
     std::vector<double> m_MinStressForceLimits;															/**< Vector for the min. stress/force limits. */
@@ -180,8 +185,9 @@ class Protocols
     std::vector<double> m_DistancePreviewValues;														/**< Vector containing the distance preview values. */
     std::vector<double> m_StressForceTimePreviewValues;											/**< Vector containing the time points for the stress/force values. */
     std::vector<double> m_DistanceTimePreviewValues;												/**< Vector containing the time points for the distance values. */
-    std::vector<double> m_GraphStressForceValues;														/**< Vector containing only the stress/force values */
-    std::vector<double> m_GraphDistanceValues;															/**< Vector containing only the distance values */
+    std::vector<double> m_StressForceGraphValues;														/**< Vector containing only the stress/force values */
+    std::vector<double> m_DistanceGraphValues;															/**< Vector containing only the distance values */
+    std::vector<double> m_DisplacementGraphValues;													/**< Vector containing only the displacment values */
     std::string m_StoragePath;																							/**< Storage path as a std::string */
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 

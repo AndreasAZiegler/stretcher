@@ -61,14 +61,14 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      */
     ExperimentValues(std::shared_ptr<StageFrame> stageframe,
                      std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                     mpFXYVector *vector,
+                     mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
                      std::mutex *vectoraccessmutex,
                      mpFXYVector *maxlimitvector, mpFXYVector *minlimitvector,
                      MyFrame *myframe,
 
                      ExperimentType experimenttype,
                      DistanceOrStressOrForce distanceOrStressOrForce,
-                     double area);
+                     double area, long gagelength);
 
     //ExperimentValues(const ExperimentValues &experimentvalues);
 
@@ -78,15 +78,22 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     ~ExperimentValues();
 
     /**
+     * @brief Sets the gage lengt.
+     * @param gagelength The gage length.
+     */
+    void setGageLength(long gagelength);
+
+    /**
      * @brief Registers the update methods to receive the measurement values.
      */
-    void startMeasurement(std::shared_ptr<std::vector<double>> graphstressforce,
-                          std::shared_ptr<std::vector<double>> graphdistance,
-                          std::shared_ptr<std::vector<double>> graphmaxforcelimitvalues,
-                          std::shared_ptr<std::vector<double>> graphminforcelimitvalues,
-                          std::shared_ptr<std::vector<double>> graphmaxdistancelimitvalues,
-                          std::shared_ptr<std::vector<double>> graphmindistancelimitvalues,
-                          std::shared_ptr<std::vector<double>> graphlimittimepoints);
+    void startMeasurement(std::shared_ptr<std::vector<double>> forcestressgraph,
+                          std::shared_ptr<std::vector<double>> distancegraph,
+                          std::shared_ptr<std::vector<double> > displacement,
+                          std::shared_ptr<std::vector<double>> maxforcelimitvaluesgraph,
+                          std::shared_ptr<std::vector<double>> minforcelimitvaluesgraph,
+                          std::shared_ptr<std::vector<double>> maxdistancelimitvaluesgraph,
+                          std::shared_ptr<std::vector<double>> mindistancelimitvaluesgraph,
+                          std::shared_ptr<std::vector<double>> limittimepointsgraph);
 
     /**
      * @brief Unregister the update method.
@@ -227,15 +234,17 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     ExperimentType m_ExperimentType;																				/**< Type of the experiment */
     std::shared_ptr<StageFrame> m_StageFrame;																/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
-    mpFXYVector *m_VectorLayer;																							/**< Pointer to the vector for the graph */
+    mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the force/stress - distance graph */
+    mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the force/stress - displacement graph. */
     std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     mpFXYVector *m_MaxLimitVectorLayer;																			/**< Pointer to the max. limit vector layer. */
     mpFXYVector *m_MinLimitVectorLayer;																			/**< Pointer to the min. limit vector layer. */
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
-    std::shared_ptr<std::vector<double>> m_GraphStressForceValues;					/**< Vector containing only the stress/force values */
-    std::shared_ptr<std::vector<double>> m_GraphDistanceValues;							/**< Vector containing only the distance values */
+    std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;					/**< Vector containing only the stress/force - distance values */
+    std::shared_ptr<std::vector<double>> m_DistanceGraphValues;							/**< Vector containing only the distance values */
+    std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;					/**< Vector containing only the displacement values. */
     std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;							/**< Pointer to the vector containing the graph max limit values. */
     std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;							/**< Pointer to the vector containing the graph min limit values. */
     std::shared_ptr<std::vector<double>> m_GraphLimitTimePoints;						/**< Pointer to the vector containing the time points. */
@@ -243,6 +252,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     int m_CurrentProtocolCycle;																							/**< The current cycle numer. */
     bool m_ResetProtocolFlag;																								/**< Indicate it the protocol stops and the recorded values should be deleted. */
     int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
+    double m_GageLength;																										/**< The gage length. */
 
 };
 

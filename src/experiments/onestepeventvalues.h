@@ -9,7 +9,8 @@ class OneStepEventValues : public ExperimentValues
   public:
     OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                        std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                       mpFXYVector *vector,
+                       mpFXYVector *forceStressDistanceGraph,
+                       mpFXYVector *forceStressDisplacementGraph,
                        std::mutex *vectoraccessmutex,
                        mpFXYVector *maxlimitvector,
                        mpFXYVector *minlimitvector,
@@ -18,7 +19,7 @@ class OneStepEventValues : public ExperimentValues
 
                        ExperimentType experimentType,
                        DistanceOrStressOrForce distanceOrStressOrForce,
-                       double area,
+                       double area, long gagelength,
 
                        double velocity,
                        double holdtime1,

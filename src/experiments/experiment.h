@@ -80,10 +80,6 @@ class Experiment
      */
     Experiment(std::shared_ptr<StageFrame> stageframe,
                std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-               mpFXYVector *vector,
-               std::mutex *vectoraccessmutex,
-               MyFrame *myframe,
-               std::string path,
                long maxforcelimit,
                long minforcelimit,
                long maxdistancelimit,

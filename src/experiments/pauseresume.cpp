@@ -8,7 +8,8 @@
 
 PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
                          std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                         mpFXYVector *vector,
+                         mpFXYVector *forceStressDistanceGraph,
+                         mpFXYVector *forceStressDisplacementGraph,
                          std::mutex *vectoraccessmutex,
                          mpFXYVector *maxlimitvector,
                          mpFXYVector *minlimitvector,
@@ -31,10 +32,6 @@ PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
                          double area)
   : Experiment(stageframe,
                forcesensormessagehandler,
-               vector,
-               vectoraccessmutex,
-               myframe,
-               path,
                maxforcelimit,
                minforcelimit,
                maxdistancelimit,
@@ -56,7 +53,8 @@ PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
       m_CurrentState(State::stopState),
       m_ExperimentValues(std::make_shared<PauseResumeValues>(stageframe,
                                                              forcesensormessagehandler,
-                                                             vector,
+                                                             forceStressDistanceGraph,
+                                                             forceStressDisplacementGraph,
                                                              vectoraccessmutex,
                                                              maxlimitvector,
                                                              minlimitvector,
@@ -65,7 +63,8 @@ PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
 
                                                              type,
                                                              distanceOrStressOrForce,
-                                                             area))
+                                                             area,
+                                                             gagelength))
 {
 }
 

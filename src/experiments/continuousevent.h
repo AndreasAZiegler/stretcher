@@ -14,7 +14,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
 
     ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                     std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                    mpFXYVector *vector,
+                    mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
                     std::mutex *vectoraccessmutex,
                     mpFXYVector *maxlimitvector,
                     mpFXYVector *minlimitvector,

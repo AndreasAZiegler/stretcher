@@ -2,7 +2,8 @@
 
 ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stageframe,
                                              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                                             mpFXYVector *vector,
+                                             mpFXYVector *forceStressDistanceGraph,
+                                             mpFXYVector *forceStressDisplacementGraph,
                                              std::mutex *vectoraccessmutex,
                                              mpFXYVector *maxlimitvector,
                                              mpFXYVector *minlimitvector,
@@ -12,6 +13,7 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                                              ExperimentType experimentType,
                                              DistanceOrStressOrForce distanceOrStressOrForce,
                                              double area,
+                                             long gagelength,
 
                                              double velocity,
                                              double holdtime,
@@ -20,7 +22,8 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                                              Experiment::BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
-                     vector,
+                     forceStressDistanceGraph,
+                     forceStressDisplacementGraph,
                      vectoraccessmutex,
                      maxlimitvector,
                      minlimitvector,
@@ -28,7 +31,8 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
 
                      experimentType,
                      distanceOrStressOrForce,
-                     area),
+                     area,
+                     gagelength),
    m_Velocity(velocity),
    m_HoldTime(holdtime),
    m_Steps(steps),
