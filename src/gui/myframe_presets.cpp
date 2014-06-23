@@ -68,9 +68,9 @@ void MyFrame::OnApplyPreset(wxCommandEvent& event){
     m_MinForceLimit = (m_TempMinForceLimit * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
   }
 
-  m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
+  m_StageFrame->setMaxDistanceLimit(m_TempMaxDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-  m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit);
+  m_StageFrame->setMinDistanceLimit(m_TempMinDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
   m_MaxDistanceLimit = m_TempMaxDistanceLimit / 0.00009921875/*mm per micro step*/;
   m_MinDistanceLimit = m_TempMinDistanceLimit / 0.00009921875/*mm per micro step*/;
