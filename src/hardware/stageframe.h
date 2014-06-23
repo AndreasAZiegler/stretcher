@@ -3,6 +3,7 @@
 #define STAGEFRAME_H
 
 #include <vector>
+#include <memory>
 #include <mutex>
 #include <condition_variable>
 #include "../updatedvaluesreceiver.h"
