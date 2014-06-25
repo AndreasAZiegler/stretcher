@@ -33,7 +33,7 @@ class MyFileOutput : public MyFileOutput_Base
 
 enum
 {
-  ID_FileOutputOK = 55
+  ID_FileOutputOK = 56
 };
 
 #endif // MYFILEOUTPUT_H

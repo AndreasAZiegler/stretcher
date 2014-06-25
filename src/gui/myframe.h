@@ -204,6 +204,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnFileOutputSettings(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes a tab in the wxNotebook.
+     * @param event Occuring event
+     */
+    void OnNotebookTabChanging(wxBookCtrlEvent &event);
+
+    /**
      * @brief Method wich will be executed, when the user opens the start up dialog.
      * @param event Occuring event
      */
@@ -342,6 +348,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the "Cancel" button in preload.
+     * @param event Occuring event
+     */
+    void OnPreloadCancel(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload.
      * @param event Occuring event
      */
@@ -358,6 +370,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnOneStepDistance(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the one step event.
+     * @param event Occuring event
+     */
+    void OnOneStepCancel(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the one step event.
@@ -388,6 +406,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @param event Occuring event
      */
     void OnContinuousSteps(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the continuous event.
+     * @param event Occuring event
+     */
+    void OnContinuousCancel(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event.
@@ -514,6 +538,18 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnSaveProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user makes a right click in the list box.
+     * @param event Occuring event
+     */
+    void OnProtocolsListRightClick(wxMouseEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user clicks on edit in the contect menu.
+     * @param event Occuring event
+     */
+    void OnEditExperiment(wxCommandEvent &event);
+
+    /**
      * @brief Calculates the distance and print the value in the GUI.
      */
     void updateDistance(void);
@@ -533,6 +569,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void createPreviewGraph(void);
 
+    bool m_BlockNotebookTabFlag;								/**< Indicate if the current tab in wxNotebook should be blocked. */
     std::unique_ptr<mpWindow> m_Graph;					/**< Pointer to the graph */
     std::mutex m_UpdateGraphMutex;							/**< Mutex to protect the graph update. */
     bool m_ShowGraphFlag;												/**< Indicates if the graph is active or not. */
@@ -630,37 +667,38 @@ enum
   ID_SetZeroForceStress = 23,
   ID_PreloadSpeedPercent = 24,
   ID_PreloadSpeedMm = 25,
-  ID_PreloadSendToProtocol = 26,
+  ID_PreloadCancel = 26,
+  ID_PreloadSendToProtocol = 27,
 
-  ID_OneStepStressForce = 27,
-  ID_OneStepDistance = 28,
-  ID_OneStepCancel = 29,
-  ID_OneStepSendToProtocol = 30,
+  ID_OneStepStressForce = 28,
+  ID_OneStepDistance = 29,
+  ID_OneStepCancel = 30,
+  ID_OneStepSendToProtocol = 31,
 
-  ID_ContinuousStressForce = 31,
-  ID_ContinuousDistance = 32,
-  ID_ContinuousMaxValue = 33,
-  ID_ContinuousSteps = 34,
-  ID_ContinuousCancel = 35,
-  ID_ContinuousSendToProtocol = 36,
+  ID_ContinuousStressForce = 32,
+  ID_ContinuousDistance = 33,
+  ID_ContinuousMaxValue = 34,
+  ID_ContinuousSteps = 35,
+  ID_ContinuousCancel = 36,
+  ID_ContinuousSendToProtocol = 37,
 
-  ID_ClearLog = 37,
-  ID_SaveLog = 38,
-  ID_ClearGraph = 39,
-  ID_ExportCSV = 40,
-  ID_ExportPNG = 41,
-  ID_DeleteExperiment = 42,
-  ID_MoveUpExperiment = 43,
-  ID_MoveDownExperiment = 44,
-  ID_PauseExperiment = 45,
-  ID_PauseResumeExperiment = 46,
-  ID_LoopProtocol = 47,
-  ID_Preview = 48,
-  ID_RunProtocol = 49,
-  ID_StopProtocol = 50,
-  ID_SaveProtocol = 51,
-  ID_LoadProtocol = 52,
-  ID_MakePhoto = 53
+  ID_ClearLog = 38,
+  ID_SaveLog = 39,
+  ID_ClearGraph = 40,
+  ID_ExportCSV = 41,
+  ID_ExportPNG = 42,
+  ID_DeleteExperiment = 43,
+  ID_MoveUpExperiment = 44,
+  ID_MoveDownExperiment = 45,
+  ID_PauseExperiment = 46,
+  ID_PauseResumeExperiment = 47,
+  ID_LoopProtocol = 48,
+  ID_Preview = 49,
+  ID_RunProtocol = 50,
+  ID_StopProtocol = 51,
+  ID_SaveProtocol = 52,
+  ID_LoadProtocol = 53,
+  ID_MakePhoto = 54
 };
 
 #endif // MYFRAME_H

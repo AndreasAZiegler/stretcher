@@ -9,6 +9,7 @@ enum class ExperimentType{
   OneStepEvent = 1,
   ContinuousEvent = 2,
   Pause = 3,
+  PauseResume = 4
 };
 
 /**

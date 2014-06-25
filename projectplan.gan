@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Stretcher" company="Institute for Biomechanics" webLink="" view-date="2014-05-07" view-index="0" gantt-divider-location="480" resource-divider-location="300" version="2.0" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Stretcher" company="Institute for Biomechanics" webLink="" view-date="2014-05-30" view-index="0" gantt-divider-location="480" resource-divider-location="300" version="2.0" locale="en_US">
     <description/>
     <view zooming-state="default:3" id="gantt-chart">
         <field id="tpd3" name="Name" width="50" order="0"/>
@@ -65,11 +65,14 @@
             <depend id="67" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="67" name="Release" color="#8cb6ce" meeting="false" start="2014-06-09" duration="10" complete="0" expand="true">
+            <depend id="92" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="92" name="Change/Load/Save experiments" color="#8cb6ce" meeting="false" start="2014-06-23" duration="5" complete="0" expand="true">
             <depend id="70" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="10" name="CMake Project" color="#ff9933" meeting="false" start="2014-03-12" duration="5" complete="0" expand="true"/>
         <task id="59" name="Project optimization" color="#ff9900" meeting="false" start="2014-03-12" duration="10" complete="0" expand="true"/>
-        <task id="70" name="Documentation" color="#8cb6ce" meeting="false" start="2014-06-23" duration="20" complete="0" expand="true"/>
+        <task id="70" name="Documentation" color="#8cb6ce" meeting="false" start="2014-06-30" duration="10" complete="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="0" name="Andreas Ziegler" function="Default:1" contacts="andreas.ziegler@hest.ethz.ch" phone=""/>

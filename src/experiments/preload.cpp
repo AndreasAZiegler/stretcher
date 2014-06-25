@@ -96,6 +96,15 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
 }
 
 /**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void Preload::setParameters(PreloadPrameters parameters){
+  m_StressForceLimit = parameters.stressForceLimit;
+  m_Velocity = parameters.velocity;
+}
+
+/**
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
@@ -109,6 +118,20 @@ Preload::~Preload(){
   // Delete the experiment values because we don't need them for the preloading.
   //delete m_ExperimentValues;
   std::cout << "Preload destructor finished." << std::endl;
+}
+
+/**
+ * @brief Returns struct with the parameters for the GUI.
+ * @return The parameters for the GUI.
+ */
+Preload::PreloadParametersGUI Preload::getParametersForGUI(void){
+  PreloadParametersGUI params;
+
+  params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  params.stressForceLimit = m_StressForceLimit / 10000.0;
+  params.velocity = m_Velocity;
+
+  return(params);
 }
 
 /**

@@ -61,7 +61,8 @@ Protocols::Protocols(wxListBox *listbox,
     m_PreloadDistance(0),
     m_ExperimentRunningFlag(false),
     m_MeasurementValuesRecordingFlag(false),
-    m_CurrentExperimentNr(0)
+    m_CurrentExperimentNr(0),
+    m_EditedExperiment(0)
 {
 }
 
@@ -86,6 +87,15 @@ void Protocols::saveProtocol(void){
   std::string path = m_StoragePath + "/Protocol.xml";
   doc.save_file(path.c_str());
   wxLogMessage(std::string("Protocols: Protocol saved in: " + path).c_str());
+}
+
+/**
+ * @brief Remembers, which experiment will be changed and returns the experiment type.
+ * @return The experiment type.
+ */
+ExperimentType Protocols::getEditExperimentType(void){
+  m_EditedExperiment = m_ListBox->GetSelection();
+  return(m_Experiments[m_EditedExperiment]->getExperimentType());
 }
 
 /**
@@ -599,8 +609,14 @@ void Protocols::checkFinishedExperiment(void){
     m_Wait->wait(lck1);
   }
 
+  /*
   for(auto i : m_Experiments){
     i->setStartLength();
+  }
+  */
+  // Set the start length of the next experiment if there is one.
+  if(m_Experiments.size() > m_CurrentExperimentNr){
+    m_Experiments[m_CurrentExperimentNr]->setStartLength();
   }
   {
     // If preloading is active.

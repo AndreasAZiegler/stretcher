@@ -66,6 +66,20 @@ class Protocols
     void saveProtocol(void);
 
     /**
+     * @brief Remembers, which experiment will be changed and returns the experiment type.
+     * @return The experiment type.
+     */
+    ExperimentType getEditExperimentType(void);
+
+    /**
+     * @brief Returns a reference to the experiment which will be edited.
+     * @return The reference to the experiment which will be edited.
+     */
+    std::shared_ptr<Experiment> getEditExperiment(void){
+      return(m_Experiments[m_EditedExperiment]);
+    }
+
+    /**
      * @brief Create the preview vector and display it in the graph.
      */
     void makePreview(void);
@@ -161,6 +175,7 @@ class Protocols
     }
 
   private:
+
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
     mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the vector containing the force/stress - distance values. */
     mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the vector containing the force/stress - displacement values. */
@@ -179,6 +194,7 @@ class Protocols
     std::vector<std::shared_ptr<Experiment>> m_Experiments;									/**< Vector containing the pointers to the experiments. */
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
+    int m_EditedExperiment;																									/**< Number of the experiment which will be edited. */
     std::unique_ptr<std::thread> m_ExperimentRunningThread;									/**< Pointer to the experiment running check thread */
     double m_Area;																													/**< Area size of the sample. */
     long m_MaxDistanceLimit;																								/**< The maximal position for the stages */

@@ -125,6 +125,28 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
 }
 
 /**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void OneStepEvent::setParameters(OneStepEventParameters parameters){
+  setDistanceOrStressOrForce(parameters.distanceOrStressOrForce);
+  m_VelocityDistanceOrPercentage = parameters.velocityDistanceOrPercentage;
+  m_Velocity = parameters.velocity;
+  m_Delay = parameters.delay;
+  m_UpperLimitDistanceOrPercentage = parameters.limitDistanceOrPercentage;
+  m_UpperLimit = parameters.limit;
+  m_InitRelUpperLimit = parameters.limit;
+  m_Dwell = parameters.dwell;
+  m_Cycles = parameters.cycles;
+  m_HoldDistanceOrPercentage = parameters.holdDistanceOrPercentage;
+  m_HoldDistance = parameters.holdDistance;
+  m_InitRelHoldDistance = parameters.holdDistance;
+  m_BehaviorAfterStop = parameters.behaviorAfterStop;
+
+  initParameters();
+}
+
+/**
  * @brief Destructor
  */
 OneStepEvent::~OneStepEvent(){
@@ -148,7 +170,9 @@ void OneStepEvent::initParameters(void){
   if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     if(DistanceOrPercentage::DistanceRelative == m_UpperLimitDistanceOrPercentage){
       m_UpperLimit = m_StartLength + m_InitRelUpperLimit;
-      std::cout << "OneStepEvent: upper limit: " << m_UpperLimit * 0.00009921875/*mm per micro step*/ << std::endl;
+      //std::cout << "OneStepEvent: upper limit: " << m_UpperLimit * 0.00009921875/*mm per micro step*/ << " , m_StartLength: "
+      //          << m_StartLength * 0.00009921875/*mm per micro step*/ << " , m_InitRelUpperLimit: "
+      //          << m_InitRelUpperLimit * 0.00009921875/*mm per micro step*/ << std::endl;
       m_ExperimentValues->setUpperLimit(m_UpperLimit);
     }else if(DistanceOrPercentage::Percentage == m_UpperLimitDistanceOrPercentage){
       m_UpperLimit = (1 + (m_UpperLimitPercent / 100.0)) * m_GageLength;
@@ -168,7 +192,6 @@ void OneStepEvent::initParameters(void){
 }
 
 /**
-<<<<<<< HEAD
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
@@ -179,8 +202,37 @@ void OneStepEvent::setPreloadDistance(){
 }
 
 /**
-=======
->>>>>>> fc62a1c25b6928ce6d955f3d7823498ba28c1d46
+ * @brief Returns struct with the parameters for the GUI.
+ * @return The parameters for the GUI.
+ */
+OneStepEvent::OneStepEventParametersGUI OneStepEvent::getParametersForGUI(void){
+  OneStepEventParametersGUI params;
+
+  params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  params.velocity = m_Velocity;
+  params.delay = m_Delay;
+
+  switch(m_DistanceOrStressOrForce){
+    case DistanceOrStressOrForce::Distance:
+      params.upperlimit = m_UpperLimit * 0.00009921875/*mm per micro step*/;
+      break;
+    case DistanceOrStressOrForce::Force:
+      params.upperlimit = m_UpperLimit / 10000.0;
+      break;
+    case DistanceOrStressOrForce::Stress:
+      params.upperlimit = m_UpperLimit / 10000.0;
+      break;
+  }
+
+  params.dwell = m_Dwell;
+  params.cycles = m_Cycles;
+  params.behaviorAfterStop = m_BehaviorAfterStop;
+  params.holdDistance = m_HoldDistance / 0.00009921875/*mm per micro step*/;
+
+  return(params);
+}
+
+/**
  * @brief Saves the experiment settings in the xml_docuement.
  * @param xml Pointer to the xml_document.
  */

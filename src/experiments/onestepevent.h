@@ -12,6 +12,38 @@
 class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
+
+    /**
+     * @brief Parameters for the one step event experiment.
+     */
+    struct OneStepEventParameters{
+      DistanceOrStressOrForce distanceOrStressOrForce;
+      DistanceOrPercentage velocityDistanceOrPercentage;
+      double velocity;
+      double delay;
+      DistanceOrPercentage limitDistanceOrPercentage;
+      long limit;
+      double dwell;
+      int cycles;
+      BehaviorAfterStop behaviorAfterStop;
+      long holdDistance;
+      DistanceOrPercentage holdDistanceOrPercentage;
+    };
+
+    /**
+     * @brief Parameters for the one step event tab.
+     */
+    struct OneStepEventParametersGUI{
+      DistanceOrStressOrForce distanceOrStressOrForce;
+      double velocity;
+      double delay;
+      double upperlimit;
+      double dwell;
+      int cycles;
+      BehaviorAfterStop behaviorAfterStop;
+      double holdDistance;
+    };
+
     OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
@@ -54,6 +86,12 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  BehaviorAfterStop behaviorAfterStop);
 
     /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(OneStepEventParameters parameters);
+
+    /**
      * @brief Destructor
      */
     ~OneStepEvent();
@@ -68,6 +106,12 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param preloaddistance Preload distance
      */
     virtual void setPreloadDistance();
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    OneStepEventParametersGUI getParametersForGUI(void);
 
     /**
      * @brief Saves the experiment settings in the xml_docuement.

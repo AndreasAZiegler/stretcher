@@ -15,6 +15,22 @@
 class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
+    /**
+     * @brief Parameters for the preload experiment.
+     */
+    struct PreloadPrameters{
+      long stressForceLimit;
+      double velocity;
+    };
+
+    /**
+     * @brief Parameters for the preload tab.
+     */
+    struct PreloadParametersGUI{
+      DistanceOrStressOrForce distanceOrStressOrForce;
+      double stressForceLimit;
+      double velocity;
+    };
 
     /**
      * @brief Initializes all the needed variables
@@ -55,12 +71,24 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             double speedInMM);
 
     /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(PreloadPrameters parameters);
+
+    /**
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
     virtual void setPreloadDistance();
 
     ~Preload();
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    PreloadParametersGUI getParametersForGUI(void);
 
     /**
      * @brief Saves the experiment settings in the xml_docuement.
@@ -94,11 +122,6 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> fc62a1c25b6928ce6d955f3d7823498ba28c1d46
      * @brief Sets the area.
      * @param x Length in x direction.
      * @param y Length in y direction.
@@ -106,7 +129,6 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     void setArea (double x, double y);
 
     /**
->>>>>>> SOFT: Started with save xml.
      * @brief Sets the force or stress limit.
      * @param forceStress Force or stress limit.
      */

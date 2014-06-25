@@ -12,6 +12,44 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     enum class StepsOrMaxValue{Steps = 1,
                                MaxValue = 2};
 
+    /**
+     * @brief Parameters for the one step experiment.
+     */
+    struct ContinuousEventParameters{
+      DistanceOrStressOrForce distanceOrStressOrForce;
+      DistanceOrPercentage velocityDistanceOrPercentage;
+      bool ramp2failure;
+      double velocity;
+      double holdtime;
+      DistanceOrPercentage incrementDistanceOrPercentage;
+      double incrementpercentage;
+      long increment;
+      StepsOrMaxValue stepsOrMaxValue;
+      long maxvalue;
+      int steps;
+      double ramp2failurePercentage;
+      int cycles;
+      BehaviorAfterStop behaviorAfterStop;
+      long holdForceStress;
+    };
+
+    /**
+     * @brief Parameters for the one step event tab.
+     */
+    struct ContinuousEventParametersGUI{
+      DistanceOrStressOrForce distanceOrStressOrForce;
+      bool ramp2failure;
+      double velocity;
+      double holdtime;
+      double increment;
+      StepsOrMaxValue stepsOrMaxValue;
+      double maxvalue;
+      int steps;
+      int cycles;
+      BehaviorAfterStop behaviorAfterStop;
+      double holdForceStress;
+    };
+
     ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                     std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                     mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
@@ -57,6 +95,12 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     long holdforce);
 
     /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(ContinuousEventParameters parameters);
+
+    /**
      * @brief Destructor
      */
     ~ContinuousEvent();
@@ -71,6 +115,12 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param preloaddistance Preload distance
      */
     virtual void setPreloadDistance();
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    ContinuousEventParametersGUI getParametersForGUI(void);
 
     /**
      * @brief Saves the experiment settings in the xml_docuement.
