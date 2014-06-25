@@ -2123,6 +2123,19 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
       break;
 
     case ExperimentType::Pause:
+      // Get pause parameters
+      std::shared_ptr<Pause> pause = std::dynamic_pointer_cast<Pause>(m_CurrentProtocol->getEditExperiment());
+      double pausetime = pause->getParametersForGUI();
+
+      std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(std::dynamic_pointer_cast<Pause>(m_CurrentProtocol->getEditExperiment()).get(),
+                                                                                               pausetime));
+      dialog->ShowModal();
+
+      /*
+      if(true == dialog->getCreateExperimentFlag()){
+        //m_CurrentProtocol->addExperiment(experiment);
+      }
+      */
       break;
   }
 }
