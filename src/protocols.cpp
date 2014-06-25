@@ -99,6 +99,14 @@ ExperimentType Protocols::getEditExperimentType(void){
 }
 
 /**
+ * @brief Updates the parameters of the edited experiment in the wxListBox.
+ */
+void Protocols::updateEditedExperimentParameters(void){
+  const wxString tmp((m_ExperimentValues[m_EditedExperiment])->experimentTypeToString() + ":" + m_ExperimentValues[m_EditedExperiment]->experimentSettingsForName());
+  m_ListBox->SetString(m_EditedExperiment, tmp);
+}
+
+/**
  * @brief Set new limits and forwards them to the experiments.
  * @param mindistancelimit Value for the minimal distance limit.
  * @param maxdistancelimit Value for the maximal distance limit.

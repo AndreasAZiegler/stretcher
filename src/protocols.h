@@ -80,6 +80,11 @@ class Protocols
     }
 
     /**
+     * @brief Updates the parameters of the edited experiment in the wxListBox.
+     */
+    void updateEditedExperimentParameters(void);
+
+    /**
      * @brief Create the preview vector and display it in the graph.
      */
     void makePreview(void);

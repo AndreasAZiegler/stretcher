@@ -16,23 +16,6 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
     /**
-     * @brief Parameters for the preload experiment.
-     */
-    struct PreloadPrameters{
-      long stressForceLimit;
-      double velocity;
-    };
-
-    /**
-     * @brief Parameters for the preload tab.
-     */
-    struct PreloadParametersGUI{
-      DistanceOrStressOrForce distanceOrStressOrForce;
-      double stressForceLimit;
-      double velocity;
-    };
-
-    /**
      * @brief Initializes all the needed variables
      * @param type Type of the experiment.
      * @param forceOrStress Indicates if experiment is force or stress based.
@@ -74,7 +57,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @brief Sets the parameters given by the passed struct.
      * @param parameters The parameters as a struct.
      */
-    void setParameters(PreloadPrameters parameters);
+    void setParameters(PreloadParameters parameters);
 
     /**
      * @brief Sets the preload distance.

@@ -930,11 +930,12 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     m_PreloadSendButton->SetLabelText("Send to protocol");
 
     // Get parameters and send them to the preload experiment.
-    Preload::PreloadPrameters params;
+    PreloadParameters params;
     params.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
     params.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
     std::shared_ptr<Preload> preload = std::dynamic_pointer_cast<Preload>(m_CurrentProtocol->getEditExperiment());
     preload->setParameters(params);
+    m_CurrentProtocol->updateEditedExperimentParameters();
 
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
@@ -1086,6 +1087,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
 
     std::shared_ptr<OneStepEvent> onestepevent = std::dynamic_pointer_cast<OneStepEvent>(m_CurrentProtocol->getEditExperiment());
     onestepevent->setParameters(params);
+    m_CurrentProtocol->updateEditedExperimentParameters();
 
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
@@ -1380,6 +1382,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
     std::shared_ptr<ContinuousEvent> continuousevent = std::dynamic_pointer_cast<ContinuousEvent>(m_CurrentProtocol->getEditExperiment());
     continuousevent->setParameters(params);
+    m_CurrentProtocol->updateEditedExperimentParameters();
 
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
@@ -1954,7 +1957,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
 
         // Get preload parameters.
         std::shared_ptr<Preload> preload = std::dynamic_pointer_cast<Preload>(m_CurrentProtocol->getEditExperiment());
-        Preload::PreloadParametersGUI params = preload->getParametersForGUI();
+        PreloadParametersGUI params = preload->getParametersForGUI();
 
         m_PreloadLimitSpinCtrl->SetValue(params.stressForceLimit);
         m_PreloadSpeedMmSpinCtrl->SetValue(params.velocity);
@@ -2130,6 +2133,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
       std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(std::dynamic_pointer_cast<Pause>(m_CurrentProtocol->getEditExperiment()).get(),
                                                                                                pausetime));
       dialog->ShowModal();
+      m_CurrentProtocol->updateEditedExperimentParameters();
 
       /*
       if(true == dialog->getCreateExperimentFlag()){

@@ -99,9 +99,11 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
  * @brief Sets the parameters given by the passed struct.
  * @param parameters The parameters as a struct.
  */
-void Preload::setParameters(PreloadPrameters parameters){
+void Preload::setParameters(PreloadParameters parameters){
   m_StressForceLimit = parameters.stressForceLimit;
   m_Velocity = parameters.velocity;
+
+  m_ExperimentValues->setParameters(parameters);
 }
 
 /**
@@ -124,7 +126,7 @@ Preload::~Preload(){
  * @brief Returns struct with the parameters for the GUI.
  * @return The parameters for the GUI.
  */
-Preload::PreloadParametersGUI Preload::getParametersForGUI(void){
+PreloadParametersGUI Preload::getParametersForGUI(void){
   PreloadParametersGUI params;
 
   params.distanceOrStressOrForce = m_DistanceOrStressOrForce;

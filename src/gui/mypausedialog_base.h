@@ -5,12 +5,12 @@
 #ifndef __mypausedialog_base_h__
 #define __mypausedialog_base_h__
 
-// Includes
+// Include
+#include <wx/xrc/xmlres.h>
 #include <wx/dialog.h>
 #include <wx/stattext.h>
-#include <wx/spinctrl.h>
 #include <wx/button.h>
-#include <wx/xrc/xmlres.h>
+#include <wx/spinctrl.h>
 
 class MyPauseDialog_Base : public wxDialog {
 protected:
@@ -33,5 +33,6 @@ MyPauseDialog_Base(wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif

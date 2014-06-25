@@ -21,4 +21,21 @@ enum class DistanceOrStressOrForce{
   Force = 2,
 };
 
+/**
+ * @brief Parameters for the preload experiment.
+ */
+struct PreloadParameters{
+  long stressForceLimit;
+  double velocity;
+};
+
+/**
+ * @brief Parameters for the preload tab.
+ */
+struct PreloadParametersGUI{
+  DistanceOrStressOrForce distanceOrStressOrForce;
+  double stressForceLimit;
+  double velocity;
+};
+
 #endif // EXPERIMENTSDEFINITIONS_H
