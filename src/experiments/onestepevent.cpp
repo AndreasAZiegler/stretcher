@@ -144,6 +144,8 @@ void OneStepEvent::setParameters(OneStepEventParameters parameters){
   m_BehaviorAfterStop = parameters.behaviorAfterStop;
 
   initParameters();
+
+  m_ExperimentValues->setParameters(parameters);
 }
 
 /**
@@ -205,7 +207,7 @@ void OneStepEvent::setPreloadDistance(){
  * @brief Returns struct with the parameters for the GUI.
  * @return The parameters for the GUI.
  */
-OneStepEvent::OneStepEventParametersGUI OneStepEvent::getParametersForGUI(void){
+OneStepEventParametersGUI OneStepEvent::getParametersForGUI(void){
   OneStepEventParametersGUI params;
 
   params.distanceOrStressOrForce = m_DistanceOrStressOrForce;

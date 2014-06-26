@@ -117,6 +117,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                                      velocity,
                                                      holdtime,
                                                      steps,
+                                                     maxvaluelimit,
                                                      cycles,
                                                      behaviorAfterStop))
 {
@@ -148,6 +149,8 @@ void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
   m_HoldForce = parameters.holdForceStress;
 
   initParameters();
+
+  m_ExperimentValues->setParameters(parameters);
 }
 
 /**
@@ -162,7 +165,7 @@ ContinuousEvent::~ContinuousEvent(){
  * @brief Initializes the parameters.
  */
 void ContinuousEvent::initParameters(void){
-  if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
+  if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
     m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
     m_ExperimentValues->setVelocity(m_Velocity);
   }
@@ -174,16 +177,16 @@ void ContinuousEvent::initParameters(void){
 
   // Only set increment and steps parameter if experiment is not a ramp to failure experiment.
   if(false == m_Ramp2FailureActiveFlag){
-    if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
+    if(DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
       m_Increment = (m_IncrementPercent / 100) * m_GageLength;
       m_ExperimentValues->setIncrement(m_Increment);
     }
     if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
       if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-        if(Experiment::DistanceOrPercentage::DistanceRelative == m_MaxValueDistanceOrPercentage){
+        if(DistanceOrPercentage::DistanceRelative == m_MaxValueDistanceOrPercentage){
           m_MaxValueLimit = m_StartLength + m_InitRelMaxValueLimit;
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
-        }else if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
+        }else if(DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
           m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
         }
@@ -231,7 +234,7 @@ void ContinuousEvent::setPreloadDistance(){
  * @brief Returns struct with the parameters for the GUI.
  * @return The parameters for the GUI.
  */
-ContinuousEvent::ContinuousEventParametersGUI ContinuousEvent::getParametersForGUI(void){
+ContinuousEventParametersGUI ContinuousEvent::getParametersForGUI(void){
   ContinuousEventParametersGUI params;
 
   params.distanceOrStressOrForce = m_DistanceOrStressOrForce;

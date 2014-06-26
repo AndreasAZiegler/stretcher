@@ -9,46 +9,7 @@
 class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
-    enum class StepsOrMaxValue{Steps = 1,
-                               MaxValue = 2};
 
-    /**
-     * @brief Parameters for the one step experiment.
-     */
-    struct ContinuousEventParameters{
-      DistanceOrStressOrForce distanceOrStressOrForce;
-      DistanceOrPercentage velocityDistanceOrPercentage;
-      bool ramp2failure;
-      double velocity;
-      double holdtime;
-      DistanceOrPercentage incrementDistanceOrPercentage;
-      double incrementpercentage;
-      long increment;
-      StepsOrMaxValue stepsOrMaxValue;
-      long maxvalue;
-      int steps;
-      double ramp2failurePercentage;
-      int cycles;
-      BehaviorAfterStop behaviorAfterStop;
-      long holdForceStress;
-    };
-
-    /**
-     * @brief Parameters for the one step event tab.
-     */
-    struct ContinuousEventParametersGUI{
-      DistanceOrStressOrForce distanceOrStressOrForce;
-      bool ramp2failure;
-      double velocity;
-      double holdtime;
-      double increment;
-      StepsOrMaxValue stepsOrMaxValue;
-      double maxvalue;
-      int steps;
-      int cycles;
-      BehaviorAfterStop behaviorAfterStop;
-      double holdForceStress;
-    };
 
     ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                     std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,

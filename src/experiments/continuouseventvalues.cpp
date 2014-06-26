@@ -18,8 +18,9 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                                              double velocity,
                                              double holdtime,
                                              int steps,
+                                             long maxvalue,
                                              int cycles,
-                                             Experiment::BehaviorAfterStop behaviorAfterStop)
+                                             BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      forceStressDistanceGraph,
@@ -36,9 +37,23 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
    m_Velocity(velocity),
    m_HoldTime(holdtime),
    m_Steps(steps),
+   m_MaxValue(maxvalue),
    m_Cycles(cycles),
    m_BehaviorAfterStop(behaviorAfterStop)
 {
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void ContinuousEventValues::setParameters(ContinuousEventParameters parameters){
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_Velocity = parameters.velocity;
+  m_HoldTime = parameters.holdtime;
+  m_Steps = parameters.steps;
+  m_Cycles = parameters.cycles;
+  m_BehaviorAfterStop = parameters.behaviorAfterStop;
 }
 
 /**
@@ -95,19 +110,19 @@ std::string ContinuousEventValues::experimentSettingsForName(void){
  */
 std::string ContinuousEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
-    case Experiment::BehaviorAfterStop::Stop:
+    case BehaviorAfterStop::Stop:
       return(std::string("Stop."));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToL0:
+    case BehaviorAfterStop::GoToL0:
       return(std::string("Go to L0."));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToML:
+    case BehaviorAfterStop::GoToML:
       return(std::string("Go to mounting length."));
       break;
 
-    case Experiment::BehaviorAfterStop::HoldAForce:
+    case BehaviorAfterStop::HoldAForce:
       return(std::string("Stop at force/stress."));
       break;
   }

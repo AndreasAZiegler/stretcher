@@ -13,37 +13,6 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
 
-    /**
-     * @brief Parameters for the one step event experiment.
-     */
-    struct OneStepEventParameters{
-      DistanceOrStressOrForce distanceOrStressOrForce;
-      DistanceOrPercentage velocityDistanceOrPercentage;
-      double velocity;
-      double delay;
-      DistanceOrPercentage limitDistanceOrPercentage;
-      long limit;
-      double dwell;
-      int cycles;
-      BehaviorAfterStop behaviorAfterStop;
-      long holdDistance;
-      DistanceOrPercentage holdDistanceOrPercentage;
-    };
-
-    /**
-     * @brief Parameters for the one step event tab.
-     */
-    struct OneStepEventParametersGUI{
-      DistanceOrStressOrForce distanceOrStressOrForce;
-      double velocity;
-      double delay;
-      double upperlimit;
-      double dwell;
-      int cycles;
-      BehaviorAfterStop behaviorAfterStop;
-      double holdDistance;
-    };
-
     OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,

@@ -27,7 +27,13 @@ class OneStepEventValues : public ExperimentValues
                        double holdtime2,
                        long holddistance,
                        int cycles,
-                       Experiment::BehaviorAfterStop bahaviorAfterStop);
+                       BehaviorAfterStop bahaviorAfterStop);
+
+    /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(OneStepEventParameters parameters);
 
     /**
      * @brief Sets the velocity.
@@ -79,7 +85,7 @@ class OneStepEventValues : public ExperimentValues
     double m_DwellTime;																					/**< Hold time 1 in s. */
     long m_HoldDistance;																				/**< Hold distance in mm. */
     int m_Cycles;																								/**< Amount of cycles. */
-    Experiment::BehaviorAfterStop m_BehaviorAfterStop;					/**< Defines the behavior after the experiment stops. */
+    BehaviorAfterStop m_BehaviorAfterStop;					/**< Defines the behavior after the experiment stops. */
 };
 
 #endif // ONESTEPEVENTVALUES_H

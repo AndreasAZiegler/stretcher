@@ -29,24 +29,6 @@ class Experiment
                      evForceUpdate};	/**< New force value */
 
     /**
-     * @enum DistanceOrPercentage
-     * @brief Defines if the distance is given as distance or as percentage of the preload.
-     */
-    enum class DistanceOrPercentage{DistanceRelative = 0,
-                                    Distance = 1,
-                                    Percentage = 2};
-
-    /**
-     * @brief Indicates the behavior after the experiment stops.
-     */
-    enum class BehaviorAfterStop{Stop = 0,
-                                 HoldADistance = 1,
-                                 HoldAForce = 2,
-                                 Repeat = 3,
-                                 GoToL0 = 4,
-                                 GoToML = 5};
-
-    /**
      * @brief The PreviewValue struct
      */
     struct PreviewValue{

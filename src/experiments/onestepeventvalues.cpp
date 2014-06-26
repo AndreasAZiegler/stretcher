@@ -22,7 +22,7 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        double holdtime2,
                                        long holddistance,
                                        int cycles,
-                                       Experiment::BehaviorAfterStop behaviorAfterStop)
+                                       BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      forceStressDistanceGraph,
@@ -46,6 +46,25 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
     m_Cycles(cycles)
 {
   m_UpperLimit = normalizeValue(m_UpperLimit);
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void OneStepEventValues::setParameters(OneStepEventParameters parameters){
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_Velocity = parameters.velocity;
+  m_DelayTime = parameters.delay;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    m_UpperLimit = parameters.limit * 0.00009921875/*mm per micro step*/;
+  }else{
+    m_UpperLimit = parameters.limit / 10000.0;
+  }
+  m_DwellTime = parameters.dwell;
+  m_BehaviorAfterStop = parameters.behaviorAfterStop;
+  m_HoldDistance = parameters.holdDistance * 0.00009921875/*mm per micro step*/;
+  m_Cycles = parameters.cycles;
 }
 
 /**
@@ -94,19 +113,19 @@ std::string OneStepEventValues::experimentSettingsForName(void){
  */
 std::string OneStepEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
-    case Experiment::BehaviorAfterStop::Stop:
+    case BehaviorAfterStop::Stop:
       return(std::string("Stop."));
       break;
 
-    case Experiment::BehaviorAfterStop::HoldADistance:
+    case BehaviorAfterStop::HoldADistance:
       return(std::string("Hold a distance: " + to_string_wp(m_HoldDistance * 0.00009921875/*mm per micro step*/, 2) + " mm"));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToL0:
+    case BehaviorAfterStop::GoToL0:
       return(std::string("Go to L0."));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToML:
+    case BehaviorAfterStop::GoToML:
       return(std::string("Go to mounting length."));
       break;
   }
