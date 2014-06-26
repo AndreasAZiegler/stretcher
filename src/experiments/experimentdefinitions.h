@@ -43,14 +43,6 @@ enum class BehaviorAfterStop{Stop = 0,
  * @brief Parameters for the preload experiment.
  */
 struct PreloadParameters{
-  long stressForceLimit;
-  double velocity;
-};
-
-/**
- * @brief Parameters for the preload tab.
- */
-struct PreloadParametersGUI{
   DistanceOrStressOrForce distanceOrStressOrForce;
   double stressForceLimit;
   double velocity;
@@ -71,23 +63,6 @@ struct OneStepEventParameters{
   int cycles;
   BehaviorAfterStop behaviorAfterStop;
   DistanceOrPercentage holdDistanceOrPercentage;
-  double holdDistance;
-};
-
-/**
- * @brief Parameters for the one step event tab.
- */
-struct OneStepEventParametersGUI{
-  DistanceOrStressOrForce distanceOrStressOrForce;
-  DistanceOrPercentage velocityDistanceOrPercentage;
-  double velocity;
-  double delay;
-  DistanceOrPercentage limitDistanceOrPercentage;
-  double limit;
-  double dwell;
-  bool holdLimit;
-  int cycles;
-  BehaviorAfterStop behaviorAfterStop;
   double holdDistance;
 };
 

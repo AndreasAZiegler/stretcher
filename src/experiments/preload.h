@@ -50,8 +50,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             long currentdistance,
             double area,
 
-            double stressForceLimit,
-            double speedInMM);
+            PreloadParameters parameters);
 
     /**
      * @brief Sets the parameters given by the passed struct.
@@ -71,7 +70,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @brief Returns struct with the parameters for the GUI.
      * @return The parameters for the GUI.
      */
-    PreloadParametersGUI getParametersForGUI(void);
+    PreloadParameters getParametersForGUI(void);
 
     /**
      * @brief Saves the experiment settings in the xml_docuement.

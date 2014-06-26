@@ -926,39 +926,35 @@ void MyFrame::OnPreloadCancel(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
+
+  checkProtocol();
+
+  mpFXYVector *maxlimitvector;
+  mpFXYVector *minlimitvector;
+  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+    maxlimitvector = &m_MaxStressForceLimitGraph;
+    minlimitvector = &m_MinStressForceLimitGraph;
+  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    maxlimitvector = &m_MaxDistanceLimitGraph;
+    minlimitvector = &m_MinDistanceLimitGraph;
+  }
+
+  PreloadParameters parameters;
+  parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  parameters.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue();
+  parameters.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
+
   if(true == m_BlockNotebookTabFlag){
     m_PreloadSendButton->SetLabelText("Send to protocol");
 
-    // Get parameters and send them to the preload experiment.
-    PreloadParameters params;
-    params.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
-    params.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
     std::shared_ptr<Preload> preload = std::dynamic_pointer_cast<Preload>(m_CurrentProtocol->getEditExperiment());
-    preload->setParameters(params);
+    preload->setParameters(parameters);
     m_CurrentProtocol->updateEditedExperimentParameters();
 
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
 
   }else{
-    checkProtocol();
-
-    mpFXYVector *maxlimitvector;
-    mpFXYVector *minlimitvector;
-    if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-      maxlimitvector = &m_MaxStressForceLimitGraph;
-      minlimitvector = &m_MinStressForceLimitGraph;
-    } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-      maxlimitvector = &m_MaxDistanceLimitGraph;
-      minlimitvector = &m_MinDistanceLimitGraph;
-    }
-    int limit = 0;
-    if(0 == m_InitializeUnitRadioBox->GetSelection()){
-      limit = m_PreloadLimitSpinCtrl->GetValue() * m_Area * 10;
-    } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
-      limit = m_PreloadLimitSpinCtrl->GetValue() * 10000.0;
-    }
-
     //Experiment* experiment = new Preload(ExperimentType::Preload,
     std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
                                                        m_ForceSensorMessageHandler,
@@ -987,8 +983,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                        m_CurrentDistance,
                                                        m_Area,
 
-                                                       limit,
-                                                       m_PreloadSpeedMmSpinCtrl->GetValue()));
+                                                       parameters));
 
     m_CurrentProtocol->addExperiment(experiment);
   }
@@ -1880,7 +1875,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
 
         // Get preload parameters.
         std::shared_ptr<Preload> preload = std::dynamic_pointer_cast<Preload>(m_CurrentProtocol->getEditExperiment());
-        PreloadParametersGUI params = preload->getParametersForGUI();
+        PreloadParameters params = preload->getParametersForGUI();
 
         m_PreloadLimitSpinCtrl->SetValue(params.stressForceLimit);
         m_PreloadSpeedMmSpinCtrl->SetValue(params.velocity);

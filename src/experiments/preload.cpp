@@ -44,8 +44,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  long currentdistance,
                  double area,
 
-                 double stressForceLimit,
-                 double speedInMM)
+                 PreloadParameters parameters)
   : Experiment(stageframe,
                forcesensormessagehandler,
                myframe,
@@ -71,8 +70,8 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
     m_CurrentState(State::stopState),
     m_StagesStoppedFlag(stagesstopped),
     m_StagesStoppedMutex(stagesstoppedmutex),
-    m_StressForceLimit(stressForceLimit),
-    m_Velocity(speedInMM),
+    m_StressForceLimit(parameters.stressForceLimit),
+    m_Velocity(parameters.velocity),
     m_ExperimentValues(std::make_shared<PreloadValues>(stageframe,
                                                        forcesensormessagehandler,
                                                        forceStressDistanceGraph,
@@ -88,11 +87,17 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                                                        area,
                                                        gagelength,
 
-                                                       stressForceLimit,
-                                                       speedInMM))
+                                                       parameters.stressForceLimit,
+                                                       parameters.velocity))
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_StressForceLimit = m_StressForceLimit * 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_StressForceLimit = m_StressForceLimit * m_Area * 10;
+  }
 }
 
 /**
@@ -100,7 +105,13 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
  * @param parameters The parameters as a struct.
  */
 void Preload::setParameters(PreloadParameters parameters){
-  m_StressForceLimit = parameters.stressForceLimit;
+
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_StressForceLimit = parameters.stressForceLimit * 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_StressForceLimit = parameters.stressForceLimit * m_Area * 10;
+  }
   m_Velocity = parameters.velocity;
 
   m_ExperimentValues->setParameters(parameters);
@@ -126,14 +137,20 @@ Preload::~Preload(){
  * @brief Returns struct with the parameters for the GUI.
  * @return The parameters for the GUI.
  */
-PreloadParametersGUI Preload::getParametersForGUI(void){
-  PreloadParametersGUI params;
+PreloadParameters Preload::getParametersForGUI(void){
+  PreloadParameters parameters;
 
-  params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
-  params.stressForceLimit = m_StressForceLimit / 10000.0;
-  params.velocity = m_Velocity;
+  parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
 
-  return(params);
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    parameters.stressForceLimit = m_StressForceLimit / 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    parameters.stressForceLimit = m_StressForceLimit / (m_Area * 10);
+  }
+
+  parameters.velocity = m_Velocity;
+
+  return(parameters);
 }
 
 /**
