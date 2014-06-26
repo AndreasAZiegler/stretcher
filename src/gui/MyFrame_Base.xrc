@@ -679,121 +679,104 @@
 										<object class="wxPanel" name="m_PreloadPanel">
 											<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
 											<object class="wxFlexGridSizer">
-												<rows>6</rows>
+												<rows>4</rows>
 												<cols>1</cols>
 												<vgap>0</vgap>
 												<hgap>0</hgap>
 												<growablecols>0</growablecols>
 												<growablerows></growablerows>
-												<object class="spacer">
-													<option>1</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<size>0,10</size>
-												</object>
 												<object class="sizeritem">
 													<option>1</option>
 													<flag>wxEXPAND</flag>
 													<border>0</border>
 													<object class="wxPanel" name="m_PreloadCalculateDiameterPanel">
 														<style>wxSIMPLE_BORDER</style>
-													</object>
-												</object>
-												<object class="sizeritem">
-													<option>1</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<object class="wxBoxSizer">
-														<orient>wxHORIZONTAL</orient>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALIGN_CENTER|wxALL</flag>
-															<border>5</border>
-															<object class="wxStaticText" name="m_PreloadLimitStaticText">
-																<label>Force Limit [N]:</label>
-																<wrap>-1</wrap>
+														<object class="wxBoxSizer">
+															<orient>wxHORIZONTAL</orient>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_PreloadLimitStaticText">
+																	<label>Force Limit [N]:</label>
+																	<wrap>-1</wrap>
+																</object>
 															</object>
-														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-															<border>5</border>
-															<object class="wxSpinCtrlDouble" name="m_PreloadLimitSpinCtrl">
-																<value>0</value>
-																<min>-50000</min>
-																<max>50000</max>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																<border>5</border>
+																<object class="wxSpinCtrlDouble" name="m_PreloadLimitSpinCtrl">
+																	<value>0</value>
+																	<min>-50000</min>
+																	<max>50000</max>
+																</object>
 															</object>
-														</object>
-														<object class="sizeritem">
-															<option>0</option>
-															<flag>wxALIGN_CENTER|wxALL</flag>
-															<border>5</border>
-															<object class="wxStaticText" name="m_PreloadSpeedStaticText">
-																<label>Speed:</label>
-																<wrap>-1</wrap>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALIGN_CENTER|wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_PreloadSpeedStaticText">
+																	<label>Speed:</label>
+																	<wrap>-1</wrap>
+																</object>
 															</object>
-														</object>
-														<object class="sizeritem">
-															<option>1</option>
-															<flag>wxEXPAND | wxALL</flag>
-															<border>5</border>
-															<object class="wxPanel" name="m_PreloadSpeedPanel">
-																<style>wxSIMPLE_BORDER</style>
-																<object class="wxFlexGridSizer">
-																	<rows>2</rows>
-																	<cols>2</cols>
-																	<vgap>0</vgap>
-																	<hgap>0</hgap>
-																	<growablecols></growablecols>
-																	<growablerows></growablerows>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALL</flag>
-																		<border>5</border>
-																		<object class="wxSpinCtrlDouble" name="m_PreloadSpeedPreloadSpinCtrl">
-																			<value>0</value>
-																			<min>0</min>
-																			<max>1000</max>
+															<object class="sizeritem">
+																<option>1</option>
+																<flag>wxEXPAND | wxALL</flag>
+																<border>5</border>
+																<object class="wxPanel" name="m_PreloadSpeedPanel">
+																	<style>wxSIMPLE_BORDER</style>
+																	<object class="wxFlexGridSizer">
+																		<rows>2</rows>
+																		<cols>2</cols>
+																		<vgap>0</vgap>
+																		<hgap>0</hgap>
+																		<growablecols></growablecols>
+																		<growablerows></growablerows>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALL</flag>
+																			<border>5</border>
+																			<object class="wxSpinCtrlDouble" name="m_PreloadSpeedPreloadSpinCtrl">
+																				<value>0</value>
+																				<min>0</min>
+																				<max>1000</max>
+																			</object>
 																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxStaticText" name="m_PreloadSpeedPreloadStaticText">
-																			<label>% mounting length/sec.</label>
-																			<wrap>-1</wrap>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																			<border>5</border>
+																			<object class="wxStaticText" name="m_PreloadSpeedPreloadStaticText">
+																				<label>% mounting length/sec.</label>
+																				<wrap>-1</wrap>
+																			</object>
 																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALL</flag>
-																		<border>5</border>
-																		<object class="wxSpinCtrlDouble" name="m_PreloadSpeedMmSpinCtrl">
-																			<value>0</value>
-																			<min>0</min>
-																			<max>53</max>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALL</flag>
+																			<border>5</border>
+																			<object class="wxSpinCtrlDouble" name="m_PreloadSpeedMmSpinCtrl">
+																				<value>0</value>
+																				<min>0</min>
+																				<max>53</max>
+																			</object>
 																		</object>
-																	</object>
-																	<object class="sizeritem">
-																		<option>0</option>
-																		<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-																		<border>5</border>
-																		<object class="wxStaticText" name="m_PreloadSpeedMmStaticText">
-																			<label>mm/sec.</label>
-																			<wrap>-1</wrap>
+																		<object class="sizeritem">
+																			<option>0</option>
+																			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+																			<border>5</border>
+																			<object class="wxStaticText" name="m_PreloadSpeedMmStaticText">
+																				<label>mm/sec.</label>
+																				<wrap>-1</wrap>
+																			</object>
 																		</object>
 																	</object>
 																</object>
 															</object>
 														</object>
 													</object>
-												</object>
-												<object class="spacer">
-													<option>1</option>
-													<flag>wxEXPAND</flag>
-													<border>5</border>
-													<size>0,5</size>
 												</object>
 												<object class="sizeritem">
 													<option>1</option>
@@ -956,7 +939,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
-																			<object class="wxStaticText" name="m_OneStepStressForceHoldTime1StaticText">
+																			<object class="wxStaticText" name="m_OneStepStressForceDelayStaticText">
 																				<label>Delay [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
@@ -965,7 +948,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
-																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceHoldTime1SpinCtrl">
+																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceDelaySpinCtrl">
 																				<value>0</value>
 																				<min>0</min>
 																				<max>1000</max>
@@ -984,8 +967,8 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
-																			<object class="wxStaticText" name="m_OneStepStressForceUpperLimitStaticText">
-																				<label>Upper Limit [N]:</label>
+																			<object class="wxStaticText" name="m_OneStepStressForceLimitStaticText">
+																				<label>Limit [N]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -993,7 +976,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
-																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceUpperLimitSpinCtrl">
+																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceLimitSpinCtrl">
 																				<value>0</value>
 																				<min>-50000</min>
 																				<max>50000</max>
@@ -1003,7 +986,7 @@
 																			<option>0</option>
 																			<flag>wxALL</flag>
 																			<border>5</border>
-																			<object class="wxCheckBox" name="m_OneStepStressForceHoldUpperLimitCheckBox">
+																			<object class="wxCheckBox" name="m_OneStepStressForceHoldLimitCheckBox">
 																				<label>Hold</label>
 																				<checked>0</checked>
 																			</object>
@@ -1012,7 +995,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
-																			<object class="wxStaticText" name="m_OneStepStressForceHoldTime2StaticText">
+																			<object class="wxStaticText" name="m_OneStepStressForceDwellStaticText">
 																				<label>Dwell [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
@@ -1021,7 +1004,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
-																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceHoldTime2SpinCtrl">
+																			<object class="wxSpinCtrlDouble" name="m_OneStepStressForceDwellSpinCtrl">
 																				<value>0</value>
 																				<min>0</min>
 																				<max>1000</max>
@@ -1118,7 +1101,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
-																			<object class="wxStaticText" name="m_OneStepDistanceHoldTime1StaticText">
+																			<object class="wxStaticText" name="m_OneStepDistanceDelayStaticText">
 																				<label>Delay [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
@@ -1127,7 +1110,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
-																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceHoldTime1SpinCtrl">
+																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceDelaySpinCtrl">
 																				<value>0</value>
 																				<min>0</min>
 																				<max>1000</max>
@@ -1147,7 +1130,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepDistanceUpperLimitStaticText">
-																				<label>Upper Limit:</label>
+																				<label>Limit:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1155,7 +1138,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
-																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceUpperLimitSpinCtrl">
+																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceLimitSpinCtrl">
 																				<value>0</value>
 																				<min>0</min>
 																				<max>1000</max>
@@ -1201,7 +1184,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
-																			<object class="wxStaticText" name="m_OneStepDistanceHoldTime2StaticText">
+																			<object class="wxStaticText" name="m_OneStepDistanceDwellStaticText">
 																				<label>Dwell [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
@@ -1210,7 +1193,7 @@
 																			<option>0</option>
 																			<flag>wxALIGN_CENTER</flag>
 																			<border>5</border>
-																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceHoldTime2SpinCtrl">
+																			<object class="wxSpinCtrlDouble" name="m_OneStepDistanceDwellSpinCtrl">
 																				<value>0</value>
 																				<min>0</min>
 																				<max>1000</max>
@@ -1268,7 +1251,7 @@
 																<border>5</border>
 																<object class="wxSpinCtrl" name="m_OneStepEndOfEventRepeatSpinCtrl">
 																	<value>0</value>
-																	<min>0</min>
+																	<min>1</min>
 																	<max>1000</max>
 																</object>
 															</object>
@@ -1580,7 +1563,7 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousStressForceVelocitySpinCtrl">
 																				<value>0</value>
-																				<min>0</min>
+																				<min>5</min>
 																				<max>1000</max>
 																			</object>
 																		</object>

@@ -65,12 +65,13 @@ struct OneStepEventParameters{
   double velocity;
   double delay;
   DistanceOrPercentage limitDistanceOrPercentage;
-  long limit;
+  double limit;
   double dwell;
-  DistanceOrPercentage holdDistanceOrPercentage;
-  long holdDistance;
+  bool holdLimit;
   int cycles;
   BehaviorAfterStop behaviorAfterStop;
+  DistanceOrPercentage holdDistanceOrPercentage;
+  double holdDistance;
 };
 
 /**
@@ -78,10 +79,13 @@ struct OneStepEventParameters{
  */
 struct OneStepEventParametersGUI{
   DistanceOrStressOrForce distanceOrStressOrForce;
+  DistanceOrPercentage velocityDistanceOrPercentage;
   double velocity;
   double delay;
-  double upperlimit;
+  DistanceOrPercentage limitDistanceOrPercentage;
+  double limit;
   double dwell;
+  bool holdLimit;
   int cycles;
   BehaviorAfterStop behaviorAfterStop;
   double holdDistance;

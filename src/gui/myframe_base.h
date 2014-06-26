@@ -5,6 +5,7 @@
 #ifndef __myframe_base_h__
 #define __myframe_base_h__
 
+// Includes
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
@@ -97,14 +98,14 @@ protected:
  wxSpinCtrlDouble* m_OneStepStressForceVelocitySpinCtrl;
  wxRadioButton* m_OneStepStressForceVelocityMmRadioBtn;
  wxRadioButton* m_OneStepStressForceVelocityPercentRadioBtn;
- wxStaticText* m_OneStepStressForceHoldTime1StaticText;
- wxSpinCtrlDouble* m_OneStepStressForceHoldTime1SpinCtrl;
+ wxStaticText* m_OneStepStressForceDelayStaticText;
+ wxSpinCtrlDouble* m_OneStepStressForceDelaySpinCtrl;
  wxStaticText* m_staticText78;
- wxStaticText* m_OneStepStressForceUpperLimitStaticText;
- wxSpinCtrlDouble* m_OneStepStressForceUpperLimitSpinCtrl;
- wxCheckBox* m_OneStepStressForceHoldUpperLimitCheckBox;
- wxStaticText* m_OneStepStressForceHoldTime2StaticText;
- wxSpinCtrlDouble* m_OneStepStressForceHoldTime2SpinCtrl;
+ wxStaticText* m_OneStepStressForceLimitStaticText;
+ wxSpinCtrlDouble* m_OneStepStressForceLimitSpinCtrl;
+ wxCheckBox* m_OneStepStressForceHoldLimitCheckBox;
+ wxStaticText* m_OneStepStressForceDwellStaticText;
+ wxSpinCtrlDouble* m_OneStepStressForceDwellSpinCtrl;
  wxStaticText* m_staticText82;
  wxCheckBox* m_OneStepStressForcePhotoCheckBox;
  wxPanel* m_OneStepDistancePanel;
@@ -112,16 +113,16 @@ protected:
  wxSpinCtrlDouble* m_OneStepDistanceVelocitySpinCtrl;
  wxRadioButton* m_OneStepDistanceVelocityMmRadioBtn;
  wxRadioButton* m_OneStepDistanceVelocityPercentRadioBtn;
- wxStaticText* m_OneStepDistanceHoldTime1StaticText;
- wxSpinCtrlDouble* m_OneStepDistanceHoldTime1SpinCtrl;
+ wxStaticText* m_OneStepDistanceDelayStaticText;
+ wxSpinCtrlDouble* m_OneStepDistanceDelaySpinCtrl;
  wxStaticText* m_staticText781;
  wxStaticText* m_OneStepDistanceUpperLimitStaticText;
- wxSpinCtrlDouble* m_OneStepDistanceUpperLimitSpinCtrl;
+ wxSpinCtrlDouble* m_OneStepDistanceLimitSpinCtrl;
  wxRadioButton* m_OneStepDistanceUpperLimitMmRelRadioBtn;
  wxRadioButton* m_OneStepDistanceUpperLimitMmRadioBtn;
  wxRadioButton* m_OneStepDistanceUpperLimitPercentRadioBtn;
- wxStaticText* m_OneStepDistanceHoldTime2StaticText;
- wxSpinCtrlDouble* m_OneStepDistanceHoldTime2SpinCtrl;
+ wxStaticText* m_OneStepDistanceDwellStaticText;
+ wxSpinCtrlDouble* m_OneStepDistanceDwellSpinCtrl;
  wxStaticText* m_staticText821;
  wxCheckBox* m_OneStepDistancePhotoCheckBox;
  wxPanel* m_OneStepPanel22;
@@ -321,14 +322,14 @@ private:
   m_OneStepStressForceVelocitySpinCtrl = XRCCTRL(*this,"m_OneStepStressForceVelocitySpinCtrl",wxSpinCtrlDouble);
   m_OneStepStressForceVelocityMmRadioBtn = XRCCTRL(*this,"m_OneStepStressForceVelocityMmRadioBtn",wxRadioButton);
   m_OneStepStressForceVelocityPercentRadioBtn = XRCCTRL(*this,"m_OneStepStressForceVelocityPercentRadioBtn",wxRadioButton);
-  m_OneStepStressForceHoldTime1StaticText = XRCCTRL(*this,"m_OneStepStressForceHoldTime1StaticText",wxStaticText);
-  m_OneStepStressForceHoldTime1SpinCtrl = XRCCTRL(*this,"m_OneStepStressForceHoldTime1SpinCtrl",wxSpinCtrlDouble);
+  m_OneStepStressForceDelayStaticText = XRCCTRL(*this,"m_OneStepStressForceDelayStaticText",wxStaticText);
+  m_OneStepStressForceDelaySpinCtrl = XRCCTRL(*this,"m_OneStepStressForceDelaySpinCtrl",wxSpinCtrlDouble);
   m_staticText78 = XRCCTRL(*this,"m_staticText78",wxStaticText);
-  m_OneStepStressForceUpperLimitStaticText = XRCCTRL(*this,"m_OneStepStressForceUpperLimitStaticText",wxStaticText);
-  m_OneStepStressForceUpperLimitSpinCtrl = XRCCTRL(*this,"m_OneStepStressForceUpperLimitSpinCtrl",wxSpinCtrlDouble);
-  m_OneStepStressForceHoldUpperLimitCheckBox = XRCCTRL(*this,"m_OneStepStressForceHoldUpperLimitCheckBox",wxCheckBox);
-  m_OneStepStressForceHoldTime2StaticText = XRCCTRL(*this,"m_OneStepStressForceHoldTime2StaticText",wxStaticText);
-  m_OneStepStressForceHoldTime2SpinCtrl = XRCCTRL(*this,"m_OneStepStressForceHoldTime2SpinCtrl",wxSpinCtrlDouble);
+  m_OneStepStressForceLimitStaticText = XRCCTRL(*this,"m_OneStepStressForceLimitStaticText",wxStaticText);
+  m_OneStepStressForceLimitSpinCtrl = XRCCTRL(*this,"m_OneStepStressForceLimitSpinCtrl",wxSpinCtrlDouble);
+  m_OneStepStressForceHoldLimitCheckBox = XRCCTRL(*this,"m_OneStepStressForceHoldLimitCheckBox",wxCheckBox);
+  m_OneStepStressForceDwellStaticText = XRCCTRL(*this,"m_OneStepStressForceDwellStaticText",wxStaticText);
+  m_OneStepStressForceDwellSpinCtrl = XRCCTRL(*this,"m_OneStepStressForceDwellSpinCtrl",wxSpinCtrlDouble);
   m_staticText82 = XRCCTRL(*this,"m_staticText82",wxStaticText);
   m_OneStepStressForcePhotoCheckBox = XRCCTRL(*this,"m_OneStepStressForcePhotoCheckBox",wxCheckBox);
   m_OneStepDistancePanel = XRCCTRL(*this,"m_OneStepDistancePanel",wxPanel);
@@ -336,16 +337,16 @@ private:
   m_OneStepDistanceVelocitySpinCtrl = XRCCTRL(*this,"m_OneStepDistanceVelocitySpinCtrl",wxSpinCtrlDouble);
   m_OneStepDistanceVelocityMmRadioBtn = XRCCTRL(*this,"m_OneStepDistanceVelocityMmRadioBtn",wxRadioButton);
   m_OneStepDistanceVelocityPercentRadioBtn = XRCCTRL(*this,"m_OneStepDistanceVelocityPercentRadioBtn",wxRadioButton);
-  m_OneStepDistanceHoldTime1StaticText = XRCCTRL(*this,"m_OneStepDistanceHoldTime1StaticText",wxStaticText);
-  m_OneStepDistanceHoldTime1SpinCtrl = XRCCTRL(*this,"m_OneStepDistanceHoldTime1SpinCtrl",wxSpinCtrlDouble);
+  m_OneStepDistanceDelayStaticText = XRCCTRL(*this,"m_OneStepDistanceDelayStaticText",wxStaticText);
+  m_OneStepDistanceDelaySpinCtrl = XRCCTRL(*this,"m_OneStepDistanceDelaySpinCtrl",wxSpinCtrlDouble);
   m_staticText781 = XRCCTRL(*this,"m_staticText781",wxStaticText);
   m_OneStepDistanceUpperLimitStaticText = XRCCTRL(*this,"m_OneStepDistanceUpperLimitStaticText",wxStaticText);
-  m_OneStepDistanceUpperLimitSpinCtrl = XRCCTRL(*this,"m_OneStepDistanceUpperLimitSpinCtrl",wxSpinCtrlDouble);
+  m_OneStepDistanceLimitSpinCtrl = XRCCTRL(*this,"m_OneStepDistanceLimitSpinCtrl",wxSpinCtrlDouble);
   m_OneStepDistanceUpperLimitMmRelRadioBtn = XRCCTRL(*this,"m_OneStepDistanceUpperLimitMmRelRadioBtn",wxRadioButton);
   m_OneStepDistanceUpperLimitMmRadioBtn = XRCCTRL(*this,"m_OneStepDistanceUpperLimitMmRadioBtn",wxRadioButton);
   m_OneStepDistanceUpperLimitPercentRadioBtn = XRCCTRL(*this,"m_OneStepDistanceUpperLimitPercentRadioBtn",wxRadioButton);
-  m_OneStepDistanceHoldTime2StaticText = XRCCTRL(*this,"m_OneStepDistanceHoldTime2StaticText",wxStaticText);
-  m_OneStepDistanceHoldTime2SpinCtrl = XRCCTRL(*this,"m_OneStepDistanceHoldTime2SpinCtrl",wxSpinCtrlDouble);
+  m_OneStepDistanceDwellStaticText = XRCCTRL(*this,"m_OneStepDistanceDwellStaticText",wxStaticText);
+  m_OneStepDistanceDwellSpinCtrl = XRCCTRL(*this,"m_OneStepDistanceDwellSpinCtrl",wxSpinCtrlDouble);
   m_staticText821 = XRCCTRL(*this,"m_staticText821",wxStaticText);
   m_OneStepDistancePhotoCheckBox = XRCCTRL(*this,"m_OneStepDistancePhotoCheckBox",wxCheckBox);
   m_OneStepPanel22 = XRCCTRL(*this,"m_OneStepPanel22",wxPanel);
@@ -475,5 +476,6 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif
