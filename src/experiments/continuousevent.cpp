@@ -164,7 +164,6 @@ void ContinuousEvent::initParameters(void){
     if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
       if(DistanceOrPercentage::Distance == m_IncrementDistanceOrPercentage){
         m_Increment = m_InitIncrement / 0.00009921875/*mm per micro step*/;
-        std::cout << "ContinuousEvent: m_Increment: " << m_Increment << " , m_InitIncrement: " << m_InitIncrement << std::endl;
         m_ExperimentValues->setIncrement(m_Increment);
       }else if(DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
         m_Increment = (m_InitIncrement / 100) * m_GageLength;
