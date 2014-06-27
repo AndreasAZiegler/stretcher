@@ -101,7 +101,7 @@ void LinearStage::setDeviceMode(void){
   char *settings = transformDecToText(1*8/*disable knob*/ +
                                       1*16/*enable move tracking*/);
   memcpy(command, STAGE_DEVICE_MODE, 2);
-  memcpy(command+2, settings, sizeof(settings));
+  memcpy(command+2, settings, 1);
 
   memcpy(buffer, command, 6);
 
