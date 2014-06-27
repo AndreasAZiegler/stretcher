@@ -137,7 +137,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     void sleepForMilliseconds(double milliseconds);
 
     DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
-    double m_InitVelocity;																									/**< Velocity in mm/s relative, mm/s or %L0. */
+    double m_InitVelocity;																									/**< Velocity in mm/s or %L0. */
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_Delay;																													/**< Hold time 1 in s. */
     DistanceOrPercentage m_LimitDistanceOrPercentage;									/**< Indicates if the upper limit is given by value or by % of L0. */

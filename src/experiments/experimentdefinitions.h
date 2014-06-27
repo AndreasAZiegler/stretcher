@@ -74,20 +74,19 @@ enum class StepsOrMaxValue{Steps = 1,
  */
 struct ContinuousEventParameters{
   DistanceOrStressOrForce distanceOrStressOrForce;
-  DistanceOrPercentage velocityDistanceOrPercentage;
   bool ramp2failure;
+  DistanceOrPercentage velocityDistanceOrPercentage;
   double velocity;
   double holdtime;
   DistanceOrPercentage incrementDistanceOrPercentage;
-  double incrementpercentage;
-  long increment;
+  double increment;
   StepsOrMaxValue stepsOrMaxValue;
-  long maxvalue;
+  DistanceOrPercentage maxValueDistanceOrPercentage;
+  double maxvalue;
   int steps;
-  double ramp2failurePercentage;
   int cycles;
   BehaviorAfterStop behaviorAfterStop;
-  long holdForceStress;
+  double holdForceStress;
 };
 
 /**

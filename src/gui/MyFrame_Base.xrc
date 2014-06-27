@@ -1154,7 +1154,7 @@
 																					<option>0</option>
 																					<flag>wxALIGN_LEFT</flag>
 																					<border>5</border>
-																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitMmRelRadioBtn">
+																					<object class="wxRadioButton" name="m_OneStepDistanceLimitMmRelRadioBtn">
 																						<style>wxRB_GROUP</style>
 																						<label>mm rel.</label>
 																						<value>0</value>
@@ -1164,7 +1164,7 @@
 																					<option>0</option>
 																					<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																					<border>5</border>
-																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitMmRadioBtn">
+																					<object class="wxRadioButton" name="m_OneStepDistanceLimitMmRadioBtn">
 																						<label>mm</label>
 																						<value>0</value>
 																					</object>
@@ -1173,7 +1173,7 @@
 																					<option>0</option>
 																					<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT</flag>
 																					<border>5</border>
-																					<object class="wxRadioButton" name="m_OneStepDistanceUpperLimitPercentRadioBtn">
+																					<object class="wxRadioButton" name="m_OneStepDistanceLimitPercentRadioBtn">
 																						<label>%L0</label>
 																						<value>0</value>
 																					</object>
@@ -1563,7 +1563,7 @@
 																			<border>5</border>
 																			<object class="wxSpinCtrlDouble" name="m_ContinuousStressForceVelocitySpinCtrl">
 																				<value>0</value>
-																				<min>5</min>
+																				<min>0</min>
 																				<max>1000</max>
 																			</object>
 																		</object>
