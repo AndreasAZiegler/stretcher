@@ -7,12 +7,14 @@
 
 find_path(LIBCONFIG_INCLUDE_DIR
 	libconfig.h++
+	/home/stretcher/stretcher/include
 	/usr/local/include
 )
 
 find_library(LIBCONFIG_LIBRARY
 	NAMES libconfig++.so
 	PATHS
+	/home/stretcher/stretcher/lib
 	/usr/local/lib
 )
 
