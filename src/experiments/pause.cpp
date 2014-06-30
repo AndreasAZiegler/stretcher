@@ -72,7 +72,9 @@ Pause::Pause(std::shared_ptr<StageFrame> stageframe,
  * @param xml Pointer to the xml_document.
  */
 void Pause::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("Pause");
 
+  node.append_attribute("PauseTime") = m_PauseTime;
 }
 
 /**

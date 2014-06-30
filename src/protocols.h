@@ -63,6 +63,9 @@ class Protocols
 
     void loadProtocol(void);
 
+    /**
+     * @brief Saves the current protocol to the desired place as an .xml file.
+     */
     void saveProtocol(void);
 
     /**

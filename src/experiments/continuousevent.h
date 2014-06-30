@@ -148,6 +148,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     int m_CurrentStep;																											/**< The current step. */
     int m_CurrentCycle;																											/**< The current cycle. */
     long m_MaxStressForce;																									/**< The maximum stress/force .*/
+    double m_InitHoldForce;																									/**< Initial hold force. */
     long m_HoldForce;																												/**< The hold force. */
 
     bool m_WaitActive;																											/**< Indicates if a hold is active. */

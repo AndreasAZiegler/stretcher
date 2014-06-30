@@ -204,31 +204,37 @@ void OneStepEvent::setPreloadDistance(){
  * @return The parameters for the GUI.
  */
 OneStepEventParameters OneStepEvent::getParametersForGUI(void){
-  OneStepEventParameters params;
+  OneStepEventParameters parameters;
 
-  params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
-  params.velocityDistanceOrPercentage = m_VelocityDistanceOrPercentage;
-  params.velocity = m_InitVelocity;
-  params.delay = m_Delay;
+  parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  parameters.velocityDistanceOrPercentage = m_VelocityDistanceOrPercentage;
+  parameters.velocity = m_InitVelocity;
+  parameters.delay = m_Delay;
 
+  parameters.limitDistanceOrPercentage = m_LimitDistanceOrPercentage;
+  /**
+   * @todo Use m_InitLimit
+   */
   switch(m_DistanceOrStressOrForce){
     case DistanceOrStressOrForce::Distance:
-      params.limit = m_Limit * 0.00009921875/*mm per micro step*/;
+      parameters.limit = m_Limit * 0.00009921875/*mm per micro step*/;
       break;
     case DistanceOrStressOrForce::Force:
-      params.limit = m_Limit / 10000.0;
+      parameters.limit = m_Limit / 10000.0;
       break;
     case DistanceOrStressOrForce::Stress:
-      params.limit = m_Limit / 10000.0;
+      parameters.limit = m_Limit / 10000.0;
       break;
   }
+  parameters.limit = m_InitLimit;
 
-  params.dwell = m_Dwell;
-  params.cycles = m_Cycles;
-  params.behaviorAfterStop = m_BehaviorAfterStop;
-  params.holdDistance = m_HoldDistance / 0.00009921875/*mm per micro step*/;
+  parameters.dwell = m_Dwell;
+  parameters.cycles = m_Cycles;
+  parameters.behaviorAfterStop = m_BehaviorAfterStop;
+  parameters.holdDistanceOrPercentage = m_HoldDistanceOrPercentage;
+  parameters.holdDistance = m_HoldDistance / 0.00009921875/*mm per micro step*/;
 
-  return(params);
+  return(parameters);
 }
 
 /**
@@ -236,7 +242,18 @@ OneStepEventParameters OneStepEvent::getParametersForGUI(void){
  * @param xml Pointer to the xml_document.
  */
 void OneStepEvent::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("OneStepEvent");
 
+  node.append_attribute("DistanceOrStressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("CrossSectionArea") = m_Area;
+  node.append_attribute("VelocityDistanceOrPercentage") = static_cast<int>(m_VelocityDistanceOrPercentage);
+  node.append_attribute("Velocity") = m_Velocity;
+  node.append_attribute("Delay") = m_Delay;
+  node.append_attribute("Limit") = m_InitLimit;
+  node.append_attribute("Dwell") = m_Dwell;
+  node.append_attribute("Cycles") = m_Cycles;
+  node.append_attribute("BehaviorAfterStop") = static_cast<int>(m_BehaviorAfterStop);
+  node.append_attribute("HoldDistance") = m_InitHoldDistance;
 }
 
 /**

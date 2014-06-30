@@ -1794,9 +1794,20 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
           m_OneStepDistanceRadioBtn->SetValue(true);
 
           m_OneStepDistanceLimitSpinCtrl->SetValue(parameters.limit);
-          m_OneStepDistanceLimitMmRadioBtn->SetValue(true);
-          m_OneStepDistanceLimitMmRelRadioBtn->SetValue(false);
-          m_OneStepDistanceLimitPercentRadioBtn->SetValue(false);
+          if(DistanceOrPercentage::DistanceRelative == parameters.limitDistanceOrPercentage){
+            m_OneStepDistanceLimitMmRelRadioBtn->SetValue(true);
+            m_OneStepDistanceLimitMmRadioBtn->SetValue(false);
+            m_OneStepDistanceLimitPercentRadioBtn->SetValue(false);
+          }else if(DistanceOrPercentage::Distance == parameters.limitDistanceOrPercentage){
+            m_OneStepDistanceLimitMmRadioBtn->SetValue(true);
+            m_OneStepDistanceLimitMmRelRadioBtn->SetValue(false);
+            m_OneStepDistanceLimitPercentRadioBtn->SetValue(false);
+          }else if(DistanceOrPercentage::Percentage == parameters.limitDistanceOrPercentage){
+            m_OneStepDistanceLimitPercentRadioBtn->SetValue(true);
+            m_OneStepDistanceLimitMmRadioBtn->SetValue(false);
+            m_OneStepDistanceLimitMmRelRadioBtn->SetValue(false);
+          }
+
         }else{
           m_OneStepDistancePanel->Show(false);
           m_OneStepStressForcePanel->Show(true);

@@ -78,6 +78,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_CurrentStep(0),
         m_CurrentCycle(0),
         m_MaxStressForce(0),
+        m_InitHoldForce(parameters.holdForceStress),
         m_HoldForce(parameters.holdForceStress),
         m_WaitActive(false),
         m_DecreaseSpeedFlag(false),
@@ -130,6 +131,7 @@ void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
   m_Steps = parameters.steps;
   m_Cycles = parameters.cycles;
   m_BehaviorAfterStop = parameters.behaviorAfterStop;
+  m_InitHoldForce = parameters.holdForceStress;
   m_HoldForce = parameters.holdForceStress;
 
   initParameters();
@@ -190,7 +192,7 @@ void ContinuousEvent::initParameters(void){
       // TODO TODO TODO Hold force/stress
     }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
       m_Increment = m_InitIncrement * m_Area * 10.0;
-      m_HoldForce = m_HoldForce * m_Area * 10.0;
+      m_HoldForce = m_InitHoldForce * m_Area * 10.0;
 
       if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
         if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
@@ -208,7 +210,7 @@ void ContinuousEvent::initParameters(void){
       }
     }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
       m_Increment = m_InitIncrement * 10000.0;
-      m_HoldForce = m_HoldForce * 10000.0;
+      m_HoldForce = m_InitHoldForce * 10000.0;
 
       if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
         if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
@@ -280,16 +282,10 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
 
   params.stepsOrMaxValue = m_StepsOrMaxValue;
 
-  switch(m_MaxValueDistanceOrPercentage){
-    case DistanceOrPercentage::Distance:
-
-      break;
-  }
-
   params.steps = m_Steps;
   params.cycles = m_Cycles;
   params.behaviorAfterStop = m_BehaviorAfterStop;
-  params.holdForceStress = m_HoldForce / 10000.0;
+  params.holdForceStress = m_InitHoldForce;
 
   return(params);
 }
@@ -299,7 +295,22 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
  * @param xml Pointer to the xml_document.
  */
 void ContinuousEvent::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("ContinuousEvent");
 
+  node.append_attribute("DistanceOrStressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("Ramp2Failure") = m_Ramp2FailureActiveFlag;
+  node.append_attribute("VelocityDistanceOrPercentage") = static_cast<int>(m_VelocityDistanceOrPercentage);
+  node.append_attribute("Velocity") = m_InitVelocity;
+  node.append_attribute("HoldTime") = m_HoldTime;
+  node.append_attribute("IncrementDistanceOrPercentage") = static_cast<int>(m_IncrementDistanceOrPercentage);
+  node.append_attribute("Increment") = m_InitIncrement;
+  node.append_attribute("MaxValueDistanceOrPercentage") = static_cast<int>(m_MaxValueDistanceOrPercentage);
+  node.append_attribute("MaxValue") = m_InitMaxValueLimit;
+  node.append_attribute("StepsOrMaxValue") = static_cast<int>(m_StepsOrMaxValue);
+  node.append_attribute("Steps") = m_Steps;
+  node.append_attribute("Cycles") = m_Cycles;
+  node.append_attribute("BehaviorAfterStop") = static_cast<int>(m_BehaviorAfterStop);
+  node.append_attribute("HoldForce") = m_InitHoldForce;
 }
 
 /**

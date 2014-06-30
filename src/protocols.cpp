@@ -76,6 +76,57 @@ Protocols::~Protocols(){
   */
 }
 
+void Protocols::loadProtocol(void){
+  pugi::xml_document doc;
+
+  // Open file.
+  std::string path = m_StoragePath + "/Protocol.xml";
+  doc.load_file(path.c_str());
+
+  // Iterate through the experiments to load the settings.
+  for(pugi::xml_node node = doc.first_child(); node; node = node.next_sibling()){
+
+    if("Preload" == node.name()){
+      PreloadParameters parameters;
+
+      // Load preload parmeters.
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("StressOrForce").as_int());
+      parameters.velocity = node.attribute("Velocity").as_double();
+      parameters.stressForceLimit = node.attribute("StressForceLimit").as_double();
+
+      /**
+        * @todo Creat experiment and add it.
+        */
+    }else if("OneStepEvent" == node.name()){
+      OneStepEventParameters parameters;
+
+      // Load one step event parameters.
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("StressOrForce").as_int());
+      parameters.velocityDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("VelocityDistanceOrPercentage").as_int());
+      parameters.velocity = node.attribute("Velocity").as_double();
+      parameters.delay = node.attribute("Delay").as_double();
+      parameters.limitDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("LimitDistanceOrPercentage").as_int());
+      parameters.limit = node.attribute("Limit").as_double();
+      parameters.dwell = node.attribute("Dwell").as_double();
+      parameters.cycles = node.attribute("Cycles").as_int();
+      parameters.holdDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("HoldDistanceOrPercentage").as_int());
+      parameters.holdDistance = node.attribute("HoldDistance").as_double();
+      parameters.behaviorAfterStop = static_cast<BehaviorAfterStop>(node.append_attribute("BehaviorAfterStop").as_int());
+
+    }else if("ContinuousEvent" == node.name()){
+
+    }else if("Pause" == node.name()){
+
+    }
+
+    for(pugi::xml_attribute attribute = node.first_attribute(); attribute; attribute = attribute.next_attribute()){
+    }
+  }
+}
+
+/**
+ * @brief Saves the current protocol to the desired place as an .xml file.
+ */
 void Protocols::saveProtocol(void){
   pugi::xml_document doc;
 
