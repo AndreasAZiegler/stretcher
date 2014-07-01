@@ -1878,6 +1878,10 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
         }
 
         if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
+          m_ContinuousStressForcePanel->Show(false);
+          m_ContinuousDistancePanel1->Show(true);
+          m_ContinuousPanel21->Layout();
+
           m_ContinuousStressForceRadioBtn->SetValue(false);
           m_ContinuousDistanceRadioBtn->SetValue(true);
 
@@ -1916,6 +1920,10 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
           }
 
         }else{
+          m_ContinuousDistancePanel1->Show(false);
+          m_ContinuousStressForcePanel->Show(true);
+          m_ContinuousPanel21->Layout();
+
           m_ContinuousDistanceRadioBtn->SetValue(false);
           m_ContinuousStressForceRadioBtn->SetValue(true);
 

@@ -102,8 +102,6 @@ void Protocols::loadProtocol(void){
   std::string path = m_StoragePath + "/Protocol.xml";
   pugi::xml_parse_result result = doc.load_file(path.c_str());
 
-  std::cout << "Protocols: Load result: " << result.description() << " , first node: " << doc.first_child().name() << std::endl;
-
   mpFXYVector *maxlimitvector;
   mpFXYVector *minlimitvector;
 
@@ -112,7 +110,6 @@ void Protocols::loadProtocol(void){
 
 
     if(0 == strcmp("Preload", node.name())){
-      std::cout << "Protocols: node.name(): " << node.name() << std::endl;
       PreloadParameters parameters;
 
       // Load preload parmeters.

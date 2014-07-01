@@ -17,9 +17,9 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        long gagelength,
 
                                        double velocity,
-                                       double holdtime1,
+                                       double delay,
                                        long upperlimit,
-                                       double holdtime2,
+                                       double dwell,
                                        long holddistance,
                                        int cycles,
                                        BehaviorAfterStop behaviorAfterStop)
@@ -38,9 +38,9 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                      gagelength),
     m_DistanceOrStressOrForce(distanceOrStressOrForce),
     m_Velocity(velocity),
-    m_DelayTime(holdtime1),
+    m_DelayTime(delay),
     m_Limit(upperlimit),
-    m_DwellTime(holdtime2),
+    m_DwellTime(dwell),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_HoldDistance(holddistance),
     m_Cycles(cycles)
@@ -82,11 +82,11 @@ void OneStepEventValues::setUpperLimit(double upperlimit){
 std::string OneStepEventValues::getExperimentSettings(void){
   std::string limit;
   if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    limit = std::string(std::to_string(m_Limit * 0.00009921875/*mm per micro step*/) + "mm");
+    limit = std::string(std::to_string(m_Limit) + "mm");
   }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    limit = std::string(std::to_string(m_Limit / 10000.0) + "N");
+    limit = std::string(std::to_string(m_Limit) + "N");
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    limit = std::string(std::to_string(m_Limit / (m_Area * 10.0)) + "kPa");
+    limit = std::string(std::to_string(m_Limit) + "kPa");
   }
 
   return(std::string("Experiment: " + experimentTypeToString() +
@@ -108,11 +108,11 @@ std::string OneStepEventValues::getExperimentSettings(void){
 std::string OneStepEventValues::experimentSettingsForName(void){
   std::string limit;
   if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    limit = std::string(to_string_wp(m_Limit * 0.00009921875/*mm per micro step*/) + "mm");
+    limit = std::string(to_string_wp(m_Limit) + "mm");
   }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    limit = std::string(to_string_wp(m_Limit / 10000.0) + "N");
+    limit = std::string(to_string_wp(m_Limit) + "N");
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    limit = std::string(to_string_wp(m_Limit / (m_Area * 10.0)) + "kPa");
+    limit = std::string(to_string_wp(m_Limit) + "kPa");
   }
 
   return(std::string("DoS/F:" + getDistanceOrStressForce() +

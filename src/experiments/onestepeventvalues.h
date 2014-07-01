@@ -22,9 +22,9 @@ class OneStepEventValues : public ExperimentValues
                        double area, long gagelength,
 
                        double velocity,
-                       double holdtime1,
+                       double delay,
                        long upperlimit,
-                       double holdtime2,
+                       double dwell,
                        long holddistance,
                        int cycles,
                        BehaviorAfterStop bahaviorAfterStop);

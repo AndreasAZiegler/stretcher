@@ -254,7 +254,7 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
   params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
   params.ramp2failure = m_Ramp2FailureActiveFlag;
   params.velocityDistanceOrPercentage = m_VelocityDistanceOrPercentage;
-  params.velocity = m_Velocity;
+  params.velocity = m_InitVelocity;
   params.holdtime = m_HoldTime;
   params.incrementDistanceOrPercentage = m_IncrementDistanceOrPercentage;
   params.increment = m_InitIncrement;
