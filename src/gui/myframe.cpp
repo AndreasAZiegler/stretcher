@@ -94,6 +94,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_CHECKBOX(ID_LoopProtocol, MyFrame::OnLoopProtocol)
   EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
   EVT_BUTTON(ID_SaveProtocol, MyFrame::OnSaveProtocol)
+  EVT_BUTTON(ID_LoadProtocol, MyFrame::OnLoadProtocol)
 wxEND_EVENT_TABLE()
 
 // Costum event definitions
@@ -1113,33 +1114,33 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
 
   }else{
     std::unique_ptr<Experiment> experiment(new OneStepEvent(m_StageFrame,
-                                                        m_ForceSensorMessageHandler,
-                                                        &m_ForceStressDistanceGraph,
-                                                        &m_ForceStressDisplacementGraph,
-                                                        &m_VectorLayerMutex,
-                                                        maxlimitvector,
-                                                        minlimitvector,
-                                                        this,
-                                                        m_StoragePath,
-                                                        m_MaxForceLimit,
-                                                        m_MinForceLimit,
-                                                        m_MaxDistanceLimit,
-                                                        m_MinDistanceLimit,
+                                                            m_ForceSensorMessageHandler,
+                                                            &m_ForceStressDistanceGraph,
+                                                            &m_ForceStressDisplacementGraph,
+                                                            &m_VectorLayerMutex,
+                                                            maxlimitvector,
+                                                            minlimitvector,
+                                                            this,
+                                                            m_StoragePath,
+                                                            m_MaxForceLimit,
+                                                            m_MinForceLimit,
+                                                            m_MaxDistanceLimit,
+                                                            m_MinDistanceLimit,
 
-                                                        &m_Wait,
-                                                        &m_WaitMutex,
-                                                        &m_StagesStoppedFlag,
-                                                        &m_StagesStoppedMutex,
+                                                            &m_Wait,
+                                                            &m_WaitMutex,
+                                                            &m_StagesStoppedFlag,
+                                                            &m_StagesStoppedMutex,
 
-                                                        ExperimentType::OneStepEvent,
-                                                        parameters.distanceOrStressOrForce,
-                                                        m_GageLength,
-                                                        m_MountingLength,
-                                                        m_MaxPosDistance,
-                                                        m_CurrentDistance,
-                                                        m_Area,
+                                                            ExperimentType::OneStepEvent,
+                                                            parameters.distanceOrStressOrForce,
+                                                            m_GageLength,
+                                                            m_MountingLength,
+                                                            m_MaxPosDistance,
+                                                            m_CurrentDistance,
+                                                            m_Area,
 
-                                                        parameters));
+                                                            parameters));
 
     m_CurrentProtocol->addExperiment(experiment);
   }
@@ -2053,6 +2054,16 @@ void MyFrame::OnSaveProtocol(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user clicks on the load protocol button.
+ * @param event Occuring event
+ */
+void MyFrame::OnLoadProtocol(wxCommandEvent& event){
+  checkProtocol();
+
+  m_CurrentProtocol->loadProtocol();
+}
+
+/**
  * @brief Calculates the distance and print the value in the GUI.
  */
 void MyFrame::updateDistance(void){
@@ -2246,6 +2257,13 @@ void MyFrame::checkProtocol(void){
   if(nullptr == m_CurrentProtocol){
   m_CurrentProtocol = std::shared_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
                                                                this,
+                                                               m_StageFrame,
+                                                               m_ForceSensorMessageHandler,
+                                                               &m_VectorLayerMutex,
+                                                               m_GageLength,
+                                                               m_MountingLength,
+                                                               m_MaxPosDistance,
+                                                               m_CurrentDistance,
                                                                &m_StagesStoppedFlag,
                                                                &m_StagesStoppedMutex,
                                                                &m_WaitMutex,

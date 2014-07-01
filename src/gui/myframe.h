@@ -538,6 +538,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnSaveProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the load protocol button.
+     * @param event Occuring event
+     */
+    void OnLoadProtocol(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user makes a right click in the list box.
      * @param event Occuring event
      */

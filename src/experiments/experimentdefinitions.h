@@ -89,21 +89,4 @@ struct ContinuousEventParameters{
   double holdForceStress;
 };
 
-/**
- * @brief Parameters for the one step event tab.
- */
-struct ContinuousEventParametersGUI{
-  DistanceOrStressOrForce distanceOrStressOrForce;
-  bool ramp2failure;
-  double velocity;
-  double holdtime;
-  double increment;
-  StepsOrMaxValue stepsOrMaxValue;
-  double maxvalue;
-  int steps;
-  int cycles;
-  BehaviorAfterStop behaviorAfterStop;
-  double holdForceStress;
-};
-
 #endif // EXPERIMENTSDEFINITIONS_H

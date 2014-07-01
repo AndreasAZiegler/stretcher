@@ -40,7 +40,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  DistanceOrStressOrForce distanceOrStressOrForce,
                  long gagelength,
                  long mountinglength,
-                 long zerodistance,
+                 long maxposdistance,
                  long currentdistance,
                  double area,
 
@@ -58,7 +58,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                Direction::Stop,
                gagelength,
                mountinglength,
-               zerodistance,
+               maxposdistance,
                currentdistance,
                area,
                0.005 * 10000.0/*stress force threshold*/,
@@ -162,7 +162,14 @@ void Preload::getXML(pugi::xml_document &xml){
 
   node.append_attribute("StressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
   node.append_attribute("CrossSectionArea") = m_Area;
-  node.append_attribute("StressForceLimit") = m_StressForceLimit;
+  node.append_attribute("ForceOrStress") = static_cast<int>(m_DistanceOrStressOrForce);
+
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    node.append_attribute("ForceStressLimit") = m_StressForceLimit / 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    node.append_attribute("ForceStressLimit") = m_StressForceLimit / (m_Area * 10);
+  }
+
   node.append_attribute("Velocity") = m_Velocity;
 }
 

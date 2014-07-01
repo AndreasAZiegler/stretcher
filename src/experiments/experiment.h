@@ -74,7 +74,7 @@ class Experiment
                Experiment::Direction direction,
                long gagelength,
                long mountinglength,
-               long zerodistance,
+               long maxposdistance,
                long currentdistance,
                double area,
                double forcesStressThreshold,
@@ -180,7 +180,7 @@ class Experiment
     long m_GageLength;													/**< Preload distance of the stage frame */
     long m_MountingLength;											/**< Mountinglength of the stage frame */
     long m_DefaultGageLength;										/**< Default preload distance of the stage frame. */
-    long m_ZeroDistance;												/**< Zero distance */
+    long m_MaxPosDistance;												/**< Zero distance */
     long m_StartLength;													/**< Distance where the experiment starts. */
     long m_CurrentDistance;											/**< Current distance of the stage frame */
     double m_CurrentForce;											/**< Current force */

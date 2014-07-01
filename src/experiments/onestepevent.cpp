@@ -217,13 +217,13 @@ OneStepEventParameters OneStepEvent::getParametersForGUI(void){
    */
   switch(m_DistanceOrStressOrForce){
     case DistanceOrStressOrForce::Distance:
-      parameters.limit = m_Limit * 0.00009921875/*mm per micro step*/;
+      //parameters.limit = m_Limit * 0.00009921875/*mm per micro step*/;
       break;
     case DistanceOrStressOrForce::Force:
-      parameters.limit = m_Limit / 10000.0;
+      //parameters.limit = m_Limit / 10000.0;
       break;
     case DistanceOrStressOrForce::Stress:
-      parameters.limit = m_Limit / 10000.0;
+      //parameters.limit = m_Limit / 10000.0;
       break;
   }
   parameters.limit = m_InitLimit;
@@ -232,7 +232,7 @@ OneStepEventParameters OneStepEvent::getParametersForGUI(void){
   parameters.cycles = m_Cycles;
   parameters.behaviorAfterStop = m_BehaviorAfterStop;
   parameters.holdDistanceOrPercentage = m_HoldDistanceOrPercentage;
-  parameters.holdDistance = m_HoldDistance / 0.00009921875/*mm per micro step*/;
+  parameters.holdDistance = m_InitHoldDistance;
 
   return(parameters);
 }
@@ -249,6 +249,7 @@ void OneStepEvent::getXML(pugi::xml_document &xml){
   node.append_attribute("VelocityDistanceOrPercentage") = static_cast<int>(m_VelocityDistanceOrPercentage);
   node.append_attribute("Velocity") = m_Velocity;
   node.append_attribute("Delay") = m_Delay;
+  node.append_attribute("LimitDistanceOrPercentage") = static_cast<int>(m_LimitDistanceOrPercentage);
   node.append_attribute("Limit") = m_InitLimit;
   node.append_attribute("Dwell") = m_Dwell;
   node.append_attribute("Cycles") = m_Cycles;

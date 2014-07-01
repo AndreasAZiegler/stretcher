@@ -20,6 +20,13 @@ class Protocols
   public:
     Protocols(wxListBox *listbox,
               MyFrame *myframe,
+              std::shared_ptr<StageFrame> stageframe,
+              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+              std::mutex *vectoraccessmutex,
+              long gagelength,
+              long mountinglength,
+              long maxposdistance,
+              long currentdistance,
               bool *stagesstoppedflag,
               std::mutex *stagesstoppedmutex,
               std::mutex *waitmutex,
@@ -185,6 +192,9 @@ class Protocols
   private:
 
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
+    std::shared_ptr<StageFrame> m_StageFrame;																/**< Pointer to the stage frame object */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
+    std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the vector containing the force/stress - distance values. */
     mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the vector containing the force/stress - displacement values. */
     mpFXYVector *m_StressForcePreviewGraph;																	/**< Pointer to the vector containing the stress/force preview values. */
@@ -231,6 +241,10 @@ class Protocols
     std::mutex *m_PreloadDoneMutex;																					/**< Mutex to protect m_PreloadDoneFlag */
     bool *m_StagesStoppedFlag;																							/**< Flag indicating if stages stopped or not. */
     std::mutex *m_StagesStoppedMutex;																				/**< Mutex for m_StagesStoppedFlag */
+    long m_GageLength;																											/**< Preload distance of the stage frame */
+    long m_MountingLength;																									/**< Mountinglength of the stage frame */
+    long m_MaxPosDistance;																									/**< Zero distance */
+    long m_CurrentDistance;																									/**< Current distance of the stage frame */
     long m_PreloadDistance;																									/**< Preload distance */
     bool m_MeasurementValuesRecordingFlag;																	/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; 													/**< Mutex to protect m_MeasurementValuesRecordingFlag */
