@@ -148,7 +148,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
     State m_CurrentState;																		/**< Current state of the preload FSM */
 
-    double m_StressForceLimit;															/**< Stress or force limit value */
+    double m_InitStressForceLimit;													/**< Initialize stress of force limit value. */
+    long m_StressForceLimit;																/**< Stress or force limit value */
     double m_Velocity;																			/**< Speed in mm/sec */
 
 

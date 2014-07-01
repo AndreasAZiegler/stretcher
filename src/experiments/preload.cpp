@@ -70,6 +70,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
     m_CurrentState(State::stopState),
     m_StagesStoppedFlag(stagesstopped),
     m_StagesStoppedMutex(stagesstoppedmutex),
+    m_InitStressForceLimit(parameters.stressForceLimit),
     m_StressForceLimit(parameters.stressForceLimit),
     m_Velocity(parameters.velocity),
     m_ExperimentValues(std::make_shared<PreloadValues>(stageframe,
@@ -94,9 +95,9 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    m_StressForceLimit = m_StressForceLimit * 10000.0;
+    m_StressForceLimit = m_InitStressForceLimit * 10000.0;
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    m_StressForceLimit = m_StressForceLimit * m_Area * 10;
+    m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
   }
 }
 
@@ -107,10 +108,11 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
 void Preload::setParameters(PreloadParameters parameters){
 
   m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_InitStressForceLimit = parameters.stressForceLimit;
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    m_StressForceLimit = parameters.stressForceLimit * 10000.0;
+    m_StressForceLimit = m_InitStressForceLimit * 10000.0;
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    m_StressForceLimit = parameters.stressForceLimit * m_Area * 10;
+    m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
   }
   m_Velocity = parameters.velocity;
 
@@ -143,9 +145,9 @@ PreloadParameters Preload::getParametersForGUI(void){
   parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
 
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    parameters.stressForceLimit = m_StressForceLimit / 10000.0;
+    parameters.stressForceLimit = m_InitStressForceLimit;
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    parameters.stressForceLimit = m_StressForceLimit / (m_Area * 10);
+    parameters.stressForceLimit = m_InitStressForceLimit;
   }
 
   parameters.velocity = m_Velocity;
@@ -165,9 +167,9 @@ void Preload::getXML(pugi::xml_document &xml){
   node.append_attribute("ForceOrStress") = static_cast<int>(m_DistanceOrStressOrForce);
 
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
-    node.append_attribute("ForceStressLimit") = m_StressForceLimit / 10000.0;
+    node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
-    node.append_attribute("ForceStressLimit") = m_StressForceLimit / (m_Area * 10);
+    node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
   }
 
   node.append_attribute("Velocity") = m_Velocity;
