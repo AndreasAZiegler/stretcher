@@ -2058,7 +2058,23 @@ void MyFrame::OnStopProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnSaveProtocol(wxCommandEvent& event){
-  m_CurrentProtocol->saveProtocol();
+  // Creating file name
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
+
+  std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".xml";
+
+  // Let user choose path and file name.
+  wxFileDialog saveFileDialog(this, _("Save protocol file"), "", "", "Protocol files (*.xml)|*.xml", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+  saveFileDialog.SetPath(pathAndFilename);
+
+  if(wxID_CANCEL == saveFileDialog.ShowModal()){
+    return;
+  }
+
+  m_CurrentProtocol->saveProtocol(saveFileDialog.GetPath().ToStdString());
+  wxLogMessage(std::string("Protocol saved in: " + saveFileDialog.GetPath()).c_str());
 }
 
 /**
@@ -2068,7 +2084,14 @@ void MyFrame::OnSaveProtocol(wxCommandEvent& event){
 void MyFrame::OnLoadProtocol(wxCommandEvent& event){
   checkProtocol();
 
-  m_CurrentProtocol->loadProtocol();
+  // Let user choose path and file name.
+  wxFileDialog saveFileDialog(this, _("Save protocol file"), "", "", "Protocol files (*.xml)|*.xml", wxFD_OPEN);
+  saveFileDialog.SetPath(m_StoragePath);
+
+  if(wxID_CANCEL == saveFileDialog.ShowModal()){
+    return;
+  }
+  m_CurrentProtocol->loadProtocol(saveFileDialog.GetPath().ToStdString());
 }
 
 /**

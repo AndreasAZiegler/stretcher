@@ -95,12 +95,11 @@ Protocols::~Protocols(){
   */
 }
 
-void Protocols::loadProtocol(void){
+void Protocols::loadProtocol(std::string path){
   pugi::xml_document doc;
 
   // Open file.
-  std::string path = m_StoragePath + "/Protocol.xml";
-  pugi::xml_parse_result result = doc.load_file(path.c_str());
+  doc.load_file(path.c_str());
 
   mpFXYVector *maxlimitvector;
   mpFXYVector *minlimitvector;
@@ -357,7 +356,7 @@ void Protocols::loadProtocol(void){
 /**
  * @brief Saves the current protocol to the desired place as an .xml file.
  */
-void Protocols::saveProtocol(void){
+void Protocols::saveProtocol(std::string path){
   pugi::xml_document doc;
 
   // Collect the xml attributes from the single experiments.
@@ -365,7 +364,6 @@ void Protocols::saveProtocol(void){
     m_Experiments[i]->getXML(doc);
   }
 
-  std::string path = m_StoragePath + "/Protocol.xml";
   doc.save_file(path.c_str());
   wxLogMessage(std::string("Protocols: Protocol saved in: " + path).c_str());
 }

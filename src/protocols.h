@@ -68,12 +68,12 @@ class Protocols
      */
     void setCrossSectionArea(double crosssectionarea);
 
-    void loadProtocol(void);
+    void loadProtocol(std::string path);
 
     /**
      * @brief Saves the current protocol to the desired place as an .xml file.
      */
-    void saveProtocol(void);
+    void saveProtocol(std::string path);
 
     /**
      * @brief Remembers, which experiment will be changed and returns the experiment type.
