@@ -10,7 +10,8 @@ class ContinuousEventValues : public ExperimentValues
   public:
     ContinuousEventValues(std::shared_ptr<StageFrame> stageframe,
                           std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                          mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+                          mpFXYVector *forceStressDistanceGraph,
+                          mpFXYVector *forceStressDisplacementGraph,
                           std::mutex *vectoraccessmutex,
                           mpFXYVector *maxlimitvector,
                           mpFXYVector *minlimitvector,

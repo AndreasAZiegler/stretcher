@@ -69,7 +69,6 @@ class OneStepEventValues : public ExperimentValues
      */
     virtual std::string experimentSettingsForName(void);
 
-
   private:
 
     /**
@@ -81,11 +80,11 @@ class OneStepEventValues : public ExperimentValues
     DistanceOrStressOrForce m_DistanceOrStressOrForce;					/**< Defines if the experiment is distance or stress/force based. */
     double m_Velocity;																					/**< Velocity in mm/s. */
     double m_DelayTime;																					/**< Hold time 1 in s. */
-    double m_UpperLimit;																				/**< Upper limit in kPa, N or mm. */
+    double m_Limit;																							/**< Upper limit in kPa, N or mm. */
     double m_DwellTime;																					/**< Hold time 1 in s. */
     long m_HoldDistance;																				/**< Hold distance in mm. */
     int m_Cycles;																								/**< Amount of cycles. */
-    BehaviorAfterStop m_BehaviorAfterStop;					/**< Defines the behavior after the experiment stops. */
+    BehaviorAfterStop m_BehaviorAfterStop;											/**< Defines the behavior after the experiment stops. */
 };
 
 #endif // ONESTEPEVENTVALUES_H
