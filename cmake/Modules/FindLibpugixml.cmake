@@ -7,12 +7,14 @@
 
 find_path(LIBPUGIXML_INCLUDE_DIR
   pugixml.hpp
+	/home/stretcher/stretcher/include
 	/usr/local/include
 )
 
 find_library(LIBPUGIXML_LIBRARY
   NAMES libpugixml.so
 	PATHS
+	/home/stretcher/stretcher/lib
 	/usr/local/lib
 )
 

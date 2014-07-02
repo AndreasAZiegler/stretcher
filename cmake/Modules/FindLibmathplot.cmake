@@ -7,12 +7,14 @@
 
 find_path(WXMATHPLOT_INCLUDE_DIR
 	mathplot.h
+	/home/stretcher/stretcher/include
 	/usr/local/include
 )
 
 find_library(WXMATHPLOT_LIBRARY
 	NAMES libmathplot.so
 	PATHS
+	/home/stretcher/stretcher/lib
 	/usr/local/lib64
 )
 
