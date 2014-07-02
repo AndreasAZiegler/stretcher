@@ -6,6 +6,7 @@
 #include "pugixml/pugixml.hpp"
 #include <wx/msgdlg.h>
 #include "../gui/myframe.h"
+#include "../gui/myexportdialog.h"
 #include "protocols.h"
 #include "experiments/preload.h"
 #include "experiments/onestepevent.h"
@@ -644,6 +645,9 @@ void Protocols::process(void){
     if(true == m_LoopProtocolFlag){
       //runProtocol();
       process();
+    }else{
+      // Ask the user if the recorded data should be saved.
+      m_MyFrame->showExportCSVDialogFromProtocols();
     }
   }
 }

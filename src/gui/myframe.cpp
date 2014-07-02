@@ -1672,6 +1672,13 @@ bool MyFrame::showHighVelocityWarningFromExperiments(void){
 }
 
 /**
+ * @brief Shows the export dialog.
+ */
+void MyFrame::showExportCSVDialogFromProtocols(void){
+  CallAfter(&MyFrame::showExportCSVDialog);
+}
+
+/**
  * @brief Shows pause/resume dialog.
  */
 void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex){
@@ -1975,6 +1982,19 @@ void MyFrame::showHighVelocityWarning(void){
   }
   std::lock_guard<std::mutex> lck(m_WaitHighVelocityMutex);
   m_WaitHighVelocity.notify_all();
+}
+
+/**
+ * @brief A message dialog asks the user if he/she wants to save the recorded data. If yes, the export dialog will show up.
+ */
+void MyFrame::showExportCSVDialog(void){
+  // Ask if recorded data should be saved.
+  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this, "The protocol is finished, do you want to save the recorded values?", wxMessageBoxCaptionStr, wxOK|wxCANCEL));
+  // Show the export dialog if yes.
+  if(wxID_OK == dialog->ShowModal()){
+    std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
+    dialog->ShowModal();
+  }
 }
 
 /**

@@ -172,6 +172,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     bool showHighVelocityWarningFromExperiments(void);
 
+    /**
+     * @brief Forwards to showExportCSVDialog.
+     */
+    void showExportCSVDialogFromProtocols(void);
+
   private:
 
     /**
@@ -515,6 +520,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Shows velocity warining dialog.
      */
     void showHighVelocityWarning(void);
+
+    /**
+     * @brief A message dialog asks the user if he/she wants to save the recorded data. If yes, the export dialog will show up.
+     */
+    void showExportCSVDialog(void);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the preview protocol button.
