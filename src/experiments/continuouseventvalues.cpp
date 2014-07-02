@@ -18,8 +18,9 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                                              double velocity,
                                              double holdtime,
                                              int steps,
+                                             long maxvalue,
                                              int cycles,
-                                             Experiment::BehaviorAfterStop behaviorAfterStop)
+                                             BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      forceStressDistanceGraph,
@@ -36,9 +37,23 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
    m_Velocity(velocity),
    m_HoldTime(holdtime),
    m_Steps(steps),
+   m_MaxValue(maxvalue),
    m_Cycles(cycles),
    m_BehaviorAfterStop(behaviorAfterStop)
 {
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void ContinuousEventValues::setParameters(ContinuousEventParameters parameters){
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_Velocity = parameters.velocity;
+  m_HoldTime = parameters.holdtime;
+  m_Steps = parameters.steps;
+  m_Cycles = parameters.cycles;
+  m_BehaviorAfterStop = parameters.behaviorAfterStop;
 }
 
 /**
@@ -62,15 +77,28 @@ void ContinuousEventValues::setMaxValue(double maxvalue){
  * @return Experiment settings as std::string.
  */
 std::string ContinuousEventValues::getExperimentSettings(void){
+  std::string increment;
+  std::string maxvalue;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    increment = std::string(std::to_string(m_Increment * 0.00009921875/*mm per micro step*/) + "mm");
+    maxvalue = std::string(std::to_string(m_MaxValue * 0.00009921875/*mm per micro step*/) + "mm");
+  }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    increment = std::string(std::to_string(m_Increment / 10000.0) + "N");
+    maxvalue = std::string(std::to_string(m_MaxValue / 10000.0) + "N");
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    increment = std::string(std::to_string(m_Increment / (m_Area * 10.0)) + "kPa");
+    maxvalue = std::string(std::to_string(m_MaxValue / (m_Area * 10.0)) + "kPa");
+  }
+
   return(std::string("Experiment: " + experimentTypeToString() +
                      ", Distance or Stress/Force: " + getDistanceOrStressForce() +
                      ", Stress or Force: " + getStressOrForce() +
-                     ", Cross section area: " + std::to_string(m_Area) +
-                     ", Velocity: " + std::to_string(m_Velocity) +
-                     ", Hold time: " + std::to_string(m_HoldTime) +
+                     ", Cross section area: " + std::to_string(m_Area) + "mm2" +
+                     ", Velocity: " + std::to_string(m_Velocity) + "mm/s" +
+                     ", Hold time: " + std::to_string(m_HoldTime) + "s" +
                      ", Steps: " + std::to_string(m_Steps) +
-                     ", Increment: " + std::to_string(m_Increment) +
-                     ", Max. Value: " + std::to_string(m_MaxValue) +
+                     ", Increment: " + increment +
+                     ", Max. Value: " + maxvalue +
                      ", Cycles: " + std::to_string(m_Cycles) +
                      ", End of event: " + getEndOfEvent() + "\n\n"));
 }
@@ -80,10 +108,23 @@ std::string ContinuousEventValues::getExperimentSettings(void){
  * @return The experiment settings in a short form.
  */
 std::string ContinuousEventValues::experimentSettingsForName(void){
+  std::string increment;
+  std::string maxvalue;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    increment = std::string(to_string_wp(m_Increment * 0.00009921875/*mm per micro step*/) + "mm");
+    maxvalue = std::string(to_string_wp(m_MaxValue * 0.00009921875/*mm per micro step*/) + "mm");
+  }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    increment = std::string(to_string_wp(m_Increment / 10000.0) + "N");
+    maxvalue = std::string(to_string_wp(m_MaxValue / 10000.0) + "N");
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    increment = std::string(to_string_wp(m_Increment / (m_Area * 10.0)) + "kPa");
+    maxvalue = std::string(to_string_wp(m_MaxValue / (m_Area * 10.0)) + "kPa");
+  }
+
   return(std::string("DoS/F:" + getDistanceOrStressForce() +
-                     " CSA:" + to_string_wp(m_Area, 2) +
-                     " V:" + to_string_wp(m_Velocity, 2) +
-                     " HT:" + to_string_wp(m_HoldTime, 2) +
+                     " CSA:" + to_string_wp(m_Area, 2) + "mm2" +
+                     " V:" + to_string_wp(m_Velocity, 2) + "mm/s" +
+                     " HT:" + to_string_wp(m_HoldTime, 2) + "s" +
                      " S:" + to_string_wp(m_Steps, 2) +
                      " C:" + to_string_wp(m_Cycles, 2) +
                      " EoE:" + getEndOfEvent()));
@@ -95,19 +136,19 @@ std::string ContinuousEventValues::experimentSettingsForName(void){
  */
 std::string ContinuousEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
-    case Experiment::BehaviorAfterStop::Stop:
+    case BehaviorAfterStop::Stop:
       return(std::string("Stop."));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToL0:
+    case BehaviorAfterStop::GoToL0:
       return(std::string("Go to L0."));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToML:
+    case BehaviorAfterStop::GoToML:
       return(std::string("Go to mounting length."));
       break;
 
-    case Experiment::BehaviorAfterStop::HoldAForce:
+    case BehaviorAfterStop::HoldAForce:
       return(std::string("Stop at force/stress."));
       break;
   }

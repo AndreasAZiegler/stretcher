@@ -24,7 +24,7 @@ class PauseValues : public ExperimentValues
      * @brief Sets pause time.
      * @param pausetime Pause time in sec.
      */
-    void setPauseTime(int pausetime){
+    void setPauseTime(double pausetime){
       m_PauseTime = pausetime;
     }
 
@@ -41,7 +41,7 @@ class PauseValues : public ExperimentValues
     virtual std::string experimentSettingsForName(void);
 
   private:
-    int m_PauseTime;																				/**< The amount of seconds, the pause shoudl be. */
+    double m_PauseTime;																				/**< The amount of seconds, the pause shoudl be. */
 };
 
 #endif // PAUSEVALUES_H

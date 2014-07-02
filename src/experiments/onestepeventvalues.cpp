@@ -17,12 +17,12 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        long gagelength,
 
                                        double velocity,
-                                       double holdtime1,
+                                       double delay,
                                        long upperlimit,
-                                       double holdtime2,
+                                       double dwell,
                                        long holddistance,
                                        int cycles,
-                                       Experiment::BehaviorAfterStop behaviorAfterStop)
+                                       BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      forceStressDistanceGraph,
@@ -38,14 +38,33 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                      gagelength),
     m_DistanceOrStressOrForce(distanceOrStressOrForce),
     m_Velocity(velocity),
-    m_DelayTime(holdtime1),
-    m_UpperLimit(upperlimit),
-    m_DwellTime(holdtime2),
+    m_DelayTime(delay),
+    m_Limit(upperlimit),
+    m_DwellTime(dwell),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_HoldDistance(holddistance),
     m_Cycles(cycles)
 {
-  m_UpperLimit = normalizeValue(m_UpperLimit);
+  m_Limit = normalizeValue(m_Limit);
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void OneStepEventValues::setParameters(OneStepEventParameters parameters){
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_Velocity = parameters.velocity;
+  m_DelayTime = parameters.delay;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    m_Limit = parameters.limit * 0.00009921875/*mm per micro step*/;
+  }else{
+    m_Limit = parameters.limit / 10000.0;
+  }
+  m_DwellTime = parameters.dwell;
+  m_BehaviorAfterStop = parameters.behaviorAfterStop;
+  m_HoldDistance = parameters.holdDistance * 0.00009921875/*mm per micro step*/;
+  m_Cycles = parameters.cycles;
 }
 
 /**
@@ -53,7 +72,7 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
  * @param upperlimit Upper limit
  */
 void OneStepEventValues::setUpperLimit(double upperlimit){
-  m_UpperLimit = normalizeValue(upperlimit);
+  m_Limit = normalizeValue(upperlimit);
 }
 
 /**
@@ -61,14 +80,23 @@ void OneStepEventValues::setUpperLimit(double upperlimit){
  * @return Experiment settings as std::string.
  */
 std::string OneStepEventValues::getExperimentSettings(void){
+  std::string limit;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    limit = std::string(std::to_string(m_Limit) + "mm");
+  }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    limit = std::string(std::to_string(m_Limit) + "N");
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    limit = std::string(std::to_string(m_Limit) + "kPa");
+  }
+
   return(std::string("Experiment: " + experimentTypeToString() +
                      ", Distance or Stress/Force: " + getDistanceOrStressForce() +
                      ", Stress or Force: " + getStressOrForce() +
-                     ", Cross section area: " + std::to_string(m_Area) +
-                     ", Velocity: " + std::to_string(m_Velocity) +
-                     ", Delay: " + std::to_string(m_DelayTime) +
-                     ", UpperLimit: " + std::to_string(m_UpperLimit) +
-                     ", Dwell: " + std::to_string(m_DwellTime) +
+                     ", Cross section area: " + std::to_string(m_Area) + "mm2" +
+                     ", Velocity: " + std::to_string(m_Velocity) + "mm/s" +
+                     ", Delay: " + std::to_string(m_DelayTime) + "s" +
+                     ", Limit: " + limit +
+                     ", Dwell: " + std::to_string(m_DwellTime) + "s" +
                      ", Cycles: " + std::to_string(m_Cycles) +
                      ", End of event: " + getEndOfEvent() + "\n\n"));
 }
@@ -78,12 +106,21 @@ std::string OneStepEventValues::getExperimentSettings(void){
  * @return The experiment settings in a short form.
  */
 std::string OneStepEventValues::experimentSettingsForName(void){
+  std::string limit;
+  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+    limit = std::string(to_string_wp(m_Limit) + "mm");
+  }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    limit = std::string(to_string_wp(m_Limit) + "N");
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    limit = std::string(to_string_wp(m_Limit) + "kPa");
+  }
+
   return(std::string("DoS/F:" + getDistanceOrStressForce() +
-                     " CSA:" + to_string_wp(m_Area, 2) +
-                     " V:" + to_string_wp(m_Velocity, 2) +
-                     " De:" + to_string_wp(m_DelayTime, 2) +
-                     " UL:" + to_string_wp(m_UpperLimit, 2) +
-                     " Dw:" + to_string_wp(m_DwellTime, 2) +
+                     " CSA:" + to_string_wp(m_Area, 2) + "mm2" +
+                     " V:" + to_string_wp(m_Velocity, 2) + "mm/s" +
+                     " De:" + to_string_wp(m_DelayTime, 2) + "s" +
+                     " L:" + limit +
+                     " Dw:" + to_string_wp(m_DwellTime, 2) + "s" +
                      " C:" + to_string_wp(m_Cycles, 2) +
                      " EoE:" + getEndOfEvent()));
 }
@@ -94,19 +131,19 @@ std::string OneStepEventValues::experimentSettingsForName(void){
  */
 std::string OneStepEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
-    case Experiment::BehaviorAfterStop::Stop:
+    case BehaviorAfterStop::Stop:
       return(std::string("Stop."));
       break;
 
-    case Experiment::BehaviorAfterStop::HoldADistance:
+    case BehaviorAfterStop::HoldADistance:
       return(std::string("Hold a distance: " + to_string_wp(m_HoldDistance * 0.00009921875/*mm per micro step*/, 2) + " mm"));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToL0:
+    case BehaviorAfterStop::GoToL0:
       return(std::string("Go to L0."));
       break;
 
-    case Experiment::BehaviorAfterStop::GoToML:
+    case BehaviorAfterStop::GoToML:
       return(std::string("Go to mounting length."));
       break;
   }

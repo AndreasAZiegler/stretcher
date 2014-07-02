@@ -6,11 +6,13 @@ wxBEGIN_EVENT_TABLE(MyPauseDialog, MyPauseDialog_Base)
   EVT_BUTTON(ID_PauseDialogOK, MyPauseDialog::OnOK)
 wxEND_EVENT_TABLE()
 
-MyPauseDialog::MyPauseDialog(Pause *pauseExperiment)
+MyPauseDialog::MyPauseDialog(Pause *pauseExperiment, double pausetime)
   : m_PauseExperiment(pauseExperiment),
     m_CreateExperimentFlag(false)
 {
   wxID_PauseDialogOK->SetId(ID_PauseDialogOK);
+  m_PauseDialogWaitingTimeSpinCtrl->SetDigits(2);
+  m_PauseDialogWaitingTimeSpinCtrl->SetValue(pausetime);
 }
 
 

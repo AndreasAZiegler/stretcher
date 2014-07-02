@@ -262,6 +262,10 @@ std::string ExperimentValues::experimentTypeToString(){
     case ExperimentType::Pause:
       return("Pause");
       break;
+
+    case ExperimentType::PauseResume:
+      return("PauseResume");
+      break;
   }
 }
 

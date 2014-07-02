@@ -12,6 +12,7 @@
 class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
+
     OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                  mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
@@ -38,20 +39,13 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  long zerodistance,
                  long currentdistance,
                  double area,
+                 OneStepEventParameters parameters);
 
-                 DistanceOrPercentage velocityDistanceOrPercentage,
-                 double velocitypercent,
-                 double velocity,
-                 double delay,
-                 DistanceOrPercentage upperlimitDistanceOrPercentage,
-                 double upperlimitpercent,
-                 long upperlimit,
-                 double dwell, bool holdupperlimit,
-                 DistanceOrPercentage holdDistanceOrPercentage,
-                 double holddistancepercent,
-                 long holddistance,
-                 int cycles,
-                 BehaviorAfterStop behaviorAfterStop);
+    /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(OneStepEventParameters parameters);
 
     /**
      * @brief Destructor
@@ -68,6 +62,18 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param preloaddistance Preload distance
      */
     virtual void setPreloadDistance();
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    OneStepEventParameters getParametersForGUI(void);
+
+    /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
 
     /**
      * @brief Returns a vector containing the points required to cread a preview graph.
@@ -131,19 +137,17 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     void sleepForMilliseconds(double milliseconds);
 
     DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Incdicates if the velocity is given by value or by % of L0. */
-    double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
+    double m_InitVelocity;																									/**< Velocity in mm/s or %L0. */
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_Delay;																													/**< Hold time 1 in s. */
-    DistanceOrPercentage m_UpperLimitDistanceOrPercentage;									/**< Indicates if the upper limit is given by value or by % of L0. */
-    double m_UpperLimitPercent;																							/**< % of L0 for calculation of the upper limit. */
-    long m_UpperLimit;																											/**< Upper limit in kPa, N or mm. */
-    long m_InitRelUpperLimit;																								/**< Initial upper limit to calculate relative upper limit. */
+    DistanceOrPercentage m_LimitDistanceOrPercentage;									/**< Indicates if the upper limit is given by value or by % of L0. */
+    double m_InitLimit;																											/**< Limit in N, kPa, mm relative, mm or %L0. */
+    long m_Limit;																														/**< Limit in kPa, N or mm. */
     double m_Dwell;																													/**< Hold time 2 in s. */
-    bool m_HoldUpperLimitFlag;																							/**< Indicates if the upper force limit should be hold during waiting. */
+    bool m_HoldLimitFlag;																							/**< Indicates if the upper force limit should be hold during waiting. */
     DistanceOrPercentage m_HoldDistanceOrPercentage;												/**< Indicates if the hold distance is given by value or by % of L0. */
-    int m_HoldDistancePercent;																							/**< % of L0 for calculation of the hold distance. */
+    double m_InitHoldDistance;																							/**< Hold distance in mm relative, mm or %L0. */
     long m_HoldDistance;																										/**< Hold distance in mm. */
-    long m_InitRelHoldDistance;																							/**< Initial hold distance to calculate relative hold distance. */
     int m_Cycles;																														/**< Amount of cycles. */
     BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 

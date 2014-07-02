@@ -20,6 +20,13 @@ class Protocols
   public:
     Protocols(wxListBox *listbox,
               MyFrame *myframe,
+              std::shared_ptr<StageFrame> stageframe,
+              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+              std::mutex *vectoraccessmutex,
+              long gagelength,
+              long mountinglength,
+              long maxposdistance,
+              long currentdistance,
               bool *stagesstoppedflag,
               std::mutex *stagesstoppedmutex,
               std::mutex *waitmutex,
@@ -61,9 +68,31 @@ class Protocols
      */
     void setCrossSectionArea(double crosssectionarea);
 
-    void loadProtocol(void);
+    void loadProtocol(std::string path, long gagelength, long mountinglength, long maxposdistance, long currentdistance);
 
-    void saveProtocol(void);
+    /**
+     * @brief Saves the current protocol to the desired place as an .xml file.
+     */
+    void saveProtocol(std::string path);
+
+    /**
+     * @brief Remembers, which experiment will be changed and returns the experiment type.
+     * @return The experiment type.
+     */
+    ExperimentType getEditExperimentType(void);
+
+    /**
+     * @brief Returns a reference to the experiment which will be edited.
+     * @return The reference to the experiment which will be edited.
+     */
+    std::shared_ptr<Experiment> getEditExperiment(void){
+      return(m_Experiments[m_EditedExperiment]);
+    }
+
+    /**
+     * @brief Updates the parameters of the edited experiment in the wxListBox.
+     */
+    void updateEditedExperimentParameters(void);
 
     /**
      * @brief Create the preview vector and display it in the graph.
@@ -161,7 +190,11 @@ class Protocols
     }
 
   private:
+
     MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
+    std::shared_ptr<StageFrame> m_StageFrame;																/**< Pointer to the stage frame object */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
+    std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
     mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the vector containing the force/stress - distance values. */
     mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the vector containing the force/stress - displacement values. */
     mpFXYVector *m_StressForcePreviewGraph;																	/**< Pointer to the vector containing the stress/force preview values. */
@@ -179,6 +212,7 @@ class Protocols
     std::vector<std::shared_ptr<Experiment>> m_Experiments;									/**< Vector containing the pointers to the experiments. */
     Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
+    int m_EditedExperiment;																									/**< Number of the experiment which will be edited. */
     std::unique_ptr<std::thread> m_ExperimentRunningThread;									/**< Pointer to the experiment running check thread */
     double m_Area;																													/**< Area size of the sample. */
     long m_MaxDistanceLimit;																								/**< The maximal position for the stages */
@@ -207,6 +241,10 @@ class Protocols
     std::mutex *m_PreloadDoneMutex;																					/**< Mutex to protect m_PreloadDoneFlag */
     bool *m_StagesStoppedFlag;																							/**< Flag indicating if stages stopped or not. */
     std::mutex *m_StagesStoppedMutex;																				/**< Mutex for m_StagesStoppedFlag */
+    long m_GageLength;																											/**< Preload distance of the stage frame */
+    long m_MountingLength;																									/**< Mountinglength of the stage frame */
+    long m_MaxPosDistance;																									/**< Zero distance */
+    long m_CurrentDistance;																									/**< Current distance of the stage frame */
     long m_PreloadDistance;																									/**< Preload distance */
     bool m_MeasurementValuesRecordingFlag;																	/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; 													/**< Mutex to protect m_MeasurementValuesRecordingFlag */

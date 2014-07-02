@@ -10,7 +10,8 @@ class ContinuousEventValues : public ExperimentValues
   public:
     ContinuousEventValues(std::shared_ptr<StageFrame> stageframe,
                           std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                          mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+                          mpFXYVector *forceStressDistanceGraph,
+                          mpFXYVector *forceStressDisplacementGraph,
                           std::mutex *vectoraccessmutex,
                           mpFXYVector *maxlimitvector,
                           mpFXYVector *minlimitvector,
@@ -23,9 +24,15 @@ class ContinuousEventValues : public ExperimentValues
 
                           double velocity,
                           double holdtime,
-                          int steps,
+                          int steps, long maxvalue,
                           int cycles,
-                          Experiment::BehaviorAfterStop behaviorAfterStop);
+                          BehaviorAfterStop behaviorAfterStop);
+
+    /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(ContinuousEventParameters parameters);
 
     /**
      * @brief Sets the velocity.
@@ -81,7 +88,7 @@ class ContinuousEventValues : public ExperimentValues
     double m_MaxValue;																					/**< Maximum value */
     int m_Steps;																								/**< Number of steps. */
     int m_Cycles;																								/**< Amount of cycles. */
-    Experiment::BehaviorAfterStop m_BehaviorAfterStop;					/**< Defines the behavior after the experiment stops. */
+    BehaviorAfterStop m_BehaviorAfterStop;											/**< Defines the behavior after the experiment stops. */
 };
 
 #endif // CONTINUESEVENTVALUES_H
