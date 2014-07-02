@@ -3,6 +3,7 @@
 #include <mutex>
 #include <wx/log.h>
 #include "../gui/myframe.h"
+#include "pugixml/pugixml.hpp"
 #include "preload.h"
 
 /**
@@ -41,12 +42,11 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  DistanceOrStressOrForce distanceOrStressOrForce,
                  long gagelength,
                  long mountinglength,
-                 long zerodistance,
+                 long maxposdistance,
                  long currentdistance,
                  double area,
 
-                 double stressForceLimit,
-                 double speedInMM)
+                 PreloadParameters parameters)
   : Experiment(stageframe,
                forcesensormessagehandler,
                myframe,
@@ -60,7 +60,7 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                Direction::Stop,
                gagelength,
                mountinglength,
-               zerodistance,
+               maxposdistance,
                currentdistance,
                area,
                0.005 * 10000.0/*stress force threshold*/,
@@ -72,8 +72,9 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
     m_CurrentState(State::stopState),
     m_StagesStoppedFlag(stagesstopped),
     m_StagesStoppedMutex(stagesstoppedmutex),
-    m_StressForceLimit(stressForceLimit),
-    m_Velocity(speedInMM),
+    m_InitStressForceLimit(parameters.stressForceLimit),
+    m_StressForceLimit(parameters.stressForceLimit),
+    m_Velocity(parameters.velocity),
     m_ExperimentValues(std::make_shared<PreloadValues>(stageframe,
                                                        forcesensormessagehandler,
                                                        forceStressDistanceGraph,
@@ -91,11 +92,35 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                                                        area,
                                                        gagelength,
 
-                                                       stressForceLimit,
-                                                       speedInMM))
+                                                       parameters.stressForceLimit,
+                                                       parameters.velocity))
 {
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_StressForceLimit = m_InitStressForceLimit * 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
+  }
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void Preload::setParameters(PreloadParameters parameters){
+
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_InitStressForceLimit = parameters.stressForceLimit;
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_StressForceLimit = m_InitStressForceLimit * 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
+  }
+  m_Velocity = parameters.velocity;
+
+  m_ExperimentValues->setParameters(parameters);
 }
 
 /**
@@ -112,6 +137,46 @@ Preload::~Preload(){
   // Delete the experiment values because we don't need them for the preloading.
   //delete m_ExperimentValues;
   std::cout << "Preload destructor finished." << std::endl;
+}
+
+/**
+ * @brief Returns struct with the parameters for the GUI.
+ * @return The parameters for the GUI.
+ */
+PreloadParameters Preload::getParametersForGUI(void){
+  PreloadParameters parameters;
+
+  parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    parameters.stressForceLimit = m_InitStressForceLimit;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    parameters.stressForceLimit = m_InitStressForceLimit;
+  }
+
+  parameters.velocity = m_Velocity;
+
+  return(parameters);
+}
+
+/**
+ * @brief Saves the experiment settings in the xml_docuement.
+ * @param xml Pointer to the xml_document.
+ */
+void Preload::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("Preload");
+
+  node.append_attribute("StressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("CrossSectionArea") = m_Area;
+  node.append_attribute("ForceOrStress") = static_cast<int>(m_DistanceOrStressOrForce);
+
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
+  }
+
+  node.append_attribute("Velocity") = m_Velocity;
 }
 
 /**

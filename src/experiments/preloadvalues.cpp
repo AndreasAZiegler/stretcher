@@ -1,6 +1,7 @@
 // Includes
 #include <string>
 #include "preloadvalues.h"
+#include "preload.h"
 
 PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
                              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
@@ -38,6 +39,15 @@ PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
     m_StressForceLimit(stressForceLimit/10000.0),
     m_SpeedInMm(speedInMm)
 {
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void PreloadValues::setParameters(PreloadParameters parameters){
+  m_StressForceLimit = parameters.stressForceLimit / 10000.0;
+  m_SpeedInMm = parameters.velocity;
 }
 
 /*

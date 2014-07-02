@@ -9,7 +9,8 @@ class PreloadValues : public ExperimentValues
   public:
     PreloadValues(std::shared_ptr<StageFrame> stageframe,
                   std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                  mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+                  mpFXYVector *forceStressDistanceGraph,
+                  mpFXYVector *forceStressDisplacementGraph,
                   std::mutex *vectoraccessmutex,
                   mpFXYVector *maxforcelimitvector,
                   mpFXYVector *minforcelimitvector,
@@ -19,10 +20,17 @@ class PreloadValues : public ExperimentValues
 
                   ExperimentType experimentType,
                   DistanceOrStressOrForce distanceOrStressOrForce,
-                  double area, long gagelength,
+                  double area,
+                  long gagelength,
 
                   double stressForceLimit,
                   double speedInMm);
+
+    /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(PreloadParameters parameters);
 
     //PreloadValues(const PreloadValues &preloadvalues);
 

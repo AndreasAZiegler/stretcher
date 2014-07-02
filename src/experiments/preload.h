@@ -15,7 +15,6 @@
 class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
-
     /**
      * @brief Initializes all the needed variables
      * @param type Type of the experiment.
@@ -29,7 +28,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      */
     Preload(std::shared_ptr<StageFrame> stageframe,
             std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-            mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+            mpFXYVector *forceStressDistanceGraph,
+            mpFXYVector *forceStressDisplacementGraph,
             std::mutex *vectoraccessmutex,
             mpFXYVector *maxforcelimitvector,
             mpFXYVector *minforcelimitvector,
@@ -51,12 +51,17 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             DistanceOrStressOrForce distanceOrStressOrForce,
             long gagelength,
             long mountinglength,
-            long zerodistance,
+            long maxposdistance,
             long currentdistance,
             double area,
 
-            double stressForceLimit,
-            double speedInMM);
+            PreloadParameters parameters);
+
+    /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(PreloadParameters parameters);
 
     /**
      * @brief Sets the preload distance.
@@ -65,6 +70,18 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     virtual void setPreloadDistance();
 
     ~Preload();
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    PreloadParameters getParametersForGUI(void);
+
+    /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
 
     /**
      * @brief Returns a vector containing the points required to cread a preview graph.
@@ -90,6 +107,13 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     void setSpeedInMM(double mm){
       m_Velocity = mm;
     }
+
+    /**
+     * @brief Sets the area.
+     * @param x Length in x direction.
+     * @param y Length in y direction.
+     */
+    void setArea (double x, double y);
 
     /**
      * @brief Sets the force or stress limit.
@@ -126,7 +150,8 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 
     State m_CurrentState;																		/**< Current state of the preload FSM */
 
-    double m_StressForceLimit;															/**< Stress or force limit value */
+    double m_InitStressForceLimit;													/**< Initialize stress of force limit value. */
+    long m_StressForceLimit;																/**< Stress or force limit value */
     double m_Velocity;																			/**< Speed in mm/sec */
 
 

@@ -38,22 +38,7 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                  long currentdistance,
                                  double area,
 
-                                 DistanceOrPercentage velocityDistanceOrPercentage,
-                                 double velocitypercent,
-                                 double velocity,
-                                 double holdtime,
-                                 DistanceOrPercentage incrementDistanceOrPercentage,
-                                 double incrementpercent,
-                                 long increment,
-                                 StepsOrMaxValue stepsOrMaxValue,
-                                 DistanceOrPercentage maxvalueDistanceOrPercentage,
-                                 double maxvaluepercent,
-                                 long maxvaluelimit,
-                                 int steps,
-                                 double ramptofailurepercent,
-                                 int cycles,
-                                 BehaviorAfterStop behaviorAfterStop,
-                                 long holdforce)
+                                 ContinuousEventParameters parameters)
       : Experiment(stageframe,
                    forcesensormessagehandler,
                    myframe,
@@ -76,28 +61,27 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_WaitMutex(mutex),
 
         m_Ramp2FailureActiveFlag(ramptofailureactiveflag),
-        m_VelocityDistanceOrPercentage(velocityDistanceOrPercentage),
-        m_VelocityPercent(velocitypercent),
-        m_Velocity(velocity),
-        m_HoldTime(holdtime),
-        m_IncrementDistanceOrPercentage(incrementDistanceOrPercentage),
-        m_IncrementPercent(incrementpercent),
-        m_Increment(increment),
-        m_StepsOrMaxValue(stepsOrMaxValue),
-        m_MaxValueDistanceOrPercentage(maxvalueDistanceOrPercentage),
-        m_MaxValuePercent(maxvaluepercent),
-        m_MaxValueLimit(maxvaluelimit),
-        m_InitRelMaxValueLimit(maxvaluelimit),
-        m_Steps(steps),
-        m_Ramp2FailurePercentage(ramptofailurepercent),
-        m_Cycles(cycles),
-        m_BehaviorAfterStop(behaviorAfterStop),
+        m_VelocityDistanceOrPercentage(parameters.velocityDistanceOrPercentage),
+        m_InitVelocity(parameters.velocity),
+        m_Velocity(parameters.velocity),
+        m_HoldTime(parameters.holdtime),
+        m_IncrementDistanceOrPercentage(parameters.incrementDistanceOrPercentage),
+        m_InitIncrement(parameters.increment),
+        m_Increment(parameters.increment),
+        m_StepsOrMaxValue(parameters.stepsOrMaxValue),
+        m_MaxValueDistanceOrPercentage(parameters.maxValueDistanceOrPercentage),
+        m_InitMaxValueLimit(parameters.maxvalue),
+        m_MaxValueLimit(parameters.maxvalue),
+        m_Steps(parameters.steps),
+        m_Cycles(parameters.cycles),
+        m_BehaviorAfterStop(parameters.behaviorAfterStop),
         m_CurrentState(State::stopState),
         m_CurrentLimit(0),
         m_CurrentStep(0),
         m_CurrentCycle(0),
         m_MaxStressForce(0),
-        m_HoldForce(holdforce),
+        m_InitHoldForce(parameters.holdForceStress),
+        m_HoldForce(parameters.holdForceStress),
         m_WaitActive(false),
         m_DecreaseSpeedFlag(false),
         m_CheckDistanceFlag(false),
@@ -118,16 +102,45 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                                                      area,
                                                      gagelength,
 
-                                                     velocity,
-                                                     holdtime,
-                                                     steps,
-                                                     cycles,
-                                                     behaviorAfterStop))
+                                                     parameters.velocity,
+                                                     parameters.holdtime,
+                                                     parameters.steps,
+                                                     parameters.maxvalue,
+                                                     parameters.cycles,
+                                                     parameters.behaviorAfterStop))
 {
   initParameters();
 
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+}
+
+/**
+ * @brief Sets the parameters given by the passed struct.
+ * @param parameters The parameters as a struct.
+ */
+void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
+  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_Ramp2FailureActiveFlag = parameters.ramp2failure;
+  m_VelocityDistanceOrPercentage = parameters.velocityDistanceOrPercentage;
+  m_Velocity = parameters.velocity;
+  m_HoldTime = parameters.holdtime;
+  m_IncrementDistanceOrPercentage = parameters.incrementDistanceOrPercentage;
+  m_InitIncrement = parameters.increment;
+  m_Increment = parameters.increment;
+  m_StepsOrMaxValue = parameters.stepsOrMaxValue;
+  m_MaxValueDistanceOrPercentage = parameters.maxValueDistanceOrPercentage;
+  m_MaxValueLimit = parameters.maxvalue;
+  m_InitMaxValueLimit = parameters.maxvalue;
+  m_Steps = parameters.steps;
+  m_Cycles = parameters.cycles;
+  m_BehaviorAfterStop = parameters.behaviorAfterStop;
+  m_InitHoldForce = parameters.holdForceStress;
+  m_HoldForce = parameters.holdForceStress;
+
+  initParameters();
+
+  m_ExperimentValues->setParameters(parameters);
 }
 
 /**
@@ -142,8 +155,8 @@ ContinuousEvent::~ContinuousEvent(){
  * @brief Initializes the parameters.
  */
 void ContinuousEvent::initParameters(void){
-  if(Experiment::DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
-    m_Velocity = (m_VelocityPercent / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
+  if(DistanceOrPercentage::Percentage == m_VelocityDistanceOrPercentage){
+    m_Velocity = (m_InitVelocity / 100) * m_GageLength * 0.00009921875/*mm per micro step*/;
     m_ExperimentValues->setVelocity(m_Velocity);
   }
 
@@ -154,40 +167,78 @@ void ContinuousEvent::initParameters(void){
 
   // Only set increment and steps parameter if experiment is not a ramp to failure experiment.
   if(false == m_Ramp2FailureActiveFlag){
-    if(Experiment::DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
-      m_Increment = (m_IncrementPercent / 100) * m_GageLength;
-      m_ExperimentValues->setIncrement(m_Increment);
-    }
-    if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
-      if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-        if(Experiment::DistanceOrPercentage::DistanceRelative == m_MaxValueDistanceOrPercentage){
-          m_MaxValueLimit = m_StartLength + m_InitRelMaxValueLimit;
+    if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+      if(DistanceOrPercentage::Distance == m_IncrementDistanceOrPercentage){
+        m_Increment = m_InitIncrement / 0.00009921875/*mm per micro step*/;
+        m_ExperimentValues->setIncrement(m_Increment);
+      }else if(DistanceOrPercentage::Percentage == m_IncrementDistanceOrPercentage){
+        m_Increment = (m_InitIncrement / 100) * m_GageLength;
+        m_ExperimentValues->setIncrement(m_Increment);
+      }
+
+      if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
+        if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_InitMaxValueLimit / 0.00009921875/*mm per micro step*/;
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
-        }else if(Experiment::DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
-          m_MaxValueLimit = (1 + (m_MaxValuePercent / 100)) * m_GageLength;
+        }else if(DistanceOrPercentage::DistanceRelative == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_StartLength + (m_InitMaxValueLimit / 0.00009921875/*mm per micro step*/);
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+        }else if(DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = (1 + (m_InitMaxValueLimit / 100)) * m_GageLength;
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
         }
+
+        m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
+        wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
+      }else if(StepsOrMaxValue::Steps == m_StepsOrMaxValue){
+
       }
-      if((0 != m_MaxValueLimit) && (0 != m_Increment)){
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
+    }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+      m_Increment = m_InitIncrement * m_Area * 10.0;
+      m_HoldForce = m_InitHoldForce * m_Area * 10.0;
+
+      if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
+        if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_InitMaxValueLimit * m_Area * 10.0;
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
           m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
-          wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
-                                   " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
-                                   " m_CurrentForce: " + std::to_string(m_CurrentForce) +
-                                   " m_Increment: " + std::to_string(m_Increment)).c_str());
-        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-          m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
-          /*
-          wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
-                                   " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
-                                   " m_CurrentDistance: " + std::to_string(m_CurrentDistance) +
-                                   " m_Increment: " + std::to_string(m_Increment)).c_str());
-          */
+          m_ExperimentValues->setSteps(m_Steps);
+          wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
+        }else if(DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_InitMaxValueLimit;
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
         }
-        m_ExperimentValues->setSteps(m_Steps);
+      }else if(StepsOrMaxValue::Steps == m_StepsOrMaxValue){
+
+      }
+    }else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+      m_Increment = m_InitIncrement * 10000.0;
+      m_HoldForce = m_InitHoldForce * 10000.0;
+
+      if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
+        if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_InitMaxValueLimit * 10000.0;
+          m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
+
+          m_ExperimentValues->setSteps(m_Steps);
+          wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
+        }else if(DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
+          m_MaxValueLimit = m_InitMaxValueLimit;
+
+          m_ExperimentValues->setMaxValue(m_MaxValueLimit);
+          wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
+        }
+      }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+        m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
+        /*
+        wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
+                                 " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
+                                 " m_CurrentDistance: " + std::to_string(m_CurrentDistance) +
+                                 " m_Increment: " + std::to_string(m_Increment)).c_str());
+        */
       }
     }
-  } else if(true == m_Ramp2FailureActiveFlag){
+  }else if(true == m_Ramp2FailureActiveFlag){
     m_Increment = 0;
     m_ExperimentValues->setIncrement(m_Increment);
     m_Steps = 1;
@@ -203,6 +254,75 @@ void ContinuousEvent::setPreloadDistance(){
   m_GageLength = m_CurrentDistance;
 
   initParameters();
+}
+
+/**
+ * @brief Returns struct with the parameters for the GUI.
+ * @return The parameters for the GUI.
+ */
+ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
+  ContinuousEventParameters params;
+
+  params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  params.ramp2failure = m_Ramp2FailureActiveFlag;
+  params.velocityDistanceOrPercentage = m_VelocityDistanceOrPercentage;
+  params.velocity = m_InitVelocity;
+  params.holdtime = m_HoldTime;
+  params.incrementDistanceOrPercentage = m_IncrementDistanceOrPercentage;
+  params.increment = m_InitIncrement;
+  params.maxValueDistanceOrPercentage = m_MaxValueDistanceOrPercentage;
+  params.maxvalue = m_InitMaxValueLimit;
+
+  /*
+  switch(m_DistanceOrStressOrForce){
+    case DistanceOrStressOrForce::Distance:
+      params.increment = m_InitIncrement;
+      params.maxvalue = m_InitMaxValueLimit;
+      break;
+    case DistanceOrStressOrForce::Force:
+      //params.increment = m_Increment / 10000.0;
+      params.increment = m_InitIncrement;
+      params.maxvalue = m_InitMaxValueLimit;
+      break;
+    case DistanceOrStressOrForce::Stress:
+      //params.increment = m_Increment / 10000.0;
+      params.increment = m_InitIncrement;
+      params.maxvalue = m_InitMaxValueLimit;
+      break;
+  }
+  */
+
+  params.stepsOrMaxValue = m_StepsOrMaxValue;
+
+  params.steps = m_Steps;
+  params.cycles = m_Cycles;
+  params.behaviorAfterStop = m_BehaviorAfterStop;
+  params.holdForceStress = m_InitHoldForce;
+
+  return(params);
+}
+
+/**
+ * @brief Saves the experiment settings in the xml_docuement.
+ * @param xml Pointer to the xml_document.
+ */
+void ContinuousEvent::getXML(pugi::xml_document &xml){
+  pugi::xml_node node = xml.append_child("ContinuousEvent");
+
+  node.append_attribute("DistanceOrStressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("Ramp2Failure") = m_Ramp2FailureActiveFlag;
+  node.append_attribute("VelocityDistanceOrPercentage") = static_cast<int>(m_VelocityDistanceOrPercentage);
+  node.append_attribute("Velocity") = m_InitVelocity;
+  node.append_attribute("HoldTime") = m_HoldTime;
+  node.append_attribute("IncrementDistanceOrPercentage") = static_cast<int>(m_IncrementDistanceOrPercentage);
+  node.append_attribute("Increment") = m_InitIncrement;
+  node.append_attribute("MaxValueDistanceOrPercentage") = static_cast<int>(m_MaxValueDistanceOrPercentage);
+  node.append_attribute("MaxValue") = m_InitMaxValueLimit;
+  node.append_attribute("StepsOrMaxValue") = static_cast<int>(m_StepsOrMaxValue);
+  node.append_attribute("Steps") = m_Steps;
+  node.append_attribute("Cycles") = m_Cycles;
+  node.append_attribute("BehaviorAfterStop") = static_cast<int>(m_BehaviorAfterStop);
+  node.append_attribute("HoldForce") = m_InitHoldForce;
 }
 
 /**
@@ -385,7 +505,7 @@ void ContinuousEvent::process(Event event){
       if(Event::evUpdate == event){
         // If ramp2failure
         if(true == m_Ramp2FailureActiveFlag){
-          if(std::abs(m_CurrentForce) < ((m_Ramp2FailurePercentage / 100.0) * std::abs(m_MaxStressForce))){
+          if(m_CurrentForce < ((m_MaxValueLimit / 100.0) * m_MaxStressForce)){
             if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
               m_CurrentStep = 0;
@@ -1073,7 +1193,7 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
         //process(Event::evStop);
       } else{
       */
-      if(measurementValue.value > m_MaxStressForce){
+      if((State::runState == m_CurrentState) && (measurementValue.value > m_MaxStressForce)){
         m_MaxStressForce = measurementValue.value;
       }
 

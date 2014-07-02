@@ -2,16 +2,29 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <wx/log.h>
+#include "pugixml/pugixml.hpp"
 #include <wx/msgdlg.h>
 #include "../gui/myframe.h"
 #include "protocols.h"
 #include "experiments/preload.h"
+#include "experiments/onestepevent.h"
+#include "experiments/continuousevent.h"
+#include "experiments/pause.h"
+#include "experiments/pauseresume.h"
 
 // An deleter which doesn't do anything, required for passing shared_ptr.
 void do_nothing_deleter(std::vector<double> *){return;}
 
 Protocols::Protocols(wxListBox *listbox,
                      MyFrame *myframe,
+                     std::shared_ptr<StageFrame> stageframe,
+                     std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+                     std::mutex *vectoraccessmutex,
+                     long gagelength,
+                     long mountinglength,
+                     long maxposdistance,
+                     long currentdistance,
                      bool *stagesstoppedflag,
                      std::mutex *stagesstoppedmutex,
                      std::mutex *waitmutex,
@@ -35,6 +48,13 @@ Protocols::Protocols(wxListBox *listbox,
                      std::string path)
   : m_ListBox(listbox),
     m_MyFrame(myframe),
+    m_StageFrame(stageframe),
+    m_ForceSensorMessageHandler(forcesensormessagehandler),
+    m_VectorLayerMutex(vectoraccessmutex),
+    m_GageLength(gagelength),
+    m_MountingLength(mountinglength),
+    m_MaxPosDistance(maxposdistance),
+    m_CurrentDistance(currentdistance),
     m_StagesStoppedFlag(stagesstoppedflag),
     m_StagesStoppedMutex(stagesstoppedmutex),
     m_WaitMutex(waitmutex),
@@ -49,6 +69,7 @@ Protocols::Protocols(wxListBox *listbox,
     m_MaxForceLimit(maxforce),
     m_MinForceLimit(minforce),
     m_ForceStressDistanceGraph(forceStressDistanceGraph),
+    m_ForceStressDisplacementGraph(forceStressDisplacementGraph),
     m_StressForcePreviewGraph(stressForceGraph),
     m_DistancePreviewGraph(distanceGraph),
     m_MaxStressForceLimitGraph(maxStressForceLimitGraph),
@@ -59,7 +80,8 @@ Protocols::Protocols(wxListBox *listbox,
     m_PreloadDistance(0),
     m_ExperimentRunningFlag(false),
     m_MeasurementValuesRecordingFlag(false),
-    m_CurrentExperimentNr(0)
+    m_CurrentExperimentNr(0),
+    m_EditedExperiment(0)
 {
 }
 
@@ -71,6 +93,275 @@ Protocols::~Protocols(){
   m_Experiments.clear();
   m_ExperimentValues.clear();
   */
+}
+
+void Protocols::loadProtocol(std::string path, long gagelength, long mountinglength, long maxposdistance, long currentdistance){
+  // Update lengths
+  m_GageLength = gagelength;
+  m_MountingLength = mountinglength;
+  m_MaxPosDistance = maxposdistance;
+  m_CurrentDistance = currentdistance;
+
+  pugi::xml_document doc;
+
+  // Open file.
+  doc.load_file(path.c_str());
+
+  mpFXYVector *maxlimitvector;
+  mpFXYVector *minlimitvector;
+
+  // Iterate through the experiments to load the settings.
+  for(pugi::xml_node node = doc.first_child(); node; node = node.next_sibling()){
+
+
+    if(0 == strcmp("Preload", node.name())){
+      PreloadParameters parameters;
+
+      // Load preload parmeters.
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("ForceOrStress").as_int());
+      parameters.velocity = node.attribute("Velocity").as_double();
+      parameters.stressForceLimit = node.attribute("ForceStressLimit").as_double();
+
+      // Create preload experiment.
+      std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
+                                                         m_ForceSensorMessageHandler,
+                                                         m_ForceStressDistanceGraph,
+                                                         m_ForceStressDisplacementGraph,
+                                                         m_VectorLayerMutex,
+                                                         m_MaxStressForceLimitGraph,
+                                                         m_MinStressForceLimitGraph,
+                                                         m_MaxDistanceLimitGraph,
+                                                         m_MinDistanceLimitGraph,
+                                                         m_MyFrame,
+                                                         m_StoragePath,
+                                                         m_MaxForceLimit,
+                                                         m_MinForceLimit,
+                                                         m_MaxDistanceLimit,
+                                                         m_MinDistanceLimit,
+
+                                                         m_Wait,
+                                                         m_WaitMutex,
+                                                         m_StagesStoppedFlag,
+                                                         m_StagesStoppedMutex,
+
+                                                         ExperimentType::Preload,
+                                                         parameters.distanceOrStressOrForce,
+                                                         m_GageLength,
+                                                         m_MountingLength,
+                                                         m_MaxPosDistance,
+                                                         m_CurrentDistance,
+                                                         m_Area,
+
+                                                         parameters));
+
+      // Add experiment.
+      addExperiment(experiment);
+
+    }else if(0 == strcmp("OneStepEvent", node.name())){
+      OneStepEventParameters parameters;
+
+      // Load one step event parameters.
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
+      parameters.velocityDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("VelocityDistanceOrPercentage").as_int());
+      parameters.velocity = node.attribute("Velocity").as_double();
+      parameters.delay = node.attribute("Delay").as_double();
+      parameters.limitDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("LimitDistanceOrPercentage").as_int());
+      parameters.limit = node.attribute("Limit").as_double();
+      parameters.dwell = node.attribute("Dwell").as_double();
+      parameters.cycles = node.attribute("Cycles").as_int();
+      parameters.holdDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("HoldDistanceOrPercentage").as_int());
+      parameters.holdDistance = node.attribute("HoldDistance").as_double();
+      parameters.behaviorAfterStop = static_cast<BehaviorAfterStop>(node.append_attribute("BehaviorAfterStop").as_int());
+
+      // Create one step event experiment.
+      std::unique_ptr<Experiment> experiment(new OneStepEvent(m_StageFrame,
+                                                              m_ForceSensorMessageHandler,
+                                                              m_ForceStressDistanceGraph,
+                                                              m_ForceStressDisplacementGraph,
+                                                              m_VectorLayerMutex,
+                                                              m_MaxStressForceLimitGraph,
+                                                              m_MinStressForceLimitGraph,
+                                                              m_MaxDistanceLimitGraph,
+                                                              m_MinDistanceLimitGraph,
+                                                              m_MyFrame,
+                                                              m_StoragePath,
+                                                              m_MaxForceLimit,
+                                                              m_MinForceLimit,
+                                                              m_MaxDistanceLimit,
+                                                              m_MinDistanceLimit,
+
+                                                              m_Wait,
+                                                              m_WaitMutex,
+                                                              m_StagesStoppedFlag,
+                                                              m_StagesStoppedMutex,
+
+                                                              ExperimentType::OneStepEvent,
+                                                              parameters.distanceOrStressOrForce,
+                                                              m_GageLength,
+                                                              m_MountingLength,
+                                                              m_MaxPosDistance,
+                                                              m_CurrentDistance,
+                                                              m_Area,
+
+                                                              parameters));
+
+      // Add experiment.
+      addExperiment(experiment);
+
+    }else if(0 == strcmp("ContinuousEvent", node.name())){
+      ContinuousEventParameters parameters;
+
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
+      parameters.ramp2failure = node.attribute("Ramp2Failure").as_bool();
+      parameters.velocityDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("VelocityDistanceOrPercentage").as_int());
+      parameters.velocity = node.attribute("Velocity").as_double();
+      parameters.holdtime = node.attribute("HoldTime").as_double();
+      parameters.incrementDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("IncrementDistanceOrPercentage").as_int());
+      parameters.increment = node.attribute("Increment").as_double();
+      parameters.stepsOrMaxValue = static_cast<StepsOrMaxValue>(node.attribute("StepsOrMaxValue").as_int());
+      parameters.maxValueDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("MaxValueDistanceOrPercentage").as_int());
+      parameters.maxvalue = node.attribute("MaxValue").as_double();
+      parameters.steps = node.attribute("Steps").as_int();
+      parameters.cycles = node.attribute("Cycles").as_int();
+      parameters.behaviorAfterStop = static_cast<BehaviorAfterStop>(node.attribute("BehaviorAfterStop").as_int());
+      parameters.holdForceStress = node.attribute("HoldForce").as_double();
+
+      // Create continuous event experiment.
+      std::unique_ptr<Experiment> experiment(new ContinuousEvent(m_StageFrame,
+                                                                 m_ForceSensorMessageHandler,
+                                                                 m_ForceStressDistanceGraph,
+                                                                 m_ForceStressDisplacementGraph,
+                                                                 m_VectorLayerMutex,
+                                                                 m_MaxStressForceLimitGraph,
+                                                                 m_MinStressForceLimitGraph,
+                                                                 m_MaxDistanceLimitGraph,
+                                                                 m_MinDistanceLimitGraph,
+                                                                 m_MyFrame,
+                                                                 m_StoragePath,
+                                                                 m_MaxForceLimit,
+                                                                 m_MinForceLimit,
+                                                                 m_MaxDistanceLimit,
+                                                                 m_MinDistanceLimit,
+
+                                                                 m_Wait,
+                                                                 m_WaitMutex,
+                                                                 m_StagesStoppedFlag,
+                                                                 m_StagesStoppedMutex,
+
+                                                                 ExperimentType::ContinuousEvent,
+                                                                 parameters.distanceOrStressOrForce,
+                                                                 parameters.ramp2failure,
+                                                                 m_GageLength,
+                                                                 m_MountingLength,
+                                                                 m_MaxPosDistance,
+                                                                 m_CurrentDistance,
+                                                                 m_Area,
+
+                                                                 parameters));
+
+      // Add experiment.
+      addExperiment(experiment);
+
+    }else if(0 == strcmp("Pause", node.name())){
+      double pausetime = node.attribute("PauseTime").as_double();
+
+      std::unique_ptr<Experiment> experiment(new Pause(m_StageFrame,
+                                                       m_ForceSensorMessageHandler,
+                                                       m_ForceStressDistanceGraph,
+                                                       m_ForceStressDisplacementGraph,
+                                                       m_VectorLayerMutex,
+                                                       m_MaxStressForceLimitGraph,
+                                                       m_MinStressForceLimitGraph,
+                                                       m_MaxDistanceLimitGraph,
+                                                       m_MinDistanceLimitGraph,
+                                                       m_MyFrame,
+                                                       m_StoragePath,
+                                                       m_MaxForceLimit,
+                                                       m_MinForceLimit,
+                                                       m_MaxDistanceLimit,
+                                                       m_MinDistanceLimit,
+
+                                                       m_Wait,
+                                                       m_WaitMutex,
+
+                                                       ExperimentType::Pause,
+                                                       DistanceOrStressOrForce::Distance,
+                                                       m_GageLength,
+                                                       m_MountingLength,
+                                                       m_MaxPosDistance,
+                                                       m_CurrentDistance,
+                                                       m_Area));
+
+      // Add experiment.
+      addExperiment(experiment);
+
+    }else if(0 == strcmp("PauseResume", node.name())){
+
+      // Create pause resume experiment.
+      std::unique_ptr<Experiment> experiment(new PauseResume(m_StageFrame,
+                                                             m_ForceSensorMessageHandler,
+                                                             m_ForceStressDistanceGraph,
+                                                             m_ForceStressDisplacementGraph,
+                                                             m_VectorLayerMutex,
+                                                             m_MaxStressForceLimitGraph,
+                                                             m_MinStressForceLimitGraph,
+                                                             m_MaxDistanceLimitGraph,
+                                                             m_MinDistanceLimitGraph,
+                                                             m_MyFrame,
+                                                             m_StoragePath,
+                                                             m_MaxForceLimit,
+                                                             m_MinForceLimit,
+                                                             m_MaxDistanceLimit,
+                                                             m_MinDistanceLimit,
+
+                                                             m_Wait,
+                                                             m_WaitMutex,
+
+                                                             ExperimentType::Pause,
+                                                             DistanceOrStressOrForce::Distance,
+                                                             m_GageLength,
+                                                             m_MountingLength,
+                                                             m_MaxPosDistance,
+                                                             m_CurrentDistance,
+                                                             m_Area));
+
+      // Add experiment.
+      addExperiment(experiment);
+    }
+
+  }
+}
+
+/**
+ * @brief Saves the current protocol to the desired place as an .xml file.
+ */
+void Protocols::saveProtocol(std::string path){
+  pugi::xml_document doc;
+
+  // Collect the xml attributes from the single experiments.
+  for(int i = 0; i < m_Experiments.size(); ++i){
+    m_Experiments[i]->getXML(doc);
+  }
+
+  doc.save_file(path.c_str());
+  wxLogMessage(std::string("Protocols: Protocol saved in: " + path).c_str());
+}
+
+/**
+ * @brief Remembers, which experiment will be changed and returns the experiment type.
+ * @return The experiment type.
+ */
+ExperimentType Protocols::getEditExperimentType(void){
+  m_EditedExperiment = m_ListBox->GetSelection();
+  return(m_Experiments[m_EditedExperiment]->getExperimentType());
+}
+
+/**
+ * @brief Updates the parameters of the edited experiment in the wxListBox.
+ */
+void Protocols::updateEditedExperimentParameters(void){
+  const wxString tmp((m_ExperimentValues[m_EditedExperiment])->experimentTypeToString() + ":" + m_ExperimentValues[m_EditedExperiment]->experimentSettingsForName());
+  m_ListBox->SetString(m_EditedExperiment, tmp);
 }
 
 /**
@@ -610,8 +901,14 @@ void Protocols::checkFinishedExperiment(void){
     m_Wait->wait(lck1);
   }
 
+  /*
   for(auto i : m_Experiments){
     i->setStartLength();
+  }
+  */
+  // Set the start length of the next experiment if there is one.
+  if(m_Experiments.size() > m_CurrentExperimentNr){
+    m_Experiments[m_CurrentExperimentNr]->setStartLength();
   }
   {
     // If preloading is active.

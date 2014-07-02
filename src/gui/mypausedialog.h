@@ -9,7 +9,7 @@
 class MyPauseDialog : public MyPauseDialog_Base
 {
   public:
-    MyPauseDialog(Pause *pauseExperiment);
+    MyPauseDialog(Pause *pauseExperiment, double pausetime = 0);
 
     /**
      * @brief Returns the create exeriment flag.
@@ -33,7 +33,7 @@ class MyPauseDialog : public MyPauseDialog_Base
 
 enum
 {
-  ID_PauseDialogOK = 57
+  ID_PauseDialogOK = 58
 };
 
 #endif // MYPAUSEDIALOG_H

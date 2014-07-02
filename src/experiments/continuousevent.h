@@ -9,8 +9,6 @@
 class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
-    enum class StepsOrMaxValue{Steps = 1,
-                               MaxValue = 2};
 
     ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
                     std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
@@ -39,22 +37,13 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     long currentdistance,
                     double area,
 
-                    DistanceOrPercentage velocityDistanceOrPercentage,
-                    double velocitypercent,
-                    double velocity,
-                    double holdtime,
-                    DistanceOrPercentage incrementDistanceOrPercentage,
-                    double incrementpercent,
-                    long increment,
-                    StepsOrMaxValue stepsOrMaxValue,
-                    DistanceOrPercentage maxvalueDistanceOrPercentage,
-                    double maxvaluepercent,
-                    long maxvaluelimit,
-                    int steps,
-                    double ramptofailurepercent,
-                    int cycles,
-                    BehaviorAfterStop behaviorAfterStop,
-                    long holdforce);
+                    ContinuousEventParameters parameters);
+
+    /**
+     * @brief Sets the parameters given by the passed struct.
+     * @param parameters The parameters as a struct.
+     */
+    void setParameters(ContinuousEventParameters parameters);
 
     /**
      * @brief Destructor
@@ -71,6 +60,18 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param preloaddistance Preload distance
      */
     virtual void setPreloadDistance();
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    ContinuousEventParameters getParametersForGUI(void);
+
+    /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
 
     /**
      * @brief Returns a vector containing the points required to cread a preview graph.
@@ -128,19 +129,17 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
 
     bool m_Ramp2FailureActiveFlag;																					/**< Indicates if the ramp to failure measurement is active. */
     DistanceOrPercentage m_VelocityDistanceOrPercentage;										/**< Indicates if the velocity is given by value or by % of L0. */
-    double m_VelocityPercent;																								/**< % of L0 for calculation of the velocity. */
+    double m_InitVelocity;																									/**< Velocity in mm/s or %L0. */
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_HoldTime;																											/**< Hold time 1 in s. */
     DistanceOrPercentage m_IncrementDistanceOrPercentage;										/**< Indicates if the increment is givyen by value or by & ov L0. */
-    double m_IncrementPercent;																							/**< % of L0 for calculation of the increment. */
+    double m_InitIncrement;																									/**< Increment in N, mm relative, mm or %L0. */
     long m_Increment;																												/**< Increment in mm or N. */
     StepsOrMaxValue m_StepsOrMaxValue;																			/**< Indicates if the steps are given by value or if they have to be calculated from the max. value. */
     DistanceOrPercentage m_MaxValueDistanceOrPercentage;										/**< Incdicates if the max. value is given by value or by % of L0. */
-    double m_MaxValuePercent;																								/**< % of L0 for calculation of the max. value. */
+    double m_InitMaxValueLimit;																							/**< Maximum value limit in N, mm relative, mm or %F0. */
     long m_MaxValueLimit;																										/**< Max value in mm or N. */
-    long m_InitRelMaxValueLimit;																						/**< Initial maximal value limit to calculate relative maximal value limit. */
     int m_Steps;																														/**< Number of steps. */
-    double m_Ramp2FailurePercentage;																				/**< Percent of the max stress/force for the R2F experiment. */
     int m_Cycles;																														/**< Amount of cycles. */
     BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 
@@ -149,6 +148,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     int m_CurrentStep;																											/**< The current step. */
     int m_CurrentCycle;																											/**< The current cycle. */
     long m_MaxStressForce;																									/**< The maximum stress/force .*/
+    double m_InitHoldForce;																									/**< Initial hold force. */
     long m_HoldForce;																												/**< The hold force. */
 
     bool m_WaitActive;																											/**< Indicates if a hold is active. */

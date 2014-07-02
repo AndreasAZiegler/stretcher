@@ -34,7 +34,7 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
      * @brief Sets pause time.
      * @param pausetime Pause time in sec.
      */
-    void setPauseTime(int pausetime){
+    void setPauseTime(double pausetime){
       m_PauseTime = pausetime;
       m_ExperimentValues->setPauseTime(m_PauseTime);
     }
@@ -43,6 +43,20 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
      * @brief Sets the preload distance.
      */
     virtual void setPreloadDistance(void){}
+
+    /**
+     * @brief Returns struct with the parameters for the GUI.
+     * @return The parameters for the GUI.
+     */
+    double getParametersForGUI(void){
+      return(m_PauseTime);
+    }
+
+    /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
 
     /**
      * @brief Returns a vector containing the points required to cread a preview graph.
@@ -93,7 +107,7 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
     std::mutex *m_WaitMutex;
 
     State m_CurrentState;																		/**< Current state of the preload FSM */
-    int m_PauseTime;																				/**< The amount of seconds, the pause shoudl be. */
+    double m_PauseTime;																				/**< The amount of seconds, the pause shoudl be. */
     std::shared_ptr<PauseValues> m_ExperimentValues;			/**< Pointer to the experiment values */
 };
 
