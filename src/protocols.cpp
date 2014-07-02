@@ -779,7 +779,6 @@ std::vector<std::string> Protocols::getExperimentNames(void){
  * @brief Exports the measurement data to a .csv file.
  */
 void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname){
-  //std::cout << pathAndFilename << std::endl;
 
   // Creat the file
   std::ofstream file(pathname);
@@ -805,7 +804,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
 
   file << std::endl << std::endl;
 
-  file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in micro seconds" << std::endl;
+  file << "Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
 
   int length = m_ExperimentValues[0]->getStressForceValues()->size();
   for(long j = 0; j < length; ++j){
