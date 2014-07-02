@@ -68,6 +68,14 @@ class Protocols
      */
     void setCrossSectionArea(double crosssectionarea);
 
+    /**
+     * @brief Load a protocol from a file.
+     * @param path Path of the protocol file.
+     * @param gagelength Gage length
+     * @param mountinglength Mounting length
+     * @param maxposdistance Maximal position distance
+     * @param currentdistance Current distance
+     */
     void loadProtocol(std::string path, long gagelength, long mountinglength, long maxposdistance, long currentdistance);
 
     /**

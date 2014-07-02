@@ -7,12 +7,14 @@
 
 find_path(WXCTB_INCLUDE_DIR
 	ctb.h
+	/home/stretcher/stretcher/include/ctb-0.13
 	/usr/local/include/wx-3.0/wx/ctb-0.13
 )
 
 find_library(WXCTB_LIBRARY
 	NAMES libwxctb-0.13.so
 	PATHS
+	/home/stretcher/stretcher/lib
 	/usr/local/lib
 )
 
