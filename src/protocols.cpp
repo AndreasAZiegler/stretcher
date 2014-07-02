@@ -95,7 +95,13 @@ Protocols::~Protocols(){
   */
 }
 
-void Protocols::loadProtocol(std::string path){
+void Protocols::loadProtocol(std::string path, long gagelength, long mountinglength, long maxposdistance, long currentdistance){
+  // Update lengths
+  m_GageLength = gagelength;
+  m_MountingLength = mountinglength;
+  m_MaxPosDistance = maxposdistance;
+  m_CurrentDistance = currentdistance;
+
   pugi::xml_document doc;
 
   // Open file.

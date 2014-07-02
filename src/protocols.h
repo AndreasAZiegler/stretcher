@@ -68,7 +68,7 @@ class Protocols
      */
     void setCrossSectionArea(double crosssectionarea);
 
-    void loadProtocol(std::string path);
+    void loadProtocol(std::string path, long gagelength, long mountinglength, long maxposdistance, long currentdistance);
 
     /**
      * @brief Saves the current protocol to the desired place as an .xml file.

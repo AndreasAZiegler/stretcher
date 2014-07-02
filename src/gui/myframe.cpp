@@ -2091,7 +2091,7 @@ void MyFrame::OnLoadProtocol(wxCommandEvent& event){
   if(wxID_CANCEL == saveFileDialog.ShowModal()){
     return;
   }
-  m_CurrentProtocol->loadProtocol(saveFileDialog.GetPath().ToStdString());
+  m_CurrentProtocol->loadProtocol(saveFileDialog.GetPath().ToStdString(), m_GageLength, m_MountingLength, m_MaxPosDistance, m_CurrentDistance);
 }
 
 /**
