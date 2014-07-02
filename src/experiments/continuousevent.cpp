@@ -226,16 +226,9 @@ void ContinuousEvent::initParameters(void){
           m_MaxValueLimit = m_InitMaxValueLimit;
 
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
-          wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
         }
-      }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-        m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
-        /*
-        wxLogMessage(std::string("ContinuousEvent: m_Steps: " + std::to_string(m_Steps) +
-                                 " m_MaxValueLimit: " + std::to_string(m_MaxValueLimit) +
-                                 " m_CurrentDistance: " + std::to_string(m_CurrentDistance) +
-                                 " m_Increment: " + std::to_string(m_Increment)).c_str());
-        */
+      }else if(StepsOrMaxValue::Steps == m_StepsOrMaxValue){
+
       }
     }
   }else if(true == m_Ramp2FailureActiveFlag){
