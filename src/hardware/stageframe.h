@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <mutex>
+#include <memory>
 #include <condition_variable>
 #include "../updatedvaluesreceiver.h"
 
