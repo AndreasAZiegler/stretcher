@@ -95,7 +95,7 @@ std::string ContinuousEventValues::getExperimentSettings(void){
   }
 
   return(std::string("Experiment: " + experimentTypeToString() +
-                     ", Distance or Stress/Force: " + getDistanceOrStressForce() +
+                     ", Distance or Force or Stress: " + getDistanceOrForceOrStress() +
                      ", Stress or Force: " + getStressOrForce() +
                      ", Cross section area: " + std::to_string(m_Area) + "mm2" +
                      ", Velocity: " + std::to_string(m_Velocity) + "mm/s" +
@@ -125,7 +125,7 @@ std::string ContinuousEventValues::experimentSettingsForName(void){
     maxvalue = std::string(to_string_wp(m_MaxValue / (m_Area * 10.0)) + "kPa");
   }
 
-  return(std::string("DoS/F:" + getDistanceOrStressForce() +
+  return(std::string("DoSoF:" + getDistanceOrForceOrStress() +
                      " CSA:" + to_string_wp(m_Area, 2) + "mm2" +
                      " V:" + to_string_wp(m_Velocity, 2) + "mm/s" +
                      " HT:" + to_string_wp(m_HoldTime, 2) + "s" +

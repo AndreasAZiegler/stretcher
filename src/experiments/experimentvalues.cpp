@@ -331,7 +331,7 @@ std::string ExperimentValues::getStressOrForce(void){
  * @brief Returns the the measurement type (distance/stressForce).
  * @return The type as std::string.
  */
-std::string ExperimentValues::getDistanceOrStressForce(void){
+std::string ExperimentValues::getDistanceOrForceOrStress(void){
   std::string distancestressforce;
   if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     distancestressforce = "mm";

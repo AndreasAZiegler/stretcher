@@ -218,7 +218,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Returns the the measurement type (distance/stressForce).
      * @return The type as std::string.
      */
-    std::string getDistanceOrStressForce(void);
+    std::string getDistanceOrForceOrStress(void);
 
   protected:
 
