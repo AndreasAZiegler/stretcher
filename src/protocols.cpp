@@ -141,7 +141,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       experimentparameters.minforcelimit = m_MinForceLimit;
       experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
       experimentparameters.mindistancelimit = m_MinDistanceLimit;
-      experimentparameters.type = ExperimentType::ContinuousEvent;
+      experimentparameters.type = ExperimentType::Preload;
       experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
       experimentparameters.gagelength = m_GageLength;
       experimentparameters.mountinglength = m_MountingLength;
