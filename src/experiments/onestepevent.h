@@ -13,32 +13,17 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
 
-    OneStepEvent(std::shared_ptr<StageFrame> stageframe,
-                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+    OneStepEvent(ExperimentParameters experimentparameters, std::string path,
                  mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
                  std::mutex *vectoraccessmutex,
                  mpFXYVector *maxlimitvector,
                  mpFXYVector *minlimitvector,
-                 MyFrame *myframe,
-                 std::string path,
-                 long maxforcelimit,
-                 long minforcelimit,
-                 long maxdistancelimit,
-                 long mindistancelimit,
 
 
                  std::condition_variable *wait,
                  std::mutex *mutex,
                  bool *stagesstopped,
                  std::mutex *stagesstoppedmutex,
-
-                 ExperimentType type,
-                 DistanceOrStressOrForce distanceOrStressForce,
-                 long gagelength,
-                 long mountinglength,
-                 long zerodistance,
-                 long currentdistance,
-                 double area,
                  OneStepEventParameters parameters);
 
     /**

@@ -3,67 +3,39 @@
 #include <wx/log.h>
 #include "pause.h"
 
-Pause::Pause(std::shared_ptr<StageFrame> stageframe,
-             std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+Pause::Pause(ExperimentParameters experimentparameters,
+
+             std::string path,
              mpFXYVector *forceStressDistanceGraph,
              mpFXYVector *forceStressDisplacementGraph,
              std::mutex *vectoraccessmutex,
              mpFXYVector *maxlimitvector,
              mpFXYVector *minlimitvector,
-             MyFrame *myframe,
-             std::string path,
-             long maxforcelimit,
-             long minforcelimit,
-             long maxdistancelimit,
-             long mindistancelimit,
-
              std::condition_variable *wait,
              std::mutex *mutex,
 
-             ExperimentType type,
-             DistanceOrStressOrForce distanceOrStressOrForce,
-             long gagelength,
-             long mountinglength,
-             long zerodistance,
-             long currentdistance,
-             double area,
              int pausetime)
-  : Experiment(stageframe,
-               forcesensormessagehandler,
-               myframe,
-               maxforcelimit,
-               minforcelimit,
-               maxdistancelimit,
-               mindistancelimit,
-
-               type,
-               distanceOrStressOrForce,
-               Direction::Stop,
-               gagelength,
-               mountinglength,
-               zerodistance,
-               currentdistance,
-               area,
+  : Experiment(experimentparameters,
                0.005 * 10000.0/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
       m_Wait(wait),
       m_WaitMutex(mutex),
       m_CurrentState(State::stopState),
       m_PauseTime(pausetime),
-      m_ExperimentValues(std::make_shared<PauseValues>(stageframe,
-                                                       forcesensormessagehandler,
+      m_ExperimentValues(std::make_shared<PauseValues>(experimentparameters.stageframe,
+                                                       experimentparameters.forcesensormessagehandler,
                                                        forceStressDistanceGraph,
                                                        forceStressDisplacementGraph,
                                                        vectoraccessmutex,
                                                        maxlimitvector,
                                                        minlimitvector,
 
-                                                       myframe,
+                                                       experimentparameters.myframe,
 
-                                                       type,
-                                                       distanceOrStressOrForce,
-                                                       area,
-                                                       gagelength))
+                                                       experimentparameters.type,
+                                                       experimentparameters.distanceOrForceOrStress,
+                                                       experimentparameters.area,
+                                                       experimentparameters.gagelength))
 {
 }
 

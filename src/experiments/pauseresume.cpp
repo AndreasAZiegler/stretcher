@@ -6,66 +6,37 @@
 #include "pauseresume.h"
 #include "../gui/myframe.h"
 
-PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
-                         std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+PauseResume::PauseResume(ExperimentParameters experimentparameters,
+
+                         std::string path,
                          mpFXYVector *forceStressDistanceGraph,
                          mpFXYVector *forceStressDisplacementGraph,
                          std::mutex *vectoraccessmutex,
                          mpFXYVector *maxlimitvector,
                          mpFXYVector *minlimitvector,
-                         MyFrame *myframe,
-                         std::string path,
-                         long maxforcelimit,
-                         long minforcelimit,
-                         long maxdistancelimit,
-                         long mindistancelimit,
-
                          std::condition_variable *wait,
-                         std::mutex *mutex,
-
-                         ExperimentType type,
-                         DistanceOrStressOrForce distanceOrStressOrForce,
-                         long gagelength,
-                         long mountinglength,
-                         long zerodistance,
-                         long currentdistance,
-                         double area)
-  : Experiment(stageframe,
-               forcesensormessagehandler,
-               myframe,
-               maxforcelimit,
-               minforcelimit,
-               maxdistancelimit,
-               mindistancelimit,
-
-               type,
-               distanceOrStressOrForce,
-               Direction::Stop,
-               gagelength,
-               mountinglength,
-               zerodistance,
-               currentdistance,
-               area,
+                         std::mutex *mutex)
+  : Experiment(experimentparameters,
                0.005 * 10000.0/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
-      m_MyFrame(myframe),
+      m_MyFrame(experimentparameters.myframe),
       m_Wait(wait),
       m_WaitMutex(mutex),
       m_CurrentState(State::stopState),
-      m_ExperimentValues(std::make_shared<PauseResumeValues>(stageframe,
-                                                             forcesensormessagehandler,
+      m_ExperimentValues(std::make_shared<PauseResumeValues>(experimentparameters.stageframe,
+                                                             experimentparameters.forcesensormessagehandler,
                                                              forceStressDistanceGraph,
                                                              forceStressDisplacementGraph,
                                                              vectoraccessmutex,
                                                              maxlimitvector,
                                                              minlimitvector,
 
-                                                             myframe,
+                                                             experimentparameters.myframe,
 
-                                                             type,
-                                                             distanceOrStressOrForce,
-                                                             area,
-                                                             gagelength))
+                                                             experimentparameters.type,
+                                                             experimentparameters.distanceOrForceOrStress,
+                                                             experimentparameters.area,
+                                                             experimentparameters.gagelength))
 {
 }
 

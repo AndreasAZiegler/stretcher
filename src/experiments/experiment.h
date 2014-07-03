@@ -61,22 +61,7 @@ class Experiment
      * @param type Type of experiment.
      * @param forceOrStress Force or stress.
      */
-    Experiment(std::shared_ptr<StageFrame> stageframe,
-               std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-               MyFrame *myframe,
-               long maxforcelimit,
-               long minforcelimit,
-               long maxdistancelimit,
-               long mindistancelimit,
-
-               ExperimentType type,
-               DistanceOrStressOrForce distanceOrStressForce,
-               Experiment::Direction direction,
-               long gagelength,
-               long mountinglength,
-               long maxposdistance,
-               long currentdistance,
-               double area,
+    Experiment(ExperimentParameters experimentparameters,
                double forcesStressThreshold,
                double distanceThreshold);
 

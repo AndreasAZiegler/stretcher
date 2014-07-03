@@ -1,3 +1,9 @@
+/**
+ * @file continuousevent.cpp
+ * @brief Continuous event experiment
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <iostream>
 #include <thread>
@@ -8,51 +14,24 @@
 #include "../gui/myframe.h"
 #include "continuousevent.h"
 
-ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
-                                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
+
+                                 std::string path,
                                  mpFXYVector *forceStressDistanceGraph,
                                  mpFXYVector *forceStressDisplacementGraph,
                                  std::mutex *vectoraccessmutex,
-                                 mpFXYVector *maxlimitvector,
-                                 mpFXYVector *minlimitvector,
-                                 MyFrame *myframe,
-                                 std::string path,
-                                 long maxforcelimit,
-                                 long minforcelimit,
-                                 long maxdistancelimit,
-                                 long mindistancelimit,
+                                 mpFXYVector *maxlimitgraph,
+                                 mpFXYVector *minlimitgraph,
 
                                  std::condition_variable *wait,
                                  std::mutex *mutex,
                                  bool *stagesstopped,
                                  std::mutex *stagesstoppedmutex,
 
-                                 ExperimentType type,
-                                 DistanceOrStressOrForce distanceOrStressForce,
                                  bool ramptofailureactiveflag,
-                                 long gagelength,
-                                 long mountinglength,
-                                 long zerodistance,
-                                 long currentdistance,
-                                 double area,
 
                                  ContinuousEventParameters parameters)
-      : Experiment(stageframe,
-                   forcesensormessagehandler,
-                   myframe,
-                   maxforcelimit,
-                   minforcelimit,
-                   maxdistancelimit,
-                   mindistancelimit,
-
-                   type,
-                   distanceOrStressForce,
-                   Direction::Stop,
-                   gagelength,
-                   mountinglength,
-                   zerodistance,
-                   currentdistance,
-                   area,
+      : Experiment(experimentparameters,
                    0.01 * 10000.0/*stress force threshold*/,
                    0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
         m_Wait(wait),
@@ -83,20 +62,20 @@ ContinuousEvent::ContinuousEvent(std::shared_ptr<StageFrame> stageframe,
         m_WaitActive(false),
         m_DecreaseSpeedFlag(false),
         m_CheckDistanceFlag(false),
-        m_ExperimentValues(new ContinuousEventValues(stageframe,
-                                                     forcesensormessagehandler,
+        m_ExperimentValues(new ContinuousEventValues(experimentparameters.stageframe,
+                                                     experimentparameters.forcesensormessagehandler,
                                                      forceStressDistanceGraph,
                                                      forceStressDisplacementGraph,
                                                      vectoraccessmutex,
-                                                     maxlimitvector,
-                                                     minlimitvector,
-                                                     myframe,
+                                                     maxlimitgraph,
+                                                     minlimitgraph,
+                                                     experimentparameters.myframe,
                                                      path,
 
-                                                     type,
-                                                     distanceOrStressForce,
-                                                     area,
-                                                     gagelength,
+                                                     experimentparameters.type,
+                                                     experimentparameters.distanceOrForceOrStress,
+                                                     experimentparameters.area,
+                                                     experimentparameters.gagelength,
 
                                                      parameters.velocity,
                                                      parameters.holdtime,

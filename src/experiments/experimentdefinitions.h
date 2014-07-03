@@ -1,6 +1,14 @@
 #ifndef EXPERIMENTSDEFINITIONS_H
 #define EXPERIMENTSDEFINITIONS_H
 
+// Includes
+#include <memory>
+
+// Forward declaration
+class MyFrame;
+class StageFrame;
+class ForceSensorMessageHandler;
+
 /**
  * @brief Defines the experiment types.
  */
@@ -38,6 +46,26 @@ enum class BehaviorAfterStop{Stop = 0,
                              Repeat = 3,
                              GoToL0 = 4,
                              GoToML = 5};
+
+/**
+ * @brief Parameters for an experiment.
+ */
+struct ExperimentParameters{
+  std::shared_ptr<StageFrame> stageframe;
+  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler;
+  MyFrame *myframe;
+  long maxforcelimit;
+  long minforcelimit;
+  long maxdistancelimit;
+  long mindistancelimit;
+  ExperimentType type;
+  DistanceOrStressOrForce distanceOrForceOrStress;
+  long gagelength;
+  long mountinglength;
+  long maxposdistance;
+  long currentdistance;
+  double area;
+};
 
 /**
  * @brief Parameters for the preload experiment.

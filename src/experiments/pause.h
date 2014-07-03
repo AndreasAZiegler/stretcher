@@ -7,27 +7,14 @@
 class Pause : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
-    Pause(std::shared_ptr<StageFrame> stageframe,
-          std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+    Pause(ExperimentParameters experimentparameters,
+          std::string path,
           mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
           std::mutex *vectoraccessmutex,
           mpFXYVector *maxlimitvector,
           mpFXYVector *minlimitvector,
-          MyFrame *myframe,
-          std::string path,
-          long maxforcelimit,
-          long minforcelimit,
-          long maxdistancelimit,
-          long mindistancelimit,
           std::condition_variable
           *wait, std::mutex *mutex,
-          ExperimentType type,
-          DistanceOrStressOrForce distanceOrStressOrForce,
-          long gagelength,
-          long mountinglength,
-          long zerodistance,
-          long currentdistance,
-          double area,
           int pausetime = 0);
 
     /**

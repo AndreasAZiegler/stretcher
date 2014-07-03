@@ -957,32 +957,34 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   }else{
     //Experiment* experiment = new Preload(ExperimentType::Preload,
-    std::unique_ptr<Experiment> experiment(new Preload(m_StageFrame,
-                                                       m_ForceSensorMessageHandler,
+    ExperimentParameters experimentparameters;
+    experimentparameters.stageframe = m_StageFrame;
+    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+    experimentparameters.myframe = this;
+    experimentparameters.maxforcelimit = m_MaxForceLimit;
+    experimentparameters.minforcelimit = m_MinForceLimit;
+    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+    experimentparameters.mindistancelimit = m_MinDistanceLimit;
+    experimentparameters.type = ExperimentType::Preload;
+    experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
+    experimentparameters.gagelength = m_GageLength;
+    experimentparameters.mountinglength = m_MountingLength;
+    experimentparameters.maxposdistance = m_MaxPosDistance;
+    experimentparameters.currentdistance = m_CurrentDistance;
+    experimentparameters.area = m_Area;
+    std::unique_ptr<Experiment> experiment(new Preload(experimentparameters,
+
+                                                       m_StoragePath,
                                                        &m_ForceStressDistanceGraph,
                                                        &m_ForceStressDisplacementGraph,
                                                        &m_VectorLayerMutex,
                                                        maxlimitvector,
                                                        minlimitvector,
-                                                       this,
-                                                       m_StoragePath,
-                                                       m_MaxForceLimit,
-                                                       m_MinForceLimit,
-                                                       m_MaxDistanceLimit,
-                                                       m_MinDistanceLimit,
-
                                                        &m_Wait,
                                                        &m_WaitMutex,
                                                        &m_StagesStoppedFlag,
                                                        &m_StagesStoppedMutex,
 
-                                                       ExperimentType::Preload,
-                                                       m_DistanceOrStressOrForce,
-                                                       m_GageLength,
-                                                       m_MountingLength,
-                                                       m_MaxPosDistance,
-                                                       m_CurrentDistance,
-                                                       m_Area,
 
                                                        parameters));
 
@@ -1113,32 +1115,34 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     m_BlockNotebookTabFlag = false;
 
   }else{
-    std::unique_ptr<Experiment> experiment(new OneStepEvent(m_StageFrame,
-                                                            m_ForceSensorMessageHandler,
+    ExperimentParameters experimentparameters;
+    experimentparameters.stageframe = m_StageFrame;
+    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+    experimentparameters.myframe = this;
+    experimentparameters.maxforcelimit = m_MaxForceLimit;
+    experimentparameters.minforcelimit = m_MinForceLimit;
+    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+    experimentparameters.mindistancelimit = m_MinDistanceLimit;
+    experimentparameters.type = ExperimentType::OneStepEvent;
+    experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
+    experimentparameters.gagelength = m_GageLength;
+    experimentparameters.mountinglength = m_MountingLength;
+    experimentparameters.maxposdistance = m_MaxPosDistance;
+    experimentparameters.currentdistance = m_CurrentDistance;
+    experimentparameters.area = m_Area;
+    std::unique_ptr<Experiment> experiment(new OneStepEvent(experimentparameters,
+
+                                                            m_StoragePath,
                                                             &m_ForceStressDistanceGraph,
                                                             &m_ForceStressDisplacementGraph,
                                                             &m_VectorLayerMutex,
                                                             maxlimitvector,
                                                             minlimitvector,
-                                                            this,
-                                                            m_StoragePath,
-                                                            m_MaxForceLimit,
-                                                            m_MinForceLimit,
-                                                            m_MaxDistanceLimit,
-                                                            m_MinDistanceLimit,
-
                                                             &m_Wait,
                                                             &m_WaitMutex,
                                                             &m_StagesStoppedFlag,
                                                             &m_StagesStoppedMutex,
 
-                                                            ExperimentType::OneStepEvent,
-                                                            parameters.distanceOrStressOrForce,
-                                                            m_GageLength,
-                                                            m_MountingLength,
-                                                            m_MaxPosDistance,
-                                                            m_CurrentDistance,
-                                                            m_Area,
 
                                                             parameters));
 
@@ -1326,33 +1330,37 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
   }else{
-    std::unique_ptr<Experiment> experiment(new ContinuousEvent(m_StageFrame,
-                                                               m_ForceSensorMessageHandler,
+    ExperimentParameters experimentparameters;
+    experimentparameters.stageframe = m_StageFrame;
+    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+    experimentparameters.myframe = this;
+    experimentparameters.maxforcelimit = m_MaxForceLimit;
+    experimentparameters.minforcelimit = m_MinForceLimit;
+    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+    experimentparameters.mindistancelimit = m_MinDistanceLimit;
+    experimentparameters.type = ExperimentType::ContinuousEvent;
+    experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
+    experimentparameters.gagelength = m_GageLength;
+    experimentparameters.mountinglength = m_MountingLength;
+    experimentparameters.maxposdistance = m_MaxPosDistance;
+    experimentparameters.currentdistance = m_CurrentDistance;
+    experimentparameters.area = m_Area;
+
+    std::unique_ptr<Experiment> experiment(new ContinuousEvent(experimentparameters,
+
+                                                               m_StoragePath,
                                                                &m_ForceStressDistanceGraph,
                                                                &m_ForceStressDisplacementGraph,
                                                                &m_VectorLayerMutex,
                                                                maxlimitvector,
                                                                minlimitvector,
-                                                               this,
-                                                               m_StoragePath,
-                                                               m_MaxForceLimit,
-                                                               m_MinForceLimit,
-                                                               m_MaxDistanceLimit,
-                                                               m_MinDistanceLimit,
 
                                                                &m_Wait,
                                                                &m_WaitMutex,
                                                                &m_StagesStoppedFlag,
                                                                &m_StagesStoppedMutex,
 
-                                                               ExperimentType::ContinuousEvent,
-                                                               parameters.distanceOrStressOrForce,
                                                                parameters.ramp2failure,
-                                                               m_GageLength,
-                                                               m_MountingLength,
-                                                               m_MaxPosDistance,
-                                                               m_CurrentDistance,
-                                                               m_Area,
 
                                                                parameters));
 
@@ -1601,30 +1609,31 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
     minlimitvector = &m_MinDistanceLimitGraph;
   }
 
-  std::unique_ptr<Experiment> experiment(new Pause(m_StageFrame,
-                                                   m_ForceSensorMessageHandler,
+    ExperimentParameters experimentparameters;
+    experimentparameters.stageframe = m_StageFrame;
+    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+    experimentparameters.myframe = this;
+    experimentparameters.maxforcelimit = m_MaxForceLimit;
+    experimentparameters.minforcelimit = m_MinForceLimit;
+    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+    experimentparameters.mindistancelimit = m_MinDistanceLimit;
+    experimentparameters.type = ExperimentType::Pause;
+    experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+    experimentparameters.gagelength = m_GageLength;
+    experimentparameters.mountinglength = m_MountingLength;
+    experimentparameters.maxposdistance = m_MaxPosDistance;
+    experimentparameters.currentdistance = m_CurrentDistance;
+    experimentparameters.area = m_Area;
+  std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
+
+                                                   m_StoragePath,
                                                    &m_ForceStressDistanceGraph,
                                                    &m_ForceStressDisplacementGraph,
                                                    &m_VectorLayerMutex,
                                                    maxlimitvector,
                                                    minlimitvector,
-                                                   this,
-                                                   m_StoragePath,
-                                                   m_MaxForceLimit,
-                                                   m_MinForceLimit,
-                                                   m_MaxDistanceLimit,
-                                                   m_MinDistanceLimit,
-
                                                    &m_Wait,
-                                                   &m_WaitMutex,
-
-                                                   ExperimentType::Pause,
-                                                   DistanceOrStressOrForce::Distance,
-                                                   m_GageLength,
-                                                   m_MountingLength,
-                                                   m_MaxPosDistance,
-                                                   m_CurrentDistance,
-                                                   m_Area));
+                                                   &m_WaitMutex));
 
   Pause *ptr = dynamic_cast<Pause*>(experiment.get());
 
@@ -1654,30 +1663,31 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
     minlimitvector = &m_MinDistanceLimitGraph;
   }
 
-  std::unique_ptr<Experiment> experiment(new PauseResume(m_StageFrame,
-                                                         m_ForceSensorMessageHandler,
+    ExperimentParameters experimentparameters;
+    experimentparameters.stageframe = m_StageFrame;
+    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+    experimentparameters.myframe = this;
+    experimentparameters.maxforcelimit = m_MaxForceLimit;
+    experimentparameters.minforcelimit = m_MinForceLimit;
+    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+    experimentparameters.mindistancelimit = m_MinDistanceLimit;
+    experimentparameters.type = ExperimentType::PauseResume;
+    experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+    experimentparameters.gagelength = m_GageLength;
+    experimentparameters.mountinglength = m_MountingLength;
+    experimentparameters.maxposdistance = m_MaxPosDistance;
+    experimentparameters.currentdistance = m_CurrentDistance;
+    experimentparameters.area = m_Area;
+  std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
+
+                                                         m_StoragePath,
                                                          &m_ForceStressDistanceGraph,
                                                          &m_ForceStressDisplacementGraph,
                                                          &m_VectorLayerMutex,
                                                          maxlimitvector,
                                                          minlimitvector,
-                                                         this,
-                                                         m_StoragePath,
-                                                         m_MaxForceLimit,
-                                                         m_MinForceLimit,
-                                                         m_MaxDistanceLimit,
-                                                         m_MinDistanceLimit,
-
                                                          &m_Wait,
-                                                         &m_WaitMutex,
-
-                                                         ExperimentType::PauseResume,
-                                                         DistanceOrStressOrForce::Distance,
-                                                         m_GageLength,
-                                                         m_MountingLength,
-                                                         m_MaxPosDistance,
-                                                         m_CurrentDistance,
-                                                         m_Area));
+                                                         &m_WaitMutex));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
