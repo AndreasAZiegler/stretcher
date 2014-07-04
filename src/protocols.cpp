@@ -284,8 +284,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                                  m_StagesStoppedFlag,
                                                                  m_StagesStoppedMutex,
 
-                                                                 parameters.ramp2failure,
-
                                                                  parameters));
 
       // Add experiment.

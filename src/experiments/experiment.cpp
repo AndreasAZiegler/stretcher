@@ -1,11 +1,18 @@
+/**
+ * @file experiment.cpp
+ * @brief Experiment base class
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <iostream>
 #include "experiment.h"
 
 /**
  * @brief Initializes the experiment type and if experiment is force or stress based.
- * @param type Type of experiment.
+ * @param experimentparameters The basic experiment parameters as a struct.
  * @param forceOrStress Force or stress.
+ * @param distanceThreshold Distance threshold.
  */
 Experiment::Experiment(ExperimentParameters experimentparameters,
                        double forcesStressThreshold,
@@ -40,7 +47,7 @@ Experiment::Experiment(ExperimentParameters experimentparameters,
  * @brief Destructor
  */
 Experiment::~Experiment(){
-  std::cout << "Experiment destructor finished." << std::endl;
+  //std::cout << "Experiment destructor finished." << std::endl;
 }
 
 /**

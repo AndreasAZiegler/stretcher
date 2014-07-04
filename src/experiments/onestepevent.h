@@ -1,3 +1,9 @@
+/**
+ * @file onestepevent.h
+ * @brief One step event experiment.
+ * @author Andreas Ziegler
+ */
+
 #ifndef ONESTEPEVENT_H
 #define ONESTEPEVENT_H
 
@@ -7,18 +13,34 @@
 #include "../updatedvaluesreceiver.h"
 
 /**
+ * @class OneStepEvent onestepevent.h "experiments/onestepevent.h"
  * @brief Representation of the One step experiment.
  */
 class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
 
+    /**
+     * @brief Initialize all the required parameters and registers the update methods at the message handlers.
+     * @param experimentparameters Common experiment parameters.
+     * @param path Path to the folder for exports.
+     * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+     * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+     * @param *vectoraccessmutex Pointer to the graph access mutex.
+     * @param *maxlimitgraph Pointer to the maximum limit graph.
+     * @param *minlimitgraph Pointer to the minimum limit graph.
+     * @param *wait Pointer to the wait condition variable.
+     * @param *mutex Pointer to the mutex.
+     * @param *stagesstopped Pointer to the flag stages stopped.
+     * @param *stagesstoppedmutex Pointer to the mutex to protect the stagesstopped flag.
+     * @param parameters Parameter struct containing the experiment parameters.
+     */
     OneStepEvent(ExperimentParameters experimentparameters, std::string path,
-                 mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+                 mpFXYVector *forceStressDistanceGraph,
+                 mpFXYVector *forceStressDisplacementGraph,
                  std::mutex *vectoraccessmutex,
                  mpFXYVector *maxlimitvector,
                  mpFXYVector *minlimitvector,
-
 
                  std::condition_variable *wait,
                  std::mutex *mutex,
@@ -82,10 +104,10 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @return A pointer to the experiment values.
      */
     virtual std::shared_ptr<ExperimentValues> getExperimentValues(void){
-      if(NULL != m_ExperimentValues){
+      if(nullptr != m_ExperimentValues){
         return(m_ExperimentValues);
       }else{
-        return(NULL);
+        return(nullptr);
       }
     }
 
@@ -125,11 +147,11 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     double m_InitVelocity;																									/**< Velocity in mm/s or %L0. */
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_Delay;																													/**< Hold time 1 in s. */
-    DistanceOrPercentage m_LimitDistanceOrPercentage;									/**< Indicates if the upper limit is given by value or by % of L0. */
+    DistanceOrPercentage m_LimitDistanceOrPercentage;												/**< Indicates if the upper limit is given by value or by % of L0. */
     double m_InitLimit;																											/**< Limit in N, kPa, mm relative, mm or %L0. */
     long m_Limit;																														/**< Limit in kPa, N or mm. */
     double m_Dwell;																													/**< Hold time 2 in s. */
-    bool m_HoldLimitFlag;																							/**< Indicates if the upper force limit should be hold during waiting. */
+    bool m_HoldLimitFlag;																										/**< Indicates if the upper force limit should be hold during waiting. */
     DistanceOrPercentage m_HoldDistanceOrPercentage;												/**< Indicates if the hold distance is given by value or by % of L0. */
     double m_InitHoldDistance;																							/**< Hold distance in mm relative, mm or %L0. */
     long m_HoldDistance;																										/**< Hold distance in mm. */

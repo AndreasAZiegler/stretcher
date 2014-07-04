@@ -1,3 +1,9 @@
+/**
+ * @file myexportdialog.h
+ * @brief Dialog for the csv export. Let the user choose a directory and a filename and mute some experiments if desired.
+ * @author Andreas Ziegler
+ */
+
 #ifndef MYEXPORTDIALOG_H
 #define MYEXPORTDIALOG_H
 
@@ -6,9 +12,20 @@
 #include "myexportdialog_base.h"
 #include "protocols.h"
 
+/**
+ * @class MyExportDialog myexportdialog.h "experiments/myexportdialog.h"
+ * @brief Export dialog for the export of the measured data in to a .csv file.
+ */
 class MyExportDialog : public MyExportDialog_Base
 {
   public:
+
+    /**
+     * @brief Initialize all the required parameters, Set the ID of the OK button, generate a default path and file name and add the experiment names to the wxListBox.
+     * @param protocols Pointer to the protocol object.
+     * @param stringvector Vector containing the names of the experiments.
+     * @param storagepath The default storage path.
+     */
     MyExportDialog(std::shared_ptr<Protocols> &protocols, std::vector<std::string> stringvector, std::string storagepath);
 
   private:
@@ -20,7 +37,7 @@ class MyExportDialog : public MyExportDialog_Base
     std::vector<bool> getSelection(void);
 
     /**
-     * @brief Method wich will be executed, when the user klicks on the OK button.
+     * @brief Method wich will be executed, when the user clicks on the OK button.
      * @param event Occuring event
      */
     void OnOK(wxCommandEvent& event);
@@ -37,6 +54,9 @@ class MyExportDialog : public MyExportDialog_Base
     wxDECLARE_EVENT_TABLE();
 };
 
+/**
+ * @enum ID for events in MyExportDialog
+ */
 enum
 {
   ID_ExportDialogOK = 55

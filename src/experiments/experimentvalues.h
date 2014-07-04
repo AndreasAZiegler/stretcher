@@ -1,3 +1,9 @@
+/**
+ * @file experimentvalues.h
+ * @brief Experiment values base class.
+ * @author Andreas Ziegler
+ */
+
 
 #ifndef EXPERIMENTVALUES_H
 #define EXPERIMENTVALUES_H
@@ -18,6 +24,7 @@
 class MyFrame;
 
 /**
+ * @class ExperimentValues experimentvalues.h "experiments/experimentvalues.h"
  * @brief Class representing the experiment values.
  */
 class ExperimentValues : virtual public UpdatedValuesReceiver
@@ -53,24 +60,32 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
     /**
      * @brief Initializes all the needed variables.
-     * @param stressOrForce Indicates if the experiment is stress or force based.
-     * @param stageframe Pointer to the stage frame object.
-     * @param forcesensormessagehandler Pointer to the force sensor message handler.
-     * @param graph Pointer to the graph object.
-     * @param diameter The diameter of the sample.
+     * @param stageframe Shared pointer to the stage frame object.
+     * @param forcesensormessagehandler Shared pointer to the forcesensormessagehandler object.
+     * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+     * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+     * @param *vectoraccessmutex Pointer to the graph access mutex.
+     * @param *maxlimitgraph Pointer to the maximum limit graph.
+     * @param *minlimitgraph Pointer to the minimum limit graph.
+     * @param *myframe Pointer to the main frame object.
+     * @param experimenttype Experiment type.
+     * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
+     * @param area Cross section area.
+     * @param gagelength The gage length.
      */
     ExperimentValues(std::shared_ptr<StageFrame> stageframe,
                      std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                     mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+                     mpFXYVector *forceStressDistanceGraph,
+                     mpFXYVector *forceStressDisplacementGraph,
                      std::mutex *vectoraccessmutex,
-                     mpFXYVector *maxlimitvector, mpFXYVector *minlimitvector,
+                     mpFXYVector *maxlimitgraph,
+                     mpFXYVector *minlimitgraph,
                      MyFrame *myframe,
 
                      ExperimentType experimenttype,
                      DistanceOrStressOrForce distanceOrStressOrForce,
-                     double area, long gagelength);
-
-    //ExperimentValues(const ExperimentValues &experimentvalues);
+                     double area,
+                     long gagelength);
 
     /**
      * @brief Destructor
@@ -96,30 +111,33 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
     /**
      * @brief Registers the update methods to receive the measurement values.
+     * @param forcestressvector Vector for the force values.
+     * @param distancevector Vector for the distance alues.
+     * @param displacementvector Vector for the displacment values
+     * @param maxforcelimitvector Vector for the maximum force limit values.
+     * @param minforcelimitvector Vector for the minimum force limit values.
+     * @param maxdistancelimitvector Vector for the maximum distance limit values.
+     * @param mindistancelimitvector Vector for the minimum distance limit values.
+     * @param limittimepointvector Vector for the limit timepoints.
      */
-    void startMeasurement(std::shared_ptr<std::vector<double>> forcestressgraph,
-                          std::shared_ptr<std::vector<double>> distancegraph,
-                          std::shared_ptr<std::vector<double> > displacement,
-                          std::shared_ptr<std::vector<double>> maxforcelimitvaluesgraph,
-                          std::shared_ptr<std::vector<double>> minforcelimitvaluesgraph,
-                          std::shared_ptr<std::vector<double>> maxdistancelimitvaluesgraph,
-                          std::shared_ptr<std::vector<double>> mindistancelimitvaluesgraph,
-                          std::shared_ptr<std::vector<double>> limittimepointsgraph);
+    void startMeasurement(std::shared_ptr<std::vector<double>> forcestressvector,
+                          std::shared_ptr<std::vector<double>> distancevector,
+                          std::shared_ptr<std::vector<double> > displacementvector,
+                          std::shared_ptr<std::vector<double>> maxforcelimitvector,
+                          std::shared_ptr<std::vector<double>> minforcelimitvector,
+                          std::shared_ptr<std::vector<double>> maxdistancelimitvector,
+                          std::shared_ptr<std::vector<double>> mindistancelimitvector,
+                          std::shared_ptr<std::vector<double>> limittimepointvector);
 
     /**
-     * @brief Unregister the update method.
+     * @brief Stops the measurement. Unregisters the update method and increases the current protocol cycle.
      */
     void stopMeasurement(void);
 
     /**
-     * @brief Reset recorded values, executed from the protocol.
+     * @brief Reset recorded values, executed from the protocol. Sets the reset protocol flag true.
      */
     void resetProtocol(void);
-
-    /**
-     * @brief Removes the current graph.
-     */
-    void removeGraph(void);
 
     /**
      * @brief Defines if experiment is force or stress based.
@@ -128,26 +146,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     void setDistanceOrStressOrForce(DistanceOrStressOrForce distanceOrStressOrForce){
       m_DistanceOrStressOrForce = distanceOrStressOrForce;
     }
-
-    /**
-     * @brief Add new stress of force value to the vector.
-     * @param force Stress or force value.
-     */
-    /*
-    void newStressForceValue(double force){
-      m_StressForceValues.push_back(force);
-    }
-    */
-
-    /**
-     * @brief Add new distance value to the vector.
-     * @param distance Distance value.
-     */
-    /*
-    void newDistanceValue(double distance){
-      m_DistanceValues.push_back(distance);
-    }
-    */
 
     /**
      * @brief Sets the diameter of the sample.
@@ -218,8 +216,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
     /**
      * @brief Normalizes the value according to the experiment.
-     * @param value
-     * @return
+     * @param value The value.
+     * @return The normalized value.
      */
     double normalizeValue(double value);
 
@@ -237,33 +235,33 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
       return(outstr.str());
     }
 
-    double m_Area;																													/**< Area size of the sample. */
-    DistanceOrStressOrForce m_DistanceOrStressOrForce;										  /**< Defines if the experiment is distance of stress/force based. */
+    double m_Area;																																		/**< Area size of the sample. */
+    DistanceOrStressOrForce m_DistanceOrStressOrForce;										  					/**< Defines if the experiment is distance of stress/force based. */
 
 	private:
 
-    ExperimentType m_ExperimentType;																				/**< Type of the experiment */
-    std::shared_ptr<StageFrame> m_StageFrame;																/**< Pointer to the stage frame object */
-    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
-    mpFXYVector *m_ForceStressDistanceGraph;																/**< Pointer to the force/stress - distance graph */
-    mpFXYVector *m_ForceStressDisplacementGraph;														/**< Pointer to the force/stress - displacement graph. */
-    std::mutex *m_VectorLayerMutex;																					/**< Pointer to the mutex to protect m_VectorLayer */
-    mpFXYVector *m_MaxLimitVectorLayer;																			/**< Pointer to the max. limit vector layer. */
-    mpFXYVector *m_MinLimitVectorLayer;																			/**< Pointer to the min. limit vector layer. */
-    MyFrame *m_MyFrame;																											/**< Pointer to the main frame object. */
-    std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;		/**< Vector containing structs with stress/force values and their time stamps */
-    std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;				/**< Vector containing structs with distance values and their time stamps */
-    std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;					/**< Vector containing only the stress/force - distance values */
-    std::shared_ptr<std::vector<double>> m_DistanceGraphValues;							/**< Vector containing only the distance values */
-    std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;					/**< Vector containing only the displacement values. */
-    std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;							/**< Pointer to the vector containing the graph max limit values. */
-    std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;							/**< Pointer to the vector containing the graph min limit values. */
-    std::shared_ptr<std::vector<double>> m_GraphLimitTimePoints;						/**< Pointer to the vector containing the time points. */
-    std::mutex m_AccessValuesMutex;																					/**< Mutex to protect the values vectors. */
-    int m_CurrentProtocolCycle;																							/**< The current cycle numer. */
-    bool m_ResetProtocolFlag;																								/**< Indicate it the protocol stops and the recorded values should be deleted. */
-    int m_DisplayGraphDelay;																								/**< Variable used that the graph is not updated with every value update */
-    double m_GageLength;																										/**< The gage length. */
+    ExperimentType m_ExperimentType;																									/**< Type of the experiment */
+    std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;						/**< Pointer to the message handler object */
+    mpFXYVector *m_ForceStressDistanceGraph;																					/**< Pointer to the force/stress - distance graph */
+    mpFXYVector *m_ForceStressDisplacementGraph;																			/**< Pointer to the force/stress - displacement graph. */
+    std::mutex *m_VectorLayerMutex;																										/**< Pointer to the mutex to protect m_VectorLayer */
+    mpFXYVector *m_MaxLimitVectorLayer;																								/**< Pointer to the max. limit vector layer. */
+    mpFXYVector *m_MinLimitVectorLayer;																								/**< Pointer to the min. limit vector layer. */
+    MyFrame *m_MyFrame;																																/**< Pointer to the main frame object. */
+    std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;	/**< Vector containing structs with stress/force values and their time stamps */
+    std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;		/**< Vector containing structs with distance values and their time stamps */
+    std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;										/**< Vector containing only the stress/force - distance values */
+    std::shared_ptr<std::vector<double>> m_DistanceGraphValues;												/**< Vector containing only the distance values */
+    std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;										/**< Vector containing only the displacement values. */
+    std::shared_ptr<std::vector<double>> m_GraphMaxLimitValues;												/**< Pointer to the vector containing the graph max limit values. */
+    std::shared_ptr<std::vector<double>> m_GraphMinLimitValues;												/**< Pointer to the vector containing the graph min limit values. */
+    std::shared_ptr<std::vector<double>> m_GraphLimitTimePoints;											/**< Pointer to the vector containing the time points. */
+    std::mutex m_AccessValuesMutex;																										/**< Mutex to protect the values vectors. */
+    int m_CurrentProtocolCycle;																												/**< The current cycle numer. */
+    bool m_ResetProtocolFlag;																													/**< Indicate it the protocol stops and the recorded values should be deleted. */
+    int m_DisplayGraphDelay;																													/**< Variable used that the graph is not updated with every value update */
+    double m_GageLength;																															/**< The gage length. */
 
 };
 

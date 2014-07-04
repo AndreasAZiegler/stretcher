@@ -1,3 +1,8 @@
+/**
+ * @file preload.h
+ * @brief Preload experiment.
+ * @author Andreas Ziegler
+ */
 
 #ifndef PRELOAD_H
 #define PRELOAD_H
@@ -10,21 +15,26 @@
 #include "../updatedvaluesreceiver.h"
 
 /**
+ * @class Preload preload.h "experiments/preload.h"
  * @brief Class which represents the preload process
  */
 class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
     /**
-     * @brief Initializes all the needed variables
-     * @param type Type of the experiment.
-     * @param forceOrStress Indicates if experiment is force or stress based.
-     * @param forcesensormessagehandler Pointer to the force sensor message handler.
-     * @param wait Wait condition.
-     * @param mutex Mutex for wait condition.
-     * @param stressForceLimit Stress or force limit value.
-     * @param speedInMM Speed in mm/s.
-     * @param area Value of the area.
+     * @brief Initializes all the needed variables and registers the update method at the message handelers.
+     * @param experimentparameters Common experiment parameters.
+     * @param path Path to the folder for exports.
+     * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+     * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+     * @param *vectoraccessmutex Pointer to the graph access mutex.
+     * @param *maxlimitgraph Pointer to the maximum limit graph.
+     * @param *minlimitgraph Pointer to the minimum limit graph.
+     * @param *wait Pointer to the wait condition variable.
+     * @param *mutex Pointer to the mutex.
+     * @param *stagesstopped Pointer to the flag stages stopped.
+     * @param *stagesstoppedmutex Pointer to the mutex to protect the stagesstopped flag.
+     * @param parameters Parameter struct containing the experiment parameters.
      */
     Preload(ExperimentParameters experimentparameters,
 
@@ -53,6 +63,9 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      */
     virtual void setPreloadDistance();
 
+    /**
+     * @brief Destructor
+     */
     ~Preload();
 
     /**
@@ -129,24 +142,23 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
     enum State{stopState,       /**< Stop state */
                runState};       /**< Run state */
 
-    std::shared_ptr<StageFrame> m_StageFrame;								/**< Pointer to the stage frame object */
+    std::shared_ptr<StageFrame> m_StageFrame;																/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;	/**< Pointer to the message handler object */
 
-    State m_CurrentState;																		/**< Current state of the preload FSM */
+    State m_CurrentState;																										/**< Current state of the preload FSM */
 
-    double m_InitStressForceLimit;													/**< Initialize stress of force limit value. */
-    long m_StressForceLimit;																/**< Stress or force limit value */
-    double m_Velocity;																			/**< Speed in mm/sec */
+    double m_InitStressForceLimit;																					/**< Initialize stress of force limit value. */
+    long m_StressForceLimit;																								/**< Stress or force limit value */
+    double m_Velocity;																											/**< Speed in mm/sec */
 
 
-    std::condition_variable *m_Wait;
-    std::mutex *m_WaitMutex;
+    std::condition_variable *m_Wait;																				/**< Pointer to the conditioning variable to indicate the end of the experiment. */
+    std::mutex *m_WaitMutex;																								/**< Mutex to protect m_WaitActive. */
 
-    bool *m_StagesStoppedFlag;
-    std::mutex *m_StagesStoppedMutex;
+    bool *m_StagesStoppedFlag;																							/**< Flag indicating if stages stopped or not. */
+    std::mutex *m_StagesStoppedMutex;																				/**< Mutex for m_StagesStoppedFlag */
 
-    //PreloadValues *m_ExperimentValues;				/**< Pointer to the experiment values */
-    std::shared_ptr<PreloadValues> m_ExperimentValues;				/**< Pointer to the experiment values */
+    std::shared_ptr<PreloadValues> m_ExperimentValues;											/**< Pointer to the experiment values */
 };
 
 #endif // PRELOAD_H

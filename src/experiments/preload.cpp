@@ -1,3 +1,9 @@
+/**
+ * @file preload.cpp
+ * @brief Preload experiment
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <iostream>
 #include <mutex>
@@ -7,15 +13,19 @@
 #include "preload.h"
 
 /**
- * @brief Initializes all the needed variables
- * @param type Type of the experiment.
- * @param forceOrStress Indicates if experiment is force or stress based.
- * @param forcesensormessagehandler Pointer to the force sensor message handler.
- * @param wait Wait condition.
- * @param mutex Mutex for wait condition.
- * @param stressForceLimit Stress or force limit value.
- * @param speedInMM Speed in mm/s.
- * @param area Value of the area.
+ * @brief Initializes all the needed variables and registers the update method at the message handelers.
+ * @param experimentparameters Common experiment parameters.
+ * @param path Path to the folder for exports.
+ * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+ * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+ * @param *vectoraccessmutex Pointer to the graph access mutex.
+ * @param *maxlimitgraph Pointer to the maximum limit graph.
+ * @param *minlimitgraph Pointer to the minimum limit graph.
+ * @param *wait Pointer to the wait condition variable.
+ * @param *mutex Pointer to the mutex.
+ * @param *stagesstopped Pointer to the flag stages stopped.
+ * @param *stagesstoppedmutex Pointer to the mutex to protect the stagesstopped flag.
+ * @param parameters Parameter struct containing the experiment parameters.
  */
 Preload::Preload(ExperimentParameters experimentparameters,
 
@@ -62,9 +72,11 @@ Preload::Preload(ExperimentParameters experimentparameters,
                                                        parameters.stressForceLimit,
                                                        parameters.velocity))
 {
+  // Registers the update method at the message handlers.
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 
+  // Calculates the limit.
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
@@ -87,6 +99,7 @@ void Preload::setParameters(PreloadParameters parameters){
   }
   m_Velocity = parameters.velocity;
 
+  // Updates the parameters in the experiment values.
   m_ExperimentValues->setParameters(parameters);
 }
 
@@ -169,25 +182,11 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
-      /*
-      if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
-                                 " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
-        process(Event::evStop);
-      } else{
-      */
-        process(Event::evUpdate);
-      //}
+      process(Event::evUpdate);
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = measurementValue.value;
-      /*
-      if((true == m_CheckLimitsFlag) && ((m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance))){
-        wxLogWarning(std::string("Preload: Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance)).c_str());
-        process(Event::evStop);
-      }
-      */
       break;
   }
 }
@@ -239,6 +238,7 @@ void Preload::process(Event e){
       if(Event::evStop == e){
         wxLogMessage("Preload FSM switched to state: stopState.");
 
+        // Stop stage.
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
         {
@@ -246,6 +246,7 @@ void Preload::process(Event e){
           *m_StagesStoppedFlag = false;
         }
         m_StageFrame->stop();
+        // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
@@ -269,6 +270,7 @@ void Preload::process(Event e){
           }else{
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
+              // Stop stage.
               m_CurrentState = stopState;
               m_CurrentDirection = Direction::Stop;
               {
@@ -276,6 +278,7 @@ void Preload::process(Event e){
                 *m_StagesStoppedFlag = false;
               }
               m_StageFrame->stop();
+              // Notify that the experiment finished.
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_all();
             }

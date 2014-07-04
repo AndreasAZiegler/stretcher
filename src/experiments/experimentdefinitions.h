@@ -1,3 +1,9 @@
+/**
+ * @file experimentdefinitions.h
+ * @brief Global experiment definitions.
+ * @author Andreas Ziegler
+ */
+
 #ifndef EXPERIMENTSDEFINITIONS_H
 #define EXPERIMENTSDEFINITIONS_H
 
@@ -21,7 +27,7 @@ enum class ExperimentType{
 };
 
 /**
- * @brief Indicates whether the experiment is distance or stress/force based.
+ * @brief Indicates whether the experiment is distance or force or stress based.
  */
 enum class DistanceOrStressOrForce{
   Distance = 0,
@@ -94,11 +100,14 @@ struct OneStepEventParameters{
   double holdDistance;
 };
 
+/**
+ * @brief Enum to indicate if continuous experiment is defined by the amount of steps or by a maximal value.
+ */
 enum class StepsOrMaxValue{Steps = 1,
                            MaxValue = 2};
 
 /**
- * @brief Parameters for the one step experiment.
+ * @brief Parameters for the continuous event experiment.
  */
 struct ContinuousEventParameters{
   DistanceOrStressOrForce distanceOrStressOrForce;

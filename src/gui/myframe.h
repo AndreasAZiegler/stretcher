@@ -26,9 +26,11 @@ class Protocols;
 class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
 {
   public:
+
     /**
      * @brief Constructor of the main frame. Sets the icon.
      * @param title Title of the software.
+     * @param settings Pointer to the settings object.
      * @param parent Pointer to the parent object.
      */
     MyFrame(const wxString& title, Settings *settings, wxWindow* parent = (wxWindow *)NULL);
@@ -58,7 +60,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
 
     /**
      * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
-     * @param linearmotor Pointer to the vector containing the linear motors.
+     * @param linearstage Pointer to the vector containing the linear stages.
+     * @param stageframe Pointer to the stage frame ojbect.
      */
     void registerLinearStage(std::vector<std::shared_ptr<LinearStage> > &linearmotor, std::shared_ptr<StageFrame> &stageframe);
 
@@ -69,13 +72,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void registerLinearStageMessageHandlers(std::vector<std::shared_ptr<LinearStageMessageHandler> > &linearstagesmessagehandlers);
 
     /**
-     * @brief Register the force sensor.
+     * @brief Register the force sensor and register update method at the force sensor message handler.
      * @param forcesensor Pointer to the force sensor.
      */
     void registerForceSensor(std::shared_ptr<ForceSensor> forcesensor);
 
     /**
-     * @brief Destructor
+     * @brief Destructor. Unregister the update method from the message handlers, stops the receiver threads, removes vectors and axis from the graph. Waits until the message
+     *        handlers are finished and saves the start up settings in the configuration file.
      */
     ~MyFrame();
 
@@ -86,7 +90,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
 
     /**
      * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
-     * 				thread. (CallAfter() asynchronously call the updateDistance method)
+     * 				thread. (CallAfter() asynchronously call the updateDistance method). Updates the distance and the force and also performs the limit checks.
      * @param value The position of a stage or a force.
      * @param type	Defines the type of the value (position of stage 1, 2 or force)
      */
@@ -103,8 +107,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void showPreviewGraph(void);
 
     /**
-     * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
-     * 				sets digits for the wxSpinCtrlDouble.
+     * @brief Changes the limit set buttons names, hides steps in continuous event, sets the digits for the wxSpinCtrlDouble objects and starts up the start up dialog.
+     * 				Depending on the user answer, loads start up settings, or open dialog to set the distance at the maximal positions.
      */
     void startup(void);
 

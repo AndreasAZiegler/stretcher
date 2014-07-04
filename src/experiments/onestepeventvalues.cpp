@@ -1,6 +1,35 @@
+/**
+ * @file onestepeventvalues.cpp
+ * @brief One step event valules
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include "onestepeventvalues.h"
 
+/**
+ * @brief Initialize all the required parameters.
+ * @param stageframe Shared pointer to the stage frame object.
+ * @param forcesensormessagehandler Shared pointer to the forcesensormessagehandler object.
+ * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+ * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+ * @param *vectoraccessmutex Pointer to the graph access mutex.
+ * @param *maxlimitgraph Pointer to the maximum limit graph.
+ * @param *minlimitgraph Pointer to the minimum limit graph.
+ * @param *myframe Pointer to the main frame object.
+ * @param path Path to the folder for exports.
+ * @param experimentType Experiment type.
+ * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
+ * @param area Cross section area.
+ * @param gagelength The gage length.
+ * @param velocity The velocity in mm/s.
+ * @param delay The delay time in s.
+ * @param limit The limit in mm or N.
+ * @param dwell The dwell in s.
+ * @param holddistance The hold distance in mm.
+ * @param cycles Cycles.
+ * @param behaviorAfterStop The behavoir after the experiment ends.
+ */
 OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                                        std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                                        mpFXYVector *forceStressDistanceGraph,
@@ -18,7 +47,7 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
 
                                        double velocity,
                                        double delay,
-                                       long upperlimit,
+                                       long limit,
                                        double dwell,
                                        long holddistance,
                                        int cycles,
@@ -39,12 +68,13 @@ OneStepEventValues::OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
     m_DistanceOrStressOrForce(distanceOrStressOrForce),
     m_Velocity(velocity),
     m_DelayTime(delay),
-    m_Limit(upperlimit),
+    m_Limit(limit),
     m_DwellTime(dwell),
     m_BehaviorAfterStop(behaviorAfterStop),
     m_HoldDistance(holddistance),
     m_Cycles(cycles)
 {
+  // Normalize limit.
   m_Limit = normalizeValue(m_Limit);
 }
 
@@ -71,7 +101,7 @@ void OneStepEventValues::setParameters(OneStepEventParameters parameters){
  * @brief Sets the upper limit.
  * @param upperlimit Upper limit
  */
-void OneStepEventValues::setUpperLimit(double upperlimit){
+void OneStepEventValues::setLimit(double upperlimit){
   m_Limit = normalizeValue(upperlimit);
 }
 

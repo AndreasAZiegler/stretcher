@@ -1,12 +1,41 @@
+/**
+ * @file continuouseventvalues.cpp
+ * @brief Continuous event experiment values.
+ * @author Andreas Ziegler
+ */
+
+// Includes
 #include "continuouseventvalues.h"
 
+/**
+ * @brief Initialize all the required parameters.
+ * @param stageframe Shared pointer to the stage frame object.
+ * @param forcesensormessagehandler Shared pointer to the forcesensormessagehandler object.
+ * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+ * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+ * @param *vectoraccessmutex Pointer to the graph access mutex.
+ * @param *maxlimitgraph Pointer to the maximum limit graph.
+ * @param *minlimitgraph Pointer to the minimum limit graph.
+ * @param *myframe Pointer to the main frame object.
+ * @param path Path to the folder for exports.
+ * @param experimentType Experiment type.
+ * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
+ * @param area Cross section area.
+ * @param gagelength The gage length.
+ * @param velocity The velocity in mm/s.
+ * @param holdtime the hold time in s.
+ * @param steps Steps
+ * @param maxvalue The maximum value.
+ * @param cycles Cycles.
+ * @param behaviorAfterStop The behavoir after the experiment ends.
+ */
 ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stageframe,
                                              std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                                              mpFXYVector *forceStressDistanceGraph,
                                              mpFXYVector *forceStressDisplacementGraph,
                                              std::mutex *vectoraccessmutex,
-                                             mpFXYVector *maxlimitvector,
-                                             mpFXYVector *minlimitvector,
+                                             mpFXYVector *maxlimitgraph,
+                                             mpFXYVector *minlimitgraph,
                                              MyFrame *myframe,
                                              std::string path,
 
@@ -26,8 +55,8 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                      forceStressDistanceGraph,
                      forceStressDisplacementGraph,
                      vectoraccessmutex,
-                     maxlimitvector,
-                     minlimitvector,
+                     maxlimitgraph,
+                     minlimitgraph,
                      myframe,
 
                      experimentType,

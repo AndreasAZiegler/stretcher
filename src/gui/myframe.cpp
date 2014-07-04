@@ -1,12 +1,19 @@
+/**
+ * @file myframe.cpp
+ * @brief The main frame.
+ * @author Andreas Ziegler
+ */
+
 // Includes
+#include <mutex>
+#include <functional>
+#include <iostream>
 #include <wx/wx.h>
 #include <wx/menu.h>
 #include <wx/checkbox.h>
 #include <wx/image.h>
-#include "mybutton.h"
-#include <mutex>
-#include <functional>
 #include "../../include/ctb-0.13/serport.h"
+#include "mybutton.h"
 #include "myframe.h"
 #include "myhomestages.h"
 #include "mysamplingfrequency_base.h"
@@ -22,9 +29,7 @@
 #include "../experiments/pause.h"
 #include "../experiments/pauseresume.h"
 
-#include <iostream>
-
-// An deleter which doesn't do anything, required for passing shared_ptr.
+// A deleter which doesn't do anything, required for passing shared_ptr.
 template<typename T>
 void do_nothing_deleter(T *ptr){return;}
 
@@ -53,7 +58,6 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_FILEPICKER_CHANGED(ID_LoadPreset, MyFrame::OnLoadPreset)
   EVT_BUTTON(ID_ApplyPreset, MyFrame::OnApplyPreset)
   EVT_BUTTON(ID_SavePreset, MyFrame::OnSavePreset)
-  //EVT_BUTTON(ID_SetDistanceWActuatorCollision, MyFrame::OnLengthsSetDistanceWActuatorCollision)
   EVT_BUTTON(ID_SetMountingLength, MyFrame::OnLengthsSetMountingLength)
   EVT_RADIOBOX(ID_Unit, MyFrame::OnUnit)
   EVT_SPINCTRLDOUBLE(ID_CrossSectionArea, MyFrame::OnCrossSectionAreaChange)
@@ -103,8 +107,9 @@ wxDEFINE_EVENT(EVT_MYBUTTON_UP, wxCommandEvent);
 
 /**
  * @brief Constructor of the main frame. Sets the icon.
- * @param Title of the software.
- * @param Pointer to the parent object.
+ * @param title Title of the software.
+ * @param settings Pointer to the settings object.
+ * @param parent Pointer to the parent object.
  */
 MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   : MyFrame_Base(title, parent),
@@ -116,7 +121,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
-    //m_PreloadDistance(0),
     m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
     m_CurrentProtocol(nullptr),
     m_MaxDistanceLimit(50 / 0.00009921875/*mm per micro step*/),
@@ -148,6 +152,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_HighVelocityAbort(false)
 {
 
+  // Sets the program icon.
   SetIcon(wxICON(sample));
 
   // Set the required ID's
@@ -158,9 +163,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_IncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_InitializeUnitRadioBox->SetId(ID_Unit);
   m_InitializeCrossSectionSpinCtrl->SetId(ID_CrossSectionArea);
-  wxString str;
-  str << m_LengthsGoToSpinCtrl->GetValue();
-  m_LengthsGoToSpinCtrl->SetValue(str + " mm");
   m_LimitsLimitSet1Button->SetId(ID_LoadLimitSet1);
   m_LimitsLimitSet2Button->SetId(ID_LoadLimitSet2);
   m_LimitsLimitSet3Button->SetId(ID_LoadLimitSet3);
@@ -203,6 +205,13 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsStopButton->SetId(ID_StopProtocol);
   m_ProtocolsSaveButton->SetId(ID_SaveProtocol);
   m_ProtocolsLoadButton->SetId(ID_LoadProtocol);
+
+  /**
+   * @todo Is this required?
+   */
+  wxString str;
+  str << m_LengthsGoToSpinCtrl->GetValue();
+  m_LengthsGoToSpinCtrl->SetValue(str + " mm");
 
   // Register the main frame at the two custom buttons
   m_DecreaseDistanceButton->registerMyFrame(this);
@@ -264,8 +273,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 
   // Set m_LogTextCtrl as the log output.
   wxLog::SetActiveTarget(new wxLogTextCtrl(m_LogTextCtrl));
-
-  }
+}
 
 /**
  * @brief Returns the message handler wait condition variable as shared_ptr.
@@ -296,7 +304,8 @@ std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
 
 /**
  * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
- * @param linearstage Pointer to the vector containing the linear motors.
+ * @param linearstage Pointer to the vector containing the linear stages.
+ * @param stageframe Pointer to the stage frame ojbect.
  */
 void MyFrame::registerLinearStage(std::vector<std::shared_ptr<LinearStage>> &linearstage, std::shared_ptr<StageFrame> &stageframe){
   m_LinearStages.push_back(linearstage.at(0));
@@ -316,7 +325,7 @@ void MyFrame::registerLinearStage(std::vector<std::shared_ptr<LinearStage>> &lin
 
 /**
  * @brief Registers the message handlers of the linear stages, registers the stage frame at the linear stage message handlers.
- * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
+ * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear stages.
  */
 void MyFrame::registerLinearStageMessageHandlers(std::vector<std::shared_ptr<LinearStageMessageHandler>> &linearstagesmessagehandlers){
   m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(0));
@@ -328,7 +337,7 @@ void MyFrame::registerLinearStageMessageHandlers(std::vector<std::shared_ptr<Lin
 }
 
 /**
- * @brief Register the force sensor.
+ * @brief Register the force sensor and register update method at the force sensor message handler.
  * @param forcesensor Pointer to the force sensor.
  */
 void MyFrame::registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
@@ -340,7 +349,8 @@ void MyFrame::registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
 }
 
 /**
- * @brief Destructor
+ * @brief Destructor. Unregister the update method from the message handlers, stops the receiver threads, removes vectors and axis from the graph. Waits until the message
+ *        handlers are finished and saves the start up settings in the configuration file.
  */
 MyFrame::~MyFrame(){
   // Unregister update methods
@@ -365,9 +375,6 @@ MyFrame::~MyFrame(){
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
-
-  // Remove all layers and destroy the objects.
-  //m_Graph->DelAllLayers(true, false);
 
   {
     // Wait until the message handlers are finished.
@@ -397,7 +404,7 @@ MyFrame::~MyFrame(){
 
 /**
  * @brief Will be executed from the classes LinearStageMessageHandler and ForceSensorMessageHandler which are running in a seperate
- * 				thread. (CallAfter() asynchronously call the updateDistance method). Also performs the limit checks.
+ * 				thread. (CallAfter() asynchronously call the updateDistance method). Updates the distance and the force and also performs the limit checks.
  * @param value The position of a stage or a force.
  * @param type	Defines the type of the value (position of stage 1, 2 or force)
  */
@@ -410,7 +417,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
         std::lock_guard<std::mutex> lck{m_DistanceLimitExceededMutex};
         // Check if no limits exceeded yet.
         if(false == m_DistanceLimitExceededFlag){
-          // Stop stages and protocol if limit exceeded and indicate, that a limit exceeded.
+          // Stop stages and protocol if a distance limit exceeded and indicate, that a distance limit exceeded.
           if(((m_MaxDistanceLimit - 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance) ||
              ((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance)){
             m_DistanceLimitExceededFlag = true;
@@ -442,6 +449,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           }
         }
       }
+      // Update distance in the GUI.
       CallAfter(&MyFrame::updateDistance);
 
       break;
@@ -450,14 +458,8 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
 
       {
         std::lock_guard<std::mutex> lck{m_ForceLimitExceededMutex};
-        /*
-        if(false == m_DistanceWActuatorCollisionSetFlag){
-          if(-50000.0 >= m_CurrentForce){
-            m_StageFrame->stop();
-            m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/    /*);
-          }
-        }else */if(false == m_ForceLimitExceededFlag){ // Check if no limits exceeded yet.
-          // Stop stages and protocol if limit exceeded and indicate, that a limit exceeded.
+        if(false == m_ForceLimitExceededFlag){ // Check if no limits exceeded yet.
+          // Stop stages and protocol if a force limit exceeded and indicate, that a force limit exceeded.
           if((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce)){
             m_ForceLimitExceededFlag = true;
             m_StageFrame->stop();
@@ -490,6 +492,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
         }
       }
 
+      // Update force in the GUI every 20th update.
       m_CurrentForceUpdateDelay++;
       if(20 <= m_CurrentForceUpdateDelay){
         m_CurrentForceUpdateDelay = 0;
@@ -500,11 +503,11 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
 }
 
 /**
- * @brief Hides calculate diameter options, hides cells panel in chamber stretch, hides distance limit options, hides go to options,
- * 				sets digits for the wxSpinCtrlDouble.
+ * @brief Changes the limit set buttons names, hides steps in continuous event, sets the digits for the wxSpinCtrlDouble objects and starts up the start up dialog.
+ * 				Depending on the user answer, loads start up settings, or open dialog to set the distance at the maximal positions.
  */
 void MyFrame::startup(void){
-  // Change the limit set butten names
+  // Change the limit set button names
   const wxString label1 = "Load " + m_Settings->getSet1Name() + " limits";
   m_LimitsLimitSet1Button->SetLabelText(label1);
   const wxString label2 = "Load " + m_Settings->getSet2Name() + " limits";
@@ -612,6 +615,7 @@ void MyFrame::OnExit(wxCommandEvent& event){
 }
 
 /**
+ * @todo Remove sampling frequency settings.
  * @brief Method wich will be executed, when the user goes to the frequency settings.
  * @param event Occuring event
  */
@@ -640,13 +644,14 @@ void MyFrame::OnFileOutputSettings(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user changes a tab in the wxNotebook.
+ * @brief Method wich will be executed, when the user changes a tab in the wxNotebook (Needed to disable tab changes during experiment parameters changes).
  * @param event Occuring event
  */
 void MyFrame::OnNotebookTabChanging(wxBookCtrlEvent& event){
+  // Skip the event if the tab is not blocked.
   if(false == m_BlockNotebookTabFlag){
     event.Skip(true);
-  }else{
+  }else{ // Otherwise veto the event.
     event.Veto();
   }
 }
@@ -665,6 +670,7 @@ void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnUnit(wxCommandEvent& event){
+  // Changes to stress.
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
     m_InitializeMinForceStaticText->SetLabelText("Min. stress [kPa]:");
     m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
@@ -692,7 +698,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     }
 
     m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
-  }else{
+  }else{ // Changes to force.
     m_InitializeMinForceStaticText->SetLabelText("Min. force [N]:");
     m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
@@ -724,7 +730,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user changes the cross section area.
+ * @brief Method wich will be executed, when the user changes the cross section area. Updates the cross section area in the protocol.
  * @param event Occuring event
  */
 void MyFrame::OnCrossSectionAreaChange(wxSpinDoubleEvent& event){
@@ -1359,8 +1365,6 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                                &m_WaitMutex,
                                                                &m_StagesStoppedFlag,
                                                                &m_StagesStoppedMutex,
-
-                                                               parameters.ramp2failure,
 
                                                                parameters));
 

@@ -1,12 +1,46 @@
+/**
+ * @file onestepeventvalues.h
+ * @brief One step event experiment values.
+ * @author Andreas Ziegler
+ */
+
 #ifndef ONESTEPEVENTVALUES_H
 #define ONESTEPEVENTVALUES_H
 
 // Includes
 #include "experiment.h"
 
+/**
+ * @class OneStepEventValues onestepeventvalues.h "experiments/onestepeventvalues.h"
+ * @brief The one step event values.
+ */
 class OneStepEventValues : public ExperimentValues
 {
   public:
+
+    /**
+     * @brief Initialize all the required parameters.
+     * @param stageframe Shared pointer to the stage frame object.
+     * @param forcesensormessagehandler Shared pointer to the forcesensormessagehandler object.
+     * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+     * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+     * @param *vectoraccessmutex Pointer to the graph access mutex.
+     * @param *maxlimitgraph Pointer to the maximum limit graph.
+     * @param *minlimitgraph Pointer to the minimum limit graph.
+     * @param *myframe Pointer to the main frame object.
+     * @param path Path to the folder for exports.
+     * @param experimentType Experiment type.
+     * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
+     * @param area Cross section area.
+     * @param gagelength The gage length.
+     * @param velocity The velocity in mm/s.
+     * @param delay The delay time in s.
+     * @param limit The limit in mm or N.
+     * @param dwell The dwell in s.
+     * @param holddistance The hold distance in mm.
+     * @param cycles Cycles.
+     * @param behaviorAfterStop The behavoir after the experiment ends.
+     */
     OneStepEventValues(std::shared_ptr<StageFrame> stageframe,
                        std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                        mpFXYVector *forceStressDistanceGraph,
@@ -19,11 +53,12 @@ class OneStepEventValues : public ExperimentValues
 
                        ExperimentType experimentType,
                        DistanceOrStressOrForce distanceOrStressOrForce,
-                       double area, long gagelength,
+                       double area,
+                       long gagelength,
 
                        double velocity,
                        double delay,
-                       long upperlimit,
+                       long limit,
                        double dwell,
                        long holddistance,
                        int cycles,
@@ -47,7 +82,7 @@ class OneStepEventValues : public ExperimentValues
      * @brief Sets the upper limit.
      * @param upperlimit Upper limit
      */
-    void setUpperLimit(double upperlimit);
+    void setLimit(double upperlimit);
 
     /**
      * @brief Sets the hold distance.

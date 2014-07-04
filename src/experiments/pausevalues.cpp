@@ -1,5 +1,28 @@
+/**
+ * @file pausevalues.cpp
+ * @brief Pause values
+ * @author Andreas Ziegler
+ */
+
+// Includes
 #include "pausevalues.h"
 
+/**
+ * @brief Initialize all the required parameters.
+ * @param stageframe Shared pointer to the stage frame object.
+ * @param forcesensormessagehandler Shared pointer to the forcesensormessagehandler object.
+ * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+ * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+ * @param *vectoraccessmutex Pointer to the graph access mutex.
+ * @param *maxlimitgraph Pointer to the maximum limit graph.
+ * @param *minlimitgraph Pointer to the minimum limit graph.
+ * @param *myframe Pointer to the main frame object.
+ * @param experimentType Experiment type.
+ * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
+ * @param area Cross section area.
+ * @param gagelength The gage length.
+ * @param pausetime The pause time in s.
+ */
 PauseValues::PauseValues(std::shared_ptr<StageFrame> stageframe,
                          std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
                          mpFXYVector *forceStressDistanceGraph,
