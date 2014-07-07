@@ -16,7 +16,7 @@ using namespace libconfig;
  */
 Settings::Settings()
   : //s_ConfigurationFileName("config.cfg"),
-    m_ConfigurationStoragePath("config.cfg"),
+    m_ConfigurationStoragePath("./config.cfg"),
     m_RootSettings(NULL),
     m_LinMot1Settings(NULL),
     m_LinMot2Settings(NULL),
