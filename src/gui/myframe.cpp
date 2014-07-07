@@ -331,7 +331,7 @@ void MyFrame::registerLinearStageMessageHandlers(std::vector<std::shared_ptr<Lin
   m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(0));
   m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(1));
 
-  // Register stage frame
+  // Registers stage frame
   (m_LinearStagesMessageHandlers.at(0))->registerStageFrame(m_StageFrame);
   (m_LinearStagesMessageHandlers.at(1))->registerStageFrame(m_StageFrame);
 }
@@ -741,36 +741,6 @@ void MyFrame::OnCrossSectionAreaChange(wxSpinDoubleEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user chooses distance as limit.
- * @param event Occuring event
- */
-void MyFrame::OnDistanceLimit(wxCommandEvent& event){
-  /*
-  m_ConditioningDistanceLimitStaticText->Show(true);
-  m_ConditioningDistanceLimitSpinCtrl->Show(true);
-  m_ConditioningDisctanceLimitRadioBox->Show(true);
-
-  m_ConditioningStressForceLimitStaticText->Show(false);
-  m_ConditioningStressForceLimitSpinCtrl->Show(false);
-  */
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses stress as limit.
- * @param event Occuring event
- */
-void MyFrame::OnStressLimit(wxCommandEvent& event){
-  /*
-  m_ConditioningStressForceLimitStaticText->Show(true);
-  m_ConditioningStressForceLimitSpinCtrl->Show(true);
-
-  m_ConditioningDistanceLimitStaticText->Show(false);
-  m_ConditioningDistanceLimitSpinCtrl->Show(false);
-  m_ConditioningDisctanceLimitRadioBox->Show(false);
-  */
-}
-
-/**
  * @brief Method wich will be executed when the user clicks on load stored positions.
  * @param event Occuring event
  */
@@ -779,7 +749,7 @@ void MyFrame::OnLoadStoredPositions(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed at start up when the set up didn't change.
+ * @brief Method wich will be executed at start up when the set up didn't change. Loads stored positions from the linear stages.
  */
 void MyFrame::loadStoredPositions(void){
   (m_LinearStages.at(0))->loadStoredPosition();
@@ -791,10 +761,6 @@ void MyFrame::loadStoredPositions(void){
  * @param event Occuring event
  */
 void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
-  /*
-  (m_LinearStages->at(0))->home();
-  (m_LinearStages->at(1))->home();
-  */
   // Reset limit
   m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
   m_StageFrame->setMaxDistanceLimit(153);

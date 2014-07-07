@@ -258,22 +258,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnUnit(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user changes the cross section area.
+     * @brief Method wich will be executed, when the user changes the cross section area. Updates the cross section area in the protocol.
      * @param event Occuring event
      */
     void OnCrossSectionAreaChange(wxSpinDoubleEvent &event);
-
-    /**
-     * @brief Method wich will be executed, when the user chooses distance as limit.
-     * @param event Occuring event
-     */
-    void OnDistanceLimit(wxCommandEvent& event);
-
-    /**
-     * @brief Method wich will be executed, when the user chooses stress as limit.
-     * @param event Occuring event
-     */
-    void OnStressLimit(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed when the user clicks on load stored positions.
@@ -282,8 +270,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnLoadStoredPositions(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user klicks on load stored position button.
-     * @param event Occuring event
+     * @brief Method wich will be executed at start up when the set up didn't change. Loads stored positions from the linear stages.
      */
     void loadStoredPositions(void);
 
