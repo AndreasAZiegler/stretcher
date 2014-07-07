@@ -168,6 +168,12 @@ class Protocols
     std::vector<std::string> getExperimentNames(void);
 
     /**
+     * @brief Checks if there is any data to export.
+     * @return True if there is some data / False otherwise.
+     */
+    bool hasData(void);
+
+    /**
      * @brief Exports the measurement data to a .csv file.
      */
     void exportCSV(std::vector<bool> disableexport, std::string pathname = "");
