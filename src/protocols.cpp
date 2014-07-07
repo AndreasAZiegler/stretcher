@@ -123,15 +123,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       parameters.velocity = node.attribute("Velocity").as_double();
       parameters.stressForceLimit = node.attribute("ForceStressLimit").as_double();
 
-      if((DistanceOrStressOrForce::Stress == parameters.distanceOrStressOrForce) ||
-         (DistanceOrStressOrForce::Force == parameters.distanceOrStressOrForce)){
-        maxlimitvector = m_MaxStressForceLimitGraph;
-        minlimitvector = m_MinStressForceLimitGraph;
-      } else if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
-        maxlimitvector = m_MaxDistanceLimitGraph;
-        minlimitvector = m_MinDistanceLimitGraph;
-      }
-
       // Create preload experiment.
       ExperimentParameters experimentparameters;
       experimentparameters.stageframe = m_StageFrame;
@@ -154,8 +145,10 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                          m_ForceStressDistanceGraph,
                                                          m_ForceStressDisplacementGraph,
                                                          m_VectorLayerMutex,
-                                                         maxlimitvector,
-                                                         minlimitvector,
+                                                         m_MaxStressForceLimitGraph,
+                                                         m_MinStressForceLimitGraph,
+                                                         m_MaxDistanceLimitGraph,
+                                                         m_MinDistanceLimitGraph,
                                                          m_Wait,
                                                          m_WaitMutex,
                                                          m_StagesStoppedFlag,
@@ -183,15 +176,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       parameters.holdDistance = node.attribute("HoldDistance").as_double();
       parameters.behaviorAfterStop = static_cast<BehaviorAfterStop>(node.append_attribute("BehaviorAfterStop").as_int());
 
-      if((DistanceOrStressOrForce::Stress == parameters.distanceOrStressOrForce) ||
-         (DistanceOrStressOrForce::Force == parameters.distanceOrStressOrForce)){
-        maxlimitvector = m_MaxStressForceLimitGraph;
-        minlimitvector = m_MinStressForceLimitGraph;
-      } else if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
-        maxlimitvector = m_MaxDistanceLimitGraph;
-        minlimitvector = m_MinDistanceLimitGraph;
-      }
-
       // Create one step event experiment.
       ExperimentParameters experimentparameters;
       experimentparameters.stageframe = m_StageFrame;
@@ -214,8 +198,11 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                               m_ForceStressDistanceGraph,
                                                               m_ForceStressDisplacementGraph,
                                                               m_VectorLayerMutex,
-                                                              maxlimitvector,
-                                                              minlimitvector,
+                                                              m_MaxStressForceLimitGraph,
+                                                              m_MinStressForceLimitGraph,
+                                                              m_MaxDistanceLimitGraph,
+                                                              m_MinDistanceLimitGraph,
+
                                                               m_Wait,
                                                               m_WaitMutex,
                                                               m_StagesStoppedFlag,
@@ -245,15 +232,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       parameters.behaviorAfterStop = static_cast<BehaviorAfterStop>(node.attribute("BehaviorAfterStop").as_int());
       parameters.holdForceStress = node.attribute("HoldForce").as_double();
 
-      if((DistanceOrStressOrForce::Stress == parameters.distanceOrStressOrForce) ||
-         (DistanceOrStressOrForce::Force == parameters.distanceOrStressOrForce)){
-        maxlimitvector = m_MaxStressForceLimitGraph;
-        minlimitvector = m_MinStressForceLimitGraph;
-      } else if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
-        maxlimitvector = m_MaxDistanceLimitGraph;
-        minlimitvector = m_MinDistanceLimitGraph;
-      }
-
       // Create continuous event experiment.
       ExperimentParameters experimentparameters;
       experimentparameters.stageframe = m_StageFrame;
@@ -276,8 +254,10 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                                  m_ForceStressDistanceGraph,
                                                                  m_ForceStressDisplacementGraph,
                                                                  m_VectorLayerMutex,
-                                                                 maxlimitvector,
-                                                                 minlimitvector,
+                                                                 m_MaxStressForceLimitGraph,
+                                                                 m_MinStressForceLimitGraph,
+                                                                 m_MaxDistanceLimitGraph,
+                                                                 m_MinDistanceLimitGraph,
 
                                                                  m_Wait,
                                                                  m_WaitMutex,
@@ -320,8 +300,11 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                        m_ForceStressDistanceGraph,
                                                        m_ForceStressDisplacementGraph,
                                                        m_VectorLayerMutex,
-                                                       maxlimitvector,
-                                                       minlimitvector,
+                                                       m_MaxStressForceLimitGraph,
+                                                       m_MinStressForceLimitGraph,
+                                                       m_MaxDistanceLimitGraph,
+                                                       m_MinDistanceLimitGraph,
+
                                                        m_Wait,
                                                        m_WaitMutex));
 
@@ -330,11 +313,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
 
     }else if(0 == strcmp("PauseResume", node.name())){
       DistanceOrStressOrForce distanceorstressorforce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
-
-      if(((nullptr == maxlimitvector) || (nullptr == minlimitvector))){
-        maxlimitvector = m_MaxStressForceLimitGraph;
-        minlimitvector = m_MinStressForceLimitGraph;
-      }
 
       // Create pause resume experiment.
       ExperimentParameters experimentparameters;
@@ -358,8 +336,11 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                              m_ForceStressDistanceGraph,
                                                              m_ForceStressDisplacementGraph,
                                                              m_VectorLayerMutex,
-                                                             maxlimitvector,
-                                                             minlimitvector,
+                                                             m_MaxStressForceLimitGraph,
+                                                             m_MinStressForceLimitGraph,
+                                                             m_MaxDistanceLimitGraph,
+                                                             m_MinDistanceLimitGraph,
+
                                                              m_Wait,
                                                              m_WaitMutex));
 
@@ -441,7 +422,7 @@ void Protocols::makePreview(void){
   }
 
   m_PreviewValues.clear();
-  m_TimePointLimits.clear();
+  m_PreviewStressForceLimitTimePoints.clear();
   m_MaxStressForceLimits.clear();
   m_MinStressForceLimits.clear();
   m_MaxDistanceLimits.clear();
@@ -450,8 +431,8 @@ void Protocols::makePreview(void){
   getPreviewValues();
 
   // Create limit vectors
-  m_TimePointLimits.push_back(m_PreviewValues.front().timepoint);
-  m_TimePointLimits.push_back(m_PreviewValues.back().timepoint);
+  m_PreviewStressForceLimitTimePoints.push_back(m_PreviewValues.front().timepoint);
+  m_PreviewStressForceLimitTimePoints.push_back(m_PreviewValues.back().timepoint);
   m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
   m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
   m_MinStressForceLimits.push_back(m_MinForceLimit / 10000.0);
@@ -464,10 +445,10 @@ void Protocols::makePreview(void){
   // Set the the vector data.
   m_DistancePreviewGraph->SetData(m_DistanceTimePreviewValues, m_DistancePreviewValues);
   m_StressForcePreviewGraph->SetData(m_StressForceTimePreviewValues, m_StressForcePreviewValues);
-  m_MaxStressForceLimitGraph->SetData(m_TimePointLimits, m_MaxStressForceLimits);
-  m_MinStressForceLimitGraph->SetData(m_TimePointLimits, m_MinStressForceLimits);
-  m_MaxDistanceLimitGraph->SetData(m_TimePointLimits, m_MaxDistanceLimits);
-  m_MinDistanceLimitGraph->SetData(m_TimePointLimits, m_MinDistanceLimits);
+  m_MaxStressForceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MaxStressForceLimits);
+  m_MinStressForceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MinStressForceLimits);
+  m_MaxDistanceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MaxDistanceLimits);
+  m_MinDistanceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MinDistanceLimits);
 
   // Show preview in the graph.
   m_MyFrame->showPreviewGraph();
@@ -521,7 +502,29 @@ void Protocols::runProtocol(void){
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
 
-  // Get preview values.
+  // Clear vectors
+  m_PreviewStressForceLimitTimePoints.clear();
+  m_DistanceLimitTimePoints.clear();
+  m_MaxStressForceLimits.clear();
+  m_MinStressForceLimits.clear();
+  m_MaxDistanceLimits.clear();
+  m_MinDistanceLimits.clear();
+
+  // Create limit vectors
+  m_PreviewStressForceLimitTimePoints.push_back(m_MyFrame->getCurrentDistance() * 0.00009921875/*mm per micro step*/);
+  m_MaxStressForceLimits.push_back(m_MaxForceLimit / 10000.0);
+  m_MinStressForceLimits.push_back(m_MinForceLimit / 10000.0);
+  m_DistanceLimitTimePoints.push_back(m_MyFrame->getCurrentForce() / 10000.0);
+  m_MaxDistanceLimits.push_back(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
+  m_MinDistanceLimits.push_back(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
+
+  m_MaxStressForceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MaxStressForceLimits);
+  m_MinStressForceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MinStressForceLimits);
+  m_MaxDistanceLimitGraph->SetData(m_DistanceLimitTimePoints, m_MaxDistanceLimits);
+  m_MinDistanceLimitGraph->SetData(m_DistanceLimitTimePoints, m_MinDistanceLimits);
+  wxLogMessage(std::string("Protocols: m_PreviewStressForceLimitTimePoints: " + std::to_string(m_PreviewStressForceLimitTimePoints.size()) + " m_MaxStressForceLimits: " + std::to_string(m_MaxStressForceLimits.size())).c_str());
+  wxLogMessage(std::string("Protocols: m_DistanceLimitTimePoints: " + std::to_string(m_DistanceLimitTimePoints.size()) + " m_MaxDistanceLimits: " + std::to_string(m_MaxDistanceLimits.size())).c_str());
+
   m_MyFrame->createValuesGraph();
 
   // Only continue if there are expeiments in the protocol.
@@ -558,7 +561,8 @@ void Protocols::runProtocol(void){
     std::shared_ptr<std::vector<double>> minforcelimitgraph(&m_MinStressForceLimits, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> maxdistancelimitgraph(&m_MaxDistanceLimits, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> mindistancelimitgraph(&m_MinDistanceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> graphlimitstimepoints(&m_TimePointLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> forcelimitstimepointsgraph(&m_PreviewStressForceLimitTimePoints, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> distancelimitstimepointsgraph(&m_DistanceLimitTimePoints, do_nothing_deleter);
     // Start recording values.
     m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(stressforcegraph,
                                                                 distancegraph,
@@ -567,7 +571,8 @@ void Protocols::runProtocol(void){
                                                                 minforcelimitgraph,
                                                                 maxdistancelimitgraph,
                                                                 mindistancelimitgraph,
-                                                                graphlimitstimepoints);
+                                                                forcelimitstimepointsgraph,
+                                                                distancelimitstimepointsgraph);
 
     // Mark the running experiment in the list box.
     m_ListBox->SetSelection(m_CurrentExperimentNr);
@@ -625,7 +630,8 @@ void Protocols::process(void){
     std::shared_ptr<std::vector<double>> minforcelimitgraph(&m_MinStressForceLimits, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> maxdistancelimitgraph(&m_MaxDistanceLimits, do_nothing_deleter);
     std::shared_ptr<std::vector<double>> mindistancelimitgraph(&m_MinDistanceLimits, do_nothing_deleter);
-    std::shared_ptr<std::vector<double>> limitstimepointsgraph(&m_TimePointLimits, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> forcelimitstimepointsgraph(&m_PreviewStressForceLimitTimePoints, do_nothing_deleter);
+    std::shared_ptr<std::vector<double>> distancelimitstimepointsgraph(&m_DistanceLimitTimePoints, do_nothing_deleter);
     // Start recording values.
     m_ExperimentValues[m_CurrentExperimentNr]->startMeasurement(stressforcegraph,
                                                                 distancegraph,
@@ -634,7 +640,8 @@ void Protocols::process(void){
                                                                 minforcelimitgraph,
                                                                 maxdistancelimitgraph,
                                                                 mindistancelimitgraph,
-                                                                limitstimepointsgraph);
+                                                                forcelimitstimepointsgraph,
+                                                                distancelimitstimepointsgraph);
 
     // Mark the running experiment in the list box.
     m_ListBox->SetSelection(m_CurrentExperimentNr);
@@ -973,6 +980,7 @@ void Protocols::checkFinishedExperiment(void){
   if(true == m_StopProtocolFlag){
     m_CurrentExperimentNr = 0;
   }
+
   {
     // Indicate that the experiment is not longer running.
     std::lock_guard<std::mutex> lck4{m_ExperimentRunningMutex};

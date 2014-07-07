@@ -58,8 +58,10 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     mpFXYVector *forceStressDistanceGraph,
                     mpFXYVector *forceStressDisplacementGraph,
                     std::mutex *vectoraccessmutex,
-                    mpFXYVector *maxlimitgraph,
-                    mpFXYVector *minlimitgraph,
+                    mpFXYVector *maxforcelimitvector,
+                    mpFXYVector *minforcelimitvector,
+                    mpFXYVector *maxdistancelimitvector,
+                    mpFXYVector *mindistancelimitvector,
 
                     std::condition_variable *wait,
                     std::mutex *mutex,

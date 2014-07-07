@@ -158,6 +158,15 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     }
 
     /**
+     * @brief Returns the current force.
+     * @return The current force.
+     * @todo May move this method to a better place/class.
+     */
+    long getCurrentForce(void){
+      return(m_CurrentForce);
+    }
+
+    /**
      * @brief Shows pause/resume dialog.
      */
     void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
@@ -601,6 +610,11 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     mpFXYVector m_MinStressForceLimitGraph;			/**< Vector layer to display the min stress/force limits. */
     mpFXYVector m_MaxDistanceLimitGraph;				/**< Vector layer to display the max distance limits. */
     mpFXYVector m_MinDistanceLimitGraph;				/**< Vector layer to display the min distance limits. */
+    std::vector<double> m_TimePointLimits;			/**< Vector for the limits timepoints. */
+    std::vector<double> m_MaxStressForceLimits;	/**< Vector for the max. stress/force limits. */
+    std::vector<double> m_MinStressForceLimits;	/**< Vector for the min. stress/force limits. */
+    std::vector<double> m_MaxDistanceLimits;		/**< Vector for the max. distance limits. */
+    std::vector<double> m_MinDistanceLimits;		/**< Vector for the min. distance limits. */
     std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
     std::unique_ptr<mpScaleX> m_XAxis;					/**< Pointer to the X axis */
     std::unique_ptr<mpScaleY> m_Y1Axis;					/**< Pointer to the left Y axis */

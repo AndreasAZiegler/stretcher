@@ -936,16 +936,6 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitGraph;
-    minlimitvector = &m_MinStressForceLimitGraph;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitGraph;
-    minlimitvector = &m_MinDistanceLimitGraph;
-  }
-
   PreloadParameters parameters;
   parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
   parameters.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue();
@@ -984,13 +974,15 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                        &m_ForceStressDistanceGraph,
                                                        &m_ForceStressDisplacementGraph,
                                                        &m_VectorLayerMutex,
-                                                       maxlimitvector,
-                                                       minlimitvector,
+                                                       &m_MaxStressForceLimitGraph,
+                                                       &m_MinStressForceLimitGraph,
+                                                       &m_MaxDistanceLimitGraph,
+                                                       &m_MinDistanceLimitGraph,
+
                                                        &m_Wait,
                                                        &m_WaitMutex,
                                                        &m_StagesStoppedFlag,
                                                        &m_StagesStoppedMutex,
-
 
                                                        parameters));
 
@@ -1037,16 +1029,6 @@ void MyFrame::OnOneStepCancel(wxCommandEvent& event){
 void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
 
   checkProtocol();
-
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitGraph;
-    minlimitvector = &m_MinStressForceLimitGraph;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitGraph;
-    minlimitvector = &m_MinDistanceLimitGraph;
-  }
 
   OneStepEventParameters parameters;
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
@@ -1142,13 +1124,15 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                             &m_ForceStressDistanceGraph,
                                                             &m_ForceStressDisplacementGraph,
                                                             &m_VectorLayerMutex,
-                                                            maxlimitvector,
-                                                            minlimitvector,
+                                                            &m_MaxStressForceLimitGraph,
+                                                            &m_MinStressForceLimitGraph,
+                                                            &m_MaxDistanceLimitGraph,
+                                                            &m_MinDistanceLimitGraph,
+
                                                             &m_Wait,
                                                             &m_WaitMutex,
                                                             &m_StagesStoppedFlag,
                                                             &m_StagesStoppedMutex,
-
 
                                                             parameters));
 
@@ -1233,16 +1217,6 @@ void MyFrame::OnContinuousCancel(wxCommandEvent& event){
 void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
   checkProtocol();
-
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitGraph;
-    minlimitvector = &m_MinStressForceLimitGraph;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitGraph;
-    minlimitvector = &m_MinDistanceLimitGraph;
-  }
 
   ContinuousEventParameters parameters;
   parameters.ramp2failure = false;
@@ -1358,8 +1332,10 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                                &m_ForceStressDistanceGraph,
                                                                &m_ForceStressDisplacementGraph,
                                                                &m_VectorLayerMutex,
-                                                               maxlimitvector,
-                                                               minlimitvector,
+                                                               &m_MaxStressForceLimitGraph,
+                                                               &m_MinStressForceLimitGraph,
+                                                               &m_MaxDistanceLimitGraph,
+                                                               &m_MinDistanceLimitGraph,
 
                                                                &m_Wait,
                                                                &m_WaitMutex,
@@ -1606,15 +1582,10 @@ void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
 void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitGraph;
-    minlimitvector = &m_MinStressForceLimitGraph;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitGraph;
-    minlimitvector = &m_MinDistanceLimitGraph;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitGraph;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitGraph;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitGraph;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitGraph;
 
     ExperimentParameters experimentparameters;
     experimentparameters.stageframe = m_StageFrame;
@@ -1631,16 +1602,19 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
     experimentparameters.maxposdistance = m_MaxPosDistance;
     experimentparameters.currentdistance = m_CurrentDistance;
     experimentparameters.area = m_Area;
-  std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
+    std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
 
-                                                   m_StoragePath,
-                                                   &m_ForceStressDistanceGraph,
-                                                   &m_ForceStressDisplacementGraph,
-                                                   &m_VectorLayerMutex,
-                                                   maxlimitvector,
-                                                   minlimitvector,
-                                                   &m_Wait,
-                                                   &m_WaitMutex));
+                                                     m_StoragePath,
+                                                     &m_ForceStressDistanceGraph,
+                                                     &m_ForceStressDisplacementGraph,
+                                                     &m_VectorLayerMutex,
+                                                     maxforcelimitvector,
+                                                     minforcelimitvector,
+                                                     maxdistancelimitvector,
+                                                     mindistancelimitvector,
+
+                                                     &m_Wait,
+                                                     &m_WaitMutex));
 
   Pause *ptr = dynamic_cast<Pause*>(experiment.get());
 
@@ -1660,15 +1634,10 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
 void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxlimitvector;
-  mpFXYVector *minlimitvector;
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
-    maxlimitvector = &m_MaxStressForceLimitGraph;
-    minlimitvector = &m_MinStressForceLimitGraph;
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-    maxlimitvector = &m_MaxDistanceLimitGraph;
-    minlimitvector = &m_MinDistanceLimitGraph;
-  }
+  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitGraph;
+  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitGraph;
+  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitGraph;
+  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitGraph;
 
     ExperimentParameters experimentparameters;
     experimentparameters.stageframe = m_StageFrame;
@@ -1685,16 +1654,19 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
     experimentparameters.maxposdistance = m_MaxPosDistance;
     experimentparameters.currentdistance = m_CurrentDistance;
     experimentparameters.area = m_Area;
-  std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
+    std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
 
-                                                         m_StoragePath,
-                                                         &m_ForceStressDistanceGraph,
-                                                         &m_ForceStressDisplacementGraph,
-                                                         &m_VectorLayerMutex,
-                                                         maxlimitvector,
-                                                         minlimitvector,
-                                                         &m_Wait,
-                                                         &m_WaitMutex));
+                                                           m_StoragePath,
+                                                           &m_ForceStressDistanceGraph,
+                                                           &m_ForceStressDisplacementGraph,
+                                                           &m_VectorLayerMutex,
+                                                           maxforcelimitvector,
+                                                           minforcelimitvector,
+                                                           maxdistancelimitvector,
+                                                           mindistancelimitvector,
+
+                                                           &m_Wait,
+                                                           &m_WaitMutex));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
@@ -2213,18 +2185,18 @@ void MyFrame::createValuesGraph(void){
   if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
     m_MaxStressForceLimitGraph.SetPen(vectorpenLimit);
     m_MinStressForceLimitGraph.SetPen(vectorpenLimit);
-    m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
-    m_Graph->AddLayer(&m_MinStressForceLimitGraph);
     m_ForceStressDistanceGraph.SetPen(vectorpenStressForce);
     m_ForceStressDisplacementGraph.SetPen(vectorpenStressForce);
   } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
     m_MaxDistanceLimitGraph.SetPen(vectorpenLimit);
     m_MinDistanceLimitGraph.SetPen(vectorpenLimit);
-    m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
-    m_Graph->AddLayer(&m_MinDistanceLimitGraph);
     m_ForceStressDistanceGraph.SetPen(vectorpenDistance);
     m_ForceStressDisplacementGraph.SetPen(vectorpenDistance);
   }
+  m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
+  m_Graph->AddLayer(&m_MinStressForceLimitGraph);
+  m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
+  m_Graph->AddLayer(&m_MinDistanceLimitGraph);
 
   // Update graph.
   m_Graph->Fit();

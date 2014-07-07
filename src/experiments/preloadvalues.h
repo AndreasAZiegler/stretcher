@@ -39,8 +39,10 @@ class PreloadValues : public ExperimentValues
                   mpFXYVector *forceStressDistanceGraph,
                   mpFXYVector *forceStressDisplacementGraph,
                   std::mutex *vectoraccessmutex,
-                  mpFXYVector *maxlimitvector,
-                  mpFXYVector *minlimitvector,
+                  mpFXYVector *maxforcelimitvector,
+                  mpFXYVector *minforcelimitvector,
+                  mpFXYVector *maxdistancelimitvector,
+                  mpFXYVector *mindistancelimitvector,
                   MyFrame *myframe,
 
                   ExperimentType experimentType,

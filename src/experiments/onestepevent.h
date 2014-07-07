@@ -35,12 +35,15 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param *stagesstoppedmutex Pointer to the mutex to protect the stagesstopped flag.
      * @param parameters Parameter struct containing the experiment parameters.
      */
-    OneStepEvent(ExperimentParameters experimentparameters, std::string path,
+    OneStepEvent(ExperimentParameters experimentparameters,
+                 std::string path,
                  mpFXYVector *forceStressDistanceGraph,
                  mpFXYVector *forceStressDisplacementGraph,
                  std::mutex *vectoraccessmutex,
-                 mpFXYVector *maxlimitvector,
-                 mpFXYVector *minlimitvector,
+                 mpFXYVector *maxforcelimitvector,
+                 mpFXYVector *minforcelimitvector,
+                 mpFXYVector *maxdistancelimitvector,
+                 mpFXYVector *mindistancelimitvector,
 
                  std::condition_variable *wait,
                  std::mutex *mutex,

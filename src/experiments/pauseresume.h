@@ -35,8 +35,10 @@ class PauseResume : public Experiment, virtual public UpdatedValuesReceiver
                 mpFXYVector *forceStressDistanceGraph,
                 mpFXYVector *forceStressDisplacementGraph,
                 std::mutex *vectoraccessmutex,
-                mpFXYVector *maxlimitvector,
-                mpFXYVector *minlimitvector,
+                mpFXYVector *maxforcelimitvector,
+                mpFXYVector *minforcelimitvector,
+                mpFXYVector *maxdistancelimitvector,
+                mpFXYVector *mindistancelimitvector,
                 std::condition_variable *wait,
                 std::mutex *mutex);
 

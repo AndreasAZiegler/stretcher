@@ -46,8 +46,10 @@ class ContinuousEventValues : public ExperimentValues
                           mpFXYVector *forceStressDistanceGraph,
                           mpFXYVector *forceStressDisplacementGraph,
                           std::mutex *vectoraccessmutex,
-                          mpFXYVector *maxlimitgraph,
-                          mpFXYVector *minlimitgraph,
+                          mpFXYVector *maxforcelimitvector,
+                          mpFXYVector *minforcelimitvector,
+                          mpFXYVector *maxdistancelimitvector,
+                          mpFXYVector *mindistancelimitvector,
                           MyFrame *myframe,
                           std::string path,
 

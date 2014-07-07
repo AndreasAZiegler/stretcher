@@ -36,8 +36,10 @@ ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
                                  mpFXYVector *forceStressDistanceGraph,
                                  mpFXYVector *forceStressDisplacementGraph,
                                  std::mutex *vectoraccessmutex,
-                                 mpFXYVector *maxlimitgraph,
-                                 mpFXYVector *minlimitgraph,
+                                 mpFXYVector *maxforcelimitvector,
+                                 mpFXYVector *minforcelimitvector,
+                                 mpFXYVector *maxdistancelimitvector,
+                                 mpFXYVector *mindistancelimitvector,
 
                                  std::condition_variable *wait,
                                  std::mutex *mutex,
@@ -81,8 +83,10 @@ ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
                                                      forceStressDistanceGraph,
                                                      forceStressDisplacementGraph,
                                                      vectoraccessmutex,
-                                                     maxlimitgraph,
-                                                     minlimitgraph,
+                                                     maxforcelimitvector,
+                                                     minforcelimitvector,
+                                                     maxdistancelimitvector,
+                                                     mindistancelimitvector,
                                                      experimentparameters.myframe,
                                                      path,
 
@@ -219,10 +223,12 @@ void ContinuousEvent::initParameters(void){
         if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
           m_MaxValueLimit = m_InitMaxValueLimit * 10000.0;
           m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
+
           m_ExperimentValues->setSteps(m_Steps);
           wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
         }else if(DistanceOrPercentage::Percentage == m_MaxValueDistanceOrPercentage){
           m_MaxValueLimit = m_InitMaxValueLimit;
+
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
         }
       }else if(StepsOrMaxValue::Steps == m_StepsOrMaxValue){
@@ -319,14 +325,14 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
       // Make point if there is a hold time.
       if(0 < m_HoldTime){
         if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + (j * m_Increment)));
+          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (m_StartLength + (j * m_Increment))));
         } else{
           previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, j * m_Increment));
         }
         timepoint++;
       }
       if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + ((j + 1) * m_Increment)));
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (m_StartLength + ((j + 1) * m_Increment))));
       } else{
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (j + 1) * m_Increment));
         //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
