@@ -1462,13 +1462,16 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the export csv button.
+ * @brief Method wich will be executed, when the user clicks on the export csv button. Checks if there is any data to export. Opens the export dialog if there is some data.
  * @param event Occuring event
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
   checkProtocol();
-  std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
-  dialog->ShowModal();
+  // Checks if there is any data to export.
+  if(true == m_CurrentProtocol->hasData()){
+    std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
+    dialog->ShowModal();
+  }
 }
 
 /**

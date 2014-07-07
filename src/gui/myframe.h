@@ -443,7 +443,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMotorStop(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the export csv button.
+     * @brief Method wich will be executed, when the user clicks on the export csv button. Checks if there is any data to export. Opens the export dialog if there is some data.
      * @param event Occuring event
      */
     void OnExportCSV(wxCommandEvent& event);

@@ -780,6 +780,18 @@ std::vector<std::string> Protocols::getExperimentNames(void){
 }
 
 /**
+ * @brief Checks if there is any data to export.
+ * @return True if there is some data / False otherwise.
+ */
+bool Protocols::hasData(void){
+  if(true == m_StressForceGraphValues.empty()){
+    return(false);
+  }else{
+    return(true);
+  }
+}
+
+/**
  * @brief Exports the measurement data to a .csv file.
  */
 void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname){

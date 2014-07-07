@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxDialog" name="MyExportDialog_Base">
-		<style>wxDEFAULT_DIALOG_STYLE</style>
+		<style>wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxRESIZE_BORDER</style>
 		<size>640,651</size>
 		<title></title>
 		<centered>1</centered>
@@ -47,6 +47,7 @@
 				<border>5</border>
 				<object class="wxListBox" name="m_ExportDialogListBox">
 					<style>wxLB_MULTIPLE</style>
+					<size>25,450</size>
 					<content />
 				</object>
 			</object>
