@@ -14,7 +14,7 @@
 #include "myframe.h"
 
 /**
- * @class MyFileOutput myfileoutput.h "experiments/myfileoutput.h"
+ * @class MyFileOutput myfileoutput.h "gui/myfileoutput.h"
  * @brief Let the user choose the default path for outputs.
  */
 class MyFileOutput : public MyFileOutput_Base

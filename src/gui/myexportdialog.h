@@ -13,7 +13,7 @@
 #include "protocols.h"
 
 /**
- * @class MyExportDialog myexportdialog.h "experiments/myexportdialog.h"
+ * @class MyExportDialog myexportdialog.h "gui/myexportdialog.h"
  * @brief Export dialog for the export of the measured data in to a .csv file.
  */
 class MyExportDialog : public MyExportDialog_Base

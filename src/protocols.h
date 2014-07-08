@@ -1,3 +1,9 @@
+/**
+ * @file main.h
+ * @brief The protocol.
+ * @author Andreas Ziegler
+ */
+
 #ifndef PROTOCOLS_H
 #define PROTOCOLS_H
 
@@ -13,11 +19,45 @@
 class MyFrame;
 
 /**
+ * @class Protocols protocols.h "protocols.h"
  * @brief Protocols class which handle all the containing experiments and the required methods.
  */
 class Protocols
 {
   public:
+    /**
+     * @brief Initializes all the needed variables.
+     * @param listbox Pointer to the wxListBox object.
+     * @param myframe Pointer to the main frame object.
+     * @param stageframe Pointer to the stage frame object.
+     * @param forcesensormessagehandler Pointer to the force sensor message hander object.
+     * @param vectoraccessmutex Pointer to the mutex to protect the vectors.
+     * @param gagelength The gage length.
+     * @param mountinglength The mounting length.
+     * @param maxposdistance The distance at maximal positions.
+     * @param currentdistance The current distance.
+     * @param stagesstoppedflag Pointer to the flag that indicates that the stages stopped
+     * @param stagesstoppedmutex Pointer to the mutex to protect stagesstoppedflag.
+     * @param waitmutex Pointer to the mutex for the condition variable wait.
+     * @param wait Pointer to the condition variable to wait for finished experiments.
+     * @param preloaddoneflag Pointer to the flag that indicates that preloading is done.
+     * @param preloaddonemutex Pointer to the mutex to protect preloaddoneflag.
+     * @param loopflag Flag to indicate that the protocol should be looped.
+     * @param area Cross section area.
+     * @param maxdistance Maximal distance.
+     * @param mindistance Minimal distance.
+     * @param maxforce Maximal force.
+     * @param minforce Minimal force.
+     * @param forceStressDistanceGraph Pointer to the force/stress distance graph.
+     * @param forceStressDisplacementGraph Pointer to the force/stress displacement graph.
+     * @param stressForceGraph Pointer to the stress/force graph.
+     * @param distanceGraph Pointer to the distance graph.
+     * @param maxStressForceLimitGraph Pointer to the maximal stress/force limit graph.
+     * @param minStressForceLimitGraph Pointer to the minimal stress/force limit graph.
+     * @param maxDistanceLimitGraph Pointer to the maximal distance limit graph.
+     * @param minDistanceLimitGraph Pointer to the minimal distance limit graph.
+     * @param path Path.
+     */
     Protocols(wxListBox *listbox,
               MyFrame *myframe,
               std::shared_ptr<StageFrame> stageframe,

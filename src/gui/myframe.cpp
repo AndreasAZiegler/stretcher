@@ -775,12 +775,13 @@ void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the set Le button.
+ * @brief Method wich will be executed, when the user clicks on the set Le button. It sets the current distance to the limit to force the user
+ *        to set the limits. Sets the distance at the maximum positions and displays it in the GUI.
  */
 void MyFrame::setDistanceWActuatorCollision(double le){
   //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
-  // Set min distance.
+  // Set min. and max. distance and the distance at maximum positions.
   m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
@@ -788,15 +789,13 @@ void MyFrame::setDistanceWActuatorCollision(double le){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the set length button.
+ * @brief Method wich will be executed, when the user clicks on the set length button. Updates the mounting- and gagelength.
  * @param event Occuring event
  */
 void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
   m_MountingLength = m_CurrentDistance;
   m_GageLength = m_CurrentDistance;
   m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
-  //m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
-  //m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
 }
 
 /**
@@ -804,7 +803,7 @@ void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnLengthsZeroDistance(wxCommandEvent& event){
-  m_StageFrame->setZeroDistance();
+  m_StageFrame->setZeroDistanceOffset();
 }
 
 /**
@@ -860,7 +859,7 @@ void MyFrame::OnLimitsLoadSet4(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Go to" button in clamping position.
+ * @brief Method wich will be executed, when the user clicks on the "Go to" button in lengths.
  * @param event Occuring event
  */
 void MyFrame::OnLimitsGoTo(wxCommandEvent& event){
@@ -887,7 +886,7 @@ void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Cancel" button in preload.
+ * @brief Method wich will be executed, when the user clicks on the "Cancel" button in preload. Aborts the edit process.
  * @param event Occuring event
  */
 void MyFrame::OnPreloadCancel(wxCommandEvent& event){
@@ -899,18 +898,21 @@ void MyFrame::OnPreloadCancel(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload.
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload. Creates a new preload experiment or changes its parameter
+ *        if the user is editing an existing preload experiment.
  * @param event Occuring event
  */
 void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   checkProtocol();
 
+  // Get parameters.
   PreloadParameters parameters;
   parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
   parameters.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue();
   parameters.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
 
+  // Update parameters if an existing experiment should be changed.
   if(true == m_BlockNotebookTabFlag){
     m_PreloadSendButton->SetLabelText("Send to protocol");
 
@@ -921,7 +923,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
 
-  }else{
+  }else{ // Otherwise create a new experiment.
     //Experiment* experiment = new Preload(ExperimentType::Preload,
     ExperimentParameters experimentparameters;
     experimentparameters.stageframe = m_StageFrame;
@@ -981,7 +983,7 @@ void MyFrame::OnOneStepDistance(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the one step event.
+ * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the one step event. Aborts the edit process.
  * @param event Occuring event
  */
 void MyFrame::OnOneStepCancel(wxCommandEvent& event){
@@ -993,13 +995,15 @@ void MyFrame::OnOneStepCancel(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in one step event.
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in one step event. Creates a new one step event experiment
+ *				or changes its parameter if the user is editing an existing one step event experiment.
  * @param event Occuring event
  */
 void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
 
   checkProtocol();
 
+  // Get parameters.
   OneStepEventParameters parameters;
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
     parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
@@ -1062,6 +1066,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     parameters.behaviorAfterStop = BehaviorAfterStop::GoToML;
   }
 
+  // Update parameters if an existing experiment should be changed.
   if(true == m_BlockNotebookTabFlag){
     m_OneStepSendButton->SetLabelText("Send to protocol");
 
@@ -1072,7 +1077,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
 
-  }else{
+  }else{ // Otherwise create a new experiment.
     ExperimentParameters experimentparameters;
     experimentparameters.stageframe = m_StageFrame;
     experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
@@ -1169,7 +1174,7 @@ void MyFrame::OnContinuousSteps(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the continuous event.
+ * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the continuous event. Aborts the edit process.
  * @param event Occuring event
  */
 void MyFrame::OnContinuousCancel(wxCommandEvent& event){
@@ -1181,13 +1186,15 @@ void MyFrame::OnContinuousCancel(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event.
+ * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event. Creates a new continuous event experiment
+ *				or changes its parameter if the user is editing an existing continuous event experiment.
  * @param event Occuring event
  */
 void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
   checkProtocol();
 
+  // Get parameters.
   ContinuousEventParameters parameters;
   parameters.ramp2failure = false;
   if(true == m_ContinuousStressForceRadioBtn->GetValue()){
@@ -1270,6 +1277,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
   parameters.holdForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_Area * 10.0;
 
+  // Update parameters if an existing experiment should be changed.
   if(true == m_BlockNotebookTabFlag){
     m_ContinuousSendButton->SetLabelText("Send to protocol");
 
@@ -1279,7 +1287,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 
     // Unblock tab.
     m_BlockNotebookTabFlag = false;
-  }else{
+  }else{ // Otherwise creat a new experiment.
     ExperimentParameters experimentparameters;
     experimentparameters.stageframe = m_StageFrame;
     experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
@@ -1319,7 +1327,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user sets the limits.
+ * @brief Method wich will be executed, when the user sets the limits. Updates the limits and forwards them to the protocol.
  * @param event Occuring event
  */
 void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
@@ -1349,11 +1357,12 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
   m_MinDistanceLimit /= 0.00009921875/*mm per micro step*/;
 
   checkProtocol();
+  // Update limits in the protocol.
   m_CurrentProtocol->setLimits(m_MinDistanceLimit, m_MaxDistanceLimit, m_MinForceLimit, m_MaxForceLimit);
 }
 
 /**
- * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
+ * @brief Method wich will be executed, when the decrease stage distance button is pushed down. Starts moving forward.
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
@@ -1367,7 +1376,7 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the decrease stage distance button is released.
+ * @brief Method wich will be executed, when the decrease stage distance button is released. Stops the stage frame.
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
@@ -1377,7 +1386,7 @@ void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the increase stage distance button is pushed down.
+ * @brief Method wich will be executed, when the increase stage distance button is pushed down. Starts moving backwards.
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
@@ -1391,7 +1400,7 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
 }
 
 /**
- * @brief Method wich will be executed, when the increase stage distance button is released.
+ * @brief Method wich will be executed, when the increase stage distance button is released. Stops the stage frame.
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
@@ -1401,13 +1410,18 @@ void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user klicks on the motor stop button.
+ * @brief Method wich will be executed, when the user klicks on the motor stop button. Stops the stage frame and notify the stop.
  * @param event Occuring event
  */
 void MyFrame::OnMotorStop(wxCommandEvent& event){
+  /*
   if(0 != m_LinearStages.size()){
     (m_LinearStages.at(0))->stop();
     (m_LinearStages.at(1))->stop();
+  }
+  */
+  if(nullptr != m_StageFrame){
+    m_StageFrame->stop();
   }
   std::lock_guard<std::mutex> lck(m_WaitMutex);
   m_Wait.notify_all();
@@ -1420,7 +1434,7 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the export csv button. Checks if there is any data to export. Opens the export dialog if there is some data.
+ * @brief Method wich will be executed, when the user clicks on the export csv button. Checks if there is any data to export and opens the export dialog if there is some data.
  * @param event Occuring event
  */
 void MyFrame::OnExportCSV(wxCommandEvent& event){
@@ -1433,7 +1447,7 @@ void MyFrame::OnExportCSV(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the export png button.
+ * @brief Method wich will be executed, when the user clicks on the export png button. Opens a file dialog and then saves the screen shot.
  * @param event Occuring event
  */
 void MyFrame::OnExportPNG(wxCommandEvent& event){
@@ -1465,7 +1479,7 @@ void MyFrame::OnClearLog(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the save log button.
+ * @brief Method wich will be executed, when the user clicks on the save log button. Opens a file dialog and then saves the log.
  * @param event Occuring event
  */
 void MyFrame::OnSaveLog(wxCommandEvent& event){
@@ -1510,7 +1524,7 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
     m_ForceStressDistanceGraph.Clear();
     m_ForceStressDisplacementGraph.Clear();
   }
-  wxLogMessage("MyFrame cleared graph.");
+  wxLogMessage("MyFrame: Cleared graph.");
   m_Graph->Fit();
   //delete m_CurrentExperimentValues;
 }
@@ -1546,48 +1560,45 @@ void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the pause experiment down button.
+ * @brief Method wich will be executed, when the user clicks on the pause experiment down button. Creates a pause experiment.
  * @param event Occuring event
  */
 void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   checkProtocol();
 
-  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitGraph;
-  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitGraph;
-  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitGraph;
-  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitGraph;
+  // Get parmeters.
+  ExperimentParameters experimentparameters;
+  experimentparameters.stageframe = m_StageFrame;
+  experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+  experimentparameters.myframe = this;
+  experimentparameters.maxforcelimit = m_MaxForceLimit;
+  experimentparameters.minforcelimit = m_MinForceLimit;
+  experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+  experimentparameters.mindistancelimit = m_MinDistanceLimit;
+  experimentparameters.type = ExperimentType::Pause;
+  experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+  experimentparameters.gagelength = m_GageLength;
+  experimentparameters.mountinglength = m_MountingLength;
+  experimentparameters.maxposdistance = m_MaxPosDistance;
+  experimentparameters.currentdistance = m_CurrentDistance;
+  experimentparameters.area = m_Area;
+  std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
 
-    ExperimentParameters experimentparameters;
-    experimentparameters.stageframe = m_StageFrame;
-    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-    experimentparameters.myframe = this;
-    experimentparameters.maxforcelimit = m_MaxForceLimit;
-    experimentparameters.minforcelimit = m_MinForceLimit;
-    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-    experimentparameters.mindistancelimit = m_MinDistanceLimit;
-    experimentparameters.type = ExperimentType::Pause;
-    experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
-    experimentparameters.gagelength = m_GageLength;
-    experimentparameters.mountinglength = m_MountingLength;
-    experimentparameters.maxposdistance = m_MaxPosDistance;
-    experimentparameters.currentdistance = m_CurrentDistance;
-    experimentparameters.area = m_Area;
-    std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
+                                                   m_StoragePath,
+                                                   &m_ForceStressDistanceGraph,
+                                                   &m_ForceStressDisplacementGraph,
+                                                   &m_VectorLayerMutex,
+                                                   &m_MaxStressForceLimitGraph,
+                                                   &m_MinStressForceLimitGraph,
+                                                   &m_MaxDistanceLimitGraph,
+                                                   &m_MinDistanceLimitGraph,
 
-                                                     m_StoragePath,
-                                                     &m_ForceStressDistanceGraph,
-                                                     &m_ForceStressDisplacementGraph,
-                                                     &m_VectorLayerMutex,
-                                                     maxforcelimitvector,
-                                                     minforcelimitvector,
-                                                     maxdistancelimitvector,
-                                                     mindistancelimitvector,
-
-                                                     &m_Wait,
-                                                     &m_WaitMutex));
+                                                   &m_Wait,
+                                                   &m_WaitMutex));
 
   Pause *ptr = dynamic_cast<Pause*>(experiment.get());
 
+  // Create dialog to choose the pause time.
   std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(ptr));
   dialog->ShowModal();
 
@@ -1598,45 +1609,42 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the pause experiment down button.
+ * @brief Method wich will be executed, when the user clicks on the pause resume experiment button. Creates an pause/resume experiment.
  * @param event Occuring event
  */
 void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
+
   checkProtocol();
 
-  mpFXYVector *maxforcelimitvector = &m_MaxStressForceLimitGraph;
-  mpFXYVector *minforcelimitvector = &m_MinStressForceLimitGraph;
-  mpFXYVector *maxdistancelimitvector = &m_MaxDistanceLimitGraph;
-  mpFXYVector *mindistancelimitvector = &m_MinDistanceLimitGraph;
+  // Get parameters.
+  ExperimentParameters experimentparameters;
+  experimentparameters.stageframe = m_StageFrame;
+  experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+  experimentparameters.myframe = this;
+  experimentparameters.maxforcelimit = m_MaxForceLimit;
+  experimentparameters.minforcelimit = m_MinForceLimit;
+  experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+  experimentparameters.mindistancelimit = m_MinDistanceLimit;
+  experimentparameters.type = ExperimentType::PauseResume;
+  experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+  experimentparameters.gagelength = m_GageLength;
+  experimentparameters.mountinglength = m_MountingLength;
+  experimentparameters.maxposdistance = m_MaxPosDistance;
+  experimentparameters.currentdistance = m_CurrentDistance;
+  experimentparameters.area = m_Area;
+  std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
 
-    ExperimentParameters experimentparameters;
-    experimentparameters.stageframe = m_StageFrame;
-    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-    experimentparameters.myframe = this;
-    experimentparameters.maxforcelimit = m_MaxForceLimit;
-    experimentparameters.minforcelimit = m_MinForceLimit;
-    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-    experimentparameters.mindistancelimit = m_MinDistanceLimit;
-    experimentparameters.type = ExperimentType::PauseResume;
-    experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
-    experimentparameters.gagelength = m_GageLength;
-    experimentparameters.mountinglength = m_MountingLength;
-    experimentparameters.maxposdistance = m_MaxPosDistance;
-    experimentparameters.currentdistance = m_CurrentDistance;
-    experimentparameters.area = m_Area;
-    std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
+                                                         m_StoragePath,
+                                                         &m_ForceStressDistanceGraph,
+                                                         &m_ForceStressDisplacementGraph,
+                                                         &m_VectorLayerMutex,
+                                                         &m_MaxStressForceLimitGraph,
+                                                         &m_MinStressForceLimitGraph,
+                                                         &m_MaxDistanceLimitGraph,
+                                                         &m_MinDistanceLimitGraph,
 
-                                                           m_StoragePath,
-                                                           &m_ForceStressDistanceGraph,
-                                                           &m_ForceStressDisplacementGraph,
-                                                           &m_VectorLayerMutex,
-                                                           maxforcelimitvector,
-                                                           minforcelimitvector,
-                                                           maxdistancelimitvector,
-                                                           mindistancelimitvector,
-
-                                                           &m_Wait,
-                                                           &m_WaitMutex));
+                                                         &m_Wait,
+                                                         &m_WaitMutex));
 
   m_CurrentProtocol->addExperiment(experiment);
 }
@@ -1649,7 +1657,7 @@ void MyFrame::showPauseResumeDialogFromPauseResume(std::condition_variable *wait
 }
 
 /**
- * @brief Opens a pop-up warning dialog.
+ * @brief Opens a velocity warning pop-up dialog.
  */
 bool MyFrame::showHighVelocityWarningFromExperiments(void){
   CallAfter(&MyFrame::showHighVelocityWarning);
@@ -1678,7 +1686,7 @@ void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *m
 }
 
 /**
- * @brief Method wich will be executed, when the user makes a right click in the list box.
+ * @brief Method wich will be executed, when the user makes a right click in the list box. Creates an context menu with the entry "Edit".
  * @param event Occuring event
  */
 void MyFrame::OnProtocolsListRightClick(wxMouseEvent& event){
@@ -1693,7 +1701,7 @@ void MyFrame::OnProtocolsListRightClick(wxMouseEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on edit in the contect menu.
+ * @brief Method wich will be executed, when the user clicks on edit in the context menu. Switch to the according experiment tab and loads the parameters.
  * @param event Occuring event
  */
 void MyFrame::OnEditExperiment(wxCommandEvent& event){
@@ -2023,7 +2031,7 @@ void MyFrame::OnLoopProtocol(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the stop protocol button.
+ * @brief Method wich will be executed, when the user clicks on the stop protocol button. Stops the stage frame and the protocol.
  * @param event Occuring event
  */
 void MyFrame::OnStopProtocol(wxCommandEvent& event){
@@ -2086,7 +2094,7 @@ void MyFrame::updateDistance(void){
 /**
  * @brief Calculates the distance and print the value in the GUI.
  */
-void MyFrame::updateForce(){
+void MyFrame::updateForce(void){
   wxString tmp;
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
     tmp << (static_cast<double>(((m_CurrentForce) / 10000.0) / m_Area) * 1000) << m_ForceUnit;
@@ -2241,10 +2249,10 @@ void MyFrame::createPreviewGraph(void){
   m_MinStressForceLimitGraph.SetPen(vectorpenStressForce);
   m_MaxDistanceLimitGraph.SetPen(vectorpenDistance);
   m_MinDistanceLimitGraph.SetPen(vectorpenDistance);
-
   m_StressForcePreviewGraph.SetPen(vectorpenStressForce);
   m_DistancePreviewGraph.SetPen(vectorpenDistance);
 
+  // Set margins and add layers.
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
   m_Graph->AddLayer(m_XAxis.get());

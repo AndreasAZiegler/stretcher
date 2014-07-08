@@ -1,18 +1,27 @@
+/**
+ * @file forcesensor.cpp
+ * @brief The force sensor.
+ * @author Andreas Ziegler
+ */
 
 // Includes
 #include <iostream>
 #include <mutex>
 #include "forcesensor.h"
 
+// Namespaces
 using namespace std;
 
-// An deleter which doesn't do anything, required for passing shared_ptr.
+// A deleter which doesn't do anything, required for passing shared_ptr.
 void do_nothing_deleter(ForceSensorMessageHandler*){return;}
 
 /**
- * @brief Forwards the com port and the baud rate to SerialPort
- * @param comPort com port
- * @param baudrate baudrate
+ * @brief Creates a serial interface and initializes all the needed variables.
+ * @param type Value type
+ * @param waitmessagehandler Condition varaible to wait for message handlers.
+ * @param waitmessagehandlermutex Mutex to protect waitmessagehandler.
+ * @param messagehandlerfinishednr Amount of finished message handlers.
+ * @param baudrate The baude rate of the com port.
  */
 ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type,
                          std::shared_ptr<std::condition_variable> waitmessagehandler,
@@ -31,27 +40,11 @@ ForceSensor::ForceSensor(UpdatedValuesReceiver::ValueType type,
 {
 }
 
+/**
+ * @brief Destructor
+ */
 ForceSensor::~ForceSensor(){
-  //delete FORCE_SENSOR_SET_BIPOLAR;
-  std::cout << "ForceSensor destructor finished." << std::endl;
-}
-
-/**
- * @return forceSensorMessageHandler*
- */
-/*
-ForceSensorMessageHandler* ForceSensor::getMessageHandler ()
-{
-}
-*/
-
-
-/**
- * @return double
- */
-double ForceSensor::getForce()
-{
-  return(0);
+  //std::cout << "ForceSensor destructor finished." << std::endl;
 }
 
 /**
@@ -72,7 +65,7 @@ void ForceSensor::setScaleFactor(double nominalforce, double nominalvalue, doubl
 }
 
 /**
- * @brief Sets force zero.
+ * @brief Sets force to zero.
  */
 void ForceSensor::setZeroForce(void){
   m_MessageHandler.setZeroForce();

@@ -1,3 +1,9 @@
+/**
+ * @file myframe.h
+ * @brief The main frame.
+ * @author Andreas Ziegler
+ */
+
 #ifndef MYFRAME_H
 #define MYFRAME_H
 
@@ -21,6 +27,7 @@
 class Protocols;
 
 /**
+ * @class MyFrame myframe.h "gui/myframe.h"
  * @brief The Main Frame class
  */
 class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
@@ -127,32 +134,32 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     }
 
     /**
-     * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
+     * @brief Method wich will be executed, when the decrease stage distance button is pushed down. Starts moving forward.
      * @param event Occuring event
      */
     void OnMotorDecreaseDistanceStart(wxCommandEvent &event);
 
     /**
-     * @brief Method wich will be executed, when the decrease stage distance button is released.
+     * @brief Method wich will be executed, when the decrease stage distance button is released. Stops the stage frame.
      * @param event Occuring event
      */
     void OnMotorDecreaseDistanceStop(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the increase stage distance button is pushed down.
+     * @brief Method wich will be executed, when the increase stage distance button is pushed down. Starts moving backwards.
      * @param event Occuring event
      */
     void OnMotorIncreaseDistanceStart(wxCommandEvent &event);
 
     /**
-     * @brief Method wich will be executed, when the increase stage distance button is released.
+     * @brief Method wich will be executed, when the increase stage distance button is released. Stops the stage frame.
      * @param event Occuring event
      */
     void OnMotorIncreaseDistanceStop(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the set Le button.
-     * @param event Occuring event
+     * @brief Method wich will be executed, when the user clicks on the set Le button. It sets the current distance to the limit to force the user
+     *        to set the limits. Sets the distance at the maximum positions and displays it in the GUI.
      */
     void setDistanceWActuatorCollision(double le);
 
@@ -180,7 +187,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex);
 
     /**
-     * @brief Opens a pop-up warning dialog.
+     * @brief Opens a velocity warning pop-up dialog.
      */
     bool showHighVelocityWarningFromExperiments(void);
 
@@ -289,7 +296,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnHomeLinearStages(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the set length button.
+     * @brief Method wich will be executed, when the user clicks on the set length button. Updates the mounting- and gagelength.
      * @param event Occuring event
      */
     void OnLengthsSetMountingLength(wxCommandEvent& event);
@@ -331,7 +338,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnLimitsLoadSet4(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user sets the limits.
+     * @brief Method wich will be executed, when the user sets the limits. Updates the limits and forwards them to the protocol.
      * @param event Occuring event
      */
     void OnLimitsSetLimits(wxCommandEvent& event);
@@ -343,7 +350,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMountingLengthChanged(wxSpinDoubleEvent &event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the "Go to" button in limits.
+     * @brief Method wich will be executed, when the user clicks on the "Go to" button in lengths.
      * @param event Occuring event
      */
     void OnLimitsGoTo(wxCommandEvent& event);
@@ -361,13 +368,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the "Cancel" button in preload.
+     * @brief Method wich will be executed, when the user clicks on the "Cancel" button in preload. Aborts the edit process.
      * @param event Occuring event
      */
     void OnPreloadCancel(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload.
+     * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload. Creates a new preload experiment or changes its parameter
+     *        if the user is editing an existing preload experiment.
      * @param event Occuring event
      */
     void OnPreloadSendToProtocol(wxCommandEvent& event);
@@ -445,7 +453,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMotorIncreaseDistance(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user klicks on the motor stop button.
+     * @brief Method wich will be executed, when the user klicks on the motor stop button. Stops the stage frame and notify the stop.
      * @param event Occuring event
      */
     void OnMotorStop(wxCommandEvent& event);
@@ -457,7 +465,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnExportCSV(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the export png button.
+     * @brief Method wich will be executed, when the user clicks on the export png button. Opens a  file dialog and then saves the screen shot.
      * @param event Occuring event
      */
     void OnExportPNG(wxCommandEvent& event);
@@ -469,7 +477,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnClearLog(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the save log button.
+     * @brief Method wich will be executed, when the user clicks on the save log button. Opens a file dialog and then saves the log.
      * @param event Occuring event
      */
     void OnSaveLog(wxCommandEvent& event);
@@ -499,13 +507,13 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnMoveDownExperiment(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the pause experiment down button.
+     * @brief Method wich will be executed, when the user clicks on the pause experiment down button. Creates a pause experiment.
      * @param event Occuring event
      */
     void OnPauseExperiment(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the pause experiment down button.
+     * @brief Method wich will be executed, when the user clicks on the pause resume experiment button. Creates an pause/resume experiment.
      * @param event Occuring event
      */
     void OnPauseResumeExperiment(wxCommandEvent& event);
@@ -562,13 +570,13 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnLoadProtocol(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user makes a right click in the list box.
+     * @brief Method wich will be executed, when the user makes a right click in the list box. Creates an context menu with the entry "Edit".
      * @param event Occuring event
      */
     void OnProtocolsListRightClick(wxMouseEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on edit in the contect menu.
+     * @brief Method wich will be executed, when the user clicks on edit in the context menu. Switch to the according experiment tab and loads the parameters.
      * @param event Occuring event
      */
     void OnEditExperiment(wxCommandEvent &event);
@@ -581,7 +589,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     /**
      * @brief Calculates the distance and print the value in the GUI.
      */
-    void updateForce();
+    void updateForce(void);
 
     /**
      * @brief Updates the graph in the GUI.
@@ -593,82 +601,85 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void createPreviewGraph(void);
 
-    bool m_BlockNotebookTabFlag;								/**< Indicate if the current tab in wxNotebook should be blocked. */
-    std::unique_ptr<mpWindow> m_Graph;					/**< Pointer to the graph */
-    std::mutex m_UpdateGraphMutex;							/**< Mutex to protect the graph update. */
-    bool m_ShowGraphFlag;												/**< Indicates if the graph is active or not. */
-    mpFXYVector m_ForceStressDistanceGraph;			/**< Vector layer for the value graph */
-    mpFXYVector m_ForceStressDisplacementGraph;	/**< Vector layer for the value graph */
-    mpFXYVector m_StressForcePreviewGraph;			/**< Vector layer for the stress/force preview graph. */
-    mpFXYVector m_DistancePreviewGraph;					/**< Vector layer for the distance preview graph. */
-    mpFXYVector m_MaxStressForceLimitGraph;			/**< Vector layer to display the max stress/force limits. */
-    mpFXYVector m_MinStressForceLimitGraph;			/**< Vector layer to display the min stress/force limits. */
-    mpFXYVector m_MaxDistanceLimitGraph;				/**< Vector layer to display the max distance limits. */
-    mpFXYVector m_MinDistanceLimitGraph;				/**< Vector layer to display the min distance limits. */
-    std::vector<double> m_TimePointLimits;			/**< Vector for the limits timepoints. */
-    std::vector<double> m_MaxStressForceLimits;	/**< Vector for the max. stress/force limits. */
-    std::vector<double> m_MinStressForceLimits;	/**< Vector for the min. stress/force limits. */
-    std::vector<double> m_MaxDistanceLimits;		/**< Vector for the max. distance limits. */
-    std::vector<double> m_MinDistanceLimits;		/**< Vector for the min. distance limits. */
-    std::mutex m_VectorLayerMutex;							/**< Mutex to protect m_VectorLayer */
-    std::unique_ptr<mpScaleX> m_XAxis;					/**< Pointer to the X axis */
-    std::unique_ptr<mpScaleY> m_Y1Axis;					/**< Pointer to the left Y axis */
-    std::unique_ptr<mpScaleY> m_Y2Axis;					/**< Pointer to the right Y axis */
-    Settings *m_Settings;												/**< Pointer to the settings object */
-    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;	/**< Vector containing the pointers to the linear stages */
-    std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers; /**< Vector containing the pointer to the message handlers of the liner stages */
-    int m_MessageHandlersFinishedNumber;				/**< Number of finished message handlers. */
-    std::condition_variable m_WaitMessageHandlers;/**< Wait condition variable to wait for message handlers to stop. */
-    std::mutex m_WaitMessageHandlersMutex;			/**< Mutex to protect m_WaitMessageHandlers. */
-    std::shared_ptr<StageFrame> m_StageFrame;		/**< Pointer to the stage frame object */
-    bool m_DistanceWActuatorCollisionSetFlag;		/**< Indicates if the distance with actuator collision is already defined. */
-    double m_MaxDistanceLimit;									/**< The maximal position for the stages */
-    double m_MinDistanceLimit;									/**< The minimal position for the stages */
-    double m_MaxForceLimit;											/**< The maximal allowed force. */
-    double m_MinForceLimit;											/**< The minimal allowed force. */
-    double m_TempMinDistanceLimit;							/**< From the template loaded minimal distance limit. */
-    double m_TempMaxDistanceLimit;							/**< From the template loaded maximal distance limit. */
-    double m_TempMinForceLimit;									/**< From the template loaded minimal force limit. */
-    double m_TempMaxForceLimit;									/**< From the template loaded maximal force limit. */
-    bool m_DistanceLimitExceededFlag;						/**< Indicates if a distance limit exceeded. */
-    std::mutex m_DistanceLimitExceededMutex;		/**< Mutex to protect m_DistanceLimitExceededFlag. */
-    bool m_ForceLimitExceededFlag;							/**< Indicates if a force limit exceeded. */
-    std::mutex m_ForceLimitExceededMutex;				/**< Mutex to protect m_ForceLimitExceededFlag. */
-    bool m_DisableIncreaseDistanceFlag;					/**< Indicates if increasing of the distance should be disabled. */
-    bool m_DisableDecreaseDistanceFlag;					/**< Indicates if decreasing of the distance should be disabled. */
-    std::shared_ptr<ForceSensor> m_ForceSensor;	/**< Pointer to the force sensor */
-    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; /**< Pointer to the force sensor message handler */
-    std::vector<int> m_CurrentPositions;				/**< Vector with the current stage positions */
-    long m_CurrentDistance; 										/**< Current distance */
-    std::shared_ptr<Protocols> m_CurrentProtocol;								/**< Pointer to the current protocol */
-    std::mutex m_WaitMutex;											/**< Mutex to protect m_Wait */
-    std::condition_variable m_Wait;							/**< Wait condition variable to wait for the end of an experiment */
-    bool m_StagesStoppedFlag;										/**< Flag indicating if stages stopped or not. */
-    std::mutex m_StagesStoppedMutex;						/**< Mutex for m_StagesStoppedFlag */
-    bool m_PreloadDoneFlag;											/**< Indicates if preloading is done */
-    std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
-    bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
-    std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
-    long m_MountingLength;											/**< The mounting length. */
-    double m_TempMountingLength;								/**< From the template loaded mounting length. */
-    long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
-    double m_TempGageLength;										/**< From the template loaded gage length. */
-    long m_MaxPosDistance;											/**< Distance when the motors are on max position (resulting in smallest distance) */
-    double m_TempMaxPosDistance;								/**< From the template loaded distance at maximal position. */
-    double m_Area;															/**< Area of the sample */
-    std::condition_variable m_WaitHighVelocity;	/**< Wait conditional variable to wait for high velocity dialog result. */
-    std::mutex m_WaitHighVelocityMutex;					/**< Mutex for m_WaitHighVelocity. */
-    bool m_HighVelocityAbort;										/**< Indicates if experiment should be aborted because of the high velocity. */
+    bool m_BlockNotebookTabFlag;																													/**< Indicate if the current tab in wxNotebook should be blocked. */
+    std::unique_ptr<mpWindow> m_Graph;																										/**< Pointer to the graph */
+    std::mutex m_UpdateGraphMutex;																												/**< Mutex to protect the graph update. */
+    bool m_ShowGraphFlag;																																	/**< Indicates if the graph is active or not. */
+    mpFXYVector m_ForceStressDistanceGraph;																								/**< Vector layer for the value graph */
+    mpFXYVector m_ForceStressDisplacementGraph;																						/**< Vector layer for the value graph */
+    mpFXYVector m_StressForcePreviewGraph;																								/**< Vector layer for the stress/force preview graph. */
+    mpFXYVector m_DistancePreviewGraph;																										/**< Vector layer for the distance preview graph. */
+    mpFXYVector m_MaxStressForceLimitGraph;																								/**< Vector layer to display the max stress/force limits. */
+    mpFXYVector m_MinStressForceLimitGraph;																								/**< Vector layer to display the min stress/force limits. */
+    mpFXYVector m_MaxDistanceLimitGraph;																									/**< Vector layer to display the max distance limits. */
+    mpFXYVector m_MinDistanceLimitGraph;																									/**< Vector layer to display the min distance limits. */
+    std::vector<double> m_TimePointLimits;																								/**< Vector for the limits timepoints. */
+    std::vector<double> m_MaxStressForceLimits;																						/**< Vector for the max. stress/force limits. */
+    std::vector<double> m_MinStressForceLimits;																						/**< Vector for the min. stress/force limits. */
+    std::vector<double> m_MaxDistanceLimits;																							/**< Vector for the max. distance limits. */
+    std::vector<double> m_MinDistanceLimits;																							/**< Vector for the min. distance limits. */
+    std::mutex m_VectorLayerMutex;																												/**< Mutex to protect m_VectorLayer */
+    std::unique_ptr<mpScaleX> m_XAxis;																										/**< Pointer to the X axis */
+    std::unique_ptr<mpScaleY> m_Y1Axis;																										/**< Pointer to the left Y axis */
+    std::unique_ptr<mpScaleY> m_Y2Axis;																										/**< Pointer to the right Y axis */
+    Settings *m_Settings;																																	/**< Pointer to the settings object */
+    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;															/**< Vector containing the pointers to the linear stages */
+    std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers;/**< Vector containing the pointer to the message handlers of the liner stages */
+    int m_MessageHandlersFinishedNumber;																									/**< Number of finished message handlers. */
+    std::condition_variable m_WaitMessageHandlers;																				/**< Wait condition variable to wait for message handlers to stop. */
+    std::mutex m_WaitMessageHandlersMutex;																								/**< Mutex to protect m_WaitMessageHandlers. */
+    std::shared_ptr<StageFrame> m_StageFrame;																							/**< Pointer to the stage frame object */
+    bool m_DistanceWActuatorCollisionSetFlag;																							/**< Indicates if the distance with actuator collision is already defined. */
+    double m_MaxDistanceLimit;																														/**< The maximal position for the stages */
+    double m_MinDistanceLimit;																														/**< The minimal position for the stages */
+    double m_MaxForceLimit;																																/**< The maximal allowed force. */
+    double m_MinForceLimit;																																/**< The minimal allowed force. */
+    double m_TempMinDistanceLimit;																												/**< From the template loaded minimal distance limit. */
+    double m_TempMaxDistanceLimit;																												/**< From the template loaded maximal distance limit. */
+    double m_TempMinForceLimit;																														/**< From the template loaded minimal force limit. */
+    double m_TempMaxForceLimit;																														/**< From the template loaded maximal force limit. */
+    bool m_DistanceLimitExceededFlag;																											/**< Indicates if a distance limit exceeded. */
+    std::mutex m_DistanceLimitExceededMutex;																							/**< Mutex to protect m_DistanceLimitExceededFlag. */
+    bool m_ForceLimitExceededFlag;																												/**< Indicates if a force limit exceeded. */
+    std::mutex m_ForceLimitExceededMutex;																									/**< Mutex to protect m_ForceLimitExceededFlag. */
+    bool m_DisableIncreaseDistanceFlag;																										/**< Indicates if increasing of the distance should be disabled. */
+    bool m_DisableDecreaseDistanceFlag;																										/**< Indicates if decreasing of the distance should be disabled. */
+    std::shared_ptr<ForceSensor> m_ForceSensor;																						/**< Pointer to the force sensor */
+    std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; 							/**< Pointer to the force sensor message handler */
+    std::vector<int> m_CurrentPositions;																									/**< Vector with the current stage positions */
+    long m_CurrentDistance; 																															/**< Current distance */
+    std::shared_ptr<Protocols> m_CurrentProtocol;																					/**< Pointer to the current protocol */
+    std::mutex m_WaitMutex;																																/**< Mutex to protect m_Wait */
+    std::condition_variable m_Wait;																												/**< Wait condition variable to wait for the end of an experiment */
+    bool m_StagesStoppedFlag;																															/**< Flag indicating if stages stopped or not. */
+    std::mutex m_StagesStoppedMutex;																											/**< Mutex for m_StagesStoppedFlag */
+    bool m_PreloadDoneFlag;																																/**< Indicates if preloading is done */
+    std::mutex m_PreloadDoneMutex;																												/**< Mutex to protect m_PreloadDoneFlag */
+    bool m_MeasurementValuesRecordingFlag;																								/**< Indicates if the measurement values are recorded or not. */
+    std::mutex m_MeasurementValuesRecordingMutex; 																				/**< Mutex to protect m_MeasurementValuesRecordingFlag */
+    long m_MountingLength;																																/**< The mounting length. */
+    double m_TempMountingLength;																													/**< From the template loaded mounting length. */
+    long m_GageLength;																																		/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
+    double m_TempGageLength;																															/**< From the template loaded gage length. */
+    long m_MaxPosDistance;																																/**< Distance when the motors are on max position (resulting in smallest distance) */
+    double m_TempMaxPosDistance;																													/**< From the template loaded distance at maximal position. */
+    double m_Area;																																				/**< Area of the sample */
+    std::condition_variable m_WaitHighVelocity;																						/**< Wait conditional variable to wait for high velocity dialog result. */
+    std::mutex m_WaitHighVelocityMutex;																										/**< Mutex for m_WaitHighVelocity. */
+    bool m_HighVelocityAbort;																															/**< Indicates if experiment should be aborted because of the high velocity. */
 
-    DistanceOrStressOrForce m_DistanceOrStressOrForce;	/**< Indicates if experiment is force or stress based */
-    long m_CurrentForce;												/**< Current force */
-    int m_CurrentForceUpdateDelay;							/**< Counting variable that the force values is not updated always in the GUI. */
-    wxString m_ForceUnit;												/**< Current force unit (N or kPa) */
-    std::string m_StoragePath;									/**< Path were the measurement values will be saved as a std::string. */
+    DistanceOrStressOrForce m_DistanceOrStressOrForce;																		/**< Indicates if experiment is force or stress based */
+    long m_CurrentForce;																																	/**< Current force */
+    int m_CurrentForceUpdateDelay;																												/**< Counting variable that the force values is not updated always in the GUI. */
+    wxString m_ForceUnit;																																	/**< Current force unit (N or kPa) */
+    std::string m_StoragePath;																														/**< Path were the measurement values will be saved as a std::string. */
 
     wxDECLARE_EVENT_TABLE();
 };
 
+/**
+ * @enum ID for events in MyFrame
+ */
 enum
 {
 	ID_SamplingFrequency = 1,

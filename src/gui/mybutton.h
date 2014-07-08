@@ -20,7 +20,7 @@
 class MyFrame;
 
 /**
- * @class wxMyButton mybutton.h "experiments/mybutton.h"
+ * @class wxMyButton mybutton.h "gui/mybutton.h"
  * @brief Button class which implements the EVT_MYBUTTON_DOWN and EVT_MYBUTTON_UP events.
  */
 class wxMyButton: public wxButton

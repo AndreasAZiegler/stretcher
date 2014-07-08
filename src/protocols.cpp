@@ -1,3 +1,9 @@
+/**
+ * @file main.cpp
+ * @brief The protocol.
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <iostream>
 #include <fstream>
@@ -17,6 +23,39 @@
 // An deleter which doesn't do anything, required for passing shared_ptr.
 void do_nothing_deleter(std::vector<double> *){return;}
 
+/**
+ * @brief Initializes all the needed variables.
+ * @param listbox Pointer to the wxListBox object.
+ * @param myframe Pointer to the main frame object.
+ * @param stageframe Pointer to the stage frame object.
+ * @param forcesensormessagehandler Pointer to the force sensor message hander object.
+ * @param vectoraccessmutex Pointer to the mutex to protect the vectors.
+ * @param gagelength The gage length.
+ * @param mountinglength The mounting length.
+ * @param maxposdistance The distance at maximal positions.
+ * @param currentdistance The current distance.
+ * @param stagesstoppedflag Pointer to the flag that indicates that the stages stopped
+ * @param stagesstoppedmutex Pointer to the mutex to protect stagesstoppedflag.
+ * @param waitmutex Pointer to the mutex for the condition variable wait.
+ * @param wait Pointer to the condition variable to wait for finished experiments.
+ * @param preloaddoneflag Pointer to the flag that indicates that preloading is done.
+ * @param preloaddonemutex Pointer to the mutex to protect preloaddoneflag.
+ * @param loopflag Flag to indicate that the protocol should be looped.
+ * @param area Cross section area.
+ * @param maxdistance Maximal distance.
+ * @param mindistance Minimal distance.
+ * @param maxforce Maximal force.
+ * @param minforce Minimal force.
+ * @param forceStressDistanceGraph Pointer to the force/stress distance graph.
+ * @param forceStressDisplacementGraph Pointer to the force/stress displacement graph.
+ * @param stressForceGraph Pointer to the stress/force graph.
+ * @param distanceGraph Pointer to the distance graph.
+ * @param maxStressForceLimitGraph Pointer to the maximal stress/force limit graph.
+ * @param minStressForceLimitGraph Pointer to the minimal stress/force limit graph.
+ * @param maxDistanceLimitGraph Pointer to the maximal distance limit graph.
+ * @param minDistanceLimitGraph Pointer to the minimal distance limit graph.
+ * @param path Path.
+ */
 Protocols::Protocols(wxListBox *listbox,
                      MyFrame *myframe,
                      std::shared_ptr<StageFrame> stageframe,
@@ -96,6 +135,14 @@ Protocols::~Protocols(){
   */
 }
 
+/**
+ * @brief Load a protocol from a file.
+ * @param path Path of the protocol file.
+ * @param gagelength Gage length
+ * @param mountinglength Mounting length
+ * @param maxposdistance Maximal position distance
+ * @param currentdistance Current distance
+ */
 void Protocols::loadProtocol(std::string path, long gagelength, long mountinglength, long maxposdistance, long currentdistance){
   // Update lengths
   m_GageLength = gagelength;
@@ -115,7 +162,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
   for(pugi::xml_node node = doc.first_child(); node; node = node.next_sibling()){
 
 
-    if(0 == strcmp("Preload", node.name())){
+    if(0 == strcmp("Preload", node.name())){ // Preload experiment.
       PreloadParameters parameters;
 
       // Load preload parmeters.
@@ -160,7 +207,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       // Add experiment.
       addExperiment(experiment);
 
-    }else if(0 == strcmp("OneStepEvent", node.name())){
+    }else if(0 == strcmp("OneStepEvent", node.name())){ // One step event experiment.
       OneStepEventParameters parameters;
 
       // Load one step event parameters.
@@ -214,7 +261,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       // Add experiment.
       addExperiment(experiment);
 
-    }else if(0 == strcmp("ContinuousEvent", node.name())){
+    }else if(0 == strcmp("ContinuousEvent", node.name())){ // Continuous event experiment.
       ContinuousEventParameters parameters;
 
       parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
@@ -269,7 +316,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       // Add experiment.
       addExperiment(experiment);
 
-    }else if(0 == strcmp("Pause", node.name())){
+    }else if(0 == strcmp("Pause", node.name())){ // Pause experiment.
       double pausetime = node.attribute("PauseTime").as_double();
       DistanceOrStressOrForce distanceorstressorforce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
 
@@ -311,7 +358,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       // Add experiment.
       addExperiment(experiment);
 
-    }else if(0 == strcmp("PauseResume", node.name())){
+    }else if(0 == strcmp("PauseResume", node.name())){ // Pause/Resume experiment.
       DistanceOrStressOrForce distanceorstressorforce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
 
       // Create pause resume experiment.
@@ -883,44 +930,6 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
   file.close();
 
   wxLogMessage(std::string("Saved experiment values to: " + pathname).c_str());
-  /*
-/**
- * @brief Returns the experiment settings as a std::string.
- * @return Experiment settings as std::string.
- */
-  /*
-std::string ExperimentValues::getExperimentSettings(void){
-  std::string str;
-  str = "Experiment: " + experimentTypeToString() + "\n";
-
-}
-
-  // Correct the vector size if needed.
-  if(m_StressForceValues.size() > m_DistanceValues.size()){
-    m_StressForceValues.resize(m_DistanceValues.size());
-  }else{
-    m_DistanceValues.resize(m_StressForceValues.size());
-  }
-
-  std::string stressforce;
-  if(StressOrForce::Stress == m_StressOrForce){
-    stressforce = "kPa";
-  }else{
-    stressforce = "N";
-  }
-
-  file << "Distance in mm; Time stamp for the distance in milli seconds; Stress/Force in " << stressforce << "; Time stamp for stress/force in micro seconds" << std::endl;
-
-
-  for(int i = 0; i < m_StressForceValues.size(); ++i){
-    file << m_DistanceValues[i].value << std::string(";")
-         << std::chrono::duration_cast<std::chrono::milliseconds>(m_DistanceValues[i].timestamp - m_StartTimePoint).count() << ";"
-         << m_StressForceValues[i].value << ";"
-         << std::chrono::duration_cast<std::chrono::milliseconds>(m_StressForceValues[i].timestamp - m_StartTimePoint).count() << std::endl;
-  }
-
-  file.close();
-  */
 }
 
 
@@ -958,7 +967,8 @@ void Protocols::checkFinishedExperiment(void){
 
       *m_PreloadDoneFlag = true;
       // Set preload distance.
-      m_PreloadDistance = m_MyFrame->getCurrentDistance();
+      //m_PreloadDistance = m_MyFrame->getCurrentDistance();
+      m_PreloadDistance = m_StageFrame->getCurrentDistance();
       wxLogMessage(std::string("Protocols: Preload distance: " + std::to_string(m_PreloadDistance * 0.00009921875/*mm per micro step*/)).c_str());
       // Set the prelod distance in all the experiments.
       for(auto i : m_Experiments){

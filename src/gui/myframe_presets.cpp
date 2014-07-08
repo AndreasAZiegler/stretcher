@@ -1,7 +1,14 @@
+/**
+ * @file myframe_presets.cpp
+ * @brief The main frame preset part.
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include "myframe.h"
 #include <libconfig.h++>
 
+// Namespaces
 using namespace std;
 using namespace libconfig;
 
@@ -13,7 +20,6 @@ void MyFrame::OnLoadPreset(wxFileDirPickerEvent& event){
   std::string filename = m_InitializePresetFilePicker->GetPath().ToStdString();
 
   // Check if file exists
-  //if(FILE *file = fopen(s_ConfigurationFileName, "r")){
   if(FILE *file = fopen(filename.c_str(), "r")){
     fclose(file);
 
@@ -45,6 +51,7 @@ void MyFrame::OnLoadPreset(wxFileDirPickerEvent& event){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
 
+    // Displays the values of the preset in the GUI.
     m_InitializeMaxPosShowStaticText->SetLabelText(to_string_wp(m_TempMaxPosDistance, 2));
     m_InitializeMountingLengthShowStaticText->SetLabelText(to_string_wp(m_TempMountingLength, 2));
     m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_TempMinDistanceLimit, 2));
@@ -68,6 +75,7 @@ void MyFrame::OnApplyPreset(wxCommandEvent& event){
     m_MinForceLimit = (m_TempMinForceLimit * m_InitializeCrossSectionSpinCtrl->GetValue() / 1000) * 10000.0;
   }
 
+  // Applies parameters of the preset.
   m_StageFrame->setMaxDistanceLimit(m_TempMaxDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
   m_StageFrame->setMinDistanceLimit(m_TempMinDistanceLimit);
@@ -82,10 +90,11 @@ void MyFrame::OnApplyPreset(wxCommandEvent& event){
 }
 
 /**
- * @brief Method which will be executed, when the user saves a preset.
+ * @brief Method which will be executed, when the user saves a preset. Opens a file dialog and then saves the preset.
  * @param event Occuring event
  */
 void MyFrame::OnSavePreset(wxCommandEvent& event){
+
   wxFileDialog saveFileDialog(this, _("Save current parameters as preset"), "", "", "Preset files (*.cfg)|*.cfg", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 
   if(saveFileDialog.ShowModal() == wxID_CANCEL){

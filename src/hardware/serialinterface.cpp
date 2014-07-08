@@ -1,13 +1,19 @@
+/**
+ * @file serialinterface.cpp
+ * @brief The serial interface base class.
+ * @author Andreas Ziegler
+ */
 
 // Includes
 #include "serialinterface.h"
 
+// Name spaces
 using namespace std;
 
 /**
- * @brief Initialises the com port and the baud rate and creates the wxSerialPort
- * @param Port com port
- * @param Baudrate baudrate
+ * @brief Initialises the baud rate
+ * @param type Type
+ * @param Baudrate Baudrate
  */
 SerialInterface::SerialInterface(UpdatedValuesReceiver::ValueType type, unsigned int baudrate)
   : m_Baudrate(baudrate)

@@ -1,3 +1,8 @@
+/**
+ * @file serialinterface.h
+ * @brief The serial interface base class.
+ * @author Andreas Ziegler
+ */
 
 #ifndef SERIALINTERFACE_H
 #define SERIALINTERFACE_H
@@ -8,16 +13,18 @@
 #include <string>
 #include "../updatedvaluesreceiver.h"
 
-/** Abstract base class for serial communication.
- @details We use wxCTB as serial port library to ease up the handling.
+/**
+ * @class SerialInterface serialinterface.h "hardware/serialinterface.h"
+ * @brief Abstract base class for serial communication.
+ * @details We use wxCTB as serial port library to ease up the handling.
  */
 class SerialInterface
 {
   public:
     /**
-     * @brief Initialises the com port and the baud rate and creates the wxSerialPort
-     * @param Port com port
-     * @param Baudrate baudrate
+     * @brief Initialises the baud rate
+     * @param type Type
+     * @param Baudrate Baudrate
      */
     SerialInterface(UpdatedValuesReceiver::ValueType type, unsigned int baudrate = 115200);
 
@@ -37,12 +44,12 @@ class SerialInterface
     virtual void disconnect();
 
   protected:
-    wxSerialPort	m_SerialPort;  									/**< The serial port object */
-    unsigned int  m_Baudrate;    									/**< Serial port baud rate */
-    std::mutex m_AccessSerialInterfaceMutex;			/**< Mutex to protect serial interface of simultanously access. */
-    std::mutex m_WritingSerialInterfaceMutex;			/**< Mutex to protect serial interface of simultanously writing. */
-    std::mutex m_ReadingSerialInterfaceMutex;			/**< Mutex to protect serial interface of simultanously reading. */
-    UpdatedValuesReceiver::ValueType m_Type;			/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
+    wxSerialPort	m_SerialPort;  											/**< The serial port object */
+    unsigned int  m_Baudrate;    											/**< Serial port baud rate */
+    std::mutex m_AccessSerialInterfaceMutex;					/**< Mutex to protect serial interface of simultanously access. */
+    std::mutex m_WritingSerialInterfaceMutex;					/**< Mutex to protect serial interface of simultanously writing. */
+    std::mutex m_ReadingSerialInterfaceMutex;					/**< Mutex to protect serial interface of simultanously reading. */
+    UpdatedValuesReceiver::ValueType m_Type;					/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
 
   private:
     SerialInterface(const SerialInterface&) = delete; /**< Don't use (undefined symbol) */

@@ -1,3 +1,10 @@
+/**
+ * @file xh_wxspinctrldoublexmlhandler.cpp
+ * @brief The XML handler for the wxSpinCtrlDouble.
+ * @author Andreas Ziegler
+ */
+
+// Incloudes
 #include <wx/defs.h>
 #include <wx/spinctrl.h>
 #include "xh_wxspinctrldoublexmlhandler.h"
@@ -5,6 +12,9 @@
 // Register with wxWidgets' dynamic class subsystem.
 IMPLEMENT_DYNAMIC_CLASS(wxSpinCtrlDoubleXmlHandler, wxXmlResourceHandler)
 
+/**
+ * @brief Adds support for all wxWidgets class styles.
+ */
 wxSpinCtrlDoubleXmlHandler::wxSpinCtrlDoubleXmlHandler()
   : wxXmlResourceHandler()
 {
@@ -17,6 +27,10 @@ wxSpinCtrlDoubleXmlHandler::wxSpinCtrlDoubleXmlHandler()
   //     XRC_ADD_STYLE(MYCONTROL_DEFAULT_STYLE);
 }
 
+/**
+ * @brief Creates the ressource
+ * @return The Object
+ */
 wxObject *wxSpinCtrlDoubleXmlHandler::DoCreateResource()
 {
     // the following macro will init a pointer named "control"
@@ -67,6 +81,11 @@ wxObject *wxSpinCtrlDoubleXmlHandler::DoCreateResource()
         return(control);
 }
 
+/**
+ * @brief Tells the XRC system that this handler can parse the tags.
+ * @param node The XML node
+ * @return True it the handler can parse the tags / False otherwise
+ */
 bool wxSpinCtrlDoubleXmlHandler::CanHandle(wxXmlNode *node)
 {
   // this function tells XRC system that this handler can parse

@@ -1,3 +1,8 @@
+/**
+ * @file messagehandler.h
+ * @brief The message handler base class.
+ * @author Andreas Ziegler
+ */
 
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
@@ -11,11 +16,8 @@
 #include <list>
 #include <../updatedvaluessender.h>
 
-// Method pointer typedef
-//typedef void (UpdatedValuesReceiver::*updateValue)(lont, UpdatedValuesReceiver::ValueType);
-//typedef std::function<void(long, UpdatedValuesReceiver::ValueType)> mp;
-
 /**
+ * @class MessageHandler messagehandler.h "hardware/messagehandler.h"
  * @brief Abstract class for the message handler
  */
 class MessageHandler : virtual public UpdatedValuesSender
@@ -23,8 +25,13 @@ class MessageHandler : virtual public UpdatedValuesSender
   public:
 
     /**
-     * @brief Initializes the pointer to the serial port.
+     * @brief Initializes all the needed variables.
      * @param serialPort Pointer to the serial port owned by the serial interface class
+     * @param type Type
+     * @param readingSerialInterfaceMutex Pointer to the mutex protecting the serial port access.
+     * @param waitmessagehandler Pointer to the condition variable to wait for message handler.
+     * @param waitmessagehandlermutex Pointer to the mutex to protect waitmessagehandler.
+     * @param messagehandlerfinishednr Pointer to the amount of finished message handlers.
      */
     MessageHandler(wxSerialPort *serialPort,
                    UpdatedValuesReceiver::ValueType type,
@@ -58,9 +65,9 @@ class MessageHandler : virtual public UpdatedValuesSender
     UpdatedValuesReceiver::ValueType m_Type;																					/**< Defines if serial interface represents linear stage 1, 2 or the force sensor */
     std::mutex *m_ReadingSerialInterfaceMutex;																				/**< Pointer to the mutex to protect serial interface of simultanously writing. */
     bool m_ExitFlag;																																	/**< Flag which indicates that the thread should stop */
-    std::shared_ptr<std::condition_variable> m_WaitMessageHandler;
-    std::shared_ptr<std::mutex> m_WaitMessageHandlerMutex;
-    std::shared_ptr<int> m_MessageHandlersFinishedNumber;
+    std::shared_ptr<std::condition_variable> m_WaitMessageHandler;										/**< Pointer to the condition variable to indicate, that the message handler is finished. */
+    std::shared_ptr<std::mutex> m_WaitMessageHandlerMutex;														/**< Pointer to the mutex to protect m_WaitMessageHandler. */
+    std::shared_ptr<int> m_MessageHandlersFinishedNumber;															/**< Pointer to the amount of finished message handlers. */
 
 };
 

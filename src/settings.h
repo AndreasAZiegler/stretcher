@@ -18,6 +18,9 @@ class Settings
      */
     Settings();
 
+    /**
+     * @brief Write settings to the configuration file.
+     */
     ~Settings();
 
     /**
@@ -356,7 +359,7 @@ class Settings
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
      */
-    void setLinMot1ComPort(std::string comPort){
+    void setLinStage1ComPort(std::string comPort){
       m_LinMot1ComPort = comPort;
     }
 
@@ -373,7 +376,7 @@ class Settings
      * @param comPort com port as a string.
      * @return true if sucessfull, false otherwise.
      */
-    void setLinMot2ComPort(std::string comPort){
+    void setLinStage2ComPort(std::string comPort){
       m_LinMot2ComPort = comPort;
     }
 
