@@ -785,16 +785,13 @@ void MyFrame::loadStoredPositions(void){
  * @param event Occuring event
  */
 void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
+  //m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
   /*
-  (m_LinearStages->at(0))->home();
-  (m_LinearStages->at(1))->home();
-  */
-  // Reset limit
-  m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
   m_StageFrame->setMaxDistanceLimit(153);
   m_StageFrame->setMinDistanceLimit(0);
+  */
 
-  MyHomeStages *homestages = new MyHomeStages(m_LinearStages, this);
+  MyHomeStages *homestages = new MyHomeStages(m_StageFrame, this, this);
   homestages->Show();
 }
 

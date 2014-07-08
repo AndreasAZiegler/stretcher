@@ -115,6 +115,14 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void updateStoragePath(std::string path);
 
     /**
+     * @brief Sets the maximum distance limit.
+     * @param maxdistancelimit The maximum distance limit.
+     */
+    void setMaxDistanceLimit(double maxdistancelimit){
+      m_MaxDistanceLimit = maxdistancelimit;
+    }
+
+    /**
      * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
      * @param event Occuring event
      */
