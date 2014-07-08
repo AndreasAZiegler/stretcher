@@ -686,6 +686,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [kPa]:");
     m_ForceUnit = wxT(" kPa");
 
+    // If the graph is active.
     if(true == m_ShowGraphFlag){
       wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
       m_Graph->DelLayer(m_Y1Axis.get());
@@ -714,6 +715,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [N]:");
     m_ForceUnit = wxT(" N");
 
+    // If the graph is active.
     if(true == m_ShowGraphFlag){
       wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
       m_Graph->DelLayer(m_Y1Axis.get());
@@ -762,11 +764,13 @@ void MyFrame::loadStoredPositions(void){
  */
 void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
   // Reset limit
-  m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
+  //m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
+  /*
   m_StageFrame->setMaxDistanceLimit(153);
   m_StageFrame->setMinDistanceLimit(0);
+  */
 
-  MyHomeStages *homestages = new MyHomeStages(m_LinearStages, this);
+  MyHomeStages *homestages = new MyHomeStages(m_StageFrame, this, this);
   homestages->Show();
 }
 

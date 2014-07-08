@@ -114,12 +114,17 @@ class StageFrame : virtual public UpdatedValuesReceiver
     /**
      * @brief Stops the stage frame.
      */
-    void stop();
+    void stop(void);
 
     /**
      * @brief Is executed by a linear stage messsage handler to indicate, that one motor stopped.
      */
-    void stopped();
+    void stopped(void);
+
+    /**
+     * @brief Sends linear stage to the home positin.
+     */
+    void home(void);
 
     /**
      * @brief Sets the maximum position of the stages.
