@@ -848,6 +848,9 @@ void MyFrame::OnSetSensitivities(wxCommandEvent& event){
 
   m_DistanceSensitivity = m_LengthsDistanceSensitivitySpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
 
+  m_Settings->setForceStressSensitivity(m_ForceStressSensitivity);
+  m_Settings->setDistanceSensitivity(m_DistanceSensitivity);
+
   m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_ForceStressSensitivity / 10000.0, 4));
   m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 4));
 
