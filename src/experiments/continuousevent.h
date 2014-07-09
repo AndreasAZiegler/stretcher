@@ -62,6 +62,13 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
                     mpFXYVector *minforcelimitvector,
                     mpFXYVector *maxdistancelimitvector,
                     mpFXYVector *mindistancelimitvector,
+                    MyFrame *myframe,
+                    long maxforcelimit,
+                    long minforcelimit,
+                    long maxdistancelimit,
+                    long mindistancelimit,
+                    long forcestressthreshold,
+                    long distancethreshold,
 
                     std::condition_variable *wait,
                     std::mutex *mutex,

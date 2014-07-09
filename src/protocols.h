@@ -78,7 +78,7 @@ class Protocols
               long maxdistance,
               long mindistance,
               long maxforce,
-              long minforce,
+              long minforce, long forcestresssensitivity, long distancesensitivity,
               mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
               mpFXYVector *stressForceGraph,
               mpFXYVector *distanceGraph,
@@ -107,6 +107,13 @@ class Protocols
      * @param crosssectionarea The cross section area.
      */
     void setCrossSectionArea(double crosssectionarea);
+
+    /**
+     * @brief Sets the new sensitivities.
+     * @param forcestresssensitivity The force/stress sensitivity.
+     * @param distancesensitivity The distance sensitivity.
+     */
+    void setSensitivities(long forcestresssensitivity, long distancesensitivity);
 
     /**
      * @brief Load a protocol from a file.
@@ -151,6 +158,16 @@ class Protocols
      * @brief Get the preview values.
      */
     void getPreviewValues(void);
+
+    /**
+     * @brief Get the values for the limit check.
+     */
+    void getLimitValues(void);
+
+    /**
+     * @brief Get the values from the experiments.
+     */
+    void getValues(void);
 
     /**
      * @brief Runs the protocol.
@@ -274,6 +291,8 @@ class Protocols
     long m_MinDistanceLimit;																								/**< The minimal position for the stages */
     long m_MaxForceLimit;																										/**< The maximal allowed force. */
     long m_MinForceLimit;																										/**< The minimal allowed force. */
+    long m_ForceStressSensitivity;																					/**< The force/stress sensitivity. */
+    long m_DistanceSensitivity;																							/**< The distance sensitivity. */
     std::vector<std::shared_ptr<ExperimentValues>> m_ExperimentValues;			/**< Vector containing the pointers to the experiment values. */
     std::vector<Experiment::PreviewValue> m_PreviewValues;									/**< Vector containing the preview values. */
     std::vector<double> m_StressForcePreviewValues;													/**< Vector containing the stress/force preview values. */

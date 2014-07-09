@@ -363,6 +363,22 @@ class Settings
     }
 
     /**
+     * @brief Returns the force/stress sensitivity.
+     * @return The force/stress sensitivity.
+     */
+    long getForceStressSensitivity(void){
+      return(m_ForceStressSensitivity);
+    }
+
+    /**
+     * @brief Returns the distance sensitivity.
+     * @return The distance sensitivity.
+     */
+    long getDistanceSensitivity(void){
+      return(m_DistanceSensitivity);
+    }
+
+    /**
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
      */
@@ -523,6 +539,22 @@ class Settings
       m_MaxForceLimit = maxforcelimit;
     }
 
+    /**
+     * @brief Sets the force/stress sensitivity.
+     * @param forcestresssensitivity Force/stress sensitivity.
+     */
+    void setForceStressSensitivity(long forcestresssensitivity){
+      m_ForceStressSensitivity = forcestresssensitivity;
+    }
+
+    /**
+     * @brief Sets the distance sensitivity
+     * @param distancesensitivity Distance sensitivity.
+     */
+    void setDistanceSensitivity(long distancesensitivity){
+      m_DistanceSensitivity = distancesensitivity;
+    }
+
   private:
 
     libconfig::Config m_CurrentConfig;												/**< Current configuration */
@@ -586,6 +618,8 @@ class Settings
     libconfig::Setting* m_MaxDistanceLimitSetting;						/**< The setting for the maximal distance limit. */
     libconfig::Setting* m_MinForceLimitSetting;								/**< The setting for the minimal force limit. */
     libconfig::Setting* m_MaxForceLimitSetting;								/**< The setting for the maximal force limit. */
+    libconfig::Setting* m_ForceStressSensitivitySetting;			/**< The setting for the force/stress sensitivity. */
+    libconfig::Setting* m_DistanceSensitivitySetting;					/**< The setting for the distance sensitivity. */
 
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;															/**< The com port for the second linear stage motor */
@@ -635,6 +669,8 @@ class Settings
     long long m_MaxDistanceLimit;															/**< The maximal distance limit. */
     long long m_MinForceLimit;																/**< The minimal force limit. */
     long long m_MaxForceLimit;																/**< The maximal force limit. */
+    long long m_ForceStressSensitivity;												/**< The force/stress sensitivity. */
+    long long m_DistanceSensitivity;													/**< The distance sensitivity. */
 
 };
 

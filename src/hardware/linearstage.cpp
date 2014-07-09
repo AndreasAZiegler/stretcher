@@ -277,7 +277,7 @@ void LinearStage::setCurrentPosition(long position){
 /**
  * @brief Sends linear stage to the home positin.
  */
-void LinearStage::home(){
+void LinearStage::home(void){
   char buffer[6];
   char command[6] = "";
 
@@ -320,7 +320,7 @@ void LinearStage::setSpeed(double speedinmm){
 /**
  * @brief Stops the linear stage.
  */
-void LinearStage::stop(){
+void LinearStage::stop(void){
   char buffer[6];
   char command[6] = "";
 

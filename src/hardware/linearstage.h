@@ -65,7 +65,7 @@ class LinearStage : public SerialInterface
     /**
      * @brief Sends linear stage to the home positin.
      */
-    void home();
+    void home(void);
 
     /**
      * @brief Sets the speed of the linear stage.
@@ -76,7 +76,7 @@ class LinearStage : public SerialInterface
     /**
      * @brief Stops the linear stage.
      */
-    void stop();
+    void stop(void);
 
     /**
      * @brief Moves the stage forwards at constant speed

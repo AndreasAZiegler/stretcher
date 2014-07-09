@@ -61,7 +61,7 @@ class MyPorts : public MyPorts_Base
  */
 enum
 {
-  ID_PortsOK = 59
+  ID_PortsOK = 60
 };
 
 #endif // MYPORTS_H
