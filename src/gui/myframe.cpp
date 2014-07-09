@@ -63,6 +63,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
   EVT_BUTTON(ID_LengthsDistanceGoTo, MyFrame::OnLimitsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
+  EVT_BUTTON(ID_SetSensitivities, MyFrame::OnSetSensitivities)
   EVT_BUTTON(ID_SetZeroDistance, MyFrame::OnLengthsZeroDistance)
   EVT_BUTTON(ID_SetZeroForceStress, MyFrame::OnLengthsZeroForceStress)
   EVT_BUTTON(ID_PreloadCancel, MyFrame::OnPreloadCancel)
@@ -847,7 +848,12 @@ void MyFrame::OnSetSensitivities(wxCommandEvent& event){
 
   m_DistanceSensitivity = m_LengthsDistanceSensitivitySpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
 
-  m_CurrentProtocol->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
+  m_InitializeForceStressSensitivityShowStaticText->SetLabelText(m_ForceStressSensitivity / 10000.0);
+  m_InitializeDistanceSensitivityShowStaticText->SetLabelText(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/);
+
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
+  }
 }
 
 /**
