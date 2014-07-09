@@ -173,7 +173,7 @@ protected:
  wxSpinCtrl* m_ContinuousStressForceStepsSpinCtrl;
  wxStaticText* m_staticText76;
  wxCheckBox* m_ContinuousStressForcePhotoCheckBox;
- wxPanel* m_ContinuousDistancePanel1;
+ wxPanel* m_ContinuousDistancePanel;
  wxStaticText* m_ContinuousDistanceVelocityStaticText;
  wxSpinCtrlDouble* m_ContinuousDistanceVelocitySpinCtrl;
  wxPanel* m_ContinuousDistancePanel21;
@@ -397,7 +397,7 @@ private:
   m_ContinuousStressForceStepsSpinCtrl = XRCCTRL(*this,"m_ContinuousStressForceStepsSpinCtrl",wxSpinCtrl);
   m_staticText76 = XRCCTRL(*this,"m_staticText76",wxStaticText);
   m_ContinuousStressForcePhotoCheckBox = XRCCTRL(*this,"m_ContinuousStressForcePhotoCheckBox",wxCheckBox);
-  m_ContinuousDistancePanel1 = XRCCTRL(*this,"m_ContinuousDistancePanel1",wxPanel);
+  m_ContinuousDistancePanel = XRCCTRL(*this,"m_ContinuousDistancePanel",wxPanel);
   m_ContinuousDistanceVelocityStaticText = XRCCTRL(*this,"m_ContinuousDistanceVelocityStaticText",wxStaticText);
   m_ContinuousDistanceVelocitySpinCtrl = XRCCTRL(*this,"m_ContinuousDistanceVelocitySpinCtrl",wxSpinCtrlDouble);
   m_ContinuousDistancePanel21 = XRCCTRL(*this,"m_ContinuousDistancePanel21",wxPanel);
@@ -476,6 +476,5 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void 
-InitXmlResource();
+void InitXmlResource();
 #endif

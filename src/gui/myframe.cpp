@@ -1148,7 +1148,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnContinuousStressForce(wxCommandEvent& event){
-  m_ContinuousDistancePanel1->Show(false);
+  m_ContinuousDistancePanel->Show(false);
   m_ContinuousStressForcePanel->Show(true);
   m_ContinuousPanel21->Layout();
 }
@@ -1159,7 +1159,7 @@ void MyFrame::OnContinuousStressForce(wxCommandEvent& event){
  */
 void MyFrame::OnContinuousDistance(wxCommandEvent& event){
   m_ContinuousStressForcePanel->Show(false);
-  m_ContinuousDistancePanel1->Show(true);
+  m_ContinuousDistancePanel->Show(true);
   m_ContinuousPanel21->Layout();
 }
 
@@ -1180,6 +1180,9 @@ void MyFrame::OnContinuousMaxValue(wxCommandEvent& event){
   m_ContinuousDistanceMaxValueStaticText->Show(true);
   m_ContinuousDistanceMaxValueSpinCtrl->Show(true);
   m_ContinuousDistancePanel23->Show(true);
+
+  m_ContinuousStressForcePanel->Layout();
+  m_ContinuousDistancePanel->Layout();
 }
 
 /**
@@ -1200,7 +1203,8 @@ void MyFrame::OnContinuousSteps(wxCommandEvent& event){
   m_ContinuousDistanceStepsStaticText->Show(true);
   m_ContinuousDistanceStepsSpinCtrl->Show(true);
 
-  m_ContinuousPanel
+  m_ContinuousStressForcePanel->Layout();
+  m_ContinuousDistancePanel->Layout();
 }
 
 /**
@@ -1888,7 +1892,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
 
         if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
           m_ContinuousStressForcePanel->Show(false);
-          m_ContinuousDistancePanel1->Show(true);
+          m_ContinuousDistancePanel->Show(true);
           m_ContinuousPanel21->Layout();
 
           m_ContinuousStressForceRadioBtn->SetValue(false);
@@ -1929,7 +1933,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
           }
 
         }else{
-          m_ContinuousDistancePanel1->Show(false);
+          m_ContinuousDistancePanel->Show(false);
           m_ContinuousStressForcePanel->Show(true);
           m_ContinuousPanel21->Layout();
 
