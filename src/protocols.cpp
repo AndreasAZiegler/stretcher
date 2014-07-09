@@ -496,11 +496,10 @@ void Protocols::getLimitValues(void){
       m_DistancePreviewValues.push_back(i.value);
       m_DistanceTimePreviewValues.push_back(i.timepoint);
     } else if(DistanceOrStressOrForce::Force ==  i.distanceOrForce){
-        ---------- TODO TODO ----------------
-      m_StressForcePreviewValues.push_back(i.value / 10000.0);
+      m_StressForcePreviewValues.push_back(i.value);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     } else if(DistanceOrStressOrForce::Stress ==  i.distanceOrForce){
-      m_StressForcePreviewValues.push_back((i.value / 10.0) / m_Area);
+      m_StressForcePreviewValues.push_back(i.value * m_Area / 1000);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
   }
@@ -686,8 +685,8 @@ void Protocols::process(void){
  * @brief Checks if protocol exceeds some limits.
  */
 bool Protocols::checkProtocol(void){
-  // Get the preview values.
-  getPreviewValues();
+  // Get the values for checking limits.
+  getLimitValues();
 
   double maxforcelimit = m_MaxForceLimit / 10000.0;
   double minforcelimit = m_MinForceLimit / 10000.0;
@@ -695,14 +694,14 @@ bool Protocols::checkProtocol(void){
   double mindistancelimit = m_MinDistanceLimit * 0.00009921875/*mm per micro step*/;
 
   for(double i : m_StressForcePreviewValues){
-    //if((i > (m_MaxForceLimit)) || (i < (m_MinForceLimit))){
-    if((i > (maxforcelimit)) || (i < (minforcelimit))){
+    if((i > (m_MaxForceLimit)) || (i < (m_MinForceLimit))){
+    //if((i > (maxforcelimit)) || (i < (minforcelimit))){
       return(false);
     }
   }
   for(double i : m_DistancePreviewValues){
-    //if((i > (m_MaxDistanceLimit)) || (i < (m_MinDistanceLimit))){
-    if((i > (maxdistancelimit)) || (i < (mindistancelimit))){
+    if((i > (m_MaxDistanceLimit)) || (i < (m_MinDistanceLimit))){
+    //if((i > (maxdistancelimit)) || (i < (mindistancelimit))){
       return(false);
     }
   }
