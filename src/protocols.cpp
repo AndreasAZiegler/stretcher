@@ -467,15 +467,7 @@ void Protocols::makePreview(void){
  * @brief Get the preview values.
  */
 void Protocols::getPreviewValues(void){
-  m_DistancePreviewValues.clear();
-  m_DistanceTimePreviewValues.clear();
-  m_StressForcePreviewValues.clear();
-  m_StressForceTimePreviewValues.clear();
-
-  // Collect the preview points from the single experiments.
-  for(int i = 0; i < m_Experiments.size(); ++i){
-    m_Experiments[i]->getPreview(m_PreviewValues);
-  }
+  getValues();
 
   // Split preview point into stressforce and distance points.
   for(auto i : m_PreviewValues){
@@ -489,6 +481,43 @@ void Protocols::getPreviewValues(void){
       m_StressForcePreviewValues.push_back((i.value / 10.0) / m_Area);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
+  }
+}
+
+/**
+* @brief Get the values for the limit check.
+*/
+void Protocols::getLimitValues(void){
+  getValues();
+
+  // Split preview point into stressforce and distance points.
+  for(auto i : m_PreviewValues){
+    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
+      m_DistancePreviewValues.push_back(i.value);
+      m_DistanceTimePreviewValues.push_back(i.timepoint);
+    } else if(DistanceOrStressOrForce::Force ==  i.distanceOrForce){
+        ---------- TODO TODO ----------------
+      m_StressForcePreviewValues.push_back(i.value / 10000.0);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    } else if(DistanceOrStressOrForce::Stress ==  i.distanceOrForce){
+      m_StressForcePreviewValues.push_back((i.value / 10.0) / m_Area);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    }
+  }
+}
+
+/**
+* @brief Get the values from the experiments.
+*/
+void Protocols::getValues(void){
+  m_DistancePreviewValues.clear();
+  m_DistanceTimePreviewValues.clear();
+  m_StressForcePreviewValues.clear();
+  m_StressForceTimePreviewValues.clear();
+
+  // Collect the preview points from the single experiments.
+  for(int i = 0; i < m_Experiments.size(); ++i){
+    m_Experiments[i]->getPreview(m_PreviewValues);
   }
 }
 
@@ -659,6 +688,7 @@ void Protocols::process(void){
 bool Protocols::checkProtocol(void){
   // Get the preview values.
   getPreviewValues();
+
   double maxforcelimit = m_MaxForceLimit / 10000.0;
   double minforcelimit = m_MinForceLimit / 10000.0;
   double maxdistancelimit = m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/;

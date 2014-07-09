@@ -113,6 +113,16 @@ class Protocols
     void getPreviewValues(void);
 
     /**
+     * @brief Get the values for the limit check.
+     */
+    void getLimitValues(void);
+
+    /**
+     * @brief Get the values from the experiments.
+     */
+    void getValues(void);
+
+    /**
      * @brief Runs the protocol.
      */
     void runProtocol(void);
