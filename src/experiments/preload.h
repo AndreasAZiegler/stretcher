@@ -46,11 +46,6 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
             mpFXYVector *minforcelimitvector,
             mpFXYVector *maxdistancelimitvector,
             mpFXYVector *mindistancelimitvector,
-            MyFrame *myframe,
-            long maxforcelimit,
-            long minforcelimit,
-            long maxdistancelimit,
-            long mindistancelimit,
             long forcestressthreshold,
             long distancethreshold,
 

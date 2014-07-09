@@ -32,7 +32,6 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
      * @param pausetime The pause time in s.
      */
     Pause(ExperimentParameters experimentparameters,
-          std::string path,
           mpFXYVector *forceStressDistanceGraph,
           mpFXYVector *forceStressDisplacementGraph,
           std::mutex *vectoraccessmutex,

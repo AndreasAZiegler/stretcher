@@ -31,7 +31,6 @@ class PauseResume : public Experiment, virtual public UpdatedValuesReceiver
      * @param *mutex Pointer to the mutex.
      */
     PauseResume(ExperimentParameters experimentparameters,
-                std::string path,
                 mpFXYVector *forceStressDistanceGraph,
                 mpFXYVector *forceStressDisplacementGraph,
                 std::mutex *vectoraccessmutex,

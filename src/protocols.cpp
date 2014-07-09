@@ -200,11 +200,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                          m_MinStressForceLimitGraph,
                                                          m_MaxDistanceLimitGraph,
                                                          m_MinDistanceLimitGraph,
-                                                         m_MyFrame,
-                                                         m_MaxForceLimit,
-                                                         m_MinForceLimit,
-                                                         m_MaxDistanceLimit,
-                                                         m_MinDistanceLimit,
                                                          m_ForceStressSensitivity,
                                                          m_DistanceSensitivity,
 
@@ -261,19 +256,11 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                               m_MinStressForceLimitGraph,
                                                               m_MaxDistanceLimitGraph,
                                                               m_MinDistanceLimitGraph,
-                                                              m_MyFrame,
-                                                              m_MaxForceLimit,
-                                                              m_MinForceLimit,
-                                                              m_MaxDistanceLimit,
-                                                              m_MinDistanceLimit,
                                                               m_ForceStressSensitivity,
                                                               m_DistanceSensitivity,
 
                                                               m_Wait,
                                                               m_WaitMutex,
-                                                              m_StagesStoppedFlag,
-                                                              m_StagesStoppedMutex,
-
 
                                                               parameters));
 
@@ -324,18 +311,11 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                                  m_MinStressForceLimitGraph,
                                                                  m_MaxDistanceLimitGraph,
                                                                  m_MinDistanceLimitGraph,
-                                                                 m_MyFrame,
-                                                                 m_MaxForceLimit,
-                                                                 m_MinForceLimit,
-                                                                 m_MaxDistanceLimit,
-                                                                 m_MinDistanceLimit,
                                                                  m_ForceStressSensitivity,
                                                                  m_DistanceSensitivity,
 
                                                                  m_Wait,
                                                                  m_WaitMutex,
-                                                                 m_StagesStoppedFlag,
-                                                                 m_StagesStoppedMutex,
 
                                                                  parameters));
 
@@ -369,7 +349,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       experimentparameters.area = m_Area;
       std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
 
-                                                       m_StoragePath,
                                                        m_ForceStressDistanceGraph,
                                                        m_ForceStressDisplacementGraph,
                                                        m_VectorLayerMutex,
@@ -405,7 +384,6 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       experimentparameters.area = m_Area;
       std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
 
-                                                             m_StoragePath,
                                                              m_ForceStressDistanceGraph,
                                                              m_ForceStressDisplacementGraph,
                                                              m_VectorLayerMutex,

@@ -26,7 +26,6 @@
  */
 PauseResume::PauseResume(ExperimentParameters experimentparameters,
 
-                         std::string path,
                          mpFXYVector *forceStressDistanceGraph,
                          mpFXYVector *forceStressDisplacementGraph,
                          std::mutex *vectoraccessmutex,

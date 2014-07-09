@@ -983,11 +983,6 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                        &m_MinStressForceLimitGraph,
                                                        &m_MaxDistanceLimitGraph,
                                                        &m_MinDistanceLimitGraph,
-                                                       this,
-                                                       m_MaxForceLimit,
-                                                       m_MinForceLimit,
-                                                       m_MaxDistanceLimit,
-                                                       m_MinDistanceLimit,
                                                        m_ForceStressSensitivity,
                                                        m_DistanceSensitivity,
 
@@ -1143,18 +1138,11 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                             &m_MinStressForceLimitGraph,
                                                             &m_MaxDistanceLimitGraph,
                                                             &m_MinDistanceLimitGraph,
-                                                            this,
-                                                            m_MaxForceLimit,
-                                                            m_MinForceLimit,
-                                                            m_MaxDistanceLimit,
-                                                            m_MinDistanceLimit,
                                                             m_ForceStressSensitivity,
                                                             m_DistanceSensitivity,
 
                                                             &m_Wait,
                                                             &m_WaitMutex,
-                                                            &m_StagesStoppedFlag,
-                                                            &m_StagesStoppedMutex,
 
                                                             parameters));
 
@@ -1367,18 +1355,11 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                                &m_MinStressForceLimitGraph,
                                                                &m_MaxDistanceLimitGraph,
                                                                &m_MinDistanceLimitGraph,
-                                                               this,
-                                                               m_MaxForceLimit,
-                                                               m_MinForceLimit,
-                                                               m_MaxDistanceLimit,
-                                                               m_MinDistanceLimit,
                                                                m_ForceStressSensitivity,
                                                                m_DistanceSensitivity,
 
                                                                &m_Wait,
                                                                &m_WaitMutex,
-                                                               &m_StagesStoppedFlag,
-                                                               &m_StagesStoppedMutex,
 
                                                                parameters));
 
@@ -1644,7 +1625,6 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   experimentparameters.area = m_Area;
   std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
 
-                                                   m_StoragePath,
                                                    &m_ForceStressDistanceGraph,
                                                    &m_ForceStressDisplacementGraph,
                                                    &m_VectorLayerMutex,
@@ -1694,7 +1674,6 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
   experimentparameters.area = m_Area;
   std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
 
-                                                         m_StoragePath,
                                                          &m_ForceStressDistanceGraph,
                                                          &m_ForceStressDisplacementGraph,
                                                          &m_VectorLayerMutex,
