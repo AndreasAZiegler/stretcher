@@ -119,6 +119,7 @@ void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
   m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
   m_Ramp2FailureActiveFlag = parameters.ramp2failure;
   m_VelocityDistanceOrPercentage = parameters.velocityDistanceOrPercentage;
+  m_InitVelocity = parameters.velocity;
   m_Velocity = parameters.velocity;
   m_HoldTime = parameters.holdtime;
   m_IncrementDistanceOrPercentage = parameters.incrementDistanceOrPercentage;
@@ -260,28 +261,7 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
   params.increment = m_InitIncrement;
   params.maxValueDistanceOrPercentage = m_MaxValueDistanceOrPercentage;
   params.maxvalue = m_InitMaxValueLimit;
-
-  /*
-  switch(m_DistanceOrStressOrForce){
-    case DistanceOrStressOrForce::Distance:
-      params.increment = m_InitIncrement;
-      params.maxvalue = m_InitMaxValueLimit;
-      break;
-    case DistanceOrStressOrForce::Force:
-      //params.increment = m_Increment / 10000.0;
-      params.increment = m_InitIncrement;
-      params.maxvalue = m_InitMaxValueLimit;
-      break;
-    case DistanceOrStressOrForce::Stress:
-      //params.increment = m_Increment / 10000.0;
-      params.increment = m_InitIncrement;
-      params.maxvalue = m_InitMaxValueLimit;
-      break;
-  }
-  */
-
   params.stepsOrMaxValue = m_StepsOrMaxValue;
-
   params.steps = m_Steps;
   params.cycles = m_Cycles;
   params.behaviorAfterStop = m_BehaviorAfterStop;
