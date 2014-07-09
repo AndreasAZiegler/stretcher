@@ -69,8 +69,8 @@ Settings::Settings()
     m_MaxDistanceLimit(0),
     m_MinForceLimit(0),
     m_MaxForceLimit(0),
-    m_ForceStressSensitivity(0),
-    m_DistanceSensitivity(0)
+    m_ForceStressSensitivity(0.001 * 10000.0/*stress force threshold*/),
+    m_DistanceSensitivity(0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/)
 {
   readSettings();
 }

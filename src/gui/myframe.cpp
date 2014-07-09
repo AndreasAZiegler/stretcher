@@ -172,6 +172,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_LimitsLimitSetButton->SetId(ID_SetLimits);
   m_LengthsGoToButton->SetId((ID_LengthsDistanceGoTo));
   m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
+  m_LengthsSensitivityButton->SetId(ID_SetSensitivities);
   m_LengthsSetDistanceZeroButton->SetId(ID_SetZeroDistance);
   m_LengthsSetForceZeroButton->SetId(ID_SetZeroForceStress);
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
@@ -531,6 +532,8 @@ void MyFrame::startup(void){
   m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
   m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
+  m_LengthsForceStressSensitivitySpinCtrl->SetDigits(2);
+  m_LengthsDistanceSensitivitySpinCtrl->SetDigits(2);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
