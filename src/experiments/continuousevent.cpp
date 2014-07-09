@@ -679,8 +679,8 @@ void ContinuousEvent::process(Event event){
           }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
 
             // Reduce speed to a tenth if stages are close to the turn point.
-            if(2/*mm/s*/ > m_Velocity){
-              if((m_CurrentDistance - m_CurrentLimit) < (200 * m_DistanceThreshold)){
+            if(m_Velocity > 2/*mm/s*/){
+              if((m_CurrentDistance - m_CurrentLimit) < (100 * m_DistanceThreshold)){
                 if(false == m_DecreaseSpeedFlag){
                   m_DecreaseSpeedFlag = true;
                   {
@@ -691,7 +691,7 @@ void ContinuousEvent::process(Event event){
                 }
               }
               // Reduce speed to a tenth if stages are close to the turn point.
-              else if((m_CurrentLimit - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+              else if((m_CurrentLimit - m_CurrentDistance) < (100 * m_DistanceThreshold)){
                 if(false == m_DecreaseSpeedFlag){
                   m_DecreaseSpeedFlag = true;
                   {
@@ -708,7 +708,7 @@ void ContinuousEvent::process(Event event){
                 m_CurrentDirection = Direction::Forwards;
                 {
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->moveForward();
+                  m_StageFrame->moveForward(m_Velocity);
                 }
                 //std::cout << "ContinuousEvent moveForward." << std::endl;
               }
@@ -717,11 +717,17 @@ void ContinuousEvent::process(Event event){
                 m_CurrentDirection = Direction::Backwards;
                 {
                   std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->moveBackward();
+                  m_StageFrame->moveBackward(m_Velocity);
                 }
                 //std::cout << "ContinuousEvent moveBackward." << std::endl;
               }
             }else{
+
+              // Reset velocity.
+              {
+                std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                m_StageFrame->setSpeed(m_Velocity);
+              }
 
               // Perform hold if there is a hold time
               if(0 < m_HoldTime){
@@ -736,10 +742,6 @@ void ContinuousEvent::process(Event event){
                 t1.join();
 
                 wxLogMessage("ContinuousEvent: Holding over.");
-              }
-              {
-                std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                m_StageFrame->setSpeed(m_Velocity);
               }
 
               if((m_Steps - 1) <= m_CurrentStep){ // If it is the last step.
@@ -828,6 +830,7 @@ void ContinuousEvent::process(Event event){
                 //std::cout << "ContinuousEvent: current cycle: " << m_CurrentStep << ", total steps: " << m_Steps << std::endl;
                 // Update current limit.
                 m_CurrentLimit += m_Increment;
+                m_DecreaseSpeedFlag = false;
 
                 process(Event::evUpdate);
               }
@@ -870,29 +873,15 @@ void ContinuousEvent::process(Event event){
           if(0 < m_HoldTime){
             wxLogMessage(std::string("ContinuousEvent: Hold for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
 
-            /*
-            {
-              std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-              m_WaitActive = true;
-            }
-            */
             std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
             t1.join();
-            /*
-            {
-              std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-              m_WaitActive = false;
-            }
-            */
 
-            //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
             wxLogMessage("ContinuousEvent: Holding over.");
           }
 
           //m_CurrentDirection = Direction::Stop;
           wxLogMessage("ContinuousEvent: Go to runState");
           process(Event::evUpdate);
-          //m_CurrentDirection = Direction::Stop;
           //m_StageFrame->stop();
         }/*else{
           if((m_CurrentDistance - m_StartLength) > m_DistanceThreshold){
@@ -1031,6 +1020,7 @@ void ContinuousEvent::resetExperiment(void){
   m_CurrentState = stopState;
   m_CurrentDirection = Direction::Stop;
   m_CheckLimitsFlag = false;
+  m_DecreaseSpeedFlag = false;
   m_GageLength = m_DefaultGageLength;
 
   initParameters();
