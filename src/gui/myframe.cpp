@@ -685,6 +685,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
+    m_LengthsForceStressSensitivityStaticText->SetLabelText("Stress [kPa]");
     m_LengthsSetForceZeroButton->SetLabelText("Zero stress");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [kPa]:");
@@ -712,6 +713,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
+    m_LengthsForceStressSensitivityStaticText->SetLabelText("Force [N]");
     m_LengthsSetForceZeroButton->SetLabelText("Zero force");
     m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
@@ -851,8 +853,8 @@ void MyFrame::OnSetSensitivities(wxCommandEvent& event){
   m_Settings->setForceStressSensitivity(m_ForceStressSensitivity);
   m_Settings->setDistanceSensitivity(m_DistanceSensitivity);
 
-  m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_ForceStressSensitivity / 10000.0, 4));
-  m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 4));
+  m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_LengthsForceStressSensitivitySpinCtrl->GetValue(), 4));
+  m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_LengthsDistanceSensitivitySpinCtrl->GetValue(), 4));
 
   if(nullptr != m_CurrentProtocol){
     m_CurrentProtocol->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
