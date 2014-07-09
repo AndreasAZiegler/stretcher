@@ -532,8 +532,8 @@ void MyFrame::startup(void){
   m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
   m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
-  m_LengthsForceStressSensitivitySpinCtrl->SetDigits(2);
-  m_LengthsDistanceSensitivitySpinCtrl->SetDigits(2);
+  m_LengthsForceStressSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsDistanceSensitivitySpinCtrl->SetDigits(4);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
