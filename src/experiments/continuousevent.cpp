@@ -194,7 +194,6 @@ void ContinuousEvent::initParameters(void){
       }else if(StepsOrMaxValue::Steps == m_StepsOrMaxValue){
 
       }
-      // TODO TODO TODO Hold force/stress
     }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
       m_Increment = m_InitIncrement * m_Area * 10.0;
       m_HoldForce = m_InitHoldForce * m_Area * 10.0;
