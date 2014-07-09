@@ -289,6 +289,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnHomeLinearStages(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the set sensitivities.
+     * @param event Occuring event
+     */
+    void OnSetSensitivities(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the set length button.
      * @param event Occuring event
      */
@@ -625,6 +631,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     double m_TempMaxDistanceLimit;							/**< From the template loaded maximal distance limit. */
     double m_TempMinForceLimit;									/**< From the template loaded minimal force limit. */
     double m_TempMaxForceLimit;									/**< From the template loaded maximal force limit. */
+    double m_TempForceStressSensitivity;				/**< From the template loaded force/stress sensitivity. */
+    double m_TempDistanceSensitivity;						/**< From the template loaded distance sensitivity. */
     bool m_DistanceLimitExceededFlag;						/**< Indicates if a distance limit exceeded. */
     std::mutex m_DistanceLimitExceededMutex;		/**< Mutex to protect m_DistanceLimitExceededFlag. */
     bool m_ForceLimitExceededFlag;							/**< Indicates if a force limit exceeded. */
@@ -644,6 +652,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::mutex m_PreloadDoneMutex;							/**< Mutex to protect m_PreloadDoneFlag */
     bool m_MeasurementValuesRecordingFlag;			/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; /**< Mutex to protect m_MeasurementValuesRecordingFlag */
+    long m_ForceStressSensitivity;							/**< Force/stress sensitivity. */
+    long m_DistanceSensitivity;									/**< Distance sensitivity. */
     long m_MountingLength;											/**< The mounting length. */
     double m_TempMountingLength;								/**< From the template loaded mounting length. */
     long m_GageLength;													/**< Current gage length which will be the mounting length, the user defined distance or the preload distance. */
@@ -687,42 +697,43 @@ enum
   ID_SetLimits = 19,
   ID_LengthsDistanceGoTo = 20,
   ID_SetMountingLength = 21,
-  ID_SetZeroDistance = 22,
-  ID_SetZeroForceStress = 23,
-  ID_PreloadSpeedPercent = 24,
-  ID_PreloadSpeedMm = 25,
-  ID_PreloadCancel = 26,
-  ID_PreloadSendToProtocol = 27,
+  ID_SetSensitivities = 22,
+  ID_SetZeroDistance = 23,
+  ID_SetZeroForceStress = 24,
+  ID_PreloadSpeedPercent = 25,
+  ID_PreloadSpeedMm = 26,
+  ID_PreloadCancel = 27,
+  ID_PreloadSendToProtocol = 28,
 
-  ID_OneStepStressForce = 28,
-  ID_OneStepDistance = 29,
-  ID_OneStepCancel = 30,
-  ID_OneStepSendToProtocol = 31,
+  ID_OneStepStressForce = 29,
+  ID_OneStepDistance = 30,
+  ID_OneStepCancel = 31,
+  ID_OneStepSendToProtocol = 32,
 
-  ID_ContinuousStressForce = 32,
-  ID_ContinuousDistance = 33,
-  ID_ContinuousMaxValue = 34,
-  ID_ContinuousSteps = 35,
-  ID_ContinuousCancel = 36,
-  ID_ContinuousSendToProtocol = 37,
+  ID_ContinuousStressForce = 33,
+  ID_ContinuousDistance = 34,
+  ID_ContinuousMaxValue = 35,
+  ID_ContinuousSteps = 36,
+  ID_ContinuousCancel = 37,
+  ID_ContinuousSendToProtocol = 38,
 
-  ID_ClearLog = 38,
-  ID_SaveLog = 39,
-  ID_ClearGraph = 40,
-  ID_ExportCSV = 41,
-  ID_ExportPNG = 42,
-  ID_DeleteExperiment = 43,
-  ID_MoveUpExperiment = 44,
-  ID_MoveDownExperiment = 45,
-  ID_PauseExperiment = 46,
-  ID_PauseResumeExperiment = 47,
-  ID_LoopProtocol = 48,
-  ID_Preview = 49,
-  ID_RunProtocol = 50,
-  ID_StopProtocol = 51,
-  ID_SaveProtocol = 52,
-  ID_LoadProtocol = 53,
-  ID_MakePhoto = 54
+  ID_ClearLog = 39,
+  ID_SaveLog = 40,
+  ID_ClearGraph = 41,
+  ID_ExportCSV = 42,
+  ID_ExportPNG = 43,
+  ID_DeleteExperiment = 44,
+  ID_MoveUpExperiment = 45,
+  ID_MoveDownExperiment = 46,
+  ID_PauseExperiment = 47,
+  ID_PauseResumeExperiment = 48,
+  ID_LoopProtocol = 49,
+  ID_Preview = 50,
+  ID_RunProtocol = 51,
+  ID_StopProtocol = 52,
+  ID_SaveProtocol = 53,
+  ID_LoadProtocol = 54,
+  ID_MakePhoto = 55
 };
 
 #endif // MYFRAME_H

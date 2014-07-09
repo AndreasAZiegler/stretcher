@@ -38,6 +38,8 @@ Protocols::Protocols(wxListBox *listbox,
                      long mindistance,
                      long maxforce,
                      long minforce,
+                     long forcestresssensitivity,
+                     long distancesensitivity,
                      mpFXYVector *forceStressDistanceGraph,
                      mpFXYVector *forceStressDisplacementGraph,
                      mpFXYVector *stressForceGraph,
@@ -69,6 +71,8 @@ Protocols::Protocols(wxListBox *listbox,
     m_MinDistanceLimit(mindistance),
     m_MaxForceLimit(maxforce),
     m_MinForceLimit(minforce),
+    m_ForceStressSensitivity(forcestresssensitivity),
+    m_DistanceSensitivity(distancesensitivity),
     m_ForceStressDistanceGraph(forceStressDistanceGraph),
     m_ForceStressDisplacementGraph(forceStressDisplacementGraph),
     m_StressForcePreviewGraph(stressForceGraph),
@@ -146,6 +150,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                          m_MinForceLimit,
                                                          m_MaxDistanceLimit,
                                                          m_MinDistanceLimit,
+                                                         m_ForceStressSensitivity,
+                                                         m_DistanceSensitivity,
 
                                                          m_Wait,
                                                          m_WaitMutex,
@@ -204,6 +210,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                               m_MinForceLimit,
                                                               m_MaxDistanceLimit,
                                                               m_MinDistanceLimit,
+                                                              m_ForceStressSensitivity,
+                                                              m_DistanceSensitivity,
 
                                                               m_Wait,
                                                               m_WaitMutex,
@@ -264,6 +272,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                                  m_MinForceLimit,
                                                                  m_MaxDistanceLimit,
                                                                  m_MinDistanceLimit,
+                                                                 m_ForceStressSensitivity,
+                                                                 m_DistanceSensitivity,
 
                                                                  m_Wait,
                                                                  m_WaitMutex,
@@ -419,6 +429,20 @@ void Protocols::setCrossSectionArea(double crosssectionarea){
 
   for(auto i : m_ExperimentValues){
     i->setCrossSectionArea(m_Area);
+  }
+}
+
+/**
+ * @brief Sets the new sensitivities.
+ * @param forcestresssensitivity The force/stress sensitivity.
+ * @param distancesensitivity The distance sensitivity.
+ */
+void Protocols::setSensitivities(long forcestresssensitivity, long distancesensitivity){
+  m_ForceStressSensitivity = forcestresssensitivity;
+  m_DistanceSensitivity = distancesensitivity;
+
+  for(auto i : m_Experiments){
+    i->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
   }
 }
 

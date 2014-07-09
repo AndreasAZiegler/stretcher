@@ -131,6 +131,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceLimitExceededFlag(false),
     m_DisableDecreaseDistanceFlag(false),
     m_DisableIncreaseDistanceFlag(false),
+    m_TempForceStressSensitivity(0),
+    m_ForceStressSensitivity(0.001 * 10000.0),
+    m_TempDistanceSensitivity(0),
+    m_DistanceSensitivity(0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_GageLength(0),
     m_TempGageLength(0),
     m_MaxPosDistance(0),
@@ -589,6 +593,13 @@ void MyFrame::startup(void){
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
 
+    // Load sensitivities
+    m_ForceStressSensitivity = m_Settings->getForceStressSensitivity();
+    m_DistanceSensitivity = m_Settings->getDistanceSensitivity();
+    // Display sensitivities
+    m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_ForceStressSensitivity / 10000.0, 2));
+    m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 2));
+
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
     std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
     dialog->ShowModal();
@@ -821,6 +832,22 @@ void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user clicks on the set sensitivities.
+ * @param event Occuring event
+ */
+void MyFrame::OnSetSensitivities(wxCommandEvent& event){
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_ForceStressSensitivity = m_LengthsForceStressSensitivitySpinCtrl->GetValue() * 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_ForceStressSensitivity = (m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+  }
+
+  m_DistanceSensitivity = m_LengthsDistanceSensitivitySpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+
+  m_CurrentProtocol->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
+}
+
+/**
  * @brief Method wich will be executed, when the user clicks on the zero distance button.
  * @param event Occuring event
  */
@@ -967,6 +994,8 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                        m_MinForceLimit,
                                                        m_MaxDistanceLimit,
                                                        m_MinDistanceLimit,
+                                                       m_ForceStressSensitivity,
+                                                       m_DistanceSensitivity,
 
                                                        &m_Wait,
                                                        &m_WaitMutex,
@@ -1123,6 +1152,8 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                             m_MinForceLimit,
                                                             m_MaxDistanceLimit,
                                                             m_MinDistanceLimit,
+                                                            m_ForceStressSensitivity,
+                                                            m_DistanceSensitivity,
 
                                                             &m_Wait,
                                                             &m_WaitMutex,
@@ -1342,6 +1373,8 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                                m_MinForceLimit,
                                                                m_MaxDistanceLimit,
                                                                m_MinDistanceLimit,
+                                                               m_ForceStressSensitivity,
+                                                               m_DistanceSensitivity,
 
                                                                &m_Wait,
                                                                &m_WaitMutex,
@@ -2334,6 +2367,8 @@ void MyFrame::checkProtocol(void){
                                                                m_MinDistanceLimit,
                                                                m_MaxForceLimit,
                                                                m_MinForceLimit,
+                                                               m_ForceStressSensitivity,
+                                                               m_DistanceSensitivity,
 
                                                                &m_ForceStressDistanceGraph,
                                                                &m_ForceStressDisplacementGraph,

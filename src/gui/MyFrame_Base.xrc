@@ -81,7 +81,7 @@
 													<object class="wxPanel" name="m_InitializePanel21">
 														<style>wxSIMPLE_BORDER</style>
 														<object class="wxFlexGridSizer">
-															<rows>5</rows>
+															<rows>6</rows>
 															<cols>1</cols>
 															<vgap>0</vgap>
 															<hgap>0</hgap>
@@ -270,6 +270,55 @@
 																		<border>5</border>
 																		<object class="wxStaticText" name="m_InitializeMaxForceShowStaticText">
 																			<style>wxALIGN_LEFT</style>
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>1</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxFlexGridSizer">
+																	<rows>0</rows>
+																	<cols>4</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>0,1,2,3</growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeDistanceSensitivityStaticText">
+																			<label>Distance sensitivity [mm]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeDistanceSensitivityShowStaticText">
+																			<label></label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeForceStressSensitivityStaticText">
+																			<label>Force sensitivity [N]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_InitializeForceStressSensitivityShowStaticText">
 																			<label></label>
 																			<wrap>-1</wrap>
 																		</object>
@@ -619,6 +668,91 @@
 													<flag>wxEXPAND | wxALL</flag>
 													<border>5</border>
 													<object class="wxPanel" name="m_LengthsPanel22">
+														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
+														<object class="wxFlexGridSizer">
+															<rows>3</rows>
+															<cols>1</cols>
+															<vgap>0</vgap>
+															<hgap>0</hgap>
+															<growablecols>0</growablecols>
+															<growablerows>0,1,2</growablerows>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL</flag>
+																<border>5</border>
+																<object class="wxStaticText" name="m_LengthsSensitivityStaticText">
+																	<label>Please select the sensitivity for the force/stress and the distance according to the velocity.</label>
+																	<wrap>-1</wrap>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>1</option>
+																<flag>wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxFlexGridSizer">
+																	<rows>0</rows>
+																	<cols>4</cols>
+																	<vgap>0</vgap>
+																	<hgap>0</hgap>
+																	<growablecols>0,1,2,3</growablecols>
+																	<growablerows></growablerows>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LengthsForceStressSensitivityStaticText">
+																			<label>Force [N]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LengthsForceStressSensitivitySpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxALL|wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxStaticText" name="m_LengthsDistanceSensitivityStaticText">
+																			<label>Distance [mm]:</label>
+																			<wrap>-1</wrap>
+																		</object>
+																	</object>
+																	<object class="sizeritem">
+																		<option>0</option>
+																		<flag>wxEXPAND</flag>
+																		<border>5</border>
+																		<object class="wxSpinCtrlDouble" name="m_LengthsDistanceSensitivitySpinCtrl">
+																			<value>0</value>
+																			<min>0</min>
+																			<max>10</max>
+																		</object>
+																	</object>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<option>0</option>
+																<flag>wxALL|wxEXPAND</flag>
+																<border>5</border>
+																<object class="wxButton" name="m_LengthsSensitivityButton">
+																	<label>Set</label>
+																	<default>0</default>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+												<object class="sizeritem">
+													<option>1</option>
+													<flag>wxEXPAND | wxALL</flag>
+													<border>5</border>
+													<object class="wxPanel" name="m_LengthsPanel23">
 														<style>wxSIMPLE_BORDER|wxTAB_TRAVERSAL</style>
 														<object class="wxFlexGridSizer">
 															<rows>2</rows>

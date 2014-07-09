@@ -100,6 +100,13 @@ class Experiment
     virtual void setStartLength(void);
 
     /**
+     * @brief Sets the new sensitivities.
+     * @param forcestresssensitivity The force/stress sensitivity.
+     * @param distancesensitivity The distance sensitivity.
+     */
+    void setSensitivities(long forcestresssensitivity, long distancesensitivity);
+
+    /**
      * @brief Destructor
      */
     virtual ~Experiment();
@@ -171,8 +178,8 @@ class Experiment
     long m_MinForceLimit;												/**< Minimal force limit. */
     long m_MaxDistanceLimit;										/**< Maximal distance limit. */
     long m_MinDistanceLimit;										/**< Minimal distance limit. */
-    double m_ForceStressThreshold;							/**< Threshold for the comparison */
-    double m_DistanceThreshold;									/**< Threshold for the coparison of distances */
+    long m_ForceStressThreshold;								/**< Threshold for the comparison */
+    long m_DistanceThreshold;										/**< Threshold for the coparison of distances */
     Direction m_CurrentDirection;								/**< The current direction */
     ExperimentType m_ExperimentType;						/**< Type of the experiment */
     DistanceOrStressOrForce m_DistanceOrStressOrForce; /**< Defines if the experiment is distance of stress/force based. */

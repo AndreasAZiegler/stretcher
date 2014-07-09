@@ -78,3 +78,13 @@ void Experiment::setLimits(long mindistancelimit, long maxdistancelimit, long mi
 void Experiment::setStartLength(void){
   m_StartLength = m_CurrentDistance;
 }
+
+/**
+ * @brief Sets the new sensitivities.
+ * @param forcestresssensitivity The force/stress sensitivity.
+ * @param distancesensitivity The distance sensitivity.
+ */
+void Experiment::setSensitivities(long forcestresssensitivity, long distancesensitivity){
+  m_ForceStressThreshold = forcestresssensitivity;
+  m_DistanceThreshold = distancesensitivity;
+}
