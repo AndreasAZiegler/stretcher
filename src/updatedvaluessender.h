@@ -1,3 +1,9 @@
+/**
+ * @file updatedvaluessender.h
+ * @brief The update values sender.
+ * @author Andreas Ziegler
+ */
+
 #ifndef UPDATEDVALUESSENDER_H
 #define UPDATEDVALUESSENDER_H
 

@@ -1,12 +1,15 @@
+/**
+ * @file updatedvaluessender.cpp
+ * @brief The update values sender.
+ * @author Andreas Ziegler
+ */
+
+// Includes
 #include "updatedvaluessender.h"
 
-UpdatedValuesSender::UpdatedValuesSender()
-{
-}
+UpdatedValuesSender::UpdatedValuesSender(){}
 
-UpdatedValuesSender::~UpdatedValuesSender(){
-
-}
+UpdatedValuesSender::~UpdatedValuesSender(){}
 
 /**
  * @brief Registers the update methods, which will be called, when the value changes.

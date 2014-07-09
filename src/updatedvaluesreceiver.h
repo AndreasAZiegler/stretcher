@@ -1,12 +1,20 @@
+/**
+ * @file updatedvaluesreceiver.h
+ * @brief The update values receiver.
+ * @author Andreas Ziegler
+ */
+
 #ifndef UPDATEDVALUESRECEIVER_H
 #define UPDATEDVALUESRECEIVER_H
 
+// Includes
 #include <list>
 #include <functional>
 #include <chrono>
 #include "updatedvalues.h"
 
 /**
+ * @class UpdatedValuesReceiver updatedvaluesreceiver.h "updatedvaluesreceiver.h"
  * @brief Abstract class used as an interface, that the message handlers can use the updateValue() method of the receiver in a standard way.
  */
 class UpdatedValuesReceiver : virtual public UpdatedValues

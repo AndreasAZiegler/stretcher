@@ -1,9 +1,19 @@
+/**
+ * @file updatedvalues.h
+ * @brief The update values.
+ * @author Andreas Ziegler
+ */
+
 #ifndef UPDATEDVALUES_H
 #define UPDATEDVALUES_H
 
 // Includes
 #include <chrono>
 
+/**
+ * @class UpdatedValues updatedvalues.h "updatedvalues.h"
+ * @brief Common definitions for the updated values sub classes.
+ */
 class UpdatedValues
 {
   public:
@@ -17,7 +27,7 @@ class UpdatedValues
     };
 
     /**
-     * @brief Defines the 3 types of measurement values.
+     * @brief Defines the 4 types of measurement values.
      */
     enum class ValueType{
       Pos1 = 0,
