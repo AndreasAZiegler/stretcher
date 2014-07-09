@@ -529,22 +529,9 @@ void ContinuousEvent::process(Event event){
                 }
                 wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
 
-                /*
-                {
-                  std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-                  m_WaitActive = true;
-                }
-                */
                 std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
                 t1.join();
-                /*
-                {
-                  std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-                  m_WaitActive = false;
-                }
-                */
 
-                //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
                 wxLogMessage("ContinuousEvent: Holding over.");
               }
               {
@@ -688,29 +675,31 @@ void ContinuousEvent::process(Event event){
           }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
 
             // Reduce speed to a tenth if stages are close to the turn point.
-            if(((m_CurrentDistance) - m_CurrentLimit) < (200 * m_DistanceThreshold)){
-              if(false == m_DecreaseSpeedFlag){
-                m_DecreaseSpeedFlag = true;
-                {
-                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->setSpeed(m_Velocity/10);
+            if(2/*mm/s*/ > m_Velocity){
+              if((m_CurrentDistance - m_CurrentLimit) < (200 * m_DistanceThreshold)){
+                if(false == m_DecreaseSpeedFlag){
+                  m_DecreaseSpeedFlag = true;
+                  {
+                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                    m_StageFrame->setSpeed(m_Velocity/10);
+                  }
+                  wxLogMessage("ContinuousEvent: Reduced speed.");
                 }
-                wxLogMessage("ContinuousEvent: Reduced speed.");
               }
-            }
-            // Reduce speed to a tenth if stages are close to the turn point.
-            else if((m_CurrentLimit - (m_CurrentDistance)) < (200 * m_DistanceThreshold)){
-              if(false == m_DecreaseSpeedFlag){
-                m_DecreaseSpeedFlag = true;
-                {
-                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                  m_StageFrame->setSpeed(m_Velocity/10);
+              // Reduce speed to a tenth if stages are close to the turn point.
+              else if((m_CurrentLimit - m_CurrentDistance) < (200 * m_DistanceThreshold)){
+                if(false == m_DecreaseSpeedFlag){
+                  m_DecreaseSpeedFlag = true;
+                  {
+                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                    m_StageFrame->setSpeed(m_Velocity/10);
+                  }
+                  wxLogMessage("ContinuousEvent: Reduced speed.");
                 }
-                wxLogMessage("ContinuousEvent: Reduced speed.");
               }
             }
             //std::cout << "m_CurrentDistance : " << m_CurrentDistance << " m_CurrentLimit: " << (m_CurrentLimit) << std::endl;
-            if(((m_CurrentDistance) - m_CurrentLimit) > m_DistanceThreshold){
+            if((m_CurrentDistance - m_CurrentLimit) > m_DistanceThreshold){
               if((Direction::Backwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
                 m_CurrentDirection = Direction::Forwards;
                 {
@@ -719,7 +708,7 @@ void ContinuousEvent::process(Event event){
                 }
                 //std::cout << "ContinuousEvent moveForward." << std::endl;
               }
-            }else if((m_CurrentLimit - (m_CurrentDistance)) > m_DistanceThreshold){
+            }else if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
               if((Direction::Forwards == m_CurrentDirection) || (Direction::Stop == m_CurrentDirection)){ // Only start motor, if state changed
                 m_CurrentDirection = Direction::Backwards;
                 {
@@ -729,10 +718,26 @@ void ContinuousEvent::process(Event event){
                 //std::cout << "ContinuousEvent moveBackward." << std::endl;
               }
             }else{
+
+              // Perform hold if there is a hold time
+              if(0 < m_HoldTime){
+                m_CurrentDirection = Direction::Stop;
+                {
+                  std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
+                  m_StageFrame->stop();
+                }
+                wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
+
+                std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
+                t1.join();
+
+                wxLogMessage("ContinuousEvent: Holding over.");
+              }
               {
                 std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                 m_StageFrame->setSpeed(m_Velocity);
               }
+
               if((m_Steps - 1) <= m_CurrentStep){ // If it is the last step.
                 // Reset step counter.
                 m_CurrentStep = 0;
@@ -808,34 +813,6 @@ void ContinuousEvent::process(Event event){
                   m_CheckDistanceFlag = true;
                   m_CurrentState = goStartState;
 
-                  // Perform hold if there is a hold time
-                  if(0 < m_HoldTime){
-                    m_CurrentDirection = Direction::Stop;
-                    {
-                      std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                      m_StageFrame->stop();
-                    }
-                    //std::cout << "ContinuousEvent: stages should stop." << std::endl;
-                    wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
-
-                    /*
-                    {
-                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-                      m_WaitActive = true;
-                    }
-                    */
-                    std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
-                    t1.join();
-                    /*
-                    {
-                      std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-                      m_WaitActive = false;
-                    }
-                    */
-
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                    wxLogMessage("ContinuousEvent: Holding over.");
-                  }
                   {
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->gotoStepsDistance(m_StartLength);
@@ -848,34 +825,7 @@ void ContinuousEvent::process(Event event){
                 // Update current limit.
                 m_CurrentLimit += m_Increment;
 
-                // Perform hold if there is a hold time
-                if(0 < m_HoldTime){
-                  m_CurrentDirection = Direction::Stop;
-                  {
-                    std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
-                    m_StageFrame->stop();
-                  }
-                  wxLogMessage(std::string("ContinuousEvent: Holds for hold time: " + std::to_string(m_HoldTime * 1000) + " ms").c_str());
-
-                  /*
-                  {
-                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-                    m_WaitActive = true;
-                  }
-                  */
-                  std::thread t1(&ContinuousEvent::sleepForMilliseconds, this, m_HoldTime);
-                  t1.join();
-                  /*
-                  {
-                    std::lock_guard<std::mutex> lck{m_WaitActiveMutex};
-                    m_WaitActive = false;
-                  }
-                  */
-
-                  //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_HoldTime1 * 1000)));
-                  wxLogMessage("ContinuousEvent: Holding over.");
-                  process(Event::evUpdate);
-                }
+                process(Event::evUpdate);
               }
             }
           }

@@ -1199,6 +1199,8 @@ void MyFrame::OnContinuousSteps(wxCommandEvent& event){
   m_ContinuousStressForceStepsSpinCtrl->Show(true);
   m_ContinuousDistanceStepsStaticText->Show(true);
   m_ContinuousDistanceStepsSpinCtrl->Show(true);
+
+  m_ContinuousPanel
 }
 
 /**
