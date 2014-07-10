@@ -534,7 +534,9 @@ void MyFrame::startup(void){
   m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
   m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
   m_LengthsForceStressSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsForceStressSensitivitySpinCtrl->SetValue(0.001);
   m_LengthsDistanceSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsDistanceSensitivitySpinCtrl->SetValue(0.001);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
@@ -2229,9 +2231,13 @@ void MyFrame::createValuesGraph(void){
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_ForceStressDistanceGraph.SetName("Force / Distance");
+    m_ForceStressDisplacementGraph.SetName("Force / Displacement");
   } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_ForceStressDistanceGraph.SetName("Stress / Distance");
+    m_ForceStressDisplacementGraph.SetName("Stress / Displacement");
   }
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
