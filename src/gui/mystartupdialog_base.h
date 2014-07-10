@@ -6,11 +6,12 @@
 #define __mystartupdialog_base_h__
 
 // Includes
-#include <wx/dialog.h>
 #include <wx/xrc/xmlres.h>
+#include <wx/dialog.h>
+#include <wx/panel.h>
 #include <wx/stattext.h>
-#include "mybutton.h"
 #include <wx/spinctrl.h>
+#include "mybutton.h"
 
 class MyStartUpDialog_Base : public wxDialog {
 protected:

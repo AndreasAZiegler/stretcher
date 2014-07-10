@@ -59,7 +59,7 @@
 							<option>0</option>
 							<flag>wxALL|wxEXPAND</flag>
 							<border>5</border>
-							<object class="wxButton" name="m_StartUpDecreaseDistanceButton">
+							<object class="wxMyButton" name="m_StartUpDecreaseDistanceButton">
 								<label>--&gt; &lt;--</label>
 								<default>0</default>
 							</object>
@@ -68,7 +68,7 @@
 							<option>0</option>
 							<flag>wxALL|wxEXPAND</flag>
 							<border>5</border>
-							<object class="wxButton" name="m_StartUpIncreaseDistanceButton">
+							<object class="wxMyButton" name="m_StartUpIncreaseDistanceButton">
 								<label>&lt;-- --&gt;</label>
 								<default>0</default>
 							</object>
@@ -80,7 +80,7 @@
 				<option>0</option>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
-				<object class="wxSpinCtrl" name="m_StartUpInputSpinCtrl">
+				<object class="wxSpinCtrlDouble" name="m_StartUpInputSpinCtrl">
 					<value>0</value>
 					<min>0</min>
 					<max>1000</max>
