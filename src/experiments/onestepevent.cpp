@@ -300,7 +300,7 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   // Make last point depending on the stop behavior.
   switch(m_BehaviorAfterStop){
     case BehaviorAfterStop::Stop:
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_Limit));
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_Limit));
         break;
     case BehaviorAfterStop::GoToL0:
         previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));
