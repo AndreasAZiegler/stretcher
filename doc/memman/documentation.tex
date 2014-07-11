@@ -1,0 +1,56 @@
+\documentclass[a4paper]{memoir}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{color}
+
+% The page layout
+\settrimmedsize{297mm}{210mm}{*}
+\setlength{\trimtop}{0pt}
+\setlength{\trimedge}{\stockwidth}
+\addtolength{\trimedge}{-\paperwidth}
+\settypeblocksize{634pt}{448.13pt}{*}
+\setulmargins{4cm}{*}{*}
+\setlrmargins{*}{*}{1.5}
+\setmarginnotes{17pt}{51pt}{\onelineskip}
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{2\onelineskip}{*}
+\checkandfixthelayout
+
+% Create norrow framed environment.
+\newenvironment{narrowframed}{%
+\MakeFramed{\setlength{\hsize}{32pc}\FrameRestore}}%
+{\endMakeFramed}
+
+%\setcounter{secnumdepth}{2}
+
+\pretitle{\begin{center}\Huge\bfseries}
+\title{Stretcher user manual}
+%\posttitle{\par\vskip1em{\normalfont\normalsize\scshape the subtitle\par\vfill}\end{center}}
+\author{Andreas Ziegler}
+\predate{\vfill\begin{center}\large}
+
+\begin{document}
+
+\begin{titlingpage}
+\maketitle
+\end{titlingpage}
+
+\tableofcontents
+\newpage
+
+\chapter{Set up}
+\label{chapter:setup}
+
+% Include start up
+\include{chapters/startup}
+
+% Include experiments
+\include{chapters/experiments}
+
+% Include protocol
+\include{chapters/protocol}
+
+% Include graph
+\include{chapters/graph}
+
+\end{document}
