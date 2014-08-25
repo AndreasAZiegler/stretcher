@@ -816,6 +816,12 @@ void Protocols::stopProtocol(void){
  * @param experimentPosition The current experiment position.
  */
 void Protocols::moveExperimentUp(int experimentPosition){
+  // Return if the experiment to move is the currently running experiment.
+  std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+  if((true == m_ExperimentRunningFlag) && (experimentPosition == m_CurrentExperimentNr)){
+    return;
+  }
+
   // Check if the poition is not the first position.
   if(0 < experimentPosition){
     // Swap the elements in the vector.
@@ -839,6 +845,12 @@ void Protocols::moveExperimentUp(int experimentPosition){
  * @param experimentPosition The current experiment position.
  */
 void Protocols::moveExperimentDown(int experimentPosition){
+  // Return if the experiment to move is the currently running experiment.
+  std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+  if((true == m_ExperimentRunningFlag) && (experimentPosition == m_CurrentExperimentNr)){
+    return;
+  }
+
   // Check if the poition is not the last position.
   if(m_Experiments.size() > experimentPosition){
     // Swap the elements in the vector.
@@ -878,19 +890,27 @@ void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
 void Protocols::removeExperiment(int experimentPosition){
 
   // Return if an experiment is currently running
+  /*
   {
     std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
     if(true == m_ExperimentRunningFlag){
       return;
     }
   }
+  */
 
-  m_Experiments[experimentPosition].reset();
-  m_Experiments.erase(m_Experiments.begin() + experimentPosition);
-  m_ExperimentValues[experimentPosition].reset();
-  m_ExperimentValues.erase(m_ExperimentValues.begin() + experimentPosition);
+  // Return if the experiment to remove is the currently running experiment.
+  std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+  if((true == m_ExperimentRunningFlag) && (experimentPosition == m_CurrentExperimentNr)){
+    return;
+  }else{
+    m_Experiments[experimentPosition].reset();
+    m_Experiments.erase(m_Experiments.begin() + experimentPosition);
+    m_ExperimentValues[experimentPosition].reset();
+    m_ExperimentValues.erase(m_ExperimentValues.begin() + experimentPosition);
 
-  m_ListBox->Delete(experimentPosition);
+    m_ListBox->Delete(experimentPosition);
+  }
 }
 
 /**
