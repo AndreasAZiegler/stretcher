@@ -531,7 +531,7 @@ void MyFrame::startup(void){
 
   // Set digits for the wxSpinCtrlDouble
   m_LengthsGoToSpinCtrl->SetDigits(2);
-  m_InitializeCrossSectionSpinCtrl->SetDigits(2);
+  m_InitializeCrossSectionSpinCtrl->SetDigits(3);
   m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
   m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);

@@ -794,6 +794,15 @@ bool Protocols::checkProtocol(void){
  * @brief Stops the protocol.
  */
 void Protocols::stopProtocol(void){
+  // Wait until the stages stopped.
+  {
+    bool tmp = false;
+    while(false == tmp){
+      std::unique_lock<std::mutex> lck3(*m_StagesStoppedMutex);
+      tmp = *m_StagesStoppedFlag;
+    }
+  }
+
   m_StopProtocolFlag = true;
   {
     std::lock_guard<std::mutex> lck(*m_WaitMutex);
@@ -1001,7 +1010,7 @@ void Protocols::checkFinishedExperiment(void){
     i->setStartLength();
   }
   */
-  // Set the start length of the next experiment if there is one.
+  // Set the start length (distance between the stages) of the next experiment if there is one.
   if(m_Experiments.size() > m_CurrentExperimentNr){
     m_Experiments[m_CurrentExperimentNr]->setStartLength();
   }
