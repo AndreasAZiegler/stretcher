@@ -44,6 +44,10 @@ protected:
  wxStaticText* m_InitializeMinForceShowStaticText;
  wxStaticText* m_InitializeMaxForceStaticText;
  wxStaticText* m_InitializeMaxForceShowStaticText;
+ wxStaticText* m_InitializeDistanceSensitivityStaticText;
+ wxStaticText* m_InitializeDistanceSensitivityShowStaticText;
+ wxStaticText* m_InitializeForceStressSensitivityStaticText;
+ wxStaticText* m_InitializeForceStressSensitivityShowStaticText;
  wxRadioBox* m_InitializeUnitRadioBox;
  wxPanel* m_InitializeCalculateDiameterPanel;
  wxStaticText* m_InitializeCrossSectionStaticText;
@@ -74,6 +78,13 @@ protected:
  wxButton* m_LengthsGoToButton;
  wxButton* m_LengthsMountingLengthButton;
  wxPanel* m_LengthsPanel22;
+ wxStaticText* m_LengthsSensitivityStaticText;
+ wxStaticText* m_LengthsForceStressSensitivityStaticText;
+ wxSpinCtrlDouble* m_LengthsForceStressSensitivitySpinCtrl;
+ wxStaticText* m_LengthsDistanceSensitivityStaticText;
+ wxSpinCtrlDouble* m_LengthsDistanceSensitivitySpinCtrl;
+ wxButton* m_LengthsSensitivityButton;
+ wxPanel* m_LengthsPanel23;
  wxStaticText* m_LengthsZeroStaticText;
  wxButton* m_LengthsSetDistanceZeroButton;
  wxButton* m_LengthsSetForceZeroButton;
@@ -173,7 +184,7 @@ protected:
  wxSpinCtrl* m_ContinuousStressForceStepsSpinCtrl;
  wxStaticText* m_staticText76;
  wxCheckBox* m_ContinuousStressForcePhotoCheckBox;
- wxPanel* m_ContinuousDistancePanel1;
+ wxPanel* m_ContinuousDistancePanel;
  wxStaticText* m_ContinuousDistanceVelocityStaticText;
  wxSpinCtrlDouble* m_ContinuousDistanceVelocitySpinCtrl;
  wxPanel* m_ContinuousDistancePanel21;
@@ -268,6 +279,10 @@ private:
   m_InitializeMinForceShowStaticText = XRCCTRL(*this,"m_InitializeMinForceShowStaticText",wxStaticText);
   m_InitializeMaxForceStaticText = XRCCTRL(*this,"m_InitializeMaxForceStaticText",wxStaticText);
   m_InitializeMaxForceShowStaticText = XRCCTRL(*this,"m_InitializeMaxForceShowStaticText",wxStaticText);
+  m_InitializeDistanceSensitivityStaticText = XRCCTRL(*this,"m_InitializeDistanceSensitivityStaticText",wxStaticText);
+  m_InitializeDistanceSensitivityShowStaticText = XRCCTRL(*this,"m_InitializeDistanceSensitivityShowStaticText",wxStaticText);
+  m_InitializeForceStressSensitivityStaticText = XRCCTRL(*this,"m_InitializeForceStressSensitivityStaticText",wxStaticText);
+  m_InitializeForceStressSensitivityShowStaticText = XRCCTRL(*this,"m_InitializeForceStressSensitivityShowStaticText",wxStaticText);
   m_InitializeUnitRadioBox = XRCCTRL(*this,"m_InitializeUnitRadioBox",wxRadioBox);
   m_InitializeCalculateDiameterPanel = XRCCTRL(*this,"m_InitializeCalculateDiameterPanel",wxPanel);
   m_InitializeCrossSectionStaticText = XRCCTRL(*this,"m_InitializeCrossSectionStaticText",wxStaticText);
@@ -298,6 +313,13 @@ private:
   m_LengthsGoToButton = XRCCTRL(*this,"m_LengthsGoToButton",wxButton);
   m_LengthsMountingLengthButton = XRCCTRL(*this,"m_LengthsMountingLengthButton",wxButton);
   m_LengthsPanel22 = XRCCTRL(*this,"m_LengthsPanel22",wxPanel);
+  m_LengthsSensitivityStaticText = XRCCTRL(*this,"m_LengthsSensitivityStaticText",wxStaticText);
+  m_LengthsForceStressSensitivityStaticText = XRCCTRL(*this,"m_LengthsForceStressSensitivityStaticText",wxStaticText);
+  m_LengthsForceStressSensitivitySpinCtrl = XRCCTRL(*this,"m_LengthsForceStressSensitivitySpinCtrl",wxSpinCtrlDouble);
+  m_LengthsDistanceSensitivityStaticText = XRCCTRL(*this,"m_LengthsDistanceSensitivityStaticText",wxStaticText);
+  m_LengthsDistanceSensitivitySpinCtrl = XRCCTRL(*this,"m_LengthsDistanceSensitivitySpinCtrl",wxSpinCtrlDouble);
+  m_LengthsSensitivityButton = XRCCTRL(*this,"m_LengthsSensitivityButton",wxButton);
+  m_LengthsPanel23 = XRCCTRL(*this,"m_LengthsPanel23",wxPanel);
   m_LengthsZeroStaticText = XRCCTRL(*this,"m_LengthsZeroStaticText",wxStaticText);
   m_LengthsSetDistanceZeroButton = XRCCTRL(*this,"m_LengthsSetDistanceZeroButton",wxButton);
   m_LengthsSetForceZeroButton = XRCCTRL(*this,"m_LengthsSetForceZeroButton",wxButton);
@@ -397,7 +419,7 @@ private:
   m_ContinuousStressForceStepsSpinCtrl = XRCCTRL(*this,"m_ContinuousStressForceStepsSpinCtrl",wxSpinCtrl);
   m_staticText76 = XRCCTRL(*this,"m_staticText76",wxStaticText);
   m_ContinuousStressForcePhotoCheckBox = XRCCTRL(*this,"m_ContinuousStressForcePhotoCheckBox",wxCheckBox);
-  m_ContinuousDistancePanel1 = XRCCTRL(*this,"m_ContinuousDistancePanel1",wxPanel);
+  m_ContinuousDistancePanel = XRCCTRL(*this,"m_ContinuousDistancePanel",wxPanel);
   m_ContinuousDistanceVelocityStaticText = XRCCTRL(*this,"m_ContinuousDistanceVelocityStaticText",wxStaticText);
   m_ContinuousDistanceVelocitySpinCtrl = XRCCTRL(*this,"m_ContinuousDistanceVelocitySpinCtrl",wxSpinCtrlDouble);
   m_ContinuousDistancePanel21 = XRCCTRL(*this,"m_ContinuousDistancePanel21",wxPanel);

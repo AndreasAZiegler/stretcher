@@ -353,6 +353,22 @@ class Settings
     }
 
     /**
+     * @brief Returns the force/stress sensitivity.
+     * @return The force/stress sensitivity.
+     */
+    long getForceStressSensitivity(void){
+      return(m_ForceStressSensitivity);
+    }
+
+    /**
+     * @brief Returns the distance sensitivity.
+     * @return The distance sensitivity.
+     */
+    long getDistanceSensitivity(void){
+      return(m_DistanceSensitivity);
+    }
+
+    /**
      * @brief Set the com port for the first linear stage motor.
      * @param comPort com port as a string.
      */
@@ -513,6 +529,22 @@ class Settings
       m_MaxForceLimit = maxforcelimit;
     }
 
+    /**
+     * @brief Sets the force/stress sensitivity.
+     * @param forcestresssensitivity Force/stress sensitivity.
+     */
+    void setForceStressSensitivity(long forcestresssensitivity){
+      m_ForceStressSensitivity = forcestresssensitivity;
+    }
+
+    /**
+     * @brief Sets the distance sensitivity
+     * @param distancesensitivity Distance sensitivity.
+     */
+    void setDistanceSensitivity(long distancesensitivity){
+      m_DistanceSensitivity = distancesensitivity;
+    }
+
   private:
 
     libconfig::Config m_CurrentConfig;												/**< Current configuration */
@@ -577,6 +609,8 @@ class Settings
     libconfig::Setting* m_MaxDistanceLimitSetting;
     libconfig::Setting* m_MinForceLimitSetting;
     libconfig::Setting* m_MaxForceLimitSetting;
+    libconfig::Setting* m_ForceStressSensitivitySetting;
+    libconfig::Setting* m_DistanceSensitivitySetting;
 
     std::string m_LinMot1ComPort;															/**< The com port for the first linear stage motor */
     std::string m_LinMot2ComPort;															/**< The com port for the second linear stage motor */
@@ -626,6 +660,8 @@ class Settings
     long long m_MaxDistanceLimit;
     long long m_MinForceLimit;
     long long m_MaxForceLimit;
+    long long m_ForceStressSensitivity;
+    long long m_DistanceSensitivity;
 
 };
 

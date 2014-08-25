@@ -63,6 +63,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
   EVT_BUTTON(ID_LengthsDistanceGoTo, MyFrame::OnLimitsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
+  EVT_BUTTON(ID_SetSensitivities, MyFrame::OnSetSensitivities)
   EVT_BUTTON(ID_SetZeroDistance, MyFrame::OnLengthsZeroDistance)
   EVT_BUTTON(ID_SetZeroForceStress, MyFrame::OnLengthsZeroForceStress)
   EVT_BUTTON(ID_PreloadCancel, MyFrame::OnPreloadCancel)
@@ -131,6 +132,10 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_ForceLimitExceededFlag(false),
     m_DisableDecreaseDistanceFlag(false),
     m_DisableIncreaseDistanceFlag(false),
+    m_TempForceStressSensitivity(0),
+    m_ForceStressSensitivity(0.001 * 10000.0),
+    m_TempDistanceSensitivity(0),
+    m_DistanceSensitivity(0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_GageLength(0),
     m_TempGageLength(0),
     m_MaxPosDistance(0),
@@ -168,6 +173,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_LimitsLimitSetButton->SetId(ID_SetLimits);
   m_LengthsGoToButton->SetId((ID_LengthsDistanceGoTo));
   m_LengthsMountingLengthButton->SetId(ID_SetMountingLength);
+  m_LengthsSensitivityButton->SetId(ID_SetSensitivities);
   m_LengthsSetDistanceZeroButton->SetId(ID_SetZeroDistance);
   m_LengthsSetForceZeroButton->SetId(ID_SetZeroForceStress);
   m_PreloadSpeedPreloadSpinCtrl->SetId(ID_PreloadSpeedPercent);
@@ -527,6 +533,10 @@ void MyFrame::startup(void){
   m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
   m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
   m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
+  m_LengthsForceStressSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsForceStressSensitivitySpinCtrl->SetValue(0.001);
+  m_LengthsDistanceSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsDistanceSensitivitySpinCtrl->SetValue(0.001);
   m_PreloadLimitSpinCtrl->SetDigits(2);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
   m_PreloadSpeedMmSpinCtrl->SetDigits(2);
@@ -588,6 +598,13 @@ void MyFrame::startup(void){
     m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
+
+    // Load sensitivities
+    m_ForceStressSensitivity = m_Settings->getForceStressSensitivity();
+    m_DistanceSensitivity = m_Settings->getDistanceSensitivity();
+    // Display sensitivities
+    m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_ForceStressSensitivity / 10000.0, 2));
+    m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 2));
 
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
     std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
@@ -670,6 +687,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
+    m_LengthsForceStressSensitivityStaticText->SetLabelText("Stress [kPa]");
     m_LengthsSetForceZeroButton->SetLabelText("Zero stress");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
     m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [kPa]:");
@@ -697,6 +715,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
     m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal force [N]:");
     m_LimitsLimitMinForceStaticText->SetLabelText("Minimal force [N]:");
+    m_LengthsForceStressSensitivityStaticText->SetLabelText("Force [N]");
     m_LengthsSetForceZeroButton->SetLabelText("Zero force");
     m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
@@ -785,16 +804,13 @@ void MyFrame::loadStoredPositions(void){
  * @param event Occuring event
  */
 void MyFrame::OnHomeLinearStages(wxCommandEvent& event){
+  //m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
   /*
-  (m_LinearStages->at(0))->home();
-  (m_LinearStages->at(1))->home();
-  */
-  // Reset limit
-  m_MaxDistanceLimit = 153 / 0.00009921875/*mm per micro step*/;
   m_StageFrame->setMaxDistanceLimit(153);
   m_StageFrame->setMinDistanceLimit(0);
+  */
 
-  MyHomeStages *homestages = new MyHomeStages(m_LinearStages, this);
+  MyHomeStages *homestages = new MyHomeStages(m_StageFrame, this, this);
   homestages->Show();
 }
 
@@ -821,6 +837,30 @@ void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
   m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
   //m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
   //m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the set sensitivities.
+ * @param event Occuring event
+ */
+void MyFrame::OnSetSensitivities(wxCommandEvent& event){
+  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    m_ForceStressSensitivity = m_LengthsForceStressSensitivitySpinCtrl->GetValue() * 10000.0;
+  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    m_ForceStressSensitivity = (m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+  }
+
+  m_DistanceSensitivity = m_LengthsDistanceSensitivitySpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
+
+  m_Settings->setForceStressSensitivity(m_ForceStressSensitivity);
+  m_Settings->setDistanceSensitivity(m_DistanceSensitivity);
+
+  m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_LengthsForceStressSensitivitySpinCtrl->GetValue(), 4));
+  m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_LengthsDistanceSensitivitySpinCtrl->GetValue(), 4));
+
+  if(nullptr != m_CurrentProtocol){
+    m_CurrentProtocol->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
+  }
 }
 
 /**
@@ -970,6 +1010,8 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
                                                        m_MinForceLimit,
                                                        m_MaxDistanceLimit,
                                                        m_MinDistanceLimit,
+                                                       m_ForceStressSensitivity,
+                                                       m_DistanceSensitivity,
 
                                                        &m_Wait,
                                                        &m_WaitMutex,
@@ -1126,6 +1168,8 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
                                                             m_MinForceLimit,
                                                             m_MaxDistanceLimit,
                                                             m_MinDistanceLimit,
+                                                            m_ForceStressSensitivity,
+                                                            m_DistanceSensitivity,
 
                                                             &m_Wait,
                                                             &m_WaitMutex,
@@ -1151,7 +1195,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnContinuousStressForce(wxCommandEvent& event){
-  m_ContinuousDistancePanel1->Show(false);
+  m_ContinuousDistancePanel->Show(false);
   m_ContinuousStressForcePanel->Show(true);
   m_ContinuousPanel21->Layout();
 }
@@ -1162,7 +1206,7 @@ void MyFrame::OnContinuousStressForce(wxCommandEvent& event){
  */
 void MyFrame::OnContinuousDistance(wxCommandEvent& event){
   m_ContinuousStressForcePanel->Show(false);
-  m_ContinuousDistancePanel1->Show(true);
+  m_ContinuousDistancePanel->Show(true);
   m_ContinuousPanel21->Layout();
 }
 
@@ -1183,6 +1227,9 @@ void MyFrame::OnContinuousMaxValue(wxCommandEvent& event){
   m_ContinuousDistanceMaxValueStaticText->Show(true);
   m_ContinuousDistanceMaxValueSpinCtrl->Show(true);
   m_ContinuousDistancePanel23->Show(true);
+
+  m_ContinuousStressForcePanel->Layout();
+  m_ContinuousDistancePanel->Layout();
 }
 
 /**
@@ -1202,6 +1249,9 @@ void MyFrame::OnContinuousSteps(wxCommandEvent& event){
   m_ContinuousStressForceStepsSpinCtrl->Show(true);
   m_ContinuousDistanceStepsStaticText->Show(true);
   m_ContinuousDistanceStepsSpinCtrl->Show(true);
+
+  m_ContinuousStressForcePanel->Layout();
+  m_ContinuousDistancePanel->Layout();
 }
 
 /**
@@ -1339,6 +1389,8 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
                                                                m_MinForceLimit,
                                                                m_MaxDistanceLimit,
                                                                m_MinDistanceLimit,
+                                                               m_ForceStressSensitivity,
+                                                               m_DistanceSensitivity,
 
                                                                &m_Wait,
                                                                &m_WaitMutex,
@@ -1889,7 +1941,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
 
         if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
           m_ContinuousStressForcePanel->Show(false);
-          m_ContinuousDistancePanel1->Show(true);
+          m_ContinuousDistancePanel->Show(true);
           m_ContinuousPanel21->Layout();
 
           m_ContinuousStressForceRadioBtn->SetValue(false);
@@ -1930,7 +1982,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
           }
 
         }else{
-          m_ContinuousDistancePanel1->Show(false);
+          m_ContinuousDistancePanel->Show(false);
           m_ContinuousStressForcePanel->Show(true);
           m_ContinuousPanel21->Layout();
 
@@ -2179,9 +2231,17 @@ void MyFrame::createValuesGraph(void){
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_ForceStressDistanceGraph.SetName("Force / Distance");
+    m_ForceStressDisplacementGraph.SetName("Force / Displacement");
+    m_MaxStressForceLimitGraph.SetName("Maximal force limit");
+    m_MinStressForceLimitGraph.SetName("Minimal force limit");
   } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_ForceStressDistanceGraph.SetName("Stress / Distance");
+    m_ForceStressDisplacementGraph.SetName("Stress / Displacement");
+    m_MaxStressForceLimitGraph.SetName("Maximal stress limit");
+    m_MinStressForceLimitGraph.SetName("Minimal stress limit");
   }
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
@@ -2269,9 +2329,13 @@ void MyFrame::createPreviewGraph(void){
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_MaxStressForceLimitGraph.SetName("Maximal force limit");
+    m_MinStressForceLimitGraph.SetName("Minimal force limit");
   } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_MaxStressForceLimitGraph.SetName("Maximal stress limit");
+    m_MinStressForceLimitGraph.SetName("Minimal stress limit");
   }
   m_Y2Axis.reset(new mpScaleY(wxT("Distance [mm]"), mpALIGN_BORDER_RIGHT, true));
   m_Y2Axis->SetPen(vectorpenDistance);
@@ -2331,6 +2395,8 @@ void MyFrame::checkProtocol(void){
                                                                m_MinDistanceLimit,
                                                                m_MaxForceLimit,
                                                                m_MinForceLimit,
+                                                               m_ForceStressSensitivity,
+                                                               m_DistanceSensitivity,
 
                                                                &m_ForceStressDistanceGraph,
                                                                &m_ForceStressDisplacementGraph,

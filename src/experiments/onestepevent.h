@@ -24,7 +24,7 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
                  long maxforcelimit,
                  long minforcelimit,
                  long maxdistancelimit,
-                 long mindistancelimit,
+                 long mindistancelimit, long forcestressthreshold, long distancethreshold,
 
 
                  std::condition_variable *wait,

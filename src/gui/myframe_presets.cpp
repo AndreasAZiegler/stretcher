@@ -41,6 +41,8 @@ void MyFrame::OnLoadPreset(wxFileDirPickerEvent& event){
       settings.lookupValue("MaxDistanceLimit", m_TempMaxDistanceLimit);
       settings.lookupValue("MinForceLimit", m_TempMinForceLimit);
       settings.lookupValue("MaxForceLimit", m_TempMaxForceLimit);
+      settings.lookupValue("ForceStressSensitivity", m_TempForceStressSensitivity);
+      settings.lookupValue("DistanceSensitivity", m_TempDistanceSensitivity);
     }catch(const SettingNotFoundException &nfex){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
@@ -51,6 +53,8 @@ void MyFrame::OnLoadPreset(wxFileDirPickerEvent& event){
     m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_TempMaxDistanceLimit, 2));
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_TempMinForceLimit, 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_TempMaxForceLimit, 2));
+    m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_TempForceStressSensitivity, 2));
+    m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_TempDistanceSensitivity, 2));
   }
 }
 
@@ -77,6 +81,8 @@ void MyFrame::OnApplyPreset(wxCommandEvent& event){
   m_MaxPosDistance = m_TempMaxPosDistance / 0.00009921875/*mm per micro step*/;
   m_MountingLength = m_TempMountingLength / 0.00009921875/*mm per micro step*/;
   m_GageLength = m_TempGageLength / 0.00009921875/*mm per micro step*/;
+  m_ForceStressSensitivity = m_TempForceStressSensitivity * 10000.0;
+  m_DistanceSensitivity = m_TempDistanceSensitivity / 0.00009921875/*mm per micro step*/;
 
   m_StageFrame->setMaxPosDistance(m_MaxPosDistance);
 }
@@ -105,6 +111,8 @@ void MyFrame::OnSavePreset(wxCommandEvent& event){
   settings.add("MaxDistanceLimit", Setting::TypeFloat) = m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/;
   settings.add("MinForceLimit", Setting::TypeFloat) = m_MinForceLimit / 10000.0;
   settings.add("MaxForceLimit", Setting::TypeFloat) = m_MaxForceLimit / 10000.0;
+  settings.add("ForceStressSensitivity", Setting::TypeFloat) = m_ForceStressSensitivity / 10000.0;
+  settings.add("DistanceSensitivity", Setting::TypeFloat) = m_DistanceSensitivity  * 0.00009921875/*mm per micro step*/;
 
   try{
     config.writeFile(saveFileDialog.GetPath().c_str());

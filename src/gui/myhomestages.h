@@ -4,12 +4,13 @@
 // Includes
 #include <vector>
 #include "myhomestages_base.h"
-#include "../hardware/linearstage.h"
+#include "myframe.h"
+#include "../hardware/stageframe.h"
 
 class MyHomeStages : public MyHomeStages_Base
 {
   public:
-    MyHomeStages(std::vector<std::shared_ptr<LinearStage>> &linearstages, wxWindow *parent);
+    MyHomeStages(std::shared_ptr<StageFrame> stageframe, MyFrame *myframe, wxWindow *parent);
 
   private:
 
@@ -19,14 +20,15 @@ class MyHomeStages : public MyHomeStages_Base
      */
     void OnOK(wxCommandEvent& event);
 
-    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;
+    std::shared_ptr<StageFrame> m_StageFrame;
+    MyFrame *m_MyFrame;
 
     wxDECLARE_EVENT_TABLE();
 };
 
 enum
 {
-  ID_HomeStagesOK = 57
+  ID_HomeStagesOK = 58
 };
 
 #endif // MYHOMESTAGES_H

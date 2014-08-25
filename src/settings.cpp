@@ -16,7 +16,7 @@ using namespace libconfig;
  */
 Settings::Settings()
   : //s_ConfigurationFileName("config.cfg"),
-    m_ConfigurationStoragePath("config.cfg"),
+    m_ConfigurationStoragePath(std::string("./config.cfg")),
     m_RootSettings(NULL),
     m_LinMot1Settings(NULL),
     m_LinMot2Settings(NULL),
@@ -68,7 +68,9 @@ Settings::Settings()
     m_MinDistanceLimit(0),
     m_MaxDistanceLimit(0),
     m_MinForceLimit(0),
-    m_MaxForceLimit(0)
+    m_MaxForceLimit(0),
+    m_ForceStressSensitivity(0.001 * 10000.0/*stress force threshold*/),
+    m_DistanceSensitivity(0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/)
 {
   readSettings();
 }
@@ -209,6 +211,8 @@ bool Settings::readSettings ()
       m_StartUpSettings->lookupValue("MaxDistanceLimit", m_MaxDistanceLimit);
       m_StartUpSettings->lookupValue("MinForceLimit", m_MinForceLimit);
       m_StartUpSettings->lookupValue("MaxForceLimit", m_MaxForceLimit);
+      m_StartUpSettings->lookupValue("ForceStressSensitivity", m_ForceStressSensitivity);
+      m_StartUpSettings->lookupValue("DistanceSensitivity", m_DistanceSensitivity);
     }catch(const SettingNotFoundException &nfex){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
@@ -617,6 +621,22 @@ bool Settings::writeSettings(){
     *m_MaxForceLimitSetting = m_MaxForceLimit;
   }else{
     m_StartUpSettings->add("MaxForceLimit", Setting::TypeInt64) = m_MaxForceLimit;
+  }
+
+  // Writing the force sensitivity setting.
+  if(m_StartUpSettings->exists("ForceStressSensitivity")){
+    m_ForceStressSensitivitySetting = &m_StartUpSettings->operator []("ForceStressSensitivity");
+    *m_ForceStressSensitivitySetting = m_ForceStressSensitivity;
+  }else{
+    m_StartUpSettings->add("ForceStressSensitivity", Setting::TypeInt64) = m_ForceStressSensitivity;
+  }
+
+  // Writing the distance sensitivity setting.
+  if(m_StartUpSettings->exists("DistanceSensitivity")){
+    m_DistanceSensitivitySetting = &m_StartUpSettings->operator []("DistanceSensitivity");
+    *m_DistanceSensitivitySetting = m_DistanceSensitivity;
+  }else{
+    m_StartUpSettings->add("DistanceSensitivity", Setting::TypeInt64) = m_DistanceSensitivity;
   }
 
   // Finally try to write the configuration to the file.

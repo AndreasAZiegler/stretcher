@@ -19,6 +19,8 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                            long minforcelimit,
                            long maxdistancelimit,
                            long mindistancelimit,
+                           long forcestressthreshold,
+                           long distancethreshold,
 
                            std::condition_variable *wait,
                            std::mutex *mutex,
@@ -50,8 +52,10 @@ OneStepEvent::OneStepEvent(std::shared_ptr<StageFrame> stageframe,
                zerodistance,
                currentdistance,
                area,
-               0.01 * 10000.0/*stress force threshold*/,
-               0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
+               forcestressthreshold,
+               distancethreshold),
+               //0.001 * 10000.0/*stress force threshold*/,
+               //0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_Wait(wait),
     m_WaitMutex(mutex),
 
@@ -296,7 +300,7 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
   // Make last point depending on the stop behavior.
   switch(m_BehaviorAfterStop){
     case BehaviorAfterStop::Stop:
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_Limit));
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_Limit));
         break;
     case BehaviorAfterStop::GoToL0:
         previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));

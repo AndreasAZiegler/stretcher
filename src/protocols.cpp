@@ -38,6 +38,8 @@ Protocols::Protocols(wxListBox *listbox,
                      long mindistance,
                      long maxforce,
                      long minforce,
+                     long forcestresssensitivity,
+                     long distancesensitivity,
                      mpFXYVector *forceStressDistanceGraph,
                      mpFXYVector *forceStressDisplacementGraph,
                      mpFXYVector *stressForceGraph,
@@ -69,6 +71,8 @@ Protocols::Protocols(wxListBox *listbox,
     m_MinDistanceLimit(mindistance),
     m_MaxForceLimit(maxforce),
     m_MinForceLimit(minforce),
+    m_ForceStressSensitivity(forcestresssensitivity),
+    m_DistanceSensitivity(distancesensitivity),
     m_ForceStressDistanceGraph(forceStressDistanceGraph),
     m_ForceStressDisplacementGraph(forceStressDisplacementGraph),
     m_StressForcePreviewGraph(stressForceGraph),
@@ -146,6 +150,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                          m_MinForceLimit,
                                                          m_MaxDistanceLimit,
                                                          m_MinDistanceLimit,
+                                                         m_ForceStressSensitivity,
+                                                         m_DistanceSensitivity,
 
                                                          m_Wait,
                                                          m_WaitMutex,
@@ -204,6 +210,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                               m_MinForceLimit,
                                                               m_MaxDistanceLimit,
                                                               m_MinDistanceLimit,
+                                                              m_ForceStressSensitivity,
+                                                              m_DistanceSensitivity,
 
                                                               m_Wait,
                                                               m_WaitMutex,
@@ -264,6 +272,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                                  m_MinForceLimit,
                                                                  m_MaxDistanceLimit,
                                                                  m_MinDistanceLimit,
+                                                                 m_ForceStressSensitivity,
+                                                                 m_DistanceSensitivity,
 
                                                                  m_Wait,
                                                                  m_WaitMutex,
@@ -423,6 +433,20 @@ void Protocols::setCrossSectionArea(double crosssectionarea){
 }
 
 /**
+ * @brief Sets the new sensitivities.
+ * @param forcestresssensitivity The force/stress sensitivity.
+ * @param distancesensitivity The distance sensitivity.
+ */
+void Protocols::setSensitivities(long forcestresssensitivity, long distancesensitivity){
+  m_ForceStressSensitivity = forcestresssensitivity;
+  m_DistanceSensitivity = distancesensitivity;
+
+  for(auto i : m_Experiments){
+    i->setSensitivities(m_ForceStressSensitivity, m_DistanceSensitivity);
+  }
+}
+
+/**
  * @brief Create the preview vector and display it in the graph.
  */
 void Protocols::makePreview(void){
@@ -467,15 +491,7 @@ void Protocols::makePreview(void){
  * @brief Get the preview values.
  */
 void Protocols::getPreviewValues(void){
-  m_DistancePreviewValues.clear();
-  m_DistanceTimePreviewValues.clear();
-  m_StressForcePreviewValues.clear();
-  m_StressForceTimePreviewValues.clear();
-
-  // Collect the preview points from the single experiments.
-  for(int i = 0; i < m_Experiments.size(); ++i){
-    m_Experiments[i]->getPreview(m_PreviewValues);
-  }
+  getValues();
 
   // Split preview point into stressforce and distance points.
   for(auto i : m_PreviewValues){
@@ -489,6 +505,42 @@ void Protocols::getPreviewValues(void){
       m_StressForcePreviewValues.push_back((i.value / 10.0) / m_Area);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
+  }
+}
+
+/**
+* @brief Get the values for the limit check.
+*/
+void Protocols::getLimitValues(void){
+  getValues();
+
+  // Split preview point into stressforce and distance points.
+  for(auto i : m_PreviewValues){
+    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
+      m_DistancePreviewValues.push_back(i.value);
+      m_DistanceTimePreviewValues.push_back(i.timepoint);
+    } else if(DistanceOrStressOrForce::Force ==  i.distanceOrForce){
+      m_StressForcePreviewValues.push_back(i.value);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    } else if(DistanceOrStressOrForce::Stress ==  i.distanceOrForce){
+      m_StressForcePreviewValues.push_back(i.value * m_Area / 1000);
+      m_StressForceTimePreviewValues.push_back(i.timepoint);
+    }
+  }
+}
+
+/**
+* @brief Get the values from the experiments.
+*/
+void Protocols::getValues(void){
+  m_DistancePreviewValues.clear();
+  m_DistanceTimePreviewValues.clear();
+  m_StressForcePreviewValues.clear();
+  m_StressForceTimePreviewValues.clear();
+
+  // Collect the preview points from the single experiments.
+  for(int i = 0; i < m_Experiments.size(); ++i){
+    m_Experiments[i]->getPreview(m_PreviewValues);
   }
 }
 
@@ -657,16 +709,23 @@ void Protocols::process(void){
  * @brief Checks if protocol exceeds some limits.
  */
 bool Protocols::checkProtocol(void){
-  // Get the preview values.
-  getPreviewValues();
+  // Get the values for checking limits.
+  getLimitValues();
+
+  double maxforcelimit = m_MaxForceLimit / 10000.0;
+  double minforcelimit = m_MinForceLimit / 10000.0;
+  double maxdistancelimit = m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/;
+  double mindistancelimit = m_MinDistanceLimit * 0.00009921875/*mm per micro step*/;
 
   for(double i : m_StressForcePreviewValues){
     if((i > (m_MaxForceLimit)) || (i < (m_MinForceLimit))){
+    //if((i > (maxforcelimit)) || (i < (minforcelimit))){
       return(false);
     }
   }
   for(double i : m_DistancePreviewValues){
     if((i > (m_MaxDistanceLimit)) || (i < (m_MinDistanceLimit))){
+    //if((i > (maxdistancelimit)) || (i < (mindistancelimit))){
       return(false);
     }
   }

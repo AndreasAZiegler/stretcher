@@ -235,7 +235,7 @@ void StageFrame::gotoToAbsolute(long position){
 /**
  * @brief Stops the stage frame.
  */
-void StageFrame::stop(){
+void StageFrame::stop(void){
   (m_LinearStages.at(0))->stop();
   (m_LinearStages.at(1))->stop();
   //std::cout << "Stop stages." << std::endl;
@@ -244,7 +244,7 @@ void StageFrame::stop(){
 /**
  * @brief Is executed by a linear stage messsage handler to indicate, that one motor stopped.
  */
-void StageFrame::stopped(){
+void StageFrame::stopped(void){
 
   std::lock_guard<std::mutex> lck{m_AmStoppedMutex};
   m_AmStopped++;
@@ -257,6 +257,14 @@ void StageFrame::stopped(){
       *m_StagesStoppedFlag = true;
     }
   }
+}
+
+/**
+ * @brief Sends linear stage to the home positin.
+ */
+void StageFrame::home(void){
+  (m_LinearStages.at(0))->home();
+  (m_LinearStages.at(1))->home();
 }
 
 long StageFrame::getCurrentDistance(void){
