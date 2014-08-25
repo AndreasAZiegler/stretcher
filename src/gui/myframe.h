@@ -367,7 +367,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Method wich will be executed, when the user clicks on the "Go to" button in lengths.
      * @param event Occuring event
      */
-    void OnLimitsGoTo(wxCommandEvent& event);
+    void OnLengthsGoTo(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user changes the speed value in percent in preload.

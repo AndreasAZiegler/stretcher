@@ -109,7 +109,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
      *        and start the motors.
      * @param distance Desired clamping distance in mm from the GUI
      */
-    void gotoMMDistance(int mmDistance);
+    void gotoMMDistance(double mmDistance);
 
     /**
      * @brief Calculate the amount of steps, that the motors have to move to reach the desired distance

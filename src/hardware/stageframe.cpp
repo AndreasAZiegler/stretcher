@@ -205,7 +205,7 @@ void StageFrame::moveMM(double millimeters){
  *        and start the motors.
  * @param distance Desired istance in milli meters.
  */
-void StageFrame::gotoMMDistance(int mmDistance){
+void StageFrame::gotoMMDistance(double mmDistance){
 
   long dist = (mmDistance/MM_PER_MS);
   long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (dist / 2));

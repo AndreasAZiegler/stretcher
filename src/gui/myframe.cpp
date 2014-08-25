@@ -65,7 +65,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_LoadLimitSet2, MyFrame::OnLimitsLoadSet2)
   EVT_BUTTON(ID_LoadLimitSet3, MyFrame::OnLimitsLoadSet3)
   EVT_BUTTON(ID_LoadLimitSet4, MyFrame::OnLimitsLoadSet4)
-  EVT_BUTTON(ID_LengthsDistanceGoTo, MyFrame::OnLimitsGoTo)
+  EVT_BUTTON(ID_LengthsDistanceGoTo, MyFrame::OnLengthsGoTo)
   EVT_BUTTON(ID_SetLimits, MyFrame::OnLimitsSetLimits)
   EVT_BUTTON(ID_SetSensitivities, MyFrame::OnSetSensitivities)
   EVT_BUTTON(ID_SetZeroDistance, MyFrame::OnLengthsZeroDistance)
@@ -899,7 +899,7 @@ void MyFrame::OnLimitsLoadSet4(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user clicks on the "Go to" button in lengths.
  * @param event Occuring event
  */
-void MyFrame::OnLimitsGoTo(wxCommandEvent& event){
+void MyFrame::OnLengthsGoTo(wxCommandEvent& event){
   m_StageFrame->gotoMMDistance(m_LengthsGoToSpinCtrl->GetValue());
 }
 
