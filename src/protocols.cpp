@@ -876,6 +876,15 @@ void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
  * @param experimentPosition Position of the experiment.
  */
 void Protocols::removeExperiment(int experimentPosition){
+
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
+
   m_Experiments[experimentPosition].reset();
   m_Experiments.erase(m_Experiments.begin() + experimentPosition);
   m_ExperimentValues[experimentPosition].reset();

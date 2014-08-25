@@ -1459,12 +1459,6 @@ void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorStop(wxCommandEvent& event){
-  /*
-  if(0 != m_LinearStages.size()){
-    (m_LinearStages.at(0))->stop();
-    (m_LinearStages.at(1))->stop();
-  }
-  */
   if(nullptr != m_StageFrame){
     m_StageFrame->stop();
   }
