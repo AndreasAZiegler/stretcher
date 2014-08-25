@@ -1,5 +1,19 @@
+/**
+ * @file experimentdefinitions.h
+ * @brief Global experiment definitions.
+ * @author Andreas Ziegler
+ */
+
 #ifndef EXPERIMENTSDEFINITIONS_H
 #define EXPERIMENTSDEFINITIONS_H
+
+// Includes
+#include <memory>
+
+// Forward declaration
+class MyFrame;
+class StageFrame;
+class ForceSensorMessageHandler;
 
 /**
  * @brief Defines the experiment types.
@@ -13,7 +27,7 @@ enum class ExperimentType{
 };
 
 /**
- * @brief Indicates whether the experiment is distance or stress/force based.
+ * @brief Indicates whether the experiment is distance or force or stress based.
  */
 enum class DistanceOrStressOrForce{
   Distance = 0,
@@ -38,6 +52,26 @@ enum class BehaviorAfterStop{Stop = 0,
                              Repeat = 3,
                              GoToL0 = 4,
                              GoToML = 5};
+
+/**
+ * @brief Parameters for an experiment.
+ */
+struct ExperimentParameters{
+  std::shared_ptr<StageFrame> stageframe;
+  std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler;
+  MyFrame *myframe;
+  long maxforcelimit;
+  long minforcelimit;
+  long maxdistancelimit;
+  long mindistancelimit;
+  ExperimentType type;
+  DistanceOrStressOrForce distanceOrForceOrStress;
+  long gagelength;
+  long mountinglength;
+  long maxposdistance;
+  long currentdistance;
+  double area;
+};
 
 /**
  * @brief Parameters for the preload experiment.
@@ -66,11 +100,14 @@ struct OneStepEventParameters{
   double holdDistance;
 };
 
+/**
+ * @brief Enum to indicate if continuous experiment is defined by the amount of steps or by a maximal value.
+ */
 enum class StepsOrMaxValue{Steps = 1,
                            MaxValue = 2};
 
 /**
- * @brief Parameters for the one step experiment.
+ * @brief Parameters for the continuous event experiment.
  */
 struct ContinuousEventParameters{
   DistanceOrStressOrForce distanceOrStressOrForce;

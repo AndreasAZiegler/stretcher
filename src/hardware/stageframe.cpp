@@ -1,3 +1,10 @@
+/**
+ * @file stageframe.cpp
+ * @brief The stage frame.
+ * @author Andreas Ziegler
+ */
+
+// Includes
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -6,6 +13,9 @@
 #include "linearstage.h"
 #include "linearstagemessagehandler.h"
 
+/**
+ * @brief Initializes all the needed variables.
+ */
 StageFrame::StageFrame()
   :	m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
     m_MaxPosDistance(0),
@@ -19,6 +29,9 @@ StageFrame::StageFrame()
 {
 }
 
+/**
+ * @brief Unregisters the update method from the message handlers.
+ */
 StageFrame::~StageFrame(){
   (m_LinearStagesMessageHandlers.at(0))->unregisterUpdateMethod(m_Position1Id);
   (m_LinearStagesMessageHandlers.at(1))->unregisterUpdateMethod(m_Position2Id);
@@ -61,7 +74,7 @@ void StageFrame::unregisterUpdateMethod(std::list<std::function<void(Measurement
 }
 
 /**
- * @brief Abstract method which will be calles by the message handlers to update the values
+ * @brief Abstract method which will be calles by the message handlers to update the values. Calculates the distance from the two positions and forward it.
  * @param value Position of linear stage 1 or 2 or the force
  * @param type Type of value.
  */
@@ -193,16 +206,9 @@ void StageFrame::moveMM(double millimeters){
  * @param distance Desired istance in milli meters.
  */
 void StageFrame::gotoMMDistance(int mmDistance){
-  //int currentDistance = getCurrentDistance();
 
   long dist = (mmDistance/MM_PER_MS);
-  //long amSteps = (currentDistance - (mmDistance/MM_PER_MS)) / 2;
-  //long amSteps = (m_CurrentDistance - dist) / 2;
   long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (dist / 2));
-  /*
-  (m_LinearStages->at(0))->moveSteps(position);
-  (m_LinearStages->at(1))->moveSteps(position);
-  */
   (m_LinearStages.at(0))->moveToAbsolute(position);
   (m_LinearStages.at(1))->moveToAbsolute(position);
 }
@@ -213,12 +219,8 @@ void StageFrame::gotoMMDistance(int mmDistance){
  * @param distance Desired clamping distance in micro steps from the GUI
  */
 void StageFrame::gotoStepsDistance(long stepsDistance){
-  //long amSteps = (m_CurrentDistance - stepsDistance) / 2;
+
   long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (stepsDistance / 2));
-  /*
-  (m_LinearStages->at(0))->moveSteps(position);
-  (m_LinearStages->at(1))->moveSteps(position);
-  */
   (m_LinearStages.at(0))->moveToAbsolute(position);
   (m_LinearStages.at(1))->moveToAbsolute(position);
 }
@@ -242,7 +244,7 @@ void StageFrame::stop(void){
 }
 
 /**
- * @brief Is executed by a linear stage messsage handler to indicate, that one motor stopped.
+ * @brief Is executed by a linear stage messsage handler to indicate, that one stage stopped.
  */
 void StageFrame::stopped(void){
 
@@ -267,6 +269,10 @@ void StageFrame::home(void){
   (m_LinearStages.at(1))->home();
 }
 
+/**
+ * @brief Returns the current distance.
+ * @return The current distance.
+ */
 long StageFrame::getCurrentDistance(void){
   return(std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
          std::abs(771029 /*max. position*/ - m_CurrentPositions[1].value) +
@@ -348,7 +354,7 @@ void StageFrame::setMaxPosDistance(long maxposdistance){
 /**
  * @brief Zero distance.
  */
-void StageFrame::setZeroDistance(void){
+void StageFrame::setZeroDistanceOffset(void){
   m_ZeroDistanceOffset = m_CurrentDistance.value;
 
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +

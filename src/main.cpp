@@ -1,3 +1,9 @@
+/**
+ * @file main.cpp
+ * @brief The main file.
+ * @author Andreas Ziegler
+ */
+
 /*************** Includes ************/
 #include <memory>
 #include <sched.h>

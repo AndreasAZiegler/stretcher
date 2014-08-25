@@ -1,3 +1,8 @@
+/**
+ * @file linearstage.cpp
+ * @brief The linear stage.
+ * @author Andreas Ziegler
+ */
 
 // Includes
 #include <iostream>
@@ -5,15 +10,19 @@
 #include "linearstage.h"
 #include "../../include/ctb-0.13/serport.h"
 
+// Namespaces
 using namespace std;
 
 // An deleter which doesn't do anything, required for passing shared_ptr.
 void do_nothing_deleter(LinearStageMessageHandler*){return;}
 
 /**
- * @brief Forwards the com port and the baud rate to SerialPort
- * @param comPort com port
- * @param baudrate baudrate
+ * @brief Creates a SerialInterface and initializes all needed variables.
+ * @param type Type
+ * @param waitmessagehandler Pointer to the condition variable to wait for message handlers.
+ * @param waitmessagehandlermutex Pointer to the mutex to protect waitmessagehandler.
+ * @param messagehandlerfinishednr Pointer to the amount of finishes message handlers.
+ * @param baudrate Baudrate
  */
 LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type,
                          std::shared_ptr<std::condition_variable> waitmessagehandler,
@@ -24,20 +33,6 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type,
       m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex, messagehandlerfinishednr),
       m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
       m_CurrentSpeed(0),
-    /*
-    mExpectedMessagesFlag(0),
-    mOldPositionFlag(true),
-    mMoveFinishedFlag(true),
-    mOscstate(0),
-    mStoprequest(false),
-    mLMtimerID(0),
-    mAmplitude(0),
-    DecIncSpeed(0.3),
-    m_ZeroDistance(45144/*microsteps=6.39mm offset *///),
-    /*
-    mPositionPendingFlag(false),
-    mStartUpFlag(true)
-    */
       STAGE_DEVICE_MODE("\x00\x028"),
       STAGE_SET_MAXIMUM_POSITION("\x00\x02c"),
       STAGE_SET_MINIMUM_POSITION("\x00\x06a"),
@@ -60,13 +55,9 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type,
 }
 
 /**
- * @brief Sets the device mode, the move tracking period and the speed of the linear stage.
+ * @brief Sets the device mode, the move tracking period, the speed and the acceleration of the linear stage.
  */
 void LinearStage::configure(){
-  /**
-   * @todo Move loadStoredPosition() to method which will be called, when the user decided to take the last position as reference.
-   */
-  //loadStoredPosition();
   setDeviceMode();
   setMoveTrackingPeriod();
   setHomeSpeed(10/*mm/s*/);
@@ -80,7 +71,7 @@ void LinearStage::configure(){
 LinearStage::~LinearStage()
 {
   storeCurrentPosition();
-  std::cout << "LinearStage destructor finished." << std::endl;
+  //std::cout << "LinearStage destructor finished." << std::endl;
 }
 
 /**
@@ -192,11 +183,6 @@ void LinearStage::setMaxLimit(long limit){
   char *settings;
 
   memcpy(command, STAGE_SET_MAXIMUM_POSITION, 2);
-  /*
-  char tmp[2];
-  memcpy(tmp, STAGE_SET_MAXIMUM_POSITION, 2);
-  std::cout << "LinearStage STAGE_SET_MAXIMUM_POSTITION 0x" << hex << static_cast<int>(tmp[0]) << " " << static_cast<int>(tmp[1]) << dec << std::endl;
-  */
   settings = transformDecToText(limit);
   memcpy(command+2, settings, 4);
   memcpy(buffer, command, 6);
@@ -227,7 +213,7 @@ void LinearStage::setMinLimit(long limit){
   }
 }
 
-/*
+/**
  * @brief Stores the current position in the non-volatile memory of the stage.
  */
 void LinearStage::storeCurrentPosition(void){

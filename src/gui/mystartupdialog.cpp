@@ -1,21 +1,26 @@
+/**
+ * @file mystartupdialog.cpp
+ * @brief The start up dialog to set the distance at maximum positions.
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include "mystartupdialog.h"
 #include "myframe.h"
 
+// The event table.
 wxBEGIN_EVENT_TABLE(MyStartUpDialog, MyStartUpDialog_Base)
-//  EVT_MENU(wxID_OK, MyPorts::OnOK)
   EVT_BUTTON(ID_Set, MyStartUpDialog::OnSet)
 wxEND_EVENT_TABLE()
 
-// Costum event definitions
-/*
-wxDEFINE_EVENT(EVT_MYBUTTON_DOWN, wxCommandEvent);
-wxDEFINE_EVENT(EVT_MYBUTTON_UP, wxCommandEvent);
-*/
-
+/**
+ * @brief Initializes all the needed variables.
+ * @param myframe Pointer to the main frame object.
+ */
 MyStartUpDialog::MyStartUpDialog(MyFrame *myframe)
   : m_MyFrame(myframe)
 {
+  // Sets the ID's of the objects.
   m_StartUpDecreaseDistanceButton->SetId(ID_MotorDecreaseDistance);
   m_StartUpIncreaseDistanceButton->SetId(ID_MotorIncreaseDistance);
   m_StartUpSetButton->SetId(ID_Set);

@@ -1,3 +1,8 @@
+/**
+ * @file linearstagemessagehandler.h
+ * @brief The linear stage message handler.
+ * @author Andreas Ziegler
+ */
 
 #ifndef LINEARSTAGEMESSAGEHANDLER_H
 #define LINEARSTAGEMESSAGEHANDLER_H
@@ -13,6 +18,7 @@
 class StageFrame;
 
 /**
+ * @class LinearStageMessageHandler linearstagemessagehandler.h "hardware/linearstagemessagehandler.h"
  * @brief Message handler for the linear stages
  */
 class LinearStageMessageHandler : virtual public MessageHandler
@@ -20,8 +26,13 @@ class LinearStageMessageHandler : virtual public MessageHandler
   public:
 
     /**
-     * @brief Forwards the pointer to the serial port to the base class.
-     * @param serialport Pointer to the serial port.
+     * @brief Creates a message handler for the linear stage and initializes all the needed variables.
+     * @param serialport Pointer to the wxSerialPort object.
+     * @param type Type
+     * @param readingSerialInterfaceMutex Pointer to the mutex protecting the serial port access.
+     * @param waitmessagehandler Pointer to the condition variable to wait for message handler.
+     * @param waitmessagehandlermutex Pointer to the mutex to protect waitmessagehandler.
+     * @param messagehandlerfinishednr Pointer to the amount of finished message handlers.
      */
     LinearStageMessageHandler(wxSerialPort *serialport,
                               UpdatedValuesReceiver::ValueType type,
@@ -30,6 +41,9 @@ class LinearStageMessageHandler : virtual public MessageHandler
                               std::shared_ptr<std::mutex> waitmessagehandlermutex,
                               std::shared_ptr<int> messagehandlerfinishednr);
 
+    /**
+     * @brief Destructor
+     */
     ~LinearStageMessageHandler();
 
     /**

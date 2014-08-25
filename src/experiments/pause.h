@@ -1,33 +1,46 @@
+/**
+ * @file pause.h
+ * @brief Pause experiment.
+ * @author Andreas Ziegler
+ */
+
 #ifndef PAUSE_H
 #define PAUSE_H
 
+// Includes
 #include "experiment.h"
 #include "pausevalues.h"
 
+/**
+ * @class Pause pause.h "experiments/pause.h"
+ * @brief The Pause experiment.
+ */
 class Pause : public Experiment, virtual public UpdatedValuesReceiver
 {
   public:
-    Pause(std::shared_ptr<StageFrame> stageframe,
-          std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-          mpFXYVector *forceStressDistanceGraph, mpFXYVector *forceStressDisplacementGraph,
+    /**
+     * @brief Initialize all the required parameters.
+     * @param experimentparameters Common experiment parameters.
+     * @param path Path to the folder for exports.
+     * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+     * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+     * @param *vectoraccessmutex Pointer to the graph access mutex.
+     * @param *maxlimitgraph Pointer to the maximum limit graph.
+     * @param *minlimitgraph Pointer to the minimum limit graph.
+     * @param *wait Pointer to the wait condition variable.
+     * @param *mutex Pointer to the mutex.
+     * @param pausetime The pause time in s.
+     */
+    Pause(ExperimentParameters experimentparameters,
+          mpFXYVector *forceStressDistanceGraph,
+          mpFXYVector *forceStressDisplacementGraph,
           std::mutex *vectoraccessmutex,
-          mpFXYVector *maxlimitvector,
-          mpFXYVector *minlimitvector,
-          MyFrame *myframe,
-          std::string path,
-          long maxforcelimit,
-          long minforcelimit,
-          long maxdistancelimit,
-          long mindistancelimit,
-          std::condition_variable
-          *wait, std::mutex *mutex,
-          ExperimentType type,
-          DistanceOrStressOrForce distanceOrStressOrForce,
-          long gagelength,
-          long mountinglength,
-          long zerodistance,
-          long currentdistance,
-          double area,
+          mpFXYVector *maxforcelimitvector,
+          mpFXYVector *minforcelimitvector,
+          mpFXYVector *maxdistancelimitvector,
+          mpFXYVector *mindistancelimitvector,
+          std::condition_variable *wait,
+          std::mutex *mutex,
           int pausetime = 0);
 
     /**
@@ -103,12 +116,12 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
      */
     void sleepForMilliseconds(double seconds);
 
-    std::condition_variable *m_Wait;
-    std::mutex *m_WaitMutex;
+    std::condition_variable *m_Wait;										/**< Pointer to the conditioning variable to indicate the end of the experiment. */
+    std::mutex *m_WaitMutex;														/**< Mutex to protect m_WaitActive. */
 
-    State m_CurrentState;																		/**< Current state of the preload FSM */
-    double m_PauseTime;																				/**< The amount of seconds, the pause shoudl be. */
-    std::shared_ptr<PauseValues> m_ExperimentValues;			/**< Pointer to the experiment values */
+    State m_CurrentState;																/**< Current state of the preload FSM. */
+    double m_PauseTime;																	/**< The amount of seconds, the pause shoudl be. */
+    std::shared_ptr<PauseValues> m_ExperimentValues;		/**< Pointer to the experiment values. */
 };
 
 #endif // PAUSE_H

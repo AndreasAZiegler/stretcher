@@ -1,14 +1,26 @@
+/**
+ * @file linearstagemessagehandler.cpp
+ * @brief The linear stage message handler.
+ * @author Andreas Ziegler
+ */
 
+// Includes
 #include <iostream>
 #include <chrono>
 #include <wx/log.h>
 #include "linearstagemessagehandler.h"
 
+// Namespaces
 using namespace std;
 
 /**
- * @brief Forwards the pointer to the serial port to the base class.
- * @param serialport Pointer to the serial port.
+ * @brief Creates a message handler for the linear stage and initializes all the needed variables.
+ * @param serialport Pointer to the wxSerialPort object.
+ * @param type Type
+ * @param readingSerialInterfaceMutex Pointer to the mutex protecting the serial port access.
+ * @param waitmessagehandler Pointer to the condition variable to wait for message handler.
+ * @param waitmessagehandlermutex Pointer to the mutex to protect waitmessagehandler.
+ * @param messagehandlerfinishednr Pointer to the amount of finished message handlers.
  */
 LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport,
                                                      UpdatedValuesReceiver::ValueType type,
@@ -17,12 +29,14 @@ LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport,
                                                      std::shared_ptr<std::mutex> waitmessagehandlermutex,
                                                      std::shared_ptr<int> messagehandlerfinishednr)
   : MessageHandler(serialport, type, readingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex, messagehandlerfinishednr)//,
-    //m_CurrentPosition(0)
 {
 }
 
+/**
+ * @brief Destructor
+ */
 LinearStageMessageHandler::~LinearStageMessageHandler(){
-  std::cout << "LinearStageMessageHandler destructor finished." << std::endl;
+  //std::cout << "LinearStageMessageHandler destructor finished." << std::endl;
 }
 
 /**
@@ -33,7 +47,6 @@ void LinearStageMessageHandler::receiver(void){
   size_t answerLen = 0;
   while(m_ExitFlag){
     // Only receive messages, when there is no other method reading from the serial interface.
-    //if(true == m_ReadingSerialInterfaceMutex->try_lock()){
     {
       lock_guard<mutex> lck {*m_ReadingSerialInterfaceMutex};
       if(1 == m_SerialPort->IsOpen()){
@@ -46,8 +59,6 @@ void LinearStageMessageHandler::receiver(void){
         }
       }
     }
-    //}
-    //m_ReadingSerialInterfaceMutex->unlock();
 
     // If messages are received, process the messages.
     if(answerLen > 0){
@@ -69,7 +80,7 @@ void LinearStageMessageHandler::receiver(void){
 }
 
 /**
- * @brief Informs the related objects according to the received message
+ * @brief Informs the related objects according to the received message.
  * @param message Received message
  */
 void LinearStageMessageHandler::handler(char *message){

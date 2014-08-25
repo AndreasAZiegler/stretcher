@@ -1,3 +1,9 @@
+/**
+ * @file xh_wxmybuttonxmlhandler.cpp
+ * @brief The XML handler for the wxMyButton element.
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <wx/defs.h>
 #include "mybutton.h"
@@ -8,6 +14,9 @@ IMPLEMENT_DYNAMIC_CLASS(wxMyButtonXmlHandler, wxXmlResourceHandler)
 
 #include "xh_wxmybuttonxmlhandler.h"
 
+/**
+ * @brief Adds support for all wxWidgets class styles.
+ */
 wxMyButtonXmlHandler::wxMyButtonXmlHandler()
   : wxXmlResourceHandler()
 {
@@ -19,6 +28,11 @@ wxMyButtonXmlHandler::wxMyButtonXmlHandler()
   // you should use:
   //     XRC_ADD_STYLE(MYCONTROL_DEFAULT_STYLE);
 }
+
+/**
+ * @brief Creates the ressource
+ * @return The Object
+ */
 wxObject *wxMyButtonXmlHandler::DoCreateResource()
 {
     // the following macro will init a pointer named "control"
@@ -66,6 +80,11 @@ wxObject *wxMyButtonXmlHandler::DoCreateResource()
         return(control);
 }
 
+/**
+ * @brief Tells the XRC system that this handler can parse the tags.
+ * @param node The XML node
+ * @return True it the handler can parse the tags / False otherwise
+ */
 bool wxMyButtonXmlHandler::CanHandle(wxXmlNode *node)
 {
   // this function tells XRC system that this handler can parse

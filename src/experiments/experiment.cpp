@@ -1,52 +1,44 @@
+/**
+ * @file experiment.cpp
+ * @brief Experiment base class
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <iostream>
 #include "experiment.h"
 
 /**
  * @brief Initializes the experiment type and if experiment is force or stress based.
- * @param type Type of experiment.
+ * @param experimentparameters The basic experiment parameters as a struct.
  * @param forceOrStress Force or stress.
+ * @param distanceThreshold Distance threshold.
  */
-Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
-                       std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                       MyFrame *myframe,
-                       long maxforcelimit,
-                       long minforcelimit,
-                       long maxdistancelimit,
-                       long mindistancelimit,
-
-                       ExperimentType type,
-                       DistanceOrStressOrForce distanceOrStressOrForce,
-                       Direction direction,
-                       long gagelength,
-                       long mountinglength,
-                       long maxposdistance,
-                       long currentdistance,
-                       double area,
+Experiment::Experiment(ExperimentParameters experimentparameters,
                        double forcesStressThreshold,
                        double distanceThreshold)
   : m_CheckLimitsFlag(false),
-    m_MyFrame(myframe),
-    m_Area(area),
-    m_MaxForceLimit(maxforcelimit),
-    m_MinForceLimit(minforcelimit),
-    m_MaxDistanceLimit(maxdistancelimit),
-    m_MinDistanceLimit(mindistancelimit),
-    m_ExperimentType(type),
-    m_DistanceOrStressOrForce(distanceOrStressOrForce),
-    m_StageFrame(stageframe),
-    m_ForceSensorMessageHandler(forcesensormessagehandler),
-    m_CurrentDirection(direction),
+    m_MyFrame(experimentparameters.myframe),
+    m_Area(experimentparameters.area),
+    m_MaxForceLimit(experimentparameters.maxforcelimit),
+    m_MinForceLimit(experimentparameters.minforcelimit),
+    m_MaxDistanceLimit(experimentparameters.maxdistancelimit),
+    m_MinDistanceLimit(experimentparameters.mindistancelimit),
+    m_ExperimentType(experimentparameters.type),
+    m_DistanceOrStressOrForce(experimentparameters.distanceOrForceOrStress),
+    m_StageFrame(experimentparameters.stageframe),
+    m_ForceSensorMessageHandler(experimentparameters.forcesensormessagehandler),
+    m_CurrentDirection(Direction::Stop),
     m_ForceStressThreshold(forcesStressThreshold),
     m_DistanceThreshold(distanceThreshold),
     m_CurrentForce(0),
-    m_GageLength(gagelength),
-    m_MountingLength(mountinglength),
-    m_DefaultGageLength(gagelength),
-    m_MaxPosDistance(maxposdistance),
+    m_GageLength(experimentparameters.gagelength),
+    m_MountingLength(experimentparameters.mountinglength),
+    m_DefaultGageLength(experimentparameters.gagelength),
+    m_MaxPosDistance(experimentparameters.maxposdistance),
     m_CurrentPositions{0, 0},
-    m_StartLength(currentdistance),
-    m_CurrentDistance(currentdistance)
+    m_StartLength(experimentparameters.currentdistance),
+    m_CurrentDistance(experimentparameters.currentdistance)
     //m_Area(area * 0.000000000001/*um^2*/)
 {
 }
@@ -55,7 +47,7 @@ Experiment::Experiment(std::shared_ptr<StageFrame> stageframe,
  * @brief Destructor
  */
 Experiment::~Experiment(){
-  std::cout << "Experiment destructor finished." << std::endl;
+  //std::cout << "Experiment destructor finished." << std::endl;
 }
 
 /**

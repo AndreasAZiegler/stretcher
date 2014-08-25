@@ -1,3 +1,9 @@
+/**
+ * @file main.h
+ * @brief The main file.
+ * @author Andreas Ziegler
+ */
+
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -13,6 +19,7 @@
 #include "./hardware/forcesensormessagehandler.h"
 
 /**
+ * @class MyApp main.h "main.h"
  * @brief The MyApp class
  */
 class MyApp : public wxApp

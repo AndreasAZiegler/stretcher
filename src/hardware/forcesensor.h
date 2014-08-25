@@ -1,11 +1,18 @@
+/**
+ * @file forcesensor.h
+ * @brief The force sensor.
+ * @author Andreas Ziegler
+ */
 
 #ifndef FORCESENSOR_H
 #define FORCESENSOR_H
-#include "serialinterface.h"
 
+// Includes
+#include "serialinterface.h"
 #include "forcesensormessagehandler.h"
 
 /**
+ * @class ForceSensor forcesensor.h "hardware/forcesensor.h"
  * @brief Class that provides access to the converter hardware.
  */
 class ForceSensor : public SerialInterface
@@ -13,9 +20,12 @@ class ForceSensor : public SerialInterface
   public:
 
     /**
-     * @brief Forwards the com port and the baud rate to SerialPort
-     * @param comPort com port
-     * @param baudrate baudrate
+     * @brief Creates a serial interface and initializes all the needed variables.
+     * @param type Value type
+     * @param waitmessagehandler Condition varaible to wait for message handlers.
+     * @param waitmessagehandlermutex Mutex to protect waitmessagehandler.
+     * @param messagehandlerfinishednr Amount of finished message handlers.
+     * @param baudrate The baude rate of the com port.
      */
     ForceSensor(UpdatedValuesReceiver::ValueType type,
                 std::shared_ptr<std::condition_variable> waitmessagehandler,
@@ -28,6 +38,9 @@ class ForceSensor : public SerialInterface
      */
     void setBipolarMode();
 
+    /**
+     * @brief Destructor
+     */
     ~ForceSensor();
 
    /**
@@ -40,7 +53,7 @@ class ForceSensor : public SerialInterface
     void setScaleFactor(double nominalforce, double nominalvalue, double inputsensitivity, double measureendvalue, int zerovalue);
 
     /**
-     * @brief Sets force zero.
+     * @brief Sets force to zero.
      */
     void setZeroForce(void);
 
@@ -50,13 +63,10 @@ class ForceSensor : public SerialInterface
       */
     std::shared_ptr<ForceSensorMessageHandler> getMessageHandler(void);
 
-    double getForce();
-
-
   private:
 
     // Defined commands for the force sensor.
-    const char *FORCE_SENSOR_SET_BIPOLAR;											/**< Command to get the device mode */
+    const char *FORCE_SENSOR_SET_BIPOLAR;					/**< Command to get the device mode */
 
     /**
      * @brief Calculate scaling factor depending on the nominal value, the measurement end value, the nominal force and the input sensitivity.

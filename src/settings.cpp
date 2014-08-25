@@ -1,15 +1,19 @@
+/**
+ * @file settings.cpp
+ * @brief The protocol.
+ * @author Andreas Ziegler
+ */
 
 // Includes
 #include <memory>
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
-
 #include "settings.h"
 
+// Namespaces
 using namespace std;
 using namespace libconfig;
-
 
 /**
  * @brief Load settings if file exists.

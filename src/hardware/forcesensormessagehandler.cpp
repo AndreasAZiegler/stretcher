@@ -1,12 +1,24 @@
+/**
+ * @file forcesensormessagehandler.cpp
+ * @brief The force sensor message handler.
+ * @author Andreas Ziegler
+ */
 
+// Includes
 #include <iostream>
 #include "forcesensormessagehandler.h"
 
+// Namespaces
 using namespace std;
 
 /**
- * @brief Forwards the pointer to the serial port to the base class.
- * @param serialport Pointer to the serial port.
+ * @brief Creates a message handler for the force sensor and initializes all the needed variables.
+ * @param serialport Pointer to the wxSerialPort object.
+ * @param type Type of the message handler.
+ * @param readingSerialInterfaceMutex Pointer to the mutex to protect the serial interface access.
+ * @param waitmessagehandler Pointer to the condition variable to wait for the message handler.
+ * @param waitmessagehandlermutex Pointer to the mutex to protect waitmessagehandler.
+ * @param messagehandlerfinishednr Pointer to the amount of finished message handlers.
  */
 ForceSensorMessageHandler::ForceSensorMessageHandler(wxSerialPort *serialport,
                                                      UpdatedValuesReceiver::ValueType type,
@@ -19,8 +31,11 @@ ForceSensorMessageHandler::ForceSensorMessageHandler(wxSerialPort *serialport,
 {
 }
 
+/**
+ * @brief Destructor
+ */
 ForceSensorMessageHandler::~ForceSensorMessageHandler(){
-  std::cout << "ForceSensorMessageHandler destructor finished." << std::endl;
+  //std::cout << "ForceSensorMessageHandler destructor finished." << std::endl;
 }
 
 /**
@@ -46,11 +61,11 @@ void ForceSensorMessageHandler::setZeroForce(void){
 void ForceSensorMessageHandler::receiver(void){
   size_t answerLen = 0;
   int measforce = 0;
-  double force = 0;
 
   bool syncReceived;
   int syncPos;
 
+  // Loop until the receiver should stop.
   while(m_ExitFlag){
     {
       lock_guard<mutex> lck {*m_ReadingSerialInterfaceMutex};
@@ -102,11 +117,6 @@ void ForceSensorMessageHandler::receiver(void){
     // If the whole message is received.
     if(answerLen > 4){
 
-      //for(int i = 0; i < (static_cast<int>(answerLen) - 4); ++i) {
-      //std::cout << "ForceSensor m_ReceiveBuffer[" << syncPos <<"]: " << static_cast<unsigned int>(m_ReceiveBuffer[syncPos]) << std::endl;
-      //if((m_ReceiveBuffer[i] == 44 /*sync symbol*/)) { // && (answerBuffer[i + 5] == 44)) {
-
-      //measforce = static_cast<unsigned char>(answerBuffer[2])*256*256 + static_cast<unsigned char>(answerBuffer[3])*256 + static_cast<unsigned char>(answerBuffer[4]);
       measforce = (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+2]) << 16) +
                   (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+3]) << 8) +
                   (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+4]));
@@ -120,8 +130,6 @@ void ForceSensorMessageHandler::receiver(void){
           (*j)(m_CurrentForce, m_Type);
         }
       }
-        //}
-      //}
     }
   }
   // Signaling that the message handler is finished.

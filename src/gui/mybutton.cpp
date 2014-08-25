@@ -1,3 +1,8 @@
+/**
+ * @file mybutton.cpp
+ * @brief wxButton with the extended events button down and button up.
+ * @author Andreas Ziegler
+ */
 
 // Includes
 #include "mybutton.h"

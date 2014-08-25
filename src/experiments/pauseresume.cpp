@@ -1,3 +1,9 @@
+/**
+ * @file pauseresume.cpp
+ * @brief Pause experiment
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <thread>
 #include <condition_variable>
@@ -6,66 +12,51 @@
 #include "pauseresume.h"
 #include "../gui/myframe.h"
 
-PauseResume::PauseResume(std::shared_ptr<StageFrame> stageframe,
-                         std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+/**
+ * @brief Initialize all the required parameters.
+ * @param experimentparameters Common experiment parameters.
+ * @param path Path to the folder for exports.
+ * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+ * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+ * @param *vectoraccessmutex Pointer to the graph access mutex.
+ * @param *maxlimitgraph Pointer to the maximum limit graph.
+ * @param *minlimitgraph Pointer to the minimum limit graph.
+ * @param *wait Pointer to the wait condition variable.
+ * @param *mutex Pointer to the mutex.
+ */
+PauseResume::PauseResume(ExperimentParameters experimentparameters,
+
                          mpFXYVector *forceStressDistanceGraph,
                          mpFXYVector *forceStressDisplacementGraph,
                          std::mutex *vectoraccessmutex,
-                         mpFXYVector *maxlimitvector,
-                         mpFXYVector *minlimitvector,
-                         MyFrame *myframe,
-                         std::string path,
-                         long maxforcelimit,
-                         long minforcelimit,
-                         long maxdistancelimit,
-                         long mindistancelimit,
-
+                         mpFXYVector *maxforcelimitvector,
+                         mpFXYVector *minforcelimitvector,
+                         mpFXYVector *maxdistancelimitvector,
+                         mpFXYVector *mindistancelimitvector,
                          std::condition_variable *wait,
-                         std::mutex *mutex,
-
-                         ExperimentType type,
-                         DistanceOrStressOrForce distanceOrStressOrForce,
-                         long gagelength,
-                         long mountinglength,
-                         long zerodistance,
-                         long currentdistance,
-                         double area)
-  : Experiment(stageframe,
-               forcesensormessagehandler,
-               myframe,
-               maxforcelimit,
-               minforcelimit,
-               maxdistancelimit,
-               mindistancelimit,
-
-               type,
-               distanceOrStressOrForce,
-               Direction::Stop,
-               gagelength,
-               mountinglength,
-               zerodistance,
-               currentdistance,
-               area,
+                         std::mutex *mutex)
+  : Experiment(experimentparameters,
                0.005 * 10000.0/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
-      m_MyFrame(myframe),
-      m_Wait(wait),
-      m_WaitMutex(mutex),
-      m_CurrentState(State::stopState),
-      m_ExperimentValues(std::make_shared<PauseResumeValues>(stageframe,
-                                                             forcesensormessagehandler,
-                                                             forceStressDistanceGraph,
-                                                             forceStressDisplacementGraph,
-                                                             vectoraccessmutex,
-                                                             maxlimitvector,
-                                                             minlimitvector,
+    m_MyFrame(experimentparameters.myframe),
+    m_Wait(wait),
+    m_WaitMutex(mutex),
+    m_CurrentState(State::stopState),
+    m_ExperimentValues(std::make_shared<PauseResumeValues>(experimentparameters.stageframe,
+                                                           experimentparameters.forcesensormessagehandler,
+                                                           forceStressDistanceGraph,
+                                                           forceStressDisplacementGraph,
+                                                           vectoraccessmutex,
+                                                           maxforcelimitvector,
+                                                           minforcelimitvector,
+                                                           maxdistancelimitvector,
+                                                           mindistancelimitvector,
+                                                           experimentparameters.myframe,
 
-                                                             myframe,
-
-                                                             type,
-                                                             distanceOrStressOrForce,
-                                                             area,
-                                                             gagelength))
+                                                           experimentparameters.type,
+                                                           experimentparameters.distanceOrForceOrStress,
+                                                           experimentparameters.area,
+                                                           experimentparameters.gagelength))
 {
 }
 
@@ -85,9 +76,10 @@ void PauseResume::getPreview(std::vector<PreviewValue>& previewvalues){
   int timepoint;
   if(0 == previewvalues.size()){
    timepoint = 1;
-  } else{
+  }else{
    timepoint =  previewvalues.back().getTimepoint() + 1;
   }
+
   previewvalues.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength));
 }
 
@@ -112,6 +104,7 @@ void PauseResume::process(Event event){
         wait.wait(lck);
 
         if(State::runState == m_CurrentState){
+          // Notify that the experiment finished.
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
           m_Wait->notify_all();
           m_CurrentState = stopState;
@@ -125,10 +118,10 @@ void PauseResume::process(Event event){
         wxLogMessage("Pause: Stopped.");
 
         m_CurrentState = stopState;
+        // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
-
       break;
   }
 }

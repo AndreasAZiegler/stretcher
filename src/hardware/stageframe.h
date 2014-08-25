@@ -1,10 +1,17 @@
+/**
+ * @file stageframe.h
+ * @brief The stage frame.
+ * @author Andreas Ziegler
+ */
 
 #ifndef STAGEFRAME_H
 #define STAGEFRAME_H
 
+// Includes
 #include <vector>
 #include <memory>
 #include <mutex>
+#include <memory>
 #include <condition_variable>
 #include "../updatedvaluesreceiver.h"
 
@@ -17,13 +24,20 @@ typedef void (UpdatedValuesReceiver::*updateValue)(UpdatedValues::MeasurementVal
 typedef std::function<void(UpdatedValues::MeasurementValue, UpdatedValuesReceiver::ValueType)> mp;
 
 /**
+ * @class StageFrame stageframe.h "hardware/stageframe.h"
  * @brief Represents the two linear stages as a stage frame.
  */
 class StageFrame : virtual public UpdatedValuesReceiver
 {
 	public:
+    /**
+     * @brief Initializes all the needed variables.
+     */
     StageFrame();
 
+    /**
+     * @brief Unregisters the update method from the message handlers.
+     */
     ~StageFrame();
 
     /**
@@ -56,7 +70,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
      */
     void unregisterUpdateMethod(std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator id);
     /**
-     * @brief Abstract method which will be calles by the message handlers to update the values
+     * @brief Abstract method which will be calles by the message handlers to update the values. Calculates the distance from the two positions and forward it.
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
@@ -116,7 +130,7 @@ class StageFrame : virtual public UpdatedValuesReceiver
     void stop(void);
 
     /**
-     * @brief Is executed by a linear stage messsage handler to indicate, that one motor stopped.
+     * @brief Is executed by a linear stage messsage handler to indicate, that one stage stopped.
      */
     void stopped(void);
 
@@ -153,26 +167,26 @@ class StageFrame : virtual public UpdatedValuesReceiver
     /**
      * @brief Zero distance.
      */
-    void setZeroDistance(void);
-
-  private:
+    void setZeroDistanceOffset(void);
 
     /**
-     * @todo Implementation
-     * @brief Get the current distance.
+     * @brief Returns the current distance.
+     * @return The current distance.
      */
     long getCurrentDistance(void);
 
-    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;				/**< Pointer to a vector containing the pointers to the linear stages. */
-    std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers; /**< Vector containing the pointers to the linear stage message handlers. */
-    std::mutex m_AccessListMutex;											/**< Protect list */
+  private:
+
+    std::vector<std::shared_ptr<LinearStage>> m_LinearStages;																										/**< Pointer to a vector containing the pointers to the linear stages. */
+    std::vector<std::shared_ptr<LinearStageMessageHandler>> m_LinearStagesMessageHandlers; 											/**< Vector containing the pointers to the linear stage message handlers. */
+    std::mutex m_AccessListMutex;																																								/**< Protect list */
     std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator m_Position1Id;	/**< Id of the pos 1 callback method */
     std::list<std::function<void(MeasurementValue, UpdatedValuesReceiver::ValueType)>>::iterator m_Position2Id;	/**< Id of the pos 1 callback method */
 
     const double MM_PER_MS;               						/**< milimeter per microstep */
 
     double m_Stepsize;			     				    					/**< Stepsize of the stepper motor in millimeters */
-    long m_MaxPosDistance;							 	 		     	  /**< Distance when the motors are on max position (resulting in smallest distance) */
+    long m_MaxPosDistance;							 	 		    		/**< Distance when the motors are on max position (resulting in smallest distance) */
     long m_ZeroDistanceOffset;												/**< Offset distance for zero distance. */
 
     bool m_Pos1ChangedFlag;														/**< Indicates an updated position 1 if true */

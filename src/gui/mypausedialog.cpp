@@ -1,8 +1,14 @@
+/**
+ * @file mypausedialog.cpp
+ * @brief The pause dialog.
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include "mypausedialog.h"
 
+// The event table.
 wxBEGIN_EVENT_TABLE(MyPauseDialog, MyPauseDialog_Base)
-//  EVT_MENU(wxID_OK, MyPorts::OnOK)
   EVT_BUTTON(ID_PauseDialogOK, MyPauseDialog::OnOK)
 wxEND_EVENT_TABLE()
 

@@ -1,3 +1,9 @@
+/**
+ * @file preload.cpp
+ * @brief Preload experiment
+ * @author Andreas Ziegler
+ */
+
 // Includes
 #include <iostream>
 #include <mutex>
@@ -7,29 +13,30 @@
 #include "preload.h"
 
 /**
- * @brief Initializes all the needed variables
- * @param type Type of the experiment.
- * @param forceOrStress Indicates if experiment is force or stress based.
- * @param forcesensormessagehandler Pointer to the force sensor message handler.
- * @param wait Wait condition.
- * @param mutex Mutex for wait condition.
- * @param stressForceLimit Stress or force limit value.
- * @param speedInMM Speed in mm/s.
- * @param area Value of the area.
+ * @brief Initializes all the needed variables and registers the update method at the message handelers.
+ * @param experimentparameters Common experiment parameters.
+ * @param path Path to the folder for exports.
+ * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
+ * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
+ * @param *vectoraccessmutex Pointer to the graph access mutex.
+ * @param *maxlimitgraph Pointer to the maximum limit graph.
+ * @param *minlimitgraph Pointer to the minimum limit graph.
+ * @param *wait Pointer to the wait condition variable.
+ * @param *mutex Pointer to the mutex.
+ * @param *stagesstopped Pointer to the flag stages stopped.
+ * @param *stagesstoppedmutex Pointer to the mutex to protect the stagesstopped flag.
+ * @param parameters Parameter struct containing the experiment parameters.
  */
-Preload::Preload(std::shared_ptr<StageFrame> stageframe,
-                 std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+Preload::Preload(ExperimentParameters experimentparameters,
+
+                 std::string path,
                  mpFXYVector *forceStressDistanceGraph,
                  mpFXYVector *forceStressDisplacementGraph,
                  std::mutex *vectoraccessmutex,
-                 mpFXYVector *maxlimitvector,
-                 mpFXYVector *minlimitvector,
-                 MyFrame *myframe,
-                 std::string path,
-                 long maxforcelimit,
-                 long minforcelimit,
-                 long maxdistancelimit,
-                 long mindistancelimit,
+                 mpFXYVector *maxforcelimitvector,
+                 mpFXYVector *minforcelimitvector,
+                 mpFXYVector *maxdistancelimitvector,
+                 mpFXYVector *mindistancelimitvector,
                  long forcestressthreshold,
                  long distancethreshold,
 
@@ -38,38 +45,14 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
                  bool *stagesstopped,
                  std::mutex *stagesstoppedmutex,
 
-                 ExperimentType type,
-                 DistanceOrStressOrForce distanceOrStressOrForce,
-                 long gagelength,
-                 long mountinglength,
-                 long maxposdistance,
-                 long currentdistance,
-                 double area,
-
                  PreloadParameters parameters)
-  : Experiment(stageframe,
-               forcesensormessagehandler,
-               myframe,
-               maxforcelimit,
-               minforcelimit,
-               maxdistancelimit,
-               mindistancelimit,
-
-               type,
-               distanceOrStressOrForce,
-               Direction::Stop,
-               gagelength,
-               mountinglength,
-               maxposdistance,
-               currentdistance,
-               area,
+  : Experiment(experimentparameters,
                forcestressthreshold,
                distancethreshold),
-               //0.001 * 10000.0/*stress force threshold*/,
-               //0.0005 * 10000.0/*stress force threshold*/,
+               //0.005 * 10000.0/*stress force threshold*/,
                //0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
-    m_StageFrame(stageframe),
-    m_ForceSensorMessageHandler(forcesensormessagehandler),
+    m_StageFrame(experimentparameters.stageframe),
+    m_ForceSensorMessageHandler(experimentparameters.forcesensormessagehandler),
     m_Wait(wait),
     m_WaitMutex(mutex),
     m_CurrentState(State::stopState),
@@ -78,27 +61,31 @@ Preload::Preload(std::shared_ptr<StageFrame> stageframe,
     m_InitStressForceLimit(parameters.stressForceLimit),
     m_StressForceLimit(parameters.stressForceLimit),
     m_Velocity(parameters.velocity),
-    m_ExperimentValues(std::make_shared<PreloadValues>(stageframe,
-                                                       forcesensormessagehandler,
+    m_ExperimentValues(std::make_shared<PreloadValues>(experimentparameters.stageframe,
+                                                       experimentparameters.forcesensormessagehandler,
                                                        forceStressDistanceGraph,
                                                        forceStressDisplacementGraph,
                                                        vectoraccessmutex,
-                                                       maxlimitvector,
-                                                       minlimitvector,
+                                                       maxforcelimitvector,
+                                                       minforcelimitvector,
+                                                       maxdistancelimitvector,
+                                                       mindistancelimitvector,
 
-                                                       myframe,
+                                                       experimentparameters.myframe,
 
-                                                       type,
-                                                       distanceOrStressOrForce,
-                                                       area,
-                                                       gagelength,
+                                                       experimentparameters.type,
+                                                       experimentparameters.distanceOrForceOrStress,
+                                                       experimentparameters.area,
+                                                       experimentparameters.gagelength,
 
                                                        parameters.stressForceLimit,
                                                        parameters.velocity))
 {
+  // Registers the update method at the message handlers.
   m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 
+  // Calculates the limit.
   if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
   }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
@@ -121,6 +108,7 @@ void Preload::setParameters(PreloadParameters parameters){
   }
   m_Velocity = parameters.velocity;
 
+  // Updates the parameters in the experiment values.
   m_ExperimentValues->setParameters(parameters);
 }
 
@@ -203,25 +191,11 @@ void Preload::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
       m_CurrentForce = measurementValue.value;
-      /*
-      if((true == m_CheckLimitsFlag) && ((m_MaxForceLimit < m_CurrentForce) || (m_MinForceLimit > m_CurrentForce))){
-        wxLogWarning(std::string("Preload: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
-                                 " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
-        process(Event::evStop);
-      } else{
-      */
-        process(Event::evUpdate);
-      //}
+      process(Event::evUpdate);
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:
       m_CurrentDistance = measurementValue.value;
-      /*
-      if((true == m_CheckLimitsFlag) && ((m_MaxDistanceLimit < m_CurrentDistance) || (m_MinDistanceLimit > m_CurrentDistance))){
-        wxLogWarning(std::string("Preload: Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance)).c_str());
-        process(Event::evStop);
-      }
-      */
       break;
   }
 }
@@ -273,6 +247,7 @@ void Preload::process(Event e){
       if(Event::evStop == e){
         wxLogMessage("Preload FSM switched to state: stopState.");
 
+        // Stop stage.
         m_CurrentState = stopState;
         m_CurrentDirection = Direction::Stop;
         {
@@ -280,6 +255,7 @@ void Preload::process(Event e){
           *m_StagesStoppedFlag = false;
         }
         m_StageFrame->stop();
+        // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
@@ -303,6 +279,7 @@ void Preload::process(Event e){
           }else{
 
             if((Direction::Forwards == m_CurrentDirection) || (Direction::Backwards == m_CurrentDirection)){
+              // Stop stage.
               m_CurrentState = stopState;
               m_CurrentDirection = Direction::Stop;
               {
@@ -310,6 +287,7 @@ void Preload::process(Event e){
                 *m_StagesStoppedFlag = false;
               }
               m_StageFrame->stop();
+              // Notify that the experiment finished.
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_all();
             }

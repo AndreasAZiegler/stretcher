@@ -1,3 +1,9 @@
+/**
+ * @file mybutton.h
+ * @brief wxButton with the extended events button down and button up.
+ * @author Andreas Ziegler
+ */
+
 #ifndef MYBUTTON_H
 #define MYBUTTON_H
 
@@ -14,6 +20,7 @@
 class MyFrame;
 
 /**
+ * @class wxMyButton mybutton.h "gui/mybutton.h"
  * @brief Button class which implements the EVT_MYBUTTON_DOWN and EVT_MYBUTTON_UP events.
  */
 class wxMyButton: public wxButton
@@ -63,6 +70,7 @@ class wxMyButton: public wxButton
     wxDECLARE_EVENT_TABLE();
 };
 
+// Declare events button down and button up.
 wxDECLARE_EVENT(EVT_MYBUTTON_DOWN, wxCommandEvent);
 wxDECLARE_EVENT(EVT_MYBUTTON_UP, wxCommandEvent);
 

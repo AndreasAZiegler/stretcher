@@ -1,3 +1,8 @@
+/**
+ * @file linearstage.h
+ * @brief The linear stage.
+ * @author Andreas Ziegler
+ */
 
 #ifndef _LINEARMOTOR_H__
 #define _LINEARMOTOR_H__
@@ -8,6 +13,7 @@
 #include "linearstagemessagehandler.h"
 
 /**
+ * @class LinearStage linearstage.h "hardware/linearstage.h"
  * @brief Class that provides access to the hardware module with the zaber linear stepper motor.
  */
 class LinearStage : public SerialInterface
@@ -15,9 +21,12 @@ class LinearStage : public SerialInterface
 
   public:
     /**
-     * @brief Forwards the com port and the baud rate to SerialPort
-     * @param comPort com port
-     * @param baudrate baudrate
+     * @brief Creates a SerialInterface and initializes all needed variables.
+     * @param type Type
+     * @param waitmessagehandler Pointer to the condition variable to wait for message handlers.
+     * @param waitmessagehandlermutex Pointer to the mutex to protect waitmessagehandler.
+     * @param messagehandlerfinishednr Pointer to the amount of finishes message handlers.
+     * @param baudrate Baudrate
      */
     LinearStage(UpdatedValuesReceiver::ValueType type,
                 std::shared_ptr<std::condition_variable> waitmessagehandler,
@@ -26,7 +35,7 @@ class LinearStage : public SerialInterface
                 unsigned int baudrate = 115200);
 
     /**
-     * @brief Sets the device mode, the move tracking period and the speed of the linear stage.
+     * @brief Sets the device mode, the move tracking period, the speed and the acceleration of the linear stage.
      */
     void configure();
 
@@ -161,22 +170,10 @@ class LinearStage : public SerialInterface
 
     const double MM_PER_MS;               						/**< milimeter per microstep */
 
-    //const float DecIncSpeed;              				/**< Amount of speed to increase/decrease */
 
     double m_Stepsize;			     				    					/**< Stepsize of the stepper motor in millimeters */
     char m_ByteData[4];
-    //int mOscstate;							          //!< Current state of the oscillation
-    //double mAmplitude;						        //!< Amplitude of the oscillation
-    //bool mStoprequest;						        //!< stopflag for the oscillation
-    //int mLMtimerID;							          //!< Timer ID of the oscillation timer
     int m_CurrentSpeed;         			           			/**< The current speed */
-    //int m_CurrentPosMotor[2];   			           /**< Position of the two motors */
-    //bool mOldPositionFlag;                /**< Flag to indicate that the current "old" position is still up to date */
-    //bool mMoveFinishedFlag;               /**< Flag to indicate, that the motors finished moving */
-    //bool mPositionPendingFlag;            /**< Indicate that a RETURN_CURRENT_POSITION command is executed but the answer not yet arrived */
-    //bool mStartUpFlag;                    /**< Indicates that software is starting up or started up */
-
-    //bool mExpectedMessagesFlag;           /**< Indicates that messages are expected */
 
     LinearStageMessageHandler m_MessageHandler;    		/**< The MessageHandler object */
 };

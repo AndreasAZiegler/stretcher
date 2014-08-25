@@ -1,3 +1,8 @@
+/**
+ * @file forcesensormessagehandler.h
+ * @brief The force sensor message handler.
+ * @author Andreas Ziegler
+ */
 
 #ifndef FORCESENSORMESSAGEHANDLER_H
 #define FORCESENSORMESSAGEHANDLER_H
@@ -8,6 +13,7 @@
 #include "messagehandler.h"
 
 /**
+ * @class ForceSensorMessageHandler forcesensormessagehandler.h "hardware/forcesensormessagehandler.h"
  * @brief Message handler for the linear stages
  */
 class ForceSensorMessageHandler : virtual public MessageHandler
@@ -25,6 +31,9 @@ class ForceSensorMessageHandler : virtual public MessageHandler
                               std::shared_ptr<std::mutex> waitmessagehandlermutex,
                               std::shared_ptr<int> messagehandlerfinishednr);
 
+    /**
+     * @brief Destructor
+     */
     ~ForceSensorMessageHandler();
 
     /**

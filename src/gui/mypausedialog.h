@@ -1,3 +1,9 @@
+/**
+ * @file mypausedialog.h
+ * @brief The pause dialog.
+ * @author Andreas Ziegler
+ */
+
 #ifndef MYPAUSEDIALOG_H
 #define MYPAUSEDIALOG_H
 
@@ -6,6 +12,10 @@
 #include "mypausedialog_base.h"
 #include "../experiments/pause.h"
 
+/**
+ * @class MyPauseDialog mypausedialog.h "gui/mypausedialog.h"
+ * @brief The pause dialog to set the pause time.
+ */
 class MyPauseDialog : public MyPauseDialog_Base
 {
   public:
@@ -31,6 +41,9 @@ class MyPauseDialog : public MyPauseDialog_Base
     wxDECLARE_EVENT_TABLE();
 };
 
+/**
+ * @enum ID for events in MyPauseDialog
+ */
 enum
 {
   ID_PauseDialogOK = 59
