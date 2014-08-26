@@ -80,9 +80,9 @@ void MyFrame::OnApplyPreset(wxCommandEvent& event){
   }
 
   // Applies parameters of the preset.
-  m_StageFrame->setMaxDistanceLimit(m_TempMaxDistanceLimit);
+  m_StageFrame->setMaxDistanceLimitMM(m_TempMaxDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-  m_StageFrame->setMinDistanceLimit(m_TempMinDistanceLimit);
+  m_StageFrame->setMinDistanceLimitMM(m_TempMinDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
   m_MaxDistanceLimit = m_TempMaxDistanceLimit / 0.00009921875/*mm per micro step*/;
   m_MinDistanceLimit = m_TempMinDistanceLimit / 0.00009921875/*mm per micro step*/;

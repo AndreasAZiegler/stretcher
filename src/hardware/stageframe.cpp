@@ -283,9 +283,17 @@ long StageFrame::getCurrentDistance(void){
  * @brief Sets the maximum position of the stages.
  * @param limit Upper limit in mm.
  */
-void StageFrame::setMaxDistanceLimit(long limit){
+void StageFrame::setMaxDistanceLimitMM(long limit){
   long dist = (limit/MM_PER_MS);
-  long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (dist / 2));
+  setMaxDistanceLimitMS(dist);
+}
+
+/**
+ * @brief Sets the maximum position of the stages.
+ * @param limit Upper limit in micro steps.
+ */
+void StageFrame::setMaxDistanceLimitMS(long limit){
+  long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (limit / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
   (m_LinearStages.at(0))->setMinLimit(position);
@@ -298,9 +306,17 @@ void StageFrame::setMaxDistanceLimit(long limit){
  * @brief Sets the minimum position of the stages.
  * @param limit Lower limit in mm.
  */
-void StageFrame::setMinDistanceLimit(long limit){
+void StageFrame::setMinDistanceLimitMM(long limit){
   long dist = (limit/MM_PER_MS);
-  long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (dist / 2));
+  setMinDistanceLimitMS(dist);
+}
+
+/**
+ * @brief Sets the minimum position of the stages.
+ * @param limit Lower limit in micro steps.
+ */
+void StageFrame::setMinDistanceLimitMS(long limit){
+  long position = (771029 /*max. position*/ + (m_MaxPosDistance / 2) - (m_ZeroDistanceOffset / 2) - (limit / 2));
   //long position = (771029 /*max. position*/ - ((limit / 2) / m_Stepsize));
 
   (m_LinearStages.at(0))->setMaxLimit(position);

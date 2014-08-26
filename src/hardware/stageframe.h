@@ -141,15 +141,27 @@ class StageFrame : virtual public UpdatedValuesReceiver
 
     /**
      * @brief Sets the maximum position of the stages.
-     * @param limit Upper limit.
+     * @param limit Upper limit in mm.
      */
-    void setMaxDistanceLimit(long limit);
+    void setMaxDistanceLimitMM(long limit);
+
+    /**
+     * @brief Sets the maximum position of the stages.
+     * @param limit Upper limit in ms.
+     */
+    void setMaxDistanceLimitMS(long limit);
 
     /**
      * @brief Sets the minimum position of the stages.
-     * @param limit Lower limit.
+     * @param limit Lower limit in mm.
      */
-    void setMinDistanceLimit(long limit);
+    void setMinDistanceLimitMM(long limit);
+
+    /**
+     * @brief Sets the minimum position of the stages.
+     * @param limit Lower limit in ms.
+     */
+    void setMinDistanceLimitMS(long limit);
 
     /**
      * @brief Calculates and sets the maximum position distance. Updates the current distance

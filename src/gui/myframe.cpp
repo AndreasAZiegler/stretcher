@@ -322,8 +322,8 @@ void MyFrame::registerLinearStage(std::vector<std::shared_ptr<LinearStage>> &lin
   m_StageFrame->registerStagesStopped(&m_StagesStoppedFlag, &m_StagesStoppedMutex);
 
   // Reset limit
-  m_StageFrame->setMaxDistanceLimit(153);
-  m_StageFrame->setMinDistanceLimit(0);
+  m_StageFrame->setMaxDistanceLimitMM(153);
+  m_StageFrame->setMinDistanceLimitMM(0);
 }
 
 /**
@@ -591,8 +591,8 @@ void MyFrame::startup(void){
     m_MinForceLimit = m_Settings->getMinForceLimit();
     m_MaxForceLimit = m_Settings->getMaxForceLimit();
     // Set limits to the stages
-    m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
-    m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
+    m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
+    m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
     // Display limits
     m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
     m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
@@ -792,8 +792,8 @@ void MyFrame::setDistanceWActuatorCollision(double le){
   //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min. and max. distance and the distance at maximum positions.
-  m_StageFrame->setMinDistanceLimit(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setMaxDistanceLimit(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMinDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMaxDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
   m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
   m_LengthsGoToSpinCtrl->SetValue(m_MaxPosDistance);
 }
@@ -1391,9 +1391,9 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   }
 
-  m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
+  m_StageFrame->setMaxDistanceLimitMM(m_MaxDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-  m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit);
+  m_StageFrame->setMinDistanceLimitMM(m_MinDistanceLimit);
   //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
   m_MaxDistanceLimit /= 0.00009921875/*mm per micro step*/;
   m_MinDistanceLimit /= 0.00009921875/*mm per micro step*/;

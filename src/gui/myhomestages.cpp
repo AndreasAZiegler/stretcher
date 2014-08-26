@@ -34,8 +34,8 @@ MyHomeStages::MyHomeStages(std::shared_ptr<StageFrame> stageframe, MyFrame *myfr
  */
 void MyHomeStages::OnOK(wxCommandEvent &event){
   // Resets the distance limit.
-  m_StageFrame->setMaxDistanceLimit(153);
-  m_StageFrame->setMinDistanceLimit(0);
+  m_StageFrame->setMaxDistanceLimitMM(153);
+  m_StageFrame->setMinDistanceLimitMM(0);
   m_MyFrame->setMaxDistanceLimit(153 / 0.00009921875/*mm per micro step*/);
 
   // Homes the stage frame.
