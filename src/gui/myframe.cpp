@@ -124,7 +124,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_MountingLength(150),
     m_DistanceOrStressOrForce(DistanceOrForceOrStress::Force),
     m_CurrentProtocol(nullptr),
-    m_MaxDistanceLimit(50 / 0.00009921875/*mm per micro step*/),
+    m_MaxDistanceLimit(80 / 0.00009921875/*mm per micro step*/),
     m_TempMaxDistanceLimit(0),
     m_MinDistanceLimit(0),
     m_TempMinDistanceLimit(0),
@@ -591,8 +591,8 @@ void MyFrame::startup(void){
     m_MinForceLimit = m_Settings->getMinForceLimit();
     m_MaxForceLimit = m_Settings->getMaxForceLimit();
     // Set limits to the stages
-    m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit);
-    m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit);
+    m_StageFrame->setMinDistanceLimit(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/);
+    m_StageFrame->setMaxDistanceLimit(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/);
     // Display limits
     m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
     m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
@@ -792,8 +792,8 @@ void MyFrame::setDistanceWActuatorCollision(double le){
   //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min. and max. distance and the distance at maximum positions.
-  m_StageFrame->setMinDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setMaxDistanceLimit((m_CurrentDistance) * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMinDistanceLimit(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMaxDistanceLimit(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
   m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
   m_LengthsGoToSpinCtrl->SetValue(m_MaxPosDistance);
 }
