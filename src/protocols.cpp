@@ -817,10 +817,12 @@ void Protocols::stopProtocol(void){
  */
 void Protocols::moveExperimentUp(int experimentPosition){
   // Return if the experiment to move is the currently running experiment.
+  /*
   std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-  if((true == m_ExperimentRunningFlag) && (experimentPosition == m_CurrentExperimentNr)){
+  if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == m_CurrentExperimentNr)){
     return;
   }
+  */
 
   // Check if the poition is not the first position.
   if(0 < experimentPosition){
@@ -837,6 +839,14 @@ void Protocols::moveExperimentUp(int experimentPosition){
     // Swap the selection in the list box.
     m_ListBox->SetSelection(experimentPosition, false);
     m_ListBox->SetSelection(experimentPosition - 1, true);
+
+    // Adapt the current experiment number if the experiment to move is the currently running experiment.
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == m_CurrentExperimentNr)){
+      m_CurrentExperimentNr--;
+    }else if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == (m_CurrentExperimentNr + 1))){
+      m_CurrentExperimentNr++;
+    }
   }
 }
 
@@ -846,10 +856,12 @@ void Protocols::moveExperimentUp(int experimentPosition){
  */
 void Protocols::moveExperimentDown(int experimentPosition){
   // Return if the experiment to move is the currently running experiment.
+  /*
   std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-  if((true == m_ExperimentRunningFlag) && (experimentPosition == m_CurrentExperimentNr)){
+  if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == m_CurrentExperimentNr)){
     return;
   }
+  */
 
   // Check if the poition is not the last position.
   if(m_Experiments.size() > experimentPosition){
@@ -866,6 +878,14 @@ void Protocols::moveExperimentDown(int experimentPosition){
     // Swap the selection in the list box.
     m_ListBox->SetSelection(experimentPosition, false);
     m_ListBox->SetSelection(experimentPosition + 1, true);
+
+    // Adapt the current experiment number if the experiment to move is the currently running experiment.
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == m_CurrentExperimentNr)){
+      m_CurrentExperimentNr++;
+    }else if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == (m_CurrentExperimentNr - 1))){
+      m_CurrentExperimentNr--;
+    }
   }
 }
 
@@ -901,7 +921,7 @@ void Protocols::removeExperiment(int experimentPosition){
 
   // Return if the experiment to remove is the currently running experiment.
   std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
-  if((true == m_ExperimentRunningFlag) && (experimentPosition == m_CurrentExperimentNr)){
+  if((true == m_ExperimentRunningFlag) && ((experimentPosition + 1) == m_CurrentExperimentNr)){
     return;
   }else{
     m_Experiments[experimentPosition].reset();
