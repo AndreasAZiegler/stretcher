@@ -83,7 +83,7 @@ void Pause::getPreview(std::vector<PreviewValue>& previewvalues){
    timepoint =  previewvalues.back().getTimepoint() + 1;
   }
 
-  previewvalues.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength));
+  previewvalues.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_StartLength));
 }
 
 /**
