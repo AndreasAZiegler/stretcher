@@ -281,7 +281,7 @@ long StageFrame::getCurrentDistance(void){
 
 /**
  * @brief Sets the maximum position of the stages.
- * @param limit Upper limit.
+ * @param limit Upper limit in mm.
  */
 void StageFrame::setMaxDistanceLimit(long limit){
   long dist = (limit/MM_PER_MS);
@@ -296,7 +296,7 @@ void StageFrame::setMaxDistanceLimit(long limit){
 
 /**
  * @brief Sets the minimum position of the stages.
- * @param limit Lower limit.
+ * @param limit Lower limit in mm.
  */
 void StageFrame::setMinDistanceLimit(long limit){
   long dist = (limit/MM_PER_MS);
