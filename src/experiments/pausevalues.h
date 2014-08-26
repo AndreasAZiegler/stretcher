@@ -38,7 +38,7 @@ class PauseValues : public ExperimentValues
                 mpFXYVector *mindistancelimitvector,
                 MyFrame *myframe,
                 ExperimentType experimentType,
-                DistanceOrStressOrForce distanceOrStressOrForce,
+                DistanceOrForceOrStress distanceOrStressOrForce,
                 double area,
                 long gagelength,
                 int pausetime = 0);

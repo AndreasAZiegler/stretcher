@@ -170,7 +170,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       PreloadParameters parameters;
 
       // Load preload parmeters.
-      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("ForceOrStress").as_int());
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrForceOrStress>(node.attribute("ForceOrStress").as_int());
       parameters.velocity = node.attribute("Velocity").as_double();
       parameters.stressForceLimit = node.attribute("ForceStressLimit").as_double();
 
@@ -218,7 +218,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       OneStepEventParameters parameters;
 
       // Load one step event parameters.
-      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrForceOrStress>(node.attribute("DistanceOrStressOrForce").as_int());
       parameters.velocityDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("VelocityDistanceOrPercentage").as_int());
       parameters.velocity = node.attribute("Velocity").as_double();
       parameters.delay = node.attribute("Delay").as_double();
@@ -270,7 +270,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
     }else if(0 == strcmp("ContinuousEvent", node.name())){ // Continuous event experiment.
       ContinuousEventParameters parameters;
 
-      parameters.distanceOrStressOrForce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
+      parameters.distanceOrStressOrForce = static_cast<DistanceOrForceOrStress>(node.attribute("DistanceOrStressOrForce").as_int());
       parameters.ramp2failure = node.attribute("Ramp2Failure").as_bool();
       parameters.velocityDistanceOrPercentage = static_cast<DistanceOrPercentage>(node.attribute("VelocityDistanceOrPercentage").as_int());
       parameters.velocity = node.attribute("Velocity").as_double();
@@ -324,7 +324,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
 
     }else if(0 == strcmp("Pause", node.name())){ // Pause experiment.
       double pausetime = node.attribute("PauseTime").as_double();
-      DistanceOrStressOrForce distanceorstressorforce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
+      DistanceOrForceOrStress distanceorstressorforce = static_cast<DistanceOrForceOrStress>(node.attribute("DistanceOrStressOrForce").as_int());
 
       if(((nullptr == maxlimitvector) || (nullptr == minlimitvector))){
         maxlimitvector = m_MaxStressForceLimitGraph;
@@ -364,7 +364,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       addExperiment(experiment);
 
     }else if(0 == strcmp("PauseResume", node.name())){ // Pause/Resume experiment.
-      DistanceOrStressOrForce distanceorstressorforce = static_cast<DistanceOrStressOrForce>(node.attribute("DistanceOrStressOrForce").as_int());
+      DistanceOrForceOrStress distanceorstressorforce = static_cast<DistanceOrForceOrStress>(node.attribute("DistanceOrStressOrForce").as_int());
 
       // Create pause resume experiment.
       ExperimentParameters experimentparameters;
@@ -527,13 +527,13 @@ void Protocols::getPreviewValues(void){
 
   // Split preview point into stressforce and distance points.
   for(auto i : m_PreviewValues){
-    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
+    if(DistanceOrForceOrStress::Distance ==  i.distanceOrForce){
       m_DistancePreviewValues.push_back(i.value * 0.00009921875/*mm per micro step*/);
       m_DistanceTimePreviewValues.push_back(i.timepoint);
-    } else if(DistanceOrStressOrForce::Force ==  i.distanceOrForce){
+    } else if(DistanceOrForceOrStress::Force ==  i.distanceOrForce){
       m_StressForcePreviewValues.push_back(i.value / 10000.0);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
-    } else if(DistanceOrStressOrForce::Stress ==  i.distanceOrForce){
+    } else if(DistanceOrForceOrStress::Stress ==  i.distanceOrForce){
       m_StressForcePreviewValues.push_back((i.value / 10.0) / m_Area);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
@@ -548,13 +548,13 @@ void Protocols::getLimitValues(void){
 
   // Split preview point into stressforce and distance points.
   for(auto i : m_PreviewValues){
-    if(DistanceOrStressOrForce::Distance ==  i.distanceOrForce){
+    if(DistanceOrForceOrStress::Distance ==  i.distanceOrForce){
       m_DistancePreviewValues.push_back(i.value);
       m_DistanceTimePreviewValues.push_back(i.timepoint);
-    } else if(DistanceOrStressOrForce::Force ==  i.distanceOrForce){
+    } else if(DistanceOrForceOrStress::Force ==  i.distanceOrForce){
       m_StressForcePreviewValues.push_back(i.value);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
-    } else if(DistanceOrStressOrForce::Stress ==  i.distanceOrForce){
+    } else if(DistanceOrForceOrStress::Stress ==  i.distanceOrForce){
       m_StressForcePreviewValues.push_back(i.value * m_Area / 1000);
       m_StressForceTimePreviewValues.push_back(i.timepoint);
     }
@@ -975,7 +975,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
 
   file << std::endl << std::endl;
 
-  file << "Stress/Force in " << m_ExperimentValues[0]->getStressOrForce() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
+  file << "Stress/Force in " << m_ExperimentValues[0]->getForceOrStress() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
 
   int length = m_ExperimentValues[0]->getStressForceValues()->size();
   for(long j = 0; j < length; ++j){

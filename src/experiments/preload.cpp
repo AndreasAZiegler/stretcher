@@ -86,9 +86,9 @@ Preload::Preload(ExperimentParameters experimentparameters,
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 
   // Calculates the limit.
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
-  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
   }
 }
@@ -101,9 +101,9 @@ void Preload::setParameters(PreloadParameters parameters){
 
   m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
   m_InitStressForceLimit = parameters.stressForceLimit;
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
-  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
   }
   m_Velocity = parameters.velocity;
@@ -116,7 +116,7 @@ void Preload::setParameters(PreloadParameters parameters){
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
-void Preload::setPreloadDistance(){
+void Preload::setPreloadDistance(void){
 
 }
 
@@ -137,9 +137,9 @@ PreloadParameters Preload::getParametersForGUI(void){
 
   parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
 
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     parameters.stressForceLimit = m_InitStressForceLimit;
-  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     parameters.stressForceLimit = m_InitStressForceLimit;
   }
 
@@ -159,9 +159,9 @@ void Preload::getXML(pugi::xml_document &xml){
   node.append_attribute("CrossSectionArea") = m_Area;
   node.append_attribute("ForceOrStress") = static_cast<int>(m_DistanceOrStressOrForce);
 
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
-  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
   }
 
@@ -213,10 +213,10 @@ std::shared_ptr<ExperimentValues> Preload::getExperimentValues(void){
  * @brief FSM of the preload process
  * @param e Occuring event
  */
-void Preload::process(Event e){
+void Preload::process(Event event){
   switch(m_CurrentState){
     case stopState:
-      if(Event::evStart == e){
+      if(Event::evStart == event){
 
         // Show a warning pop up dialog if the velocity is high.
         if(11 < m_Velocity){
@@ -244,7 +244,7 @@ void Preload::process(Event e){
       }
       break;
     case runState:
-      if(Event::evStop == e){
+      if(Event::evStop == event){
         wxLogMessage("Preload FSM switched to state: stopState.");
 
         // Stop stage.
@@ -259,9 +259,9 @@ void Preload::process(Event e){
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
       }
-      if(Event::evUpdate == e){
+      if(Event::evUpdate == event){
         // If force or stress based
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
+        if((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)){
           if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
 

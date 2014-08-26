@@ -285,7 +285,6 @@ class Protocols
     std::vector<double> m_MinDistanceLimits;																/**< Vector for the min. distance limits. */
     wxListBox *m_ListBox;																										/**< Pointer to the listbox object. */
     std::vector<std::shared_ptr<Experiment>> m_Experiments;									/**< Vector containing the pointers to the experiments. */
-    Experiment *m_CurrentExperiment;																				/**< Pointer to the current experiment */
     int m_CurrentExperimentNr;																							/**< Number of the current experiment. */
     int m_EditedExperiment;																									/**< Number of the experiment which will be edited. */
     std::unique_ptr<std::thread> m_ExperimentRunningThread;									/**< Pointer to the experiment running check thread */
@@ -325,6 +324,5 @@ class Protocols
     long m_PreloadDistance;																									/**< Preload distance */
     bool m_MeasurementValuesRecordingFlag;																	/**< Indicates if the measurement values are recorded or not. */
     std::mutex m_MeasurementValuesRecordingMutex; 													/**< Mutex to protect m_MeasurementValuesRecordingFlag */
-    ExperimentValues *m_CurrentExperimentValues;														/**< Pointer to the current experiment values */
 };
 #endif // PROTOCOLS_H

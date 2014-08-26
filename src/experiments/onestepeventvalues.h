@@ -52,7 +52,7 @@ class OneStepEventValues : public ExperimentValues
                        std::string path,
 
                        ExperimentType experimentType,
-                       DistanceOrStressOrForce distanceOrStressOrForce,
+                       DistanceOrForceOrStress distanceOrStressOrForce,
                        double area,
                        long gagelength,
 
@@ -112,7 +112,7 @@ class OneStepEventValues : public ExperimentValues
      */
     std::string getEndOfEvent(void);
 
-    DistanceOrStressOrForce m_DistanceOrStressOrForce;					/**< Defines if the experiment is distance or stress/force based. */
+    DistanceOrForceOrStress m_DistanceOrForceOrStress;					/**< Defines if the experiment is distance or stress/force based. */
     double m_Velocity;																					/**< Velocity in mm/s. */
     double m_DelayTime;																					/**< Hold time 1 in s. */
     double m_Limit;																							/**< Upper limit in kPa, N or mm. */

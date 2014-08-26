@@ -156,7 +156,7 @@ void OneStepEvent::initParameters(void){
   }
 
   // Calculation of the limit.
-  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
     if(DistanceOrPercentage::DistanceRelative == m_LimitDistanceOrPercentage){
       m_Limit = m_StartLength + (m_InitLimit / 0.00009921875/*mm per micro step*/);
       //std::cout << "OneStepEvent: upper limit: " << m_UpperLimit * 0.00009921875/*mm per micro step*/ << " , m_StartLength: "
@@ -172,9 +172,9 @@ void OneStepEvent::initParameters(void){
     }
   // Calculation of the limit.
   }else{
-    if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+    if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
       m_Limit = m_InitLimit * m_Area * 10.0;
-    } else if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+    } else if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
       m_Limit = m_InitLimit * 10000.0;
     }
   }
@@ -263,12 +263,12 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
 
   for(int i = 0; i < m_Cycles; ++i){
     // Make start point.
-    previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
+    previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_StartLength));
     timepoint++;
 
     // Make point if there is a delay.
     if(0 < m_Delay){
-      previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_StartLength));
+      previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_StartLength));
       //previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, 0));
       timepoint++;
     }
@@ -289,13 +289,13 @@ void OneStepEvent::getPreview(std::vector<Experiment::PreviewValue>& previewvalu
         previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_Limit));
         break;
     case BehaviorAfterStop::GoToL0:
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_GageLength));
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_GageLength));
         break;
     case BehaviorAfterStop::GoToML:
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_MountingLength));
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_MountingLength));
         break;
     case BehaviorAfterStop::HoldADistance:
-        previewvalue.push_back(PreviewValue(timepoint, DistanceOrStressOrForce::Distance, m_HoldDistance));
+        previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_HoldDistance));
         break;
   }
 }
@@ -339,7 +339,7 @@ void OneStepEvent::process(Event event){
         m_CheckLimitsFlag = true;
 
         // If force based
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
+        if((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)){
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_CurrentLimit: " << m_CurrentLimit << " m_CurrentForce: " << m_CurrentForce << std::endl;
             m_CurrentDirection = Direction::Backwards;
@@ -355,7 +355,7 @@ void OneStepEvent::process(Event event){
               m_StageFrame->moveForward(m_Velocity);
             }
           }
-        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
+        }else if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){ // If distance based
           if((m_CurrentLimit - m_CurrentDistance) > m_DistanceThreshold){
             //std::cout << "m_CurrentDistance - m_DistanceLimit: " << (m_CurrentDistance) - m_CurrentLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
@@ -395,7 +395,7 @@ void OneStepEvent::process(Event event){
       }
       if(Event::evUpdate == event){
         // If force based
-        if((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)){
+        if((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)){
           //std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "(m_CurrentForce - m_CurrentLimit) >  m_ForceStressThreshold: " << (m_CurrentForce - m_CurrentLimit) << " " << m_ForceStressThreshold << std::endl;
@@ -490,7 +490,7 @@ void OneStepEvent::process(Event event){
               wxLogMessage("OneStepEvent: Go to start length.");
             }
           }
-        }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){ // If distance based
+        }else if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){ // If distance based
 
           // Reduce speed to a tenth if stages are close to the turn point.
           if((m_CurrentDistance - m_CurrentLimit) < (200 * m_DistanceThreshold)){
@@ -745,8 +745,8 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
       m_WaitActiveMutex.lock();
       // Process with the FSM if the experiment is force/stress based,
       // if there is no waiting active or if waiting is active but also holding upper limit is active.
-      if(((DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce) ||
-          (DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce)) && ((false == m_WaitActive) || (true == m_HoldLimitFlag))){
+      if(((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) ||
+          (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)) && ((false == m_WaitActive) || (true == m_HoldLimitFlag))){
         m_WaitActiveMutex.unlock();
         std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
         t1.detach();
@@ -759,7 +759,7 @@ void OneStepEvent::updateValues(MeasurementValue measurementValue, UpdatedValues
       m_CurrentDistance = measurementValue.value;
       // Process with the FSM if the experiment is force/stress based and if there is no waiting active.
       m_WaitActiveMutex.lock();
-      if(((DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
+      if(((DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
         m_WaitActiveMutex.unlock();
         std::thread t1(&OneStepEvent::process, this, Event::evUpdate);
         t1.detach();

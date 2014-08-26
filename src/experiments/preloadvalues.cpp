@@ -38,7 +38,7 @@ PreloadValues::PreloadValues(std::shared_ptr<StageFrame> stageframe,
                              MyFrame *myframe,
 
                              ExperimentType experimentType,
-                             DistanceOrStressOrForce distanceOrStressOrForce,
+                             DistanceOrForceOrStress distanceOrStressOrForce,
                              double area,
                              long gagelength,
 
@@ -79,9 +79,9 @@ void PreloadValues::setParameters(PreloadParameters parameters){
  */
 std::string PreloadValues::getExperimentSettings(void){
   return(std::string("Experiment: " + experimentTypeToString() +
-                     ", Stress or Force: " + getStressOrForce() +
+                     ", Stress or Force: " + getForceOrStress() +
                      ", Cross section area: " + std::to_string(m_Area) +
-                     ", Stress/force limit: " + std::to_string(m_ForceStressLimit) + " " + getStressOrForce() +
+                     ", Stress/force limit: " + std::to_string(m_ForceStressLimit) + " " + getForceOrStress() +
                      ", Velocity: " + std::to_string(m_Velocity) + "mm/s\n\n"));
 }
 
@@ -90,8 +90,8 @@ std::string PreloadValues::getExperimentSettings(void){
  * @return The experiment settings in a short form.
  */
 std::string PreloadValues::experimentSettingsForName(void){
-  return(std::string("SoF:" + getStressOrForce() +
+  return(std::string("SoF:" + getForceOrStress() +
                      " CSA:" + to_string_wp<double>(m_Area, 2) +
-                     " S/F-L:" + to_string_wp<double>(m_ForceStressLimit, 2) + " " + getStressOrForce() +
+                     " S/F-L:" + to_string_wp<double>(m_ForceStressLimit, 2) + " " + getForceOrStress() +
                      " V:" + to_string_wp<double>(m_Velocity, 2) + "mm/s"));
 }

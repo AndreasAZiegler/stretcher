@@ -46,7 +46,7 @@ class PreloadValues : public ExperimentValues
                   MyFrame *myframe,
 
                   ExperimentType experimentType,
-                  DistanceOrStressOrForce distanceOrStressOrForce,
+                  DistanceOrForceOrStress distanceOrStressOrForce,
                   double area,
                   long gagelength,
 

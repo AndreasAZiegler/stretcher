@@ -85,7 +85,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
                      MyFrame *myframe,
 
                      ExperimentType experimenttype,
-                     DistanceOrStressOrForce distanceOrStressOrForce,
+                     DistanceOrForceOrStress distanceOrStressOrForce,
                      double area,
                      long gagelength);
 
@@ -109,7 +109,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     void setCrossSectionArea(double crosssectionarea){
       m_Area = crosssectionarea;
     }
-
 
     /**
      * @brief Registers the update methods to receive the measurement values.
@@ -146,8 +145,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Defines if experiment is force or stress based.
      * @param forceOrStress
      */
-    void setDistanceOrStressOrForce(DistanceOrStressOrForce distanceOrStressOrForce){
-      m_DistanceOrStressOrForce = distanceOrStressOrForce;
+    void setDistanceOrStressOrForce(DistanceOrForceOrStress distanceOrForceOrStress){
+      m_DistanceOrForceOrStress = distanceOrForceOrStress;
     }
 
     /**
@@ -162,9 +161,11 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Returns the diameter of the sample.
      * @return The diameter of the sample.
      */
+    /*
     double getDiameter(void){
       return(m_Area);
     }
+    */
 
     /**
      * @brief Method which will be calles by the message handlers to update the values.
@@ -207,7 +208,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Returns the measurement unit (stress/force).
      * @return The unit as std::string.
      */
-    std::string getStressOrForce(void);
+    std::string getForceOrStress(void);
 
     /**
      * @brief Returns the the measurement type (distance/stressForce).
@@ -239,7 +240,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     }
 
     double m_Area;																																		/**< Area size of the sample. */
-    DistanceOrStressOrForce m_DistanceOrStressOrForce;										  					/**< Defines if the experiment is distance of stress/force based. */
+    DistanceOrForceOrStress m_DistanceOrForceOrStress;										  					/**< Defines if the experiment is distance of stress/force based. */
 
 	private:
 

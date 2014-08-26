@@ -40,11 +40,11 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
                                    MyFrame *myframe,
 
                                    ExperimentType experimenttype,
-                                   DistanceOrStressOrForce distanceOrStressOrForce,
+                                   DistanceOrForceOrStress distanceOrStressOrForce,
                                    double area,
                                    long gagelength)
   : m_ExperimentType(experimenttype),
-    m_DistanceOrStressOrForce(distanceOrStressOrForce),
+    m_DistanceOrForceOrStress(distanceOrStressOrForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),
     m_ForceStressDistanceGraph(forceStressDistanceGraph),
@@ -69,11 +69,11 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
  * @return The normalized value.
  */
 double ExperimentValues::normalizeValue(double value){
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     value /= 10000.0;
-  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     value = (value / 10) / m_Area;
-  }else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
     value *= 0.00009921875/*mm per micro step*/;
   }
   return(value);
@@ -161,7 +161,7 @@ ExperimentValues::~ExperimentValues(){
 void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
   switch(type){
     case UpdatedValuesReceiver::ValueType::Force:
-      if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+      if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
         {
           // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
@@ -308,9 +308,9 @@ std::string ExperimentValues::experimentTypeToString(){
  * @brief Export the measurement unit (stress/force)
  * @return The unit as std::string.
  */
-std::string ExperimentValues::getStressOrForce(void){
+std::string ExperimentValues::getForceOrStress(void){
   std::string stressforce;
-  if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     stressforce = "kPa";
   }else{
     stressforce = "N";
@@ -324,10 +324,10 @@ std::string ExperimentValues::getStressOrForce(void){
  */
 std::string ExperimentValues::getDistanceOrForceOrStress(void){
   std::string distancestressforce;
-  if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
     distancestressforce = "mm";
   } else{
-    distancestressforce = getStressOrForce();
+    distancestressforce = getForceOrStress();
   }
   return(distancestressforce);
 }

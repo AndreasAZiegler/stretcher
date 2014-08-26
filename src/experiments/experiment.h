@@ -38,7 +38,7 @@ class Experiment
      * @brief The PreviewValue struct
      */
     struct PreviewValue{
-      PreviewValue(int itimepoint, DistanceOrStressOrForce idistanceOrForce, int ivalue){
+      PreviewValue(int itimepoint, DistanceOrForceOrStress idistanceOrForce, int ivalue){
         timepoint = itimepoint;
         distanceOrForce = idistanceOrForce;
         value = ivalue;
@@ -48,7 +48,7 @@ class Experiment
       }
 
       int timepoint;
-      DistanceOrStressOrForce distanceOrForce;
+      DistanceOrForceOrStress distanceOrForce;
      int value;
     };
 
@@ -144,7 +144,7 @@ class Experiment
      * @brief Defines if experiment is force or stress based.
      * @param forceOrStress
      */
-    void setDistanceOrForceOrStress(DistanceOrStressOrForce distanceOrStressOrForce){
+    void setDistanceOrForceOrStress(DistanceOrForceOrStress distanceOrStressOrForce){
       m_DistanceOrStressOrForce = distanceOrStressOrForce;
     }
 
@@ -173,7 +173,7 @@ class Experiment
     long m_DistanceThreshold;																								/**< Threshold for the coparison of distances. */
     Direction m_CurrentDirection;																						/**< The current direction */
     ExperimentType m_ExperimentType;																				/**< Type of the experiment */
-    DistanceOrStressOrForce m_DistanceOrStressOrForce; 											/**< Defines if the experiment is distance of stress/force based. */
+    DistanceOrForceOrStress m_DistanceOrStressOrForce; 											/**< Defines if the experiment is distance of stress/force based. */
 
     long m_GageLength;																											/**< Preload distance of the stage frame. */
     long m_MountingLength;																									/**< Mountinglength of the stage frame. */

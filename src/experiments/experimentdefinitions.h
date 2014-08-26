@@ -29,7 +29,7 @@ enum class ExperimentType{
 /**
  * @brief Indicates whether the experiment is distance or force or stress based.
  */
-enum class DistanceOrStressOrForce{
+enum class DistanceOrForceOrStress{
   Distance = 0,
   Stress = 1,
   Force = 2,
@@ -65,7 +65,7 @@ struct ExperimentParameters{
   long maxdistancelimit;
   long mindistancelimit;
   ExperimentType type;
-  DistanceOrStressOrForce distanceOrForceOrStress;
+  DistanceOrForceOrStress distanceOrForceOrStress;
   long gagelength;
   long mountinglength;
   long maxposdistance;
@@ -77,7 +77,7 @@ struct ExperimentParameters{
  * @brief Parameters for the preload experiment.
  */
 struct PreloadParameters{
-  DistanceOrStressOrForce distanceOrStressOrForce;
+  DistanceOrForceOrStress distanceOrStressOrForce;
   double stressForceLimit;
   double velocity;
 };
@@ -86,7 +86,7 @@ struct PreloadParameters{
  * @brief Parameters for the one step event experiment.
  */
 struct OneStepEventParameters{
-  DistanceOrStressOrForce distanceOrStressOrForce;
+  DistanceOrForceOrStress distanceOrStressOrForce;
   DistanceOrPercentage velocityDistanceOrPercentage;
   double velocity;
   double delay;
@@ -110,7 +110,7 @@ enum class StepsOrMaxValue{Steps = 1,
  * @brief Parameters for the continuous event experiment.
  */
 struct ContinuousEventParameters{
-  DistanceOrStressOrForce distanceOrStressOrForce;
+  DistanceOrForceOrStress distanceOrStressOrForce;
   bool ramp2failure;
   DistanceOrPercentage velocityDistanceOrPercentage;
   double velocity;

@@ -73,8 +73,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void registerLinearStage(std::vector<std::shared_ptr<LinearStage> > &linearmotor, std::shared_ptr<StageFrame> &stageframe);
 
     /**
-     * @brief Registers the message handlers of the linear stages.
-     * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear motors.
+     * @brief Registers the message handlers of the linear stages, registers the stage frame at the linear stage message handlers.
+     * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear stages.
      */
     void registerLinearStageMessageHandlers(std::vector<std::shared_ptr<LinearStageMessageHandler> > &linearstagesmessagehandlers);
 
@@ -134,11 +134,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     }
 
     /**
-<<<<<<< HEAD
      * @brief Method wich will be executed, when the decrease stage distance button is pushed down. Starts moving forward.
-=======
-     * @brief Method wich will be executed, when the decrease stage distance button is pushed down.
->>>>>>> improvements
      * @param event Occuring event
      */
     void OnMotorDecreaseDistanceStart(wxCommandEvent &event);
@@ -170,7 +166,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     /**
      * @brief Returns the current distance.
      * @return The current distance.
-     * @todo May move this method to a better place/class.
      */
     long getCurrentDistance(void){
       return(m_CurrentDistance);
@@ -179,7 +174,6 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     /**
      * @brief Returns the current force.
      * @return The current force.
-     * @todo May move this method to a better place/class.
      */
     long getCurrentForce(void){
       return(m_CurrentForce);
@@ -300,17 +294,13 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnHomeLinearStages(wxCommandEvent& event);
 
     /**
-<<<<<<< HEAD
-     * @brief Method wich will be executed, when the user clicks on the set length button. Updates the mounting- and gagelength.
-=======
      * @brief Method wich will be executed, when the user clicks on the set sensitivities.
      * @param event Occuring event
      */
     void OnSetSensitivities(wxCommandEvent& event);
 
     /**
-     * @brief Method wich will be executed, when the user clicks on the set length button.
->>>>>>> improvements
+     * @brief Method wich will be executed, when the user clicks on the set length button. Updates the mounting- and gagelength.
      * @param event Occuring event
      */
     void OnLengthsSetMountingLength(wxCommandEvent& event);
@@ -615,6 +605,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void createPreviewGraph(void);
 
+  private:
+
     bool m_BlockNotebookTabFlag;																													/**< Indicate if the current tab in wxNotebook should be blocked. */
     std::unique_ptr<mpWindow> m_Graph;																										/**< Pointer to the graph */
     std::mutex m_UpdateGraphMutex;																												/**< Mutex to protect the graph update. */
@@ -686,7 +678,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::mutex m_WaitHighVelocityMutex;																										/**< Mutex for m_WaitHighVelocity. */
     bool m_HighVelocityAbort;																															/**< Indicates if experiment should be aborted because of the high velocity. */
 
-    DistanceOrStressOrForce m_DistanceOrStressOrForce;																		/**< Indicates if experiment is force or stress based */
+    DistanceOrForceOrStress m_DistanceOrStressOrForce;																		/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;																																	/**< Current force */
     int m_CurrentForceUpdateDelay;																												/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;																																	/**< Current force unit (N or kPa) */

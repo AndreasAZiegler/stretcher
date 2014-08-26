@@ -54,7 +54,7 @@ class ContinuousEventValues : public ExperimentValues
                           std::string path,
 
                           ExperimentType experimentType,
-                          DistanceOrStressOrForce distanceOrStressOrForce,
+                          DistanceOrForceOrStress distanceOrStressOrForce,
                           double area,
                           long gagelength,
 

@@ -66,7 +66,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
-    virtual void setPreloadDistance();
+    virtual void setPreloadDistance(void);
 
     /**
      * @brief Destructor
@@ -95,7 +95,7 @@ class Preload : virtual public Experiment, virtual public UpdatedValuesReceiver
      * @brief FSM of the experiment
      * @param e Occuring event
      */
-    virtual void process(Event e);
+    virtual void process(Event event);
 
     /**
      * @brief Do all the required thing to stop the experiment during process.

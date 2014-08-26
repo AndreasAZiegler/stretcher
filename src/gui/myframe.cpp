@@ -122,7 +122,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
-    m_DistanceOrStressOrForce(DistanceOrStressOrForce::Force),
+    m_DistanceOrStressOrForce(DistanceOrForceOrStress::Force),
     m_CurrentProtocol(nullptr),
     m_MaxDistanceLimit(50 / 0.00009921875/*mm per micro step*/),
     m_TempMaxDistanceLimit(0),
@@ -212,9 +212,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsSaveButton->SetId(ID_SaveProtocol);
   m_ProtocolsLoadButton->SetId(ID_LoadProtocol);
 
-  /**
-   * @todo Is this required?
-   */
   wxString str;
   str << m_LengthsGoToSpinCtrl->GetValue();
   m_LengthsGoToSpinCtrl->SetValue(str + " mm");
@@ -716,7 +713,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
       m_Graph->Fit();
     }
 
-    m_DistanceOrStressOrForce = DistanceOrStressOrForce::Stress;
+    m_DistanceOrStressOrForce = DistanceOrForceOrStress::Stress;
   }else{ // Changes to force.
     m_InitializeMinForceStaticText->SetLabelText("Min. force [N]:");
     m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
@@ -746,7 +743,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
       m_Graph->Fit();
     }
 
-    m_DistanceOrStressOrForce = DistanceOrStressOrForce::Force;
+    m_DistanceOrStressOrForce = DistanceOrForceOrStress::Force;
   }
 }
 
@@ -816,9 +813,9 @@ void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnSetSensitivities(wxCommandEvent& event){
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     m_ForceStressSensitivity = m_LengthsForceStressSensitivitySpinCtrl->GetValue() * 10000.0;
-  }else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     m_ForceStressSensitivity = (m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
   }
 
@@ -1058,7 +1055,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     }
     parameters.velocity = m_OneStepStressForceVelocitySpinCtrl->GetValue();
   }else if(true == m_OneStepDistanceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = DistanceOrStressOrForce::Distance;
+    parameters.distanceOrStressOrForce = DistanceOrForceOrStress::Distance;
     parameters.delay = m_OneStepDistanceDelaySpinCtrl->GetValue();
 
     if(true == m_OneStepDistanceVelocityMmRadioBtn->GetValue()){
@@ -1270,7 +1267,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     }
 
   }else if(true == m_ContinuousDistanceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = DistanceOrStressOrForce::Distance;
+    parameters.distanceOrStressOrForce = DistanceOrForceOrStress::Distance;
     parameters.velocity = m_ContinuousDistanceVelocitySpinCtrl->GetValue();
     parameters.holdtime = m_ContinuousDistanceHoldTimeSpinCtrl->GetValue();
     parameters.increment = m_ContinuousDistanceIncrementSpinCtrl->GetValue();
@@ -1797,7 +1794,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
         m_OneStepDistanceDwellSpinCtrl->SetValue(parameters.dwell);
         m_OneStepStressForceDwellSpinCtrl->SetValue(parameters.dwell);
 
-        if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
+        if(DistanceOrForceOrStress::Distance == parameters.distanceOrStressOrForce){
           m_OneStepStressForcePanel->Show(false);
           m_OneStepDistancePanel->Show(true);
           m_OneStepPanel21->Layout();
@@ -1888,7 +1885,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
           m_ContinuousStressForceVelocityPercentRadioBtn->SetValue(true);
         }
 
-        if(DistanceOrStressOrForce::Distance == parameters.distanceOrStressOrForce){
+        if(DistanceOrForceOrStress::Distance == parameters.distanceOrStressOrForce){
           m_ContinuousStressForcePanel->Show(false);
           m_ContinuousDistancePanel->Show(true);
           m_ContinuousPanel21->Layout();
@@ -2177,14 +2174,14 @@ void MyFrame::createValuesGraph(void){
   // Set up and add axis.
   m_XAxis.reset(new mpScaleX(wxT("Distance/Displacement [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
 
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_ForceStressDistanceGraph.SetName("Force / Distance");
     m_ForceStressDisplacementGraph.SetName("Force / Displacement");
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
-  } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  } else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_ForceStressDistanceGraph.SetName("Stress / Distance");
@@ -2205,12 +2202,12 @@ void MyFrame::createValuesGraph(void){
   // Add vectors
   m_Graph->AddLayer(&m_ForceStressDistanceGraph);
   m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
-  if((DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce) || (DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce)){
+  if((DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce)){
     m_MaxStressForceLimitGraph.SetPen(vectorpenLimit);
     m_MinStressForceLimitGraph.SetPen(vectorpenLimit);
     m_ForceStressDistanceGraph.SetPen(vectorpenStressForce);
     m_ForceStressDisplacementGraph.SetPen(vectorpenStressForce);
-  } else if(DistanceOrStressOrForce::Distance == m_DistanceOrStressOrForce){
+  } else if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
     m_MaxDistanceLimitGraph.SetPen(vectorpenLimit);
     m_MinDistanceLimitGraph.SetPen(vectorpenLimit);
     m_ForceStressDistanceGraph.SetPen(vectorpenDistance);
@@ -2275,12 +2272,12 @@ void MyFrame::createPreviewGraph(void){
 
   // Set up and add axis.
   m_XAxis.reset(new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL));
-  if(DistanceOrStressOrForce::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
-  } else if(DistanceOrStressOrForce::Stress == m_DistanceOrStressOrForce){
+  } else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_MaxStressForceLimitGraph.SetName("Maximal stress limit");

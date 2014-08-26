@@ -27,30 +27,15 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @param *forceStressDistanceGraph Pointer to the force/stress - distance graph.
      * @param *forceStressDisplacementGraph Pointer to the force/stress - displacement graph.
      * @param *vectoraccessmutex Pointer to the graph access mutex.
-     * @param *maxlimitgraph Pointer to the maximum limit graph.
-     * @param *minlimitgraph Pointer to the minimum limit graph.
+     * @param *maxforcelimitvector Maximum force limit value.
+     * @param *minforcelimitvector Minimum force limit value.
+     * @param *maxdistancelimitvector Maximum distance limit value.
+     * @param *mindistancelimitvector Minimum distance limit value.
+     * @param forcestressthreshold Threshold for the force values.
+     * @param distancethreshold Threshold for the distance values.
      * @param *wait Pointer to the wait condition variable.
      * @param *mutex Pointer to the mutex.
-     * @param *stagesstopped Pointer to the flag stages stopped.
-     * @param *stagesstoppedmutex Pointer to the mutex to protect the stagesstopped flag.
-     * @param ramptofailureactiveflag Indicates if a ramp 2 failure experiment is active.
      * @param parameters Parameter struct containing the experiment parameters.
-     *
-     *
-     * @param stageframe Shared pointer to the stage frame object.
-     * @param forcesensormessagehandler Shared pointer to the forcesensormessagehandler object.
-     * @param *myframe Pointer to the main frame object.
-     * @param maxforcelimit Maximum force limit value.
-     * @param minforcelimit Minimum force limit value.
-     * @param maxdistancelimit Maximum distance limit value.
-     * @param mindistancelimit Minimum distance limit value.
-     * @param type Experiment type.
-     * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
-     * @param gagelength The gage length.
-     * @param mountinglength The mounting length.
-     * @param maxposdistance Distance at the maximum stage positions.
-     * @param currentdistance The current distance.
-     * @param area Cross section area.
      */
     ContinuousEvent(ExperimentParameters experimentparameters,
 
