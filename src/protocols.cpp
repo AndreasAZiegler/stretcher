@@ -615,8 +615,8 @@ void Protocols::runProtocol(void){
   m_MinStressForceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MinStressForceLimits);
   m_MaxDistanceLimitGraph->SetData(m_DistanceLimitTimePoints, m_MaxDistanceLimits);
   m_MinDistanceLimitGraph->SetData(m_DistanceLimitTimePoints, m_MinDistanceLimits);
-  wxLogMessage(std::string("Protocols: m_PreviewStressForceLimitTimePoints: " + std::to_string(m_PreviewStressForceLimitTimePoints.size()) + " m_MaxStressForceLimits: " + std::to_string(m_MaxStressForceLimits.size())).c_str());
-  wxLogMessage(std::string("Protocols: m_DistanceLimitTimePoints: " + std::to_string(m_DistanceLimitTimePoints.size()) + " m_MaxDistanceLimits: " + std::to_string(m_MaxDistanceLimits.size())).c_str());
+  //wxLogMessage(std::string("Protocols: m_PreviewStressForceLimitTimePoints: " + std::to_string(m_PreviewStressForceLimitTimePoints.size()) + " m_MaxStressForceLimits: " + std::to_string(m_MaxStressForceLimits.size())).c_str());
+  //wxLogMessage(std::string("Protocols: m_DistanceLimitTimePoints: " + std::to_string(m_DistanceLimitTimePoints.size()) + " m_MaxDistanceLimits: " + std::to_string(m_MaxDistanceLimits.size())).c_str());
 
   m_MyFrame->createValuesGraph();
 
