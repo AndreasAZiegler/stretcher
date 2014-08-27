@@ -222,11 +222,11 @@ void Preload::process(Event event){
         if(11 < m_Velocity){
           if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
             m_Velocity = 11;
-            std::cout << "OneStepEvent: Velocity set to 11 mm/s." << std::endl;
+            wxLogMessage("Preload: Velocity set to 11 mm/s.");
           }
         }
 
-        wxLogMessage("Preload: Start experiment.");
+        wxLogMessage("Preload: Start");
         //std::cout << "Preload FSM switched to state: runState." << std::endl;
         m_StageFrame->setSpeed(m_Velocity);
         m_CurrentState = runState;
@@ -245,7 +245,6 @@ void Preload::process(Event event){
       break;
     case runState:
       if(Event::evStop == event){
-        wxLogMessage("Preload FSM switched to state: stopState.");
 
         // Stop stage.
         m_CurrentState = stopState;
@@ -255,6 +254,9 @@ void Preload::process(Event event){
           *m_StagesStoppedFlag = false;
         }
         m_StageFrame->stop();
+
+        wxLogMessage("Preload: Stop");
+
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
@@ -287,6 +289,9 @@ void Preload::process(Event event){
                 *m_StagesStoppedFlag = false;
               }
               m_StageFrame->stop();
+
+              wxLogMessage("Preload: Stop");
+
               // Notify that the experiment finished.
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_all();
