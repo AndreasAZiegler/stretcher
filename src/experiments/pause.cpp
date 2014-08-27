@@ -95,7 +95,7 @@ void Pause::process(Event event){
     case stopState:
       if(Event::evStart == event){
         m_CurrentState = runState;
-        wxLogMessage("Pause: Start experiment.");
+        wxLogMessage("Pause: Start");
         wxLogMessage(std::string("Pause: Hold for: " + std::to_string(m_PauseTime * 1000) + " ms").c_str());
         std::thread t1(&Pause::sleepForMilliseconds, this, m_PauseTime);
         t1.join();
@@ -103,7 +103,7 @@ void Pause::process(Event event){
 
         if(State::runState == m_CurrentState){
           m_CurrentState = stopState;
-          wxLogMessage("Pause: Stopped.");
+          wxLogMessage("Pause: Stop");
           // Notify that the experiment finished.
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
           m_Wait->notify_all();
@@ -113,9 +113,10 @@ void Pause::process(Event event){
 
     case runState:
       if(Event::evStop == event){
-        wxLogMessage("Pause: Stopped.");
-
         m_CurrentState = stopState;
+
+        wxLogMessage("Pause: Stop");
+
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
