@@ -77,7 +77,7 @@ struct ExperimentParameters{
  * @brief Parameters for the preload experiment.
  */
 struct PreloadParameters{
-  DistanceOrForceOrStress distanceOrStressOrForce;
+  DistanceOrForceOrStress distanceOrForceOrStress;
   double stressForceLimit;
   double velocity;
 };

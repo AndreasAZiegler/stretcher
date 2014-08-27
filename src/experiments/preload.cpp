@@ -86,9 +86,9 @@ Preload::Preload(ExperimentParameters experimentparameters,
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 
   // Calculates the limit.
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
-  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
   }
 }
@@ -99,11 +99,11 @@ Preload::Preload(ExperimentParameters experimentparameters,
  */
 void Preload::setParameters(PreloadParameters parameters){
 
-  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_DistanceOrForceOrStress = parameters.distanceOrForceOrStress;
   m_InitStressForceLimit = parameters.stressForceLimit;
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
-  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
   }
   m_Velocity = parameters.velocity;
@@ -135,11 +135,11 @@ Preload::~Preload(){
 PreloadParameters Preload::getParametersForGUI(void){
   PreloadParameters parameters;
 
-  parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  parameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
 
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     parameters.stressForceLimit = m_InitStressForceLimit;
-  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     parameters.stressForceLimit = m_InitStressForceLimit;
   }
 
@@ -155,13 +155,13 @@ PreloadParameters Preload::getParametersForGUI(void){
 void Preload::getXML(pugi::xml_document &xml){
   pugi::xml_node node = xml.append_child("Preload");
 
-  node.append_attribute("StressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("StressOrForce") = static_cast<int>(m_DistanceOrForceOrStress);
   node.append_attribute("CrossSectionArea") = m_Area;
-  node.append_attribute("ForceOrStress") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("ForceOrStress") = static_cast<int>(m_DistanceOrForceOrStress);
 
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
-  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     node.append_attribute("ForceStressLimit") = m_InitStressForceLimit;
   }
 
@@ -179,7 +179,7 @@ void Preload::getPreview(std::vector<PreviewValue> &previewvalue){
   } else{
    timepoint =  previewvalue.back().getTimepoint() + 1;
   }
-  previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StressForceLimit));
+  previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, m_StressForceLimit));
 }
 
 /**
@@ -222,7 +222,7 @@ void Preload::process(Event event){
         if(11 < m_Velocity){
           if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
             m_Velocity = 11;
-            std::cout << "OneStepEvent: Velocity set to 11." << std::endl;
+            std::cout << "OneStepEvent: Velocity set to 11 mm/s." << std::endl;
           }
         }
 
@@ -261,7 +261,7 @@ void Preload::process(Event event){
       }
       if(Event::evUpdate == event){
         // If force or stress based
-        if((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)){
+        if((DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress)){
           if((m_StressForceLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_StressForceLimit << std::endl;
 

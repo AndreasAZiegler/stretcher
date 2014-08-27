@@ -942,7 +942,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   // Get parameters.
   PreloadParameters parameters;
-  parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  parameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
   parameters.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue();
   parameters.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
 
@@ -968,7 +968,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
     experimentparameters.mindistancelimit = m_MinDistanceLimit;
     experimentparameters.type = ExperimentType::Preload;
-    experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
+    experimentparameters.distanceOrForceOrStress = parameters.distanceOrForceOrStress;
     experimentparameters.gagelength = m_GageLength;
     experimentparameters.mountinglength = m_MountingLength;
     experimentparameters.maxposdistance = m_MaxPosDistance;

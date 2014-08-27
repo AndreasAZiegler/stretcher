@@ -117,7 +117,7 @@ ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
  * @param parameters The parameters as a struct.
  */
 void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
-  m_DistanceOrStressOrForce = parameters.distanceOrStressOrForce;
+  m_DistanceOrForceOrStress = parameters.distanceOrStressOrForce;
   m_Ramp2FailureActiveFlag = parameters.ramp2failure;
   m_VelocityDistanceOrPercentage = parameters.velocityDistanceOrPercentage;
   m_InitVelocity = parameters.velocity;
@@ -171,7 +171,7 @@ void ContinuousEvent::initParameters(void){
   if(false == m_Ramp2FailureActiveFlag){
 
     // Calculate increment and maximum value limit and steps.
-    if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
+    if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
       if(DistanceOrPercentage::Distance == m_IncrementDistanceOrPercentage){
         m_Increment = m_InitIncrement / 0.00009921875/*mm per micro step*/;
         m_ExperimentValues->setIncrement(m_Increment);
@@ -199,7 +199,7 @@ void ContinuousEvent::initParameters(void){
       }
 
     // Calculate increment and maximum value limit and steps.
-    }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+    }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
       m_Increment = m_InitIncrement * m_Area * 10.0;
       m_HoldForce = m_InitHoldForce * m_Area * 10.0;
 
@@ -218,7 +218,7 @@ void ContinuousEvent::initParameters(void){
 
       }
     // Calculate increment and maximum value limit and steps.
-    }else if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+    }else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
       m_Increment = m_InitIncrement * 10000.0;
       m_HoldForce = m_InitHoldForce * 10000.0;
 
@@ -265,7 +265,7 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
   // Create parameter struct.
   ContinuousEventParameters params;
 
-  params.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+  params.distanceOrStressOrForce = m_DistanceOrForceOrStress;
   params.ramp2failure = m_Ramp2FailureActiveFlag;
   params.velocityDistanceOrPercentage = m_VelocityDistanceOrPercentage;
   params.velocity = m_InitVelocity;
@@ -291,7 +291,7 @@ void ContinuousEvent::getXML(pugi::xml_document &xml){
   // Add the parameters to the xml configuration.
   pugi::xml_node node = xml.append_child("ContinuousEvent");
 
-  node.append_attribute("DistanceOrStressOrForce") = static_cast<int>(m_DistanceOrStressOrForce);
+  node.append_attribute("DistanceOrStressOrForce") = static_cast<int>(m_DistanceOrForceOrStress);
   node.append_attribute("Ramp2Failure") = m_Ramp2FailureActiveFlag;
   node.append_attribute("VelocityDistanceOrPercentage") = static_cast<int>(m_VelocityDistanceOrPercentage);
   node.append_attribute("Velocity") = m_InitVelocity;
@@ -327,17 +327,17 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
     for(int j = 0; j < m_Steps; ++j){
       // Make point if there is a hold time.
       if(0 < m_HoldTime){
-        if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
-          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (m_StartLength + (j * m_Increment))));
+        if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
+          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, (m_StartLength + (j * m_Increment))));
         } else{
-          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, j * m_Increment));
+          previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, j * m_Increment));
         }
         timepoint++;
       }
-      if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (m_StartLength + ((j + 1) * m_Increment))));
+      if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, (m_StartLength + ((j + 1) * m_Increment))));
       } else{
-        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (j + 1) * m_Increment));
+        previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, (j + 1) * m_Increment));
         //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
       }
       timepoint++;
@@ -345,10 +345,10 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
       // Make last point depending on the stop behavior.
       switch(m_BehaviorAfterStop){
         case BehaviorAfterStop::Stop:
-          if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
-            previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, m_StartLength + ((j + 1) * m_Increment)));
+          if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
+            previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, m_StartLength + ((j + 1) * m_Increment)));
           } else{
-            previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrStressOrForce, (j + 1) * m_Increment));
+            previewvalue.push_back(PreviewValue(timepoint, m_DistanceOrForceOrStress, (j + 1) * m_Increment));
             //std::cout << "ContinuousEvent: (j + 1) * m_Increment: " << (j + 1) * m_Increment << ", with m_Increment: " << m_Increment << std::endl;
           }
           break;
@@ -388,9 +388,9 @@ void ContinuousEvent::process(Event event){
         wxLogMessage("ContinuousEvent: Start experiment.");
 
         // Set current limit.
-        if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
+        if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
           m_CurrentLimit = m_StartLength + m_Increment;
-        } else if((DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce)){
+        } else if((DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress)){
           m_CurrentLimit = m_CurrentForce + m_Increment;
         }
 
@@ -409,7 +409,7 @@ void ContinuousEvent::process(Event event){
           m_StageFrame->moveBackward(m_Velocity);
         }
         // If force/stress based
-        else if((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)){
+        else if((DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress)){
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
             m_CurrentDirection = Direction::Backwards;
@@ -425,7 +425,7 @@ void ContinuousEvent::process(Event event){
               m_StageFrame->moveForward(m_Velocity);
             }
           }
-        }else if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){ // If distance based
+        }else if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){ // If distance based
           if((m_CurrentDistance) - m_CurrentLimit > m_DistanceThreshold){
             //std::cout << "m_CurrentDistance - m_DistanceLimit: " << (m_CurrentDistance) - m_CurrentLimit << std::endl;
             m_CurrentDirection = Direction::Forwards;
@@ -559,7 +559,7 @@ void ContinuousEvent::process(Event event){
           }
         }
         // If force/stress based
-        else if((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce)){
+        else if((DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress)){
           //std::cout << "m_CurrentForce: " << m_CurrentForce << " m_CurrentLimit: " <<  m_CurrentLimit << std::endl;
           if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
             //std::cout << "(m_CurrentForce - m_CurrentLimit) >  m_ForceStressThreshold: " << (m_CurrentForce - m_CurrentLimit) << " " << m_ForceStressThreshold << std::endl;
@@ -687,7 +687,7 @@ void ContinuousEvent::process(Event event){
                 //std::cout << "ContinuousEvent: m_CurrentLimit: " << m_CurrentLimit << ", with m_CurrentForce: " << m_CurrentForce << " and m_Increment: " << m_Increment << std::endl;
               }
             }
-          }else if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){ // If distance based
+          }else if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){ // If distance based
 
             // Reduce speed to a tenth if stages are close to the turn point.
             if(m_Velocity > 2/*mm/s*/){
@@ -871,9 +871,9 @@ void ContinuousEvent::process(Event event){
           wxLogMessage("ContinuousEvent: goStartState: Start distance reached.");
 
           // Set current limit.
-          if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
+          if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
             m_CurrentLimit = m_StartLength + m_Increment;
-          } else if((DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce)){
+          } else if((DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress)){
             m_CurrentLimit = m_CurrentForce + m_Increment;
           }
           m_MaxForceStress = 0;
@@ -1024,8 +1024,8 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
       {
         // Run process if the experiment is force or stress based or a ramp 2 failure experiment is running and not in a waiting mode.
         m_WaitActiveMutex.lock();
-        if(((DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce) ||
-           (DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce) ||
+        if(((DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress) ||
+           (DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress) ||
            (true == m_Ramp2FailureActiveFlag)) && (false == m_WaitActive)){
           m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
@@ -1041,7 +1041,7 @@ void ContinuousEvent::updateValues(MeasurementValue measurementValue, UpdatedVal
       {
         // Run process if the experiment is distance based or if the distance has the be checked.
         m_WaitActiveMutex.lock();
-        if(((DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
+        if(((DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress) || (true == m_CheckDistanceFlag)) && (false == m_WaitActive)){
           m_WaitActiveMutex.unlock();
           std::thread t1(&ContinuousEvent::process, this, Event::evUpdate);
           t1.detach();

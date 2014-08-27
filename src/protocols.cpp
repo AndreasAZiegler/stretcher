@@ -170,7 +170,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       PreloadParameters parameters;
 
       // Load preload parmeters.
-      parameters.distanceOrStressOrForce = static_cast<DistanceOrForceOrStress>(node.attribute("ForceOrStress").as_int());
+      parameters.distanceOrForceOrStress = static_cast<DistanceOrForceOrStress>(node.attribute("ForceOrStress").as_int());
       parameters.velocity = node.attribute("Velocity").as_double();
       parameters.stressForceLimit = node.attribute("ForceStressLimit").as_double();
 
@@ -184,7 +184,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
       experimentparameters.mindistancelimit = m_MinDistanceLimit;
       experimentparameters.type = ExperimentType::Preload;
-      experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
+      experimentparameters.distanceOrForceOrStress = parameters.distanceOrForceOrStress;
       experimentparameters.gagelength = m_GageLength;
       experimentparameters.mountinglength = m_MountingLength;
       experimentparameters.maxposdistance = m_MaxPosDistance;

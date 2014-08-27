@@ -145,7 +145,7 @@ class Experiment
      * @param forceOrStress
      */
     void setDistanceOrForceOrStress(DistanceOrForceOrStress distanceOrStressOrForce){
-      m_DistanceOrStressOrForce = distanceOrStressOrForce;
+      m_DistanceOrForceOrStress = distanceOrStressOrForce;
     }
 
     /**
@@ -173,7 +173,7 @@ class Experiment
     long m_DistanceThreshold;																								/**< Threshold for the coparison of distances. */
     Direction m_CurrentDirection;																						/**< The current direction */
     ExperimentType m_ExperimentType;																				/**< Type of the experiment */
-    DistanceOrForceOrStress m_DistanceOrStressOrForce; 											/**< Defines if the experiment is distance of stress/force based. */
+    DistanceOrForceOrStress m_DistanceOrForceOrStress; 											/**< Defines if the experiment is distance of stress/force based. */
 
     long m_GageLength;																											/**< Preload distance of the stage frame. */
     long m_MountingLength;																									/**< Mountinglength of the stage frame. */
