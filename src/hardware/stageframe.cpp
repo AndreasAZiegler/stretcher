@@ -333,8 +333,11 @@ void StageFrame::setMinDistanceLimitMS(long limit){
 long StageFrame::setDistanceWActuatorCollision(double distance){
   //m_MaxPosDistance = m_CurrentDistance.value + m_MaxPosDistance - distance;
   m_MaxPosDistance = distance - (m_CurrentDistance.value - m_MaxPosDistance);
+  /*
   wxLogMessage(std::string("StageFrame: m_MaxPosDistance: " + std::to_string(m_MaxPosDistance) +
-                           ", " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/)).c_str());
+                           ", " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*//*)).c_str());
+  */
+  wxLogMessage(std::string("StageFrame: Distance at maximum positions: " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/) + " mm").c_str());
 
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
                              std::abs(771029 - m_CurrentPositions[1].value) + m_MaxPosDistance - m_ZeroDistanceOffset);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify

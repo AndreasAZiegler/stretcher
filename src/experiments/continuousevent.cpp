@@ -489,7 +489,7 @@ void ContinuousEvent::process(Event event){
                   m_CurrentState = goBackState;
                   m_CheckDistanceFlag = true;
                   m_CurrentLimit = m_GageLength;
-                  wxLogMessage("ContinuousEvent: Go to L0.");
+                  wxLogMessage(std::string("ContinuousEvent: Go to L0: " + std::to_string(m_GageLength) + " mm").c_str());
                   {
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->gotoStepsDistance(m_GageLength);
@@ -499,7 +499,7 @@ void ContinuousEvent::process(Event event){
                   m_CurrentState = goBackState;
                   m_CheckDistanceFlag = true;
                   m_CurrentLimit = m_MountingLength;
-                  wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                  wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength) + " mm").c_str());
                   {
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->gotoStepsDistance(m_MountingLength);
@@ -523,7 +523,7 @@ void ContinuousEvent::process(Event event){
                   m_CurrentState = goBackForceState;
                   m_CheckDistanceFlag = true;
                   m_CurrentLimit = m_StopAtForce;
-                  wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0)).c_str());
+                  wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0) + " N").c_str());
 
                   if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                     //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
@@ -628,7 +628,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_GageLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_GageLength);
@@ -638,7 +638,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_MountingLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_MountingLength);
@@ -662,7 +662,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackForceState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_StopAtForce;
-                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0)).c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0) + " N").c_str());
 
                     if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                       //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
@@ -783,7 +783,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_GageLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength)).c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_GageLength);
@@ -793,7 +793,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_MountingLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength)).c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_MountingLength);
@@ -817,7 +817,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackForceState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_StopAtForce;
-                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0)).c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0) + " N").c_str());
 
                     if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                       //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
