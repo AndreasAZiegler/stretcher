@@ -817,7 +817,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackForceState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_StopAtForce;
-                    wxLogMessage(std::string("ContinuousEvent: Hold force: " + std::to_string(m_StopAtForce / 10000.0) + " N").c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0) + " N").c_str());
 
                     if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                       //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
