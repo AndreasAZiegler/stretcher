@@ -283,7 +283,7 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
       parameters.steps = node.attribute("Steps").as_int();
       parameters.cycles = node.attribute("Cycles").as_int();
       parameters.behaviorAfterStop = static_cast<BehaviorAfterStop>(node.attribute("BehaviorAfterStop").as_int());
-      parameters.holdForceStress = node.attribute("HoldForce").as_double();
+      parameters.stopAtForceStress = node.attribute("HoldForce").as_double();
 
       // Create continuous event experiment.
       ExperimentParameters experimentparameters;

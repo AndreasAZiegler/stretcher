@@ -75,8 +75,8 @@ ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
         m_CurrentStep(0),
         m_CurrentCycle(0),
         m_MaxForceStress(0),
-        m_InitHoldForce(parameters.holdForceStress),
-        m_HoldForce(parameters.holdForceStress),
+        m_InitHoldForce(parameters.stopAtForceStress),
+        m_StopAtForce(parameters.stopAtForceStress),
         m_WaitActive(false),
         m_DecreaseSpeedFlag(false),
         m_CheckDistanceFlag(false),
@@ -133,8 +133,8 @@ void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
   m_Steps = parameters.steps;
   m_Cycles = parameters.cycles;
   m_BehaviorAfterStop = parameters.behaviorAfterStop;
-  m_InitHoldForce = parameters.holdForceStress;
-  m_HoldForce = parameters.holdForceStress;
+  m_InitHoldForce = parameters.stopAtForceStress;
+  m_StopAtForce = parameters.stopAtForceStress;
 
   // Initialize parameters.
   initParameters();
@@ -201,7 +201,7 @@ void ContinuousEvent::initParameters(void){
     // Calculate increment and maximum value limit and steps.
     }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
       m_Increment = m_InitIncrement * m_Area * 10.0;
-      m_HoldForce = m_InitHoldForce * m_Area * 10.0;
+      m_StopAtForce = m_InitHoldForce * m_Area * 10.0;
 
       if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
         if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
@@ -220,7 +220,7 @@ void ContinuousEvent::initParameters(void){
     // Calculate increment and maximum value limit and steps.
     }else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
       m_Increment = m_InitIncrement * 10000.0;
-      m_HoldForce = m_InitHoldForce * 10000.0;
+      m_StopAtForce = m_InitHoldForce * 10000.0;
 
       if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
         if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
@@ -258,6 +258,16 @@ void ContinuousEvent::setPreloadDistance(){
 }
 
 /**
+ * @brief Sets the start length.
+ */
+void ContinuousEvent::setStartLength(void){
+  m_StartLength = m_CurrentDistance;
+
+  // Initialize parameters.
+  initParameters();
+}
+
+/**
  * @brief Returns struct with the parameters for the GUI.
  * @return The parameters for the GUI.
  */
@@ -278,7 +288,7 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
   params.steps = m_Steps;
   params.cycles = m_Cycles;
   params.behaviorAfterStop = m_BehaviorAfterStop;
-  params.holdForceStress = m_InitHoldForce;
+  params.stopAtForceStress = m_InitHoldForce;
 
   return(params);
 }
@@ -359,7 +369,7 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
           previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_MountingLength));
           break;
         case BehaviorAfterStop::HoldAForce:
-          previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Force, m_HoldForce));
+          previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Force, m_StopAtForce));
           break;
       }
     }
@@ -509,8 +519,8 @@ void ContinuousEvent::process(Event event){
                 case BehaviorAfterStop::HoldAForce:
                   m_CurrentState = goBackForceState;
                   m_CheckDistanceFlag = true;
-                  m_CurrentLimit = m_HoldForce;
-                  wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_HoldForce / 10000.0)).c_str());
+                  m_CurrentLimit = m_StopAtForce;
+                  wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0)).c_str());
 
                   if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                     //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
@@ -648,8 +658,8 @@ void ContinuousEvent::process(Event event){
                   case BehaviorAfterStop::HoldAForce:
                     m_CurrentState = goBackForceState;
                     m_CheckDistanceFlag = true;
-                    m_CurrentLimit = m_HoldForce;
-                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_HoldForce / 10000.0)).c_str());
+                    m_CurrentLimit = m_StopAtForce;
+                    wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0)).c_str());
 
                     if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                       //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;
@@ -803,8 +813,8 @@ void ContinuousEvent::process(Event event){
                     case BehaviorAfterStop::HoldAForce:
                       m_CurrentState = goBackForceState;
                       m_CheckDistanceFlag = true;
-                      m_CurrentLimit = m_HoldForce;
-                      wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_HoldForce / 10000.0)).c_str());
+                      m_CurrentLimit = m_StopAtForce;
+                      wxLogMessage(std::string("ContinuousEvent: Go to force: " + std::to_string(m_StopAtForce / 10000.0)).c_str());
 
                       if((m_CurrentLimit - m_CurrentForce) > m_ForceStressThreshold){
                         //std::cout << "m_CurrentForce - m_ForceStressLimit: " << m_CurrentForce - m_ForceStressLimit << std::endl;

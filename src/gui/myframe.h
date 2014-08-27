@@ -678,7 +678,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::mutex m_WaitHighVelocityMutex;																										/**< Mutex for m_WaitHighVelocity. */
     bool m_HighVelocityAbort;																															/**< Indicates if experiment should be aborted because of the high velocity. */
 
-    DistanceOrForceOrStress m_DistanceOrStressOrForce;																		/**< Indicates if experiment is force or stress based */
+    DistanceOrForceOrStress m_DistanceOrForceOrStress;																		/**< Indicates if experiment is force or stress based */
     long m_CurrentForce;																																	/**< Current force */
     int m_CurrentForceUpdateDelay;																												/**< Counting variable that the force values is not updated always in the GUI. */
     wxString m_ForceUnit;																																	/**< Current force unit (N or kPa) */

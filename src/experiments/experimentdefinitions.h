@@ -123,7 +123,7 @@ struct ContinuousEventParameters{
   int steps;
   int cycles;
   BehaviorAfterStop behaviorAfterStop;
-  double holdForceStress;
+  double stopAtForceStress;
 };
 
 #endif // EXPERIMENTSDEFINITIONS_H
