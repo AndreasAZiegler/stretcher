@@ -313,11 +313,11 @@ void OneStepEvent::process(Event event){
         if(11 < m_Velocity){
           if(true == m_MyFrame->showHighVelocityWarningFromExperiments()){
             m_Velocity = 11;
-            std::cout << "OneStepEvent: Velocity set to 11." << std::endl;
+            wxLogMessage("OneStepEvent: Velocity set to 11 mm/s.");
           }
         }
 
-        wxLogMessage("OneStepEvent: Start experiment.");
+        wxLogMessage("OneStepEvent: Start");
 
         // Perform hold if there is a delay.
         if(0 < m_Delay){
@@ -388,7 +388,9 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
+
         wxLogMessage("OneStepEvent: Stop.");
+
         // Notify that experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
@@ -453,7 +455,9 @@ void OneStepEvent::process(Event event){
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->stop();
                     }
-                    wxLogMessage("OneStepEvent: Stop.");
+
+                    wxLogMessage("OneStepEvent: Stop");
+
                     // Notify that experiment finished.
                     std::lock_guard<std::mutex> lck(*m_WaitMutex);
                     m_Wait->notify_all();
@@ -570,7 +574,7 @@ void OneStepEvent::process(Event event){
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->stop();
                     }
-                    wxLogMessage("OneStepEvent: Stop.");
+                    wxLogMessage("OneStepEvent: Stop");
                     // Notify that the experiment finished.
                     std::lock_guard<std::mutex> lck(*m_WaitMutex);
                     m_Wait->notify_all();
@@ -620,7 +624,7 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
-        wxLogMessage("OneStepEvent: Stop.");
+        wxLogMessage("OneStepEvent: Stop");
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
@@ -665,7 +669,7 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
-        wxLogMessage("OneStepEvent: Stop.");
+        wxLogMessage("OneStepEvent: Stop");
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
@@ -673,7 +677,7 @@ void OneStepEvent::process(Event event){
       if(Event::evUpdate == event){
         //std::cout << "abs(m_StartLength - m_CurrentDistance) < m_DistanceThreshold): " << std::abs(m_StartLength - m_CurrentDistance) << " < " << m_DistanceThreshold << std::endl;
         if(std::abs(m_StartLength - m_CurrentDistance) < 0.5*m_DistanceThreshold){
-          wxLogMessage("OneStepEvent: goStartState: Start distance reached.");
+          wxLogMessage("OneStepEvent: Start distance reached.");
           m_CurrentLimit = m_Limit;
           m_CheckDistanceFlag = false;
 
@@ -692,7 +696,7 @@ void OneStepEvent::process(Event event){
 
           m_CurrentState = runState;
           m_CurrentDirection = Direction::Stop;
-          wxLogMessage("OneStepEvent:: Go to runState");
+          wxLogMessage("OneStepEvent: Run");
           process(Event::evUpdate);
         }
       }
@@ -709,7 +713,7 @@ void OneStepEvent::process(Event event){
           std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
           m_StageFrame->stop();
         }
-        wxLogMessage("OneStepEvent: Stop.");
+        wxLogMessage("OneStepEvent: Stop");
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
@@ -723,7 +727,7 @@ void OneStepEvent::process(Event event){
           m_CurrentDirection = Direction::Stop;
           m_CurrentCycle = 0;
           //m_StageFrame->stop();
-          wxLogMessage("OneStepEvent: Stop.");
+          wxLogMessage("OneStepEvent: Stop");
           // Notify that the experiment finished.
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
           m_Wait->notify_all();

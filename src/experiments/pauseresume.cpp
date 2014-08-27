@@ -91,7 +91,7 @@ void PauseResume::process(Event event){
   switch(m_CurrentState){
     case stopState:
       if(Event::evStart == event){
-        wxLogMessage("PauseRelease: Start experiment.");
+        wxLogMessage("PauseRelease: Start");
         m_CurrentState = runState;
 
         // Create conditonal variable and mutex to wait for resume.
@@ -104,20 +104,23 @@ void PauseResume::process(Event event){
         wait.wait(lck);
 
         if(State::runState == m_CurrentState){
+          m_CurrentState = stopState;
+
+          wxLogMessage("Pause: Stop");
+
           // Notify that the experiment finished.
           std::lock_guard<std::mutex> lck(*m_WaitMutex);
           m_Wait->notify_all();
-          m_CurrentState = stopState;
-          wxLogMessage("Pause: Stopped.");
         }
       }
       break;
 
     case runState:
       if(Event::evStop == event){
-        wxLogMessage("Pause: Stopped.");
-
         m_CurrentState = stopState;
+
+        wxLogMessage("Pause: Stop");
+
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
