@@ -2659,6 +2659,7 @@
 												<content>
 													<item>Distance</item>
 													<item>Displacement</item>
+													<item>Both</item>
 												</content>
 											</object>
 										</object>

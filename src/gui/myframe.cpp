@@ -1561,13 +1561,22 @@ void MyFrame::OnGraphChangeType(wxCommandEvent& event){
     switch(m_GraphTypeComboBox->GetSelection()){
       case 0: /*Distance*/
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
+        m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDistanceGraph);
         break;
       case 1: /*Displacement*/
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
+        m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
+        m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+        break;
+      case 2: /*Distance and Displacmente*/
+        m_Graph->DelLayer(&m_ForceStressDistanceGraph);
+        m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
+        m_Graph->AddLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
         break;
     }
+    m_Graph->Fit();
   }
 }
 
@@ -2275,6 +2284,10 @@ void MyFrame::createValuesGraph(void){
       m_Graph->AddLayer(&m_ForceStressDistanceGraph);
       break;
     case 1: /*Displacement*/
+      m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+      break;
+    case 2: /*Distance and Displacmente*/
+      m_Graph->AddLayer(&m_ForceStressDistanceGraph);
       m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
       break;
   }
