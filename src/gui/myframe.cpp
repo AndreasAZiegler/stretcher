@@ -1565,7 +1565,7 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
     m_ForceStressDistanceGraph.Clear();
     m_ForceStressDisplacementGraph.Clear();
   }
-  wxLogMessage("MyFrame: Cleared graph.");
+  wxLogMessage("Cleared graph.");
   m_Graph->Fit();
   //delete m_CurrentExperimentValues;
 }

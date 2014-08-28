@@ -1040,7 +1040,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
 
   file.close();
 
-  wxLogMessage(std::string("Saved experiment values to: " + pathname).c_str());
+  wxLogMessage(std::string("Saved experiment values in: " + pathname).c_str());
 }
 
 

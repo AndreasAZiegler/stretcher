@@ -682,7 +682,7 @@ void ContinuousEvent::process(Event event){
                     }
                     break;
                 }
-                wxLogMessage("ContinuousEvent: Went to end length.");
+                //wxLogMessage("ContinuousEvent: Went to end length.");
               }else{ // If it is not the last cycle.
                 m_CurrentCycle++;
                 m_CheckDistanceFlag = true;
@@ -837,7 +837,7 @@ void ContinuousEvent::process(Event event){
                     }
                     break;
                 }
-                wxLogMessage("ContinuousEvent: Went to end length.");
+                //wxLogMessage("ContinuousEvent: Went to end length.");
               } else{
                 m_CurrentCycle++;
                 m_CheckDistanceFlag = true;
@@ -882,7 +882,7 @@ void ContinuousEvent::process(Event event){
       if(Event::evUpdate == event){
         //std::cout << "abs(m_StartLength - m_CurrentDistance) < m_DistanceThreshold): " << std::abs(m_StartLength - m_CurrentDistance) << " < " << m_DistanceThreshold << std::endl;
         if(std::abs(m_StartLength - m_CurrentDistance) < 0.5*m_DistanceThreshold){
-          wxLogMessage("ContinuousEvent: goStartState: Start distance reached.");
+          wxLogMessage("ContinuousEvent: Start distance reached.");
 
           // Set current limit.
           if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
