@@ -86,6 +86,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_ContinuousSendToProtocol, MyFrame::OnContinuousSendToProtocol)
   EVT_BUTTON(ID_ClearLog, MyFrame::OnClearLog)
   EVT_BUTTON(ID_SaveLog, MyFrame::OnSaveLog)
+  EVT_COMBOBOX(ID_ChangeGraphType, MyFrame::OnChangeGraphType)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_ExportPNG, MyFrame::OnExportPNG)
@@ -197,6 +198,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_StopButton->SetId(ID_MotorStop);
   m_LogClearButton->SetId(ID_ClearLog);
   m_LogSaveButton->SetId(ID_SaveLog);
+  m_GraphTypeComboBox->SetId(ID_ChangeGraphType);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_GraphExportPNGButton->SetId(ID_ExportPNG);
@@ -1545,6 +1547,26 @@ void MyFrame::OnSaveLog(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user changes the graph type.
+ * @param event Occuring event
+ */
+void MyFrame::OnChangeGraphType(wxCommandEvent& event){
+  // If the graph is active
+  if(true == m_ShowGraphFlag){
+    switch(m_GraphTypeComboBox->GetSelection()){
+      case 0: /*Distance*/
+        m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
+        m_Graph->AddLayer(&m_ForceStressDistanceGraph);
+        break;
+      case 1: /*Displacement*/
+        m_Graph->DelLayer(&m_ForceStressDistanceGraph);
+        m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+        break;
+    }
+  }
+}
+
+/**
  * @brief Method wich will be executed, when the user clicks on the clear graph button.
  * @param event Occuring event
  */
@@ -2222,8 +2244,15 @@ void MyFrame::createValuesGraph(void){
   m_Graph->AddLayer(m_Y1Axis.get());
 
   // Add vectors
-  m_Graph->AddLayer(&m_ForceStressDistanceGraph);
-  m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+  switch(m_GraphTypeComboBox->GetSelection()){
+    case 0: /*Distance*/
+      m_Graph->AddLayer(&m_ForceStressDistanceGraph);
+      break;
+    case 1: /*Displacement*/
+      m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+      break;
+  }
+
   if((DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress)){
     m_MaxStressForceLimitGraph.SetPen(vectorpenLimit);
     m_MinStressForceLimitGraph.SetPen(vectorpenLimit);

@@ -41,7 +41,7 @@ class MyStartUpDialog : public MyStartUpDialog_Base
  */
 enum
 {
-  ID_Set = 61
+  ID_Set = 62
 };
 
 #endif // MYSTARTUPDIALOG_H

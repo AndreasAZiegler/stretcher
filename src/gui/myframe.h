@@ -487,6 +487,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnSaveLog(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user changes the graph type.
+     * @param event Occuring event
+     */
+    void OnChangeGraphType(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
      * @param event Occuring event
      */
@@ -735,21 +741,22 @@ enum
 
   ID_ClearLog = 39,
   ID_SaveLog = 40,
-  ID_ClearGraph = 41,
-  ID_ExportCSV = 42,
-  ID_ExportPNG = 43,
-  ID_DeleteExperiment = 44,
-  ID_MoveUpExperiment = 45,
-  ID_MoveDownExperiment = 46,
-  ID_PauseExperiment = 47,
-  ID_PauseResumeExperiment = 48,
-  ID_LoopProtocol = 49,
-  ID_Preview = 50,
-  ID_RunProtocol = 51,
-  ID_StopProtocol = 52,
-  ID_SaveProtocol = 53,
-  ID_LoadProtocol = 54,
-  ID_MakePhoto = 55
+  ID_ChangeGraphType = 41,
+  ID_ClearGraph = 42,
+  ID_ExportCSV = 43,
+  ID_ExportPNG = 44,
+  ID_DeleteExperiment = 45,
+  ID_MoveUpExperiment = 46,
+  ID_MoveDownExperiment = 47,
+  ID_PauseExperiment = 48,
+  ID_PauseResumeExperiment = 49,
+  ID_LoopProtocol = 50,
+  ID_Preview = 51,
+  ID_RunProtocol = 52,
+  ID_StopProtocol = 53,
+  ID_SaveProtocol = 54,
+  ID_LoadProtocol = 55,
+  ID_MakePhoto = 56
 };
 
 #endif // MYFRAME_H

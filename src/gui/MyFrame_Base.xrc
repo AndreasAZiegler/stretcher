@@ -2650,6 +2650,18 @@
 												<default>0</default>
 											</object>
 										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxComboBox" name="m_GraphTypeComboBox">
+												<value>Distance</value>
+												<content>
+													<item>Distance</item>
+													<item>Displacement</item>
+												</content>
+											</object>
+										</object>
 									</object>
 								</object>
 							</object>

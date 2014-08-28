@@ -5,7 +5,6 @@
 #ifndef __myframe_base_h__
 #define __myframe_base_h__
 
-// Includes
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
@@ -256,6 +255,7 @@ protected:
  wxButton* m_GraphExportCSVButton;
  wxButton* m_GraphExportPNGButton;
  wxButton* m_GraphClearButton;
+ wxComboBox* m_GraphTypeComboBox;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -489,6 +489,7 @@ private:
   m_GraphExportCSVButton = XRCCTRL(*this,"m_GraphExportCSVButton",wxButton);
   m_GraphExportPNGButton = XRCCTRL(*this,"m_GraphExportPNGButton",wxButton);
   m_GraphClearButton = XRCCTRL(*this,"m_GraphClearButton",wxButton);
+  m_GraphTypeComboBox = XRCCTRL(*this,"m_GraphTypeComboBox",wxComboBox);
   m_GraphSizer2 = static_cast<wxBoxSizer*>(m_GraphExportCSVButton->GetContainingSizer());
   m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
  }
