@@ -434,7 +434,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
             }else if((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance){
               m_DisableDecreaseDistanceFlag = true;
             }
-            wxLogWarning(std::string("MyFrame: Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance * 0.00009921875/*mm per micro step*/) + "mm").c_str());
+            wxLogWarning(std::string("Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance * 0.00009921875/*mm per micro step*/) + "mm").c_str());
           }
         }else{ // Check if limits exceeded yet.
 
@@ -449,7 +449,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
              ((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance)){
             m_DistanceLimitExceededFlag = false;
             //wxLogMessage("MyFrame: Distance limit exceeded flag disabled.");
-            wxLogMessage("MyFrame: Distance within the limits.");
+            wxLogMessage("Distance within the limits.");
           }
         }
       }
