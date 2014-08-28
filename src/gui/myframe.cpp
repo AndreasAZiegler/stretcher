@@ -200,6 +200,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_LogClearButton->SetId(ID_ClearLog);
   m_LogSaveButton->SetId(ID_SaveLog);
   m_GraphTypeComboBox->SetId(ID_GraphChangeType);
+  m_GraphLimitsCheckBox->SetId(ID_GraphShowLimits);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_GraphExportPNGButton->SetId(ID_ExportPNG);
