@@ -159,7 +159,7 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
     std::lock_guard<std::mutex> lck{m_AccessListMutex};
     for(auto i = m_UpdateMethodList.begin(); i != m_UpdateMethodList.end(); ++i){
       (*i)(m_CurrentDistance, UpdatedValuesReceiver::ValueType::Distance);
-      wxLogMessage(std::string("Stage frame current position resetted. Current distance: " + std::to_string(m_CurrentDistance.value*m_Stepsize)).c_str());
+      wxLogMessage(std::string("Current position resetted. Current distance: " + std::to_string(m_CurrentDistance.value * m_Stepsize) + " mm").c_str());
     }
   }
 }
@@ -333,8 +333,11 @@ void StageFrame::setMinDistanceLimitMS(long limit){
 long StageFrame::setDistanceWActuatorCollision(double distance){
   //m_MaxPosDistance = m_CurrentDistance.value + m_MaxPosDistance - distance;
   m_MaxPosDistance = distance - (m_CurrentDistance.value - m_MaxPosDistance);
+  /*
   wxLogMessage(std::string("StageFrame: m_MaxPosDistance: " + std::to_string(m_MaxPosDistance) +
-                           ", " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/)).c_str());
+                           ", " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*//*)).c_str());
+  */
+  wxLogMessage(std::string("Distance at maximum positions: " + std::to_string(m_MaxPosDistance * m_Stepsize) + " mm").c_str());
 
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
                              std::abs(771029 - m_CurrentPositions[1].value) + m_MaxPosDistance - m_ZeroDistanceOffset);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify
@@ -354,8 +357,11 @@ long StageFrame::setDistanceWActuatorCollision(double distance){
 void StageFrame::setMaxPosDistance(long maxposdistance){
   m_MaxPosDistance = maxposdistance;
 
+  /*
   wxLogMessage(std::string("StageFrame: m_MaxPosDistance: " + std::to_string(m_MaxPosDistance) +
-                           ", " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/)).c_str());
+                           ", " + std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*//*)).c_str());
+  */
+  wxLogMessage(std::string("Distance at maximum position: " + std::to_string(m_MaxPosDistance * m_Stepsize) + " mm").c_str());
 
   m_CurrentDistance.value = (std::abs(771029 /*max. position*/ - m_CurrentPositions[0].value) +
                              std::abs(771029 - m_CurrentPositions[1].value) + m_MaxPosDistance - m_ZeroDistanceOffset);// + mZeroDistance ; //134173 /*microsteps=6.39mm offset */; // notify

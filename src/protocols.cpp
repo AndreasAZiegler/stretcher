@@ -615,8 +615,8 @@ void Protocols::runProtocol(void){
   m_MinStressForceLimitGraph->SetData(m_PreviewStressForceLimitTimePoints, m_MinStressForceLimits);
   m_MaxDistanceLimitGraph->SetData(m_DistanceLimitTimePoints, m_MaxDistanceLimits);
   m_MinDistanceLimitGraph->SetData(m_DistanceLimitTimePoints, m_MinDistanceLimits);
-  wxLogMessage(std::string("Protocols: m_PreviewStressForceLimitTimePoints: " + std::to_string(m_PreviewStressForceLimitTimePoints.size()) + " m_MaxStressForceLimits: " + std::to_string(m_MaxStressForceLimits.size())).c_str());
-  wxLogMessage(std::string("Protocols: m_DistanceLimitTimePoints: " + std::to_string(m_DistanceLimitTimePoints.size()) + " m_MaxDistanceLimits: " + std::to_string(m_MaxDistanceLimits.size())).c_str());
+  //wxLogMessage(std::string("Protocols: m_PreviewStressForceLimitTimePoints: " + std::to_string(m_PreviewStressForceLimitTimePoints.size()) + " m_MaxStressForceLimits: " + std::to_string(m_MaxStressForceLimits.size())).c_str());
+  //wxLogMessage(std::string("Protocols: m_DistanceLimitTimePoints: " + std::to_string(m_DistanceLimitTimePoints.size()) + " m_MaxDistanceLimits: " + std::to_string(m_MaxDistanceLimits.size())).c_str());
 
   m_MyFrame->createValuesGraph();
 
@@ -1040,7 +1040,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
 
   file.close();
 
-  wxLogMessage(std::string("Saved experiment values to: " + pathname).c_str());
+  wxLogMessage(std::string("Saved experiment values in: " + pathname).c_str());
 }
 
 
@@ -1080,7 +1080,8 @@ void Protocols::checkFinishedExperiment(void){
       // Set preload distance.
       //m_PreloadDistance = m_MyFrame->getCurrentDistance();
       m_PreloadDistance = m_StageFrame->getCurrentDistance();
-      wxLogMessage(std::string("Protocols: Preload distance: " + std::to_string(m_PreloadDistance * 0.00009921875/*mm per micro step*/)).c_str());
+      //wxLogMessage(std::string("Protocols: Preload distance: " + std::to_string(m_PreloadDistance * 0.00009921875/*mm per micro step*/)).c_str());
+      wxLogMessage(std::string("Preload distance: " + std::to_string(m_PreloadDistance * 0.00009921875/*mm per micro step*/) + " mm").c_str());
       // Set the prelod distance in all the experiments.
       for(auto i : m_Experiments){
         i->setPreloadDistance();

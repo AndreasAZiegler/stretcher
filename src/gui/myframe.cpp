@@ -434,7 +434,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
             }else if((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance){
               m_DisableDecreaseDistanceFlag = true;
             }
-            wxLogWarning(std::string("MyFrame: Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance)).c_str());
+            wxLogWarning(std::string("Distance limit exceeded, current distance: " + std::to_string(m_CurrentDistance * 0.00009921875/*mm per micro step*/) + "mm").c_str());
           }
         }else{ // Check if limits exceeded yet.
 
@@ -448,7 +448,8 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           if(((m_MaxDistanceLimit - 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) >= m_CurrentDistance) &&
              ((m_MinDistanceLimit + 0.03 / 0.00009921875/*mm per micro step*//*distance threshold*/) <= m_CurrentDistance)){
             m_DistanceLimitExceededFlag = false;
-            wxLogMessage("MyFrame: Distance limit exceeded flag disabled.");
+            //wxLogMessage("MyFrame: Distance limit exceeded flag disabled.");
+            wxLogMessage("Distance within the limits.");
           }
         }
       }
@@ -475,9 +476,10 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
             }else if(m_MinForceLimit > m_CurrentForce){
               m_DisableDecreaseDistanceFlag = true;
             }
-            wxLogWarning(std::string("MyFrame: Force limit exceeded, current force: " + std::to_string(m_CurrentForce) +
-                                     " m_MinForceLimit: " + std::to_string(m_MinForceLimit) +
+            wxLogWarning(std::string("Force limit exceeded, current force: " + std::to_string(m_CurrentForce/10000.0) + " N").c_str());
+            /*                         " m_MinForceLimit: " + std::to_string(m_MinForceLimit) +
                                      " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
+            */
           }
         }else{ // Check if limits exceeded yet.
 
@@ -490,7 +492,8 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           // Indicate that distance is within the limits if it is.
           if((m_MaxForceLimit > m_CurrentForce) && (m_MinForceLimit < m_CurrentForce)){
             m_ForceLimitExceededFlag = false;
-            wxLogMessage("MyFrame: Force limit exceeded flag disabled.");
+            //wxLogMessage("MyFrame: Force limit exceeded flag disabled.");
+            wxLogMessage("Force within the limits.");
           }
         }
       }
@@ -1075,7 +1078,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     parameters.limit = m_OneStepDistanceLimitSpinCtrl->GetValue();
     parameters.dwell = m_OneStepDistanceDwellSpinCtrl->GetValue();
   }
-  wxLogMessage(std::string("MyFrame: limit: " + std::to_string(parameters.limit)).c_str());
+  //wxLogMessage(std::string("MyFrame: limit: " + std::to_string(parameters.limit)).c_str());
 
   if(true == m_OneStepEndOfEventHoldMmRelRadioBtn->GetValue()){
     parameters.holdDistanceOrPercentage = DistanceOrPercentage::DistanceRelative;
@@ -1562,7 +1565,7 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
     m_ForceStressDistanceGraph.Clear();
     m_ForceStressDisplacementGraph.Clear();
   }
-  wxLogMessage("MyFrame: Cleared graph.");
+  wxLogMessage("Cleared graph.");
   m_Graph->Fit();
   //delete m_CurrentExperimentValues;
 }
