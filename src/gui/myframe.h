@@ -490,7 +490,13 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Method wich will be executed, when the user changes the graph type.
      * @param event Occuring event
      */
-    void OnChangeGraphType(wxCommandEvent& event);
+    void OnGraphChangeType(wxCommandEvent& event);
+
+    /**
+     * @brief Method wich will be executed, when the user wants to see the limits in the graph.
+     * @param event Occuring event
+     */
+    void OnGraphShowLimits(wxCommandEvent& event);
 
     /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
@@ -741,22 +747,23 @@ enum
 
   ID_ClearLog = 39,
   ID_SaveLog = 40,
-  ID_ChangeGraphType = 41,
-  ID_ClearGraph = 42,
-  ID_ExportCSV = 43,
-  ID_ExportPNG = 44,
-  ID_DeleteExperiment = 45,
-  ID_MoveUpExperiment = 46,
-  ID_MoveDownExperiment = 47,
-  ID_PauseExperiment = 48,
-  ID_PauseResumeExperiment = 49,
-  ID_LoopProtocol = 50,
-  ID_Preview = 51,
-  ID_RunProtocol = 52,
-  ID_StopProtocol = 53,
-  ID_SaveProtocol = 54,
-  ID_LoadProtocol = 55,
-  ID_MakePhoto = 56
+  ID_GraphChangeType = 41,
+  ID_GraphShowLimits = 42,
+  ID_ClearGraph = 43,
+  ID_ExportCSV = 44,
+  ID_ExportPNG = 45,
+  ID_DeleteExperiment = 46,
+  ID_MoveUpExperiment = 47,
+  ID_MoveDownExperiment = 48,
+  ID_PauseExperiment = 49,
+  ID_PauseResumeExperiment = 50,
+  ID_LoopProtocol = 51,
+  ID_Preview = 52,
+  ID_RunProtocol = 53,
+  ID_StopProtocol = 54,
+  ID_SaveProtocol = 55,
+  ID_LoadProtocol = 56,
+  ID_MakePhoto = 57
 };
 
 #endif // MYFRAME_H

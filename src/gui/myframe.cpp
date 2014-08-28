@@ -86,7 +86,8 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_ContinuousSendToProtocol, MyFrame::OnContinuousSendToProtocol)
   EVT_BUTTON(ID_ClearLog, MyFrame::OnClearLog)
   EVT_BUTTON(ID_SaveLog, MyFrame::OnSaveLog)
-  EVT_COMBOBOX(ID_ChangeGraphType, MyFrame::OnChangeGraphType)
+  EVT_COMBOBOX(ID_GraphChangeType, MyFrame::OnGraphChangeType)
+  EVT_CHECKBOX(ID_GraphShowLimits, MyFrame::OnGraphShowLimits)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_ExportPNG, MyFrame::OnExportPNG)
@@ -198,7 +199,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_StopButton->SetId(ID_MotorStop);
   m_LogClearButton->SetId(ID_ClearLog);
   m_LogSaveButton->SetId(ID_SaveLog);
-  m_GraphTypeComboBox->SetId(ID_ChangeGraphType);
+  m_GraphTypeComboBox->SetId(ID_GraphChangeType);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_GraphExportPNGButton->SetId(ID_ExportPNG);
@@ -524,6 +525,9 @@ void MyFrame::startup(void){
   m_LimitsLimitSet3Button->SetLabelText(label3);
   const wxString label4 = "Load " + m_Settings->getSet4Name() + " limits";
   m_LimitsLimitSet4Button->SetLabelText(label4);
+
+  // Set selection of the graph type wxComboBox
+  m_GraphTypeComboBox->SetSelection(0);
 
   // Hide steps in ContinuousEvent
   m_ContinuousStressForceStepsStaticText->Show(false);
@@ -1550,7 +1554,7 @@ void MyFrame::OnSaveLog(wxCommandEvent& event){
  * @brief Method wich will be executed, when the user changes the graph type.
  * @param event Occuring event
  */
-void MyFrame::OnChangeGraphType(wxCommandEvent& event){
+void MyFrame::OnGraphChangeType(wxCommandEvent& event){
   // If the graph is active
   if(true == m_ShowGraphFlag){
     switch(m_GraphTypeComboBox->GetSelection()){
@@ -1562,6 +1566,27 @@ void MyFrame::OnChangeGraphType(wxCommandEvent& event){
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
         break;
+    }
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user wants to see the limits in the graph.
+ * @param event Occuring event
+ */
+void MyFrame::OnGraphShowLimits(wxCommandEvent& event){
+  // If the graph is active
+  if(true == m_ShowGraphFlag){
+    if(true == m_GraphLimitsCheckBox->GetValue()){
+      m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
+      m_Graph->AddLayer(&m_MinStressForceLimitGraph);
+      m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
+      m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+    }else{
+      m_Graph->DelLayer(&m_MaxStressForceLimitGraph);
+      m_Graph->DelLayer(&m_MinStressForceLimitGraph);
+      m_Graph->DelLayer(&m_MaxDistanceLimitGraph);
+      m_Graph->DelLayer(&m_MinDistanceLimitGraph);
     }
   }
 }
@@ -2243,7 +2268,7 @@ void MyFrame::createValuesGraph(void){
   m_Graph->AddLayer(m_XAxis.get());
   m_Graph->AddLayer(m_Y1Axis.get());
 
-  // Add vectors
+  // Add vectors according to the active graph type.
   switch(m_GraphTypeComboBox->GetSelection()){
     case 0: /*Distance*/
       m_Graph->AddLayer(&m_ForceStressDistanceGraph);
@@ -2264,10 +2289,12 @@ void MyFrame::createValuesGraph(void){
     m_ForceStressDistanceGraph.SetPen(vectorpenDistance);
     m_ForceStressDisplacementGraph.SetPen(vectorpenDistance);
   }
-  m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
-  m_Graph->AddLayer(&m_MinStressForceLimitGraph);
-  m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
-  m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+  if(true == m_GraphLimitsCheckBox->GetValue()){
+    m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
+    m_Graph->AddLayer(&m_MinStressForceLimitGraph);
+    m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
+    m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+  }
 
   // Update graph.
   m_Graph->Fit();
@@ -2361,10 +2388,13 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->AddLayer(m_Y2Axis.get());
   m_Graph->AddLayer(&m_StressForcePreviewGraph);
   m_Graph->AddLayer(&m_DistancePreviewGraph);
-  m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
-  m_Graph->AddLayer(&m_MinStressForceLimitGraph);
-  m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
-  m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+
+  if(true == m_GraphLimitsCheckBox->GetValue()){
+    m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
+    m_Graph->AddLayer(&m_MinStressForceLimitGraph);
+    m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
+    m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+  }
 
   m_Graph->Fit();
 }
