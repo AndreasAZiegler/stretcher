@@ -479,6 +479,7 @@ void ContinuousEvent::process(Event event){
         if(true == m_Ramp2FailureActiveFlag){
           // If the failure point is reached.
           if(m_CurrentForce < ((m_MaxValueLimit / 100.0) * m_MaxForceStress)){
+            wxLogMessage(std::string("ContinuousEvent: Force/Stress dropped under: " + std::to_string(m_MaxValueLimit) + " %%").c_str());
             if((m_Cycles - 1) <= m_CurrentCycle){ // If it is the last cycle.
 
               m_CurrentStep = 0;
