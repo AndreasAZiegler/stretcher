@@ -2297,6 +2297,7 @@ void MyFrame::createPreviewGraph(void){
   if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
+    m_Y1Axis->SetBrush(wxBrush(*wxBLUE_BRUSH));
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
   } else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
@@ -2307,10 +2308,13 @@ void MyFrame::createPreviewGraph(void){
   }
   m_Y2Axis.reset(new mpScaleY(wxT("Distance [mm]"), mpALIGN_BORDER_RIGHT, true));
   m_Y2Axis->SetPen(vectorpenDistance);
+
   m_XAxis->SetFont(graphFont);
   m_Y1Axis->SetFont(graphFont);
+  m_Y2Axis->SetFont(graphFont);
   m_XAxis->SetDrawOutsideMargins(false);
   m_Y1Axis->SetDrawOutsideMargins(false);
+  m_Y2Axis->SetDrawOutsideMargins(false);
 
   // Set up and add vectors.
   m_MaxStressForceLimitGraph.SetPen(vectorpenStressForce);
