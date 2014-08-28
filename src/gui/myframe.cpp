@@ -1841,7 +1841,24 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
             break;
           case BehaviorAfterStop::HoldADistance:
             m_OneStepEndOfEventHoldRadioBtn->SetValue(true);
-            m_OneStepEndOfEventHoldMmRadioBtn->SetValue(true);
+            switch(parameters.holdDistanceOrPercentage){
+              case DistanceOrPercentage::DistanceRelative:
+                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(true);
+                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(false);
+                break;
+              case DistanceOrPercentage::Distance:
+                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(true);
+                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(false);
+                break;
+              case DistanceOrPercentage::Percentage:
+                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(true);
+                break;
+            }
+
             m_OneStepEndOfEventHoldSpinCtrl->SetValue(parameters.holdDistance);
             break;
           case BehaviorAfterStop::GoToL0:
