@@ -75,7 +75,12 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
      * @brief Sets the preload distance.
      * @param preloaddistance Preload distance
      */
-    virtual void setPreloadDistance();
+    virtual void setPreloadDistance(void);
+
+    /**
+     * @brief Sets the start length.
+     */
+    virtual void setStartLength(void);
 
     /**
      * @brief Returns struct with the parameters for the GUI.
@@ -165,7 +170,7 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     int m_CurrentCycle;																											/**< The current cycle. */
     long m_MaxForceStress;																									/**< The maximum stress/force .*/
     double m_InitHoldForce;																									/**< Initial hold force. */
-    long m_HoldForce;																												/**< The hold force. */
+    long m_StopAtForce;																												/**< The hold force. */
 
     bool m_WaitActive;																											/**< Indicates if a hold is active. */
     std::mutex m_WaitActiveMutex;																						/**< Mutex to protect m_WaitActive. */

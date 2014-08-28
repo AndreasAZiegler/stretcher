@@ -122,7 +122,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_CurrentForce(0),
     m_ForceUnit(wxT(" N")),
     m_MountingLength(150),
-    m_DistanceOrStressOrForce(DistanceOrForceOrStress::Force),
+    m_DistanceOrForceOrStress(DistanceOrForceOrStress::Force),
     m_CurrentProtocol(nullptr),
     m_MaxDistanceLimit(80 / 0.00009921875/*mm per micro step*/),
     m_TempMaxDistanceLimit(0),
@@ -713,7 +713,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
       m_Graph->Fit();
     }
 
-    m_DistanceOrStressOrForce = DistanceOrForceOrStress::Stress;
+    m_DistanceOrForceOrStress = DistanceOrForceOrStress::Stress;
   }else{ // Changes to force.
     m_InitializeMinForceStaticText->SetLabelText("Min. force [N]:");
     m_InitializeMaxForceStaticText->SetLabelText("Max. force [N]:");
@@ -743,7 +743,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
       m_Graph->Fit();
     }
 
-    m_DistanceOrStressOrForce = DistanceOrForceOrStress::Force;
+    m_DistanceOrForceOrStress = DistanceOrForceOrStress::Force;
   }
 }
 
@@ -813,9 +813,9 @@ void MyFrame::OnLengthsSetMountingLength(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnSetSensitivities(wxCommandEvent& event){
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_ForceStressSensitivity = m_LengthsForceStressSensitivitySpinCtrl->GetValue() * 10000.0;
-  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     m_ForceStressSensitivity = (m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
   }
 
@@ -942,7 +942,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
 
   // Get parameters.
   PreloadParameters parameters;
-  parameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+  parameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   parameters.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue();
   parameters.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
 
@@ -1042,7 +1042,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
   // Get parameters.
   OneStepEventParameters parameters;
   if(true == m_OneStepStressForceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+    parameters.distanceOrStressOrForce = m_DistanceOrForceOrStress;
     parameters.delay = m_OneStepStressForceDelaySpinCtrl->GetValue();
     parameters.dwell = m_OneStepStressForceDwellSpinCtrl->GetValue();
     parameters.holdLimit = m_OneStepStressForceHoldLimitCheckBox->GetValue();
@@ -1240,7 +1240,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
   ContinuousEventParameters parameters;
   parameters.ramp2failure = false;
   if(true == m_ContinuousStressForceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = m_DistanceOrStressOrForce;
+    parameters.distanceOrStressOrForce = m_DistanceOrForceOrStress;
     parameters.holdtime = m_ContinuousStressForceHoldTimeSpinCtrl->GetValue();
     parameters.incrementDistanceOrPercentage = DistanceOrPercentage::Distance;
     parameters.increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue();
@@ -1315,9 +1315,11 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     parameters.behaviorAfterStop = BehaviorAfterStop::GoToML;
   }else if(true == m_ContinuousEndOfEventHoldRadioBtn->GetValue()){
     parameters.behaviorAfterStop = BehaviorAfterStop::HoldAForce;
+
+      //parameters.stopAtForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_Area * 10.0;
+    parameters.stopAtForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue();
   }
 
-  parameters.holdForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_Area * 10.0;
 
   // Update parameters if an existing experiment should be changed.
   if(true == m_BlockNotebookTabFlag){
@@ -1612,7 +1614,7 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
   experimentparameters.mindistancelimit = m_MinDistanceLimit;
   experimentparameters.type = ExperimentType::Pause;
-  experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+  experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   experimentparameters.gagelength = m_GageLength;
   experimentparameters.mountinglength = m_MountingLength;
   experimentparameters.maxposdistance = m_MaxPosDistance;
@@ -1661,7 +1663,7 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
   experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
   experimentparameters.mindistancelimit = m_MinDistanceLimit;
   experimentparameters.type = ExperimentType::PauseResume;
-  experimentparameters.distanceOrForceOrStress = m_DistanceOrStressOrForce;
+  experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   experimentparameters.gagelength = m_GageLength;
   experimentparameters.mountinglength = m_MountingLength;
   experimentparameters.maxposdistance = m_MaxPosDistance;
@@ -1839,7 +1841,24 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
             break;
           case BehaviorAfterStop::HoldADistance:
             m_OneStepEndOfEventHoldRadioBtn->SetValue(true);
-            m_OneStepEndOfEventHoldMmRadioBtn->SetValue(true);
+            switch(parameters.holdDistanceOrPercentage){
+              case DistanceOrPercentage::DistanceRelative:
+                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(true);
+                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(false);
+                break;
+              case DistanceOrPercentage::Distance:
+                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(true);
+                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(false);
+                break;
+              case DistanceOrPercentage::Percentage:
+                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(false);
+                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(true);
+                break;
+            }
+
             m_OneStepEndOfEventHoldSpinCtrl->SetValue(parameters.holdDistance);
             break;
           case BehaviorAfterStop::GoToL0:
@@ -1975,7 +1994,7 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
             break;
           case BehaviorAfterStop::HoldAForce:
             m_ContinuousEndOfEventHoldRadioBtn->SetValue(true);
-            m_ContinuousEndOfEventHoldSpinCtrl->SetValue(parameters.holdForceStress);
+            m_ContinuousEndOfEventHoldSpinCtrl->SetValue(parameters.stopAtForceStress);
             break;
         }
         m_ContinuousSendButton->SetLabelText("Save changes");
@@ -2174,14 +2193,14 @@ void MyFrame::createValuesGraph(void){
   // Set up and add axis.
   m_XAxis.reset(new mpScaleX(wxT("Distance/Displacement [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
 
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_ForceStressDistanceGraph.SetName("Force / Distance");
     m_ForceStressDisplacementGraph.SetName("Force / Displacement");
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
-  } else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  } else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_ForceStressDistanceGraph.SetName("Stress / Distance");
@@ -2202,12 +2221,12 @@ void MyFrame::createValuesGraph(void){
   // Add vectors
   m_Graph->AddLayer(&m_ForceStressDistanceGraph);
   m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
-  if((DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce) || (DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce)){
+  if((DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress) || (DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress)){
     m_MaxStressForceLimitGraph.SetPen(vectorpenLimit);
     m_MinStressForceLimitGraph.SetPen(vectorpenLimit);
     m_ForceStressDistanceGraph.SetPen(vectorpenStressForce);
     m_ForceStressDisplacementGraph.SetPen(vectorpenStressForce);
-  } else if(DistanceOrForceOrStress::Distance == m_DistanceOrStressOrForce){
+  } else if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
     m_MaxDistanceLimitGraph.SetPen(vectorpenLimit);
     m_MinDistanceLimitGraph.SetPen(vectorpenLimit);
     m_ForceStressDistanceGraph.SetPen(vectorpenDistance);
@@ -2272,12 +2291,12 @@ void MyFrame::createPreviewGraph(void){
 
   // Set up and add axis.
   m_XAxis.reset(new mpScaleX(wxT("Time"), mpALIGN_BOTTOM, true, mpX_NORMAL));
-  if(DistanceOrForceOrStress::Force == m_DistanceOrStressOrForce){
+  if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
-  } else if(DistanceOrForceOrStress::Stress == m_DistanceOrStressOrForce){
+  } else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
     m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_MaxStressForceLimitGraph.SetName("Maximal stress limit");
