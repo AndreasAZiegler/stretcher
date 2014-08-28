@@ -489,7 +489,7 @@ void ContinuousEvent::process(Event event){
                   m_CurrentState = goBackState;
                   m_CheckDistanceFlag = true;
                   m_CurrentLimit = m_GageLength;
-                  wxLogMessage(std::string("ContinuousEvent: Go to L0: " + std::to_string(m_GageLength) + " mm").c_str());
+                  wxLogMessage(std::string("ContinuousEvent: Go to L0: " + std::to_string(m_GageLength * 0.00009921875/*mm per micro step*/) + " mm").c_str());
                   {
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->gotoStepsDistance(m_GageLength);
@@ -499,7 +499,7 @@ void ContinuousEvent::process(Event event){
                   m_CurrentState = goBackState;
                   m_CheckDistanceFlag = true;
                   m_CurrentLimit = m_MountingLength;
-                  wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength) + " mm").c_str());
+                  wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/) + " mm").c_str());
                   {
                     std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                     m_StageFrame->gotoStepsDistance(m_MountingLength);
@@ -542,7 +542,7 @@ void ContinuousEvent::process(Event event){
                   }
                   break;
               }
-              wxLogMessage("ContinuousEvent: Went to end length.");
+              //wxLogMessage("ContinuousEvent: Went to end length.");
               //process(Event::evUpdate);
             }else{ // If it is not the last cycle.
               m_CurrentCycle++;
@@ -628,7 +628,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_GageLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength) + " mm").c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength * 0.00009921875/*mm per micro step*/) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_GageLength);
@@ -638,7 +638,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_MountingLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength) + " mm").c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_MountingLength);
@@ -783,7 +783,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_GageLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength) + " mm").c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to gage length: " + std::to_string(m_GageLength * 0.00009921875/*mm per micro step*/) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_GageLength);
@@ -793,7 +793,7 @@ void ContinuousEvent::process(Event event){
                     m_CurrentState = goBackState;
                     m_CheckDistanceFlag = true;
                     m_CurrentLimit = m_MountingLength;
-                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength) + " mm").c_str());
+                    wxLogMessage(std::string("ContinuousEvent: Go to mounting length: " + std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/) + " mm").c_str());
                     {
                       std::lock_guard<std::mutex> lck{m_StageFrameAccessMutex};
                       m_StageFrame->gotoStepsDistance(m_MountingLength);

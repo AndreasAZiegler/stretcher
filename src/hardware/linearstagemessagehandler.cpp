@@ -169,7 +169,8 @@ void LinearStageMessageHandler::handler(char *message){
       m_CurrentPosition.value = calculatePosition(&message[1]);
       // Forwards the returned stored position to the stage frame.
       m_StageFrame->returnStoredPosition(m_CurrentPosition, m_Type);
-      wxLogMessage(std::string("LinearStageMessageHandler: " + std::to_string(static_cast<int>(m_Type)) + " stored position is: " + std::to_string(m_CurrentPosition.value * 0.00009921875)).c_str());
+      //wxLogMessage(std::string("LinearStageMessageHandler: " + std::to_string(static_cast<int>(m_Type)) + " stored position is: " + std::to_string(m_CurrentPosition.value * 0.00009921875)).c_str());
+      wxLogMessage(std::string("Linear stage: " + std::to_string(static_cast<int>(m_Type)) + " stored position is: " + std::to_string(m_CurrentPosition.value * 0.00009921875) + " mm").c_str());
       break;
   }
 }
