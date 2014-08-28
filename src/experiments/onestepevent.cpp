@@ -479,7 +479,7 @@ void OneStepEvent::process(Event event){
                   m_StageFrame->gotoStepsDistance(m_HoldDistance);
                   break;
               }
-              wxLogMessage("OneStepEvent: Go to end length.");
+              //wxLogMessage("OneStepEvent: Go to end length.");
               //process(Event::evUpdate);
             }else{
               m_CurrentCycle++;
@@ -596,7 +596,7 @@ void OneStepEvent::process(Event event){
                   m_StageFrame->gotoStepsDistance(m_HoldDistance);
                   break;
               }
-              wxLogMessage("OneStepEvent: Go to end length.");
+              //wxLogMessage("OneStepEvent: Go to end length.");
             }else{
               m_CurrentCycle++;
               m_CheckDistanceFlag = true;

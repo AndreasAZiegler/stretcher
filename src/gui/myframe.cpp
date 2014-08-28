@@ -476,7 +476,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
             }else if(m_MinForceLimit > m_CurrentForce){
               m_DisableDecreaseDistanceFlag = true;
             }
-            wxLogWarning(std::string("MyFrame: Force limit exceeded, current force: " + std::to_string(m_CurrentForce/10000.0) + " N").c_str());
+            wxLogWarning(std::string("Force limit exceeded, current force: " + std::to_string(m_CurrentForce/10000.0) + " N").c_str());
             /*                         " m_MinForceLimit: " + std::to_string(m_MinForceLimit) +
                                      " m_MaxForceLimit: " + std::to_string(m_MaxForceLimit)).c_str());
             */
@@ -493,7 +493,7 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
           if((m_MaxForceLimit > m_CurrentForce) && (m_MinForceLimit < m_CurrentForce)){
             m_ForceLimitExceededFlag = false;
             //wxLogMessage("MyFrame: Force limit exceeded flag disabled.");
-            wxLogMessage("MyFrame: Force within the limits.");
+            wxLogMessage("Force within the limits.");
           }
         }
       }
