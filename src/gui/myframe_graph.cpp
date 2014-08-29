@@ -1,12 +1,13 @@
 /**
  * @file myframe_graph.cpp
- * @brief The main frame preset part.
+ * @brief The main frame graph part.
  * @author Andreas Ziegler
  */
 
 // Includes
 #include "myframe.h"
 #include "protocols.h"
+#include "myexportdialog.h"
 
 /**
  * @brief Method wich will be executed, when the user changes the graph type.
@@ -253,6 +254,63 @@ void MyFrame::createPreviewGraph(void){
   }
 
   m_Graph->Fit();
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the export csv button. Checks if there is any data to export and opens the export dialog if there is some data.
+ * @param event Occuring event
+ */
+void MyFrame::OnExportCSV(wxCommandEvent& event){
+  checkProtocol();
+  // Checks if there is any data to export.
+  if(true == m_CurrentProtocol->hasData()){
+    std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
+    dialog->ShowModal();
+  }
+}
+
+/**
+ * @brief Shows the export dialog.
+ */
+void MyFrame::showExportCSVDialogFromProtocols(void){
+  CallAfter(&MyFrame::showExportCSVDialog);
+}
+
+/**
+ * @brief A message dialog asks the user if he/she wants to save the recorded data. If yes, the export dialog will show up.
+ */
+void MyFrame::showExportCSVDialog(void){
+  // Ask if recorded data should be saved.
+  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this, "The protocol is finished, do you want to save the recorded values?", wxMessageBoxCaptionStr, wxOK|wxCANCEL));
+  // Show the export dialog if yes.
+  if(wxID_OK == dialog->ShowModal()){
+    std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
+    dialog->ShowModal();
+  }
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the export png button. Opens a file dialog and then saves the screen shot.
+ * @param event Occuring event
+ */
+void MyFrame::OnExportPNG(wxCommandEvent& event){
+  // Creating file name
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
+
+  std::string pathAndFilename = m_StoragePath + "/" + "Graph_" + std::string(mbstr) + ".png";
+
+  // Let user choose path and file name.
+  wxFileDialog saveFileDialog(this, _("Save png file"), "", "", "PNG files (*.png)|*.png", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+  saveFileDialog.SetPath(pathAndFilename);
+
+  if(wxID_CANCEL == saveFileDialog.ShowModal()){
+    return;
+  }
+
+  m_Graph->SaveScreenshot(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
+  wxLogMessage(std::string("Graph saved in: " + saveFileDialog.GetPath()).c_str());
 }
 
 /**

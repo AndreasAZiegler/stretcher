@@ -20,13 +20,12 @@
 #include "myports.h"
 #include "myfileoutput.h"
 #include "mystartupdialog.h"
-#include "myexportdialog.h"
-#include "mypausedialog.h"
 #include "../experiments/preload.h"
 #include "../experiments/onestepevent.h"
 #include "../experiments/continuousevent.h"
 #include "../experiments/pause.h"
 #include "../experiments/pauseresume.h"
+#include "../protocols.h"
 
 // A deleter which doesn't do anything, required for passing shared_ptr.
 template<typename T>
@@ -282,6 +281,116 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
 }
 
 /**
+ * @brief Changes the limit set buttons names, hides steps in continuous event, sets the digits for the wxSpinCtrlDouble objects and starts up the start up dialog.
+ * 				Depending on the user answer, loads start up settings, or open dialog to set the distance at the maximal positions.
+ */
+void MyFrame::startup(void){
+  // Change the limit set button names
+  const wxString label1 = "Load " + m_Settings->getSet1Name() + " limits";
+  m_LimitsLimitSet1Button->SetLabelText(label1);
+  const wxString label2 = "Load " + m_Settings->getSet2Name() + " limits";
+  m_LimitsLimitSet2Button->SetLabelText(label2);
+  const wxString label3 = "Load " + m_Settings->getSet3Name() + " limits";
+  m_LimitsLimitSet3Button->SetLabelText(label3);
+  const wxString label4 = "Load " + m_Settings->getSet4Name() + " limits";
+  m_LimitsLimitSet4Button->SetLabelText(label4);
+
+  // Set selection of the graph type wxComboBox
+  m_GraphTypeComboBox->SetSelection(0);
+
+  // Hide steps in ContinuousEvent
+  m_ContinuousStressForceStepsStaticText->Show(false);
+  m_ContinuousStressForceStepsSpinCtrl->Show(false);
+  m_ContinuousDistanceStepsStaticText->Show(false);
+  m_ContinuousDistanceStepsSpinCtrl->Show(false);
+
+  // Set digits for the wxSpinCtrlDouble
+  m_LengthsGoToSpinCtrl->SetDigits(2);
+  m_InitializeCrossSectionSpinCtrl->SetDigits(3);
+  m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
+  m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
+  m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
+  m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
+  m_LengthsForceStressSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsForceStressSensitivitySpinCtrl->SetValue(0.001);
+  m_LengthsDistanceSensitivitySpinCtrl->SetDigits(4);
+  m_LengthsDistanceSensitivitySpinCtrl->SetValue(0.001);
+  m_PreloadLimitSpinCtrl->SetDigits(2);
+  m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
+  m_PreloadSpeedMmSpinCtrl->SetDigits(2);
+  m_PreloadSpeedMmSpinCtrl->SetRange(0.01, 11);
+  m_OneStepStressForceVelocitySpinCtrl->SetDigits(2);
+  m_OneStepStressForceVelocitySpinCtrl->SetRange(0.01, 1000);
+  m_OneStepStressForceDelaySpinCtrl->SetDigits(2);
+  m_OneStepStressForceLimitSpinCtrl->SetDigits(2);
+  m_OneStepStressForceDwellSpinCtrl->SetDigits(2);
+  m_OneStepDistanceVelocitySpinCtrl->SetDigits(2);
+  m_OneStepDistanceVelocitySpinCtrl->SetRange(0.01, 1000);
+  m_OneStepDistanceDelaySpinCtrl->SetDigits(2);
+  m_OneStepDistanceLimitSpinCtrl->SetDigits(2);
+  m_OneStepDistanceDwellSpinCtrl->SetDigits(2);
+  m_OneStepEndOfEventHoldSpinCtrl->SetDigits(2);
+  m_ContinuousStressForceVelocitySpinCtrl->SetDigits(2);
+  m_ContinuousStressForceVelocitySpinCtrl->SetRange(0.01, 1000);
+  m_ContinuousStressForceHoldTimeSpinCtrl->SetDigits(2);
+  m_ContinuousStressForceIncrementSpinCtrl->SetDigits(2);
+  m_ContinuousStressForceMaxValueSpinCtrl->SetDigits(2);
+  m_ContinuousDistanceVelocitySpinCtrl->SetDigits(2);
+  m_ContinuousDistanceVelocitySpinCtrl->SetRange(0.01, 1000);
+  m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
+  m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
+  m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
+  m_ContinuousEndOfEventHoldSpinCtrl->SetDigits(2);
+
+  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this,
+                                                                                                 "Does the mechanical set up changed since the last use?",
+                                                                                                 wxMessageBoxCaptionStr,
+                                                                                                 wxYES_NO|wxNO_DEFAULT));
+  // Ask if the mechanical set up changed.
+  int answer = dialog->ShowModal();
+  // If the set up didn't change, load Le, L0, current distance, limits and load stored positions.
+  if(wxID_NO == answer){
+    loadStoredPositions();
+    // Load Le
+    m_MaxPosDistance = m_Settings->getMaxPosDistance();
+    // set max pos distance in stage frame.
+    m_StageFrame->setMaxPosDistance(m_MaxPosDistance);
+    m_InitializeMaxPosShowStaticText->SetLabelText(std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/));
+    // Load mounting length.
+    m_MountingLength = m_Settings->getMountingLength();
+    m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
+    m_LengthsGoToSpinCtrl->SetValue(m_MountingLength * 0.00009921875/*mm per micro step*/);
+    // Load L0.
+    m_GageLength = m_Settings->getGageLength();
+
+    // Load limits
+    m_MinDistanceLimit = m_Settings->getMinDistanceLimit();
+    m_MaxDistanceLimit = m_Settings->getMaxDistanceLimit();
+    m_MinForceLimit = m_Settings->getMinForceLimit();
+    m_MaxForceLimit = m_Settings->getMaxForceLimit();
+    // Set limits to the stages
+    m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
+    m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
+    // Display limits
+    m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
+    m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
+    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
+    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
+
+    // Load sensitivities
+    m_ForceStressSensitivity = m_Settings->getForceStressSensitivity();
+    m_DistanceSensitivity = m_Settings->getDistanceSensitivity();
+    // Display sensitivities
+    m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_ForceStressSensitivity / 10000.0, 2));
+    m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 2));
+
+  }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
+    std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
+    dialog->ShowModal();
+  }
+}
+
+/**
  * @brief Returns the message handler wait condition variable as shared_ptr.
  * @return The message handler wait condition variable as shared_ptr.
  */
@@ -309,55 +418,10 @@ std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
 }
 
 /**
- * @brief Register the liner stages and the stage frame, registers the update method at the stage frame and registers the stop wait conditional variable at the stage frame.
- * @param linearstage Pointer to the vector containing the linear stages.
- * @param stageframe Pointer to the stage frame ojbect.
- */
-void MyFrame::registerLinearStage(std::vector<std::shared_ptr<LinearStage>> &linearstage, std::shared_ptr<StageFrame> &stageframe){
-  m_LinearStages.push_back(linearstage.at(0));
-  m_LinearStages.push_back(linearstage.at(1));
-  m_StageFrame = stageframe;
-
-  // Registers update methods at stage frame.
-  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
-
-  // Registers stop wait conditional variable and mutex.
-  m_StageFrame->registerStagesStopped(&m_StagesStoppedFlag, &m_StagesStoppedMutex);
-
-  // Reset limit
-  m_StageFrame->setMaxDistanceLimitMM(153);
-  m_StageFrame->setMinDistanceLimitMM(0);
-}
-
-/**
- * @brief Registers the message handlers of the linear stages, registers the stage frame at the linear stage message handlers.
- * @param linearstagesmessagehandlers Pointer to the vector containing the message handlers of the linear stages.
- */
-void MyFrame::registerLinearStageMessageHandlers(std::vector<std::shared_ptr<LinearStageMessageHandler>> &linearstagesmessagehandlers){
-  m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(0));
-  m_LinearStagesMessageHandlers.push_back(linearstagesmessagehandlers.at(1));
-
-  // Registers stage frame
-  (m_LinearStagesMessageHandlers.at(0))->registerStageFrame(m_StageFrame);
-  (m_LinearStagesMessageHandlers.at(1))->registerStageFrame(m_StageFrame);
-}
-
-/**
- * @brief Register the force sensor and register update method at the force sensor message handler.
- * @param forcesensor Pointer to the force sensor.
- */
-void MyFrame::registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
-  m_ForceSensor = forcesensor;
-
-  // Registers update method at forcesensormessagehandler.
-  m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
-  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
-}
-
-/**
  * @brief Destructor. Unregister the update method from the message handlers, stops the receiver threads, removes vectors and axis from the graph. Waits until the message
  *        handlers are finished and saves the start up settings in the configuration file.
  */
+
 MyFrame::~MyFrame(){
   // Unregister update methods
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
@@ -508,116 +572,6 @@ void MyFrame::updateValues(MeasurementValue measurementValue, UpdatedValuesRecei
         CallAfter(&MyFrame::updateForce);
       }
       break;
-  }
-}
-
-/**
- * @brief Changes the limit set buttons names, hides steps in continuous event, sets the digits for the wxSpinCtrlDouble objects and starts up the start up dialog.
- * 				Depending on the user answer, loads start up settings, or open dialog to set the distance at the maximal positions.
- */
-void MyFrame::startup(void){
-  // Change the limit set button names
-  const wxString label1 = "Load " + m_Settings->getSet1Name() + " limits";
-  m_LimitsLimitSet1Button->SetLabelText(label1);
-  const wxString label2 = "Load " + m_Settings->getSet2Name() + " limits";
-  m_LimitsLimitSet2Button->SetLabelText(label2);
-  const wxString label3 = "Load " + m_Settings->getSet3Name() + " limits";
-  m_LimitsLimitSet3Button->SetLabelText(label3);
-  const wxString label4 = "Load " + m_Settings->getSet4Name() + " limits";
-  m_LimitsLimitSet4Button->SetLabelText(label4);
-
-  // Set selection of the graph type wxComboBox
-  m_GraphTypeComboBox->SetSelection(0);
-
-  // Hide steps in ContinuousEvent
-  m_ContinuousStressForceStepsStaticText->Show(false);
-  m_ContinuousStressForceStepsSpinCtrl->Show(false);
-  m_ContinuousDistanceStepsStaticText->Show(false);
-  m_ContinuousDistanceStepsSpinCtrl->Show(false);
-
-  // Set digits for the wxSpinCtrlDouble
-  m_LengthsGoToSpinCtrl->SetDigits(2);
-  m_InitializeCrossSectionSpinCtrl->SetDigits(3);
-  m_LimitsLimitMaxDistanceSpinCtrl->SetDigits(2);
-  m_LimitsLimitMinDistanceSpinCtrl->SetDigits(2);
-  m_LimitsLimitMaxForceSpinCtrl->SetDigits(2);
-  m_LimitsLimitMinForceSpinCtrl->SetDigits(2);
-  m_LengthsForceStressSensitivitySpinCtrl->SetDigits(4);
-  m_LengthsForceStressSensitivitySpinCtrl->SetValue(0.001);
-  m_LengthsDistanceSensitivitySpinCtrl->SetDigits(4);
-  m_LengthsDistanceSensitivitySpinCtrl->SetValue(0.001);
-  m_PreloadLimitSpinCtrl->SetDigits(2);
-  m_PreloadSpeedPreloadSpinCtrl->SetDigits(2);
-  m_PreloadSpeedMmSpinCtrl->SetDigits(2);
-  m_PreloadSpeedMmSpinCtrl->SetRange(0.01, 11);
-  m_OneStepStressForceVelocitySpinCtrl->SetDigits(2);
-  m_OneStepStressForceVelocitySpinCtrl->SetRange(0.01, 1000);
-  m_OneStepStressForceDelaySpinCtrl->SetDigits(2);
-  m_OneStepStressForceLimitSpinCtrl->SetDigits(2);
-  m_OneStepStressForceDwellSpinCtrl->SetDigits(2);
-  m_OneStepDistanceVelocitySpinCtrl->SetDigits(2);
-  m_OneStepDistanceVelocitySpinCtrl->SetRange(0.01, 1000);
-  m_OneStepDistanceDelaySpinCtrl->SetDigits(2);
-  m_OneStepDistanceLimitSpinCtrl->SetDigits(2);
-  m_OneStepDistanceDwellSpinCtrl->SetDigits(2);
-  m_OneStepEndOfEventHoldSpinCtrl->SetDigits(2);
-  m_ContinuousStressForceVelocitySpinCtrl->SetDigits(2);
-  m_ContinuousStressForceVelocitySpinCtrl->SetRange(0.01, 1000);
-  m_ContinuousStressForceHoldTimeSpinCtrl->SetDigits(2);
-  m_ContinuousStressForceIncrementSpinCtrl->SetDigits(2);
-  m_ContinuousStressForceMaxValueSpinCtrl->SetDigits(2);
-  m_ContinuousDistanceVelocitySpinCtrl->SetDigits(2);
-  m_ContinuousDistanceVelocitySpinCtrl->SetRange(0.01, 1000);
-  m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
-  m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
-  m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
-  m_ContinuousEndOfEventHoldSpinCtrl->SetDigits(2);
-
-  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this,
-                                                                                                 "Does the mechanical set up changed since the last use?",
-                                                                                                 wxMessageBoxCaptionStr,
-                                                                                                 wxYES_NO|wxNO_DEFAULT));
-  // Ask if the mechanical set up changed.
-  int answer = dialog->ShowModal();
-  // If the set up didn't change, load Le, L0, current distance, limits and load stored positions.
-  if(wxID_NO == answer){
-    loadStoredPositions();
-    // Load Le
-    m_MaxPosDistance = m_Settings->getMaxPosDistance();
-    // set max pos distance in stage frame.
-    m_StageFrame->setMaxPosDistance(m_MaxPosDistance);
-    m_InitializeMaxPosShowStaticText->SetLabelText(std::to_string(m_MaxPosDistance * 0.00009921875/*mm per micro step*/));
-    // Load mounting length.
-    m_MountingLength = m_Settings->getMountingLength();
-    m_InitializeMountingLengthShowStaticText->SetLabelText(std::to_string(m_MountingLength * 0.00009921875/*mm per micro step*/));
-    m_LengthsGoToSpinCtrl->SetValue(m_MountingLength * 0.00009921875/*mm per micro step*/);
-    // Load L0.
-    m_GageLength = m_Settings->getGageLength();
-
-    // Load limits
-    m_MinDistanceLimit = m_Settings->getMinDistanceLimit();
-    m_MaxDistanceLimit = m_Settings->getMaxDistanceLimit();
-    m_MinForceLimit = m_Settings->getMinForceLimit();
-    m_MaxForceLimit = m_Settings->getMaxForceLimit();
-    // Set limits to the stages
-    m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
-    m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
-    // Display limits
-    m_InitializeMinDistanceShowStaticText->SetLabelText(to_string_wp(m_MinDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
-    m_InitializeMaxDistanceShowStaticText->SetLabelText(to_string_wp(m_MaxDistanceLimit * 0.00009921875/*mm per micro step*/, 2));
-    m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_MinForceLimit / 10000.0, 2));
-    m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_MaxForceLimit / 10000.0, 2));
-
-    // Load sensitivities
-    m_ForceStressSensitivity = m_Settings->getForceStressSensitivity();
-    m_DistanceSensitivity = m_Settings->getDistanceSensitivity();
-    // Display sensitivities
-    m_InitializeForceStressSensitivityShowStaticText->SetLabelText(to_string_wp(m_ForceStressSensitivity / 10000.0, 2));
-    m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 2));
-
-  }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
-    std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
-    dialog->ShowModal();
   }
 }
 
@@ -910,476 +864,6 @@ void MyFrame::OnLengthsGoTo(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
- * @param event Occuring event
- */
-void MyFrame::OnPreloadSpeedPercentChanged(wxSpinDoubleEvent& event){
- //double speedmm = m_MountingLength * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
- double speedmm = m_GageLength * 0.00009921875/*mm per micro step*/  * (m_PreloadSpeedPreloadSpinCtrl->GetValue() / 100);
- m_PreloadSpeedMmSpinCtrl->SetValue(speedmm);
-}
-
-/**
- * @brief Method wich will be executed, when the user changes the speed value in mm in preload.
- * @param event Occuring event
- */
-void MyFrame::OnPreloadSpeedMmChanged(wxSpinDoubleEvent& event){
-  double speedpercent = m_PreloadSpeedMmSpinCtrl->GetValue() / (m_GageLength * 0.00009921875/*mm per micro step*/) * 100/*%*/;
-  m_PreloadSpeedPreloadSpinCtrl->SetValue(speedpercent);
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Cancel" button in preload. Aborts the edit process.
- * @param event Occuring event
- */
-void MyFrame::OnPreloadCancel(wxCommandEvent& event){
-  if(true == m_BlockNotebookTabFlag){
-    m_PreloadSendButton->SetLabelText("Send to protocol");
-    // Unblock tab.
-    m_BlockNotebookTabFlag = false;
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in preload. Creates a new preload experiment or changes its parameter
- *        if the user is editing an existing preload experiment.
- * @param event Occuring event
- */
-void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
-
-  checkProtocol();
-
-  // Get parameters.
-  PreloadParameters parameters;
-  parameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
-  parameters.stressForceLimit = m_PreloadLimitSpinCtrl->GetValue();
-  parameters.velocity = m_PreloadSpeedMmSpinCtrl->GetValue();
-
-  // Update parameters if an existing experiment should be changed.
-  if(true == m_BlockNotebookTabFlag){
-    m_PreloadSendButton->SetLabelText("Send to protocol");
-
-    std::shared_ptr<Preload> preload = std::dynamic_pointer_cast<Preload>(m_CurrentProtocol->getEditExperiment());
-    preload->setParameters(parameters);
-    m_CurrentProtocol->updateEditedExperimentParameters();
-
-    // Unblock tab.
-    m_BlockNotebookTabFlag = false;
-
-  }else{ // Otherwise create a new experiment.
-    //Experiment* experiment = new Preload(ExperimentType::Preload,
-    ExperimentParameters experimentparameters;
-    experimentparameters.stageframe = m_StageFrame;
-    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-    experimentparameters.myframe = this;
-    experimentparameters.maxforcelimit = m_MaxForceLimit;
-    experimentparameters.minforcelimit = m_MinForceLimit;
-    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-    experimentparameters.mindistancelimit = m_MinDistanceLimit;
-    experimentparameters.type = ExperimentType::Preload;
-    experimentparameters.distanceOrForceOrStress = parameters.distanceOrForceOrStress;
-    experimentparameters.gagelength = m_GageLength;
-    experimentparameters.mountinglength = m_MountingLength;
-    experimentparameters.maxposdistance = m_MaxPosDistance;
-    experimentparameters.currentdistance = m_CurrentDistance;
-    experimentparameters.area = m_Area;
-    std::unique_ptr<Experiment> experiment(new Preload(experimentparameters,
-
-                                                       m_StoragePath,
-                                                       &m_ForceStressDistanceGraph,
-                                                       &m_ForceStressDisplacementGraph,
-                                                       &m_VectorLayerMutex,
-                                                       &m_MaxStressForceLimitGraph,
-                                                       &m_MinStressForceLimitGraph,
-                                                       &m_MaxDistanceLimitGraph,
-                                                       &m_MinDistanceLimitGraph,
-                                                       m_ForceStressSensitivity,
-                                                       m_DistanceSensitivity,
-
-                                                       &m_Wait,
-                                                       &m_WaitMutex,
-                                                       &m_StagesStoppedFlag,
-                                                       &m_StagesStoppedMutex,
-
-                                                       parameters));
-
-    m_CurrentProtocol->addExperiment(experiment);
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses stress/force in the one step event.
- * @param event Occuring event
- */
-void MyFrame::OnOneStepStressForce(wxCommandEvent& event){
-  m_OneStepDistancePanel->Show(false);
-  m_OneStepStressForcePanel->Show(true);
-  m_OneStepPanel21->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses distance in the one step event.
- * @param event Occuring event
- */
-void MyFrame::OnOneStepDistance(wxCommandEvent& event){
-  m_OneStepStressForcePanel->Show(false);
-  m_OneStepDistancePanel->Show(true);
-  m_OneStepPanel21->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the one step event. Aborts the edit process.
- * @param event Occuring event
- */
-void MyFrame::OnOneStepCancel(wxCommandEvent& event){
-  if(true == m_BlockNotebookTabFlag){
-    m_OneStepSendButton->SetLabelText("Send to protocol");
-    // Unblock tab.
-    m_BlockNotebookTabFlag = false;
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in one step event. Creates a new one step event experiment
- *				or changes its parameter if the user is editing an existing one step event experiment.
- * @param event Occuring event
- */
-void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
-
-  checkProtocol();
-
-  // Get parameters.
-  OneStepEventParameters parameters;
-  if(true == m_OneStepStressForceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = m_DistanceOrForceOrStress;
-    parameters.delay = m_OneStepStressForceDelaySpinCtrl->GetValue();
-    parameters.dwell = m_OneStepStressForceDwellSpinCtrl->GetValue();
-    parameters.holdLimit = m_OneStepStressForceHoldLimitCheckBox->GetValue();
-    parameters.limit = m_OneStepStressForceLimitSpinCtrl->GetValue();
-
-    if(true == m_OneStepStressForceVelocityMmRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Distance;
-    } else if(true == m_OneStepStressForceVelocityPercentRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Percentage;
-    }
-    parameters.velocity = m_OneStepStressForceVelocitySpinCtrl->GetValue();
-  }else if(true == m_OneStepDistanceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = DistanceOrForceOrStress::Distance;
-    parameters.delay = m_OneStepDistanceDelaySpinCtrl->GetValue();
-
-    if(true == m_OneStepDistanceVelocityMmRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Distance;
-    } else if(true == m_OneStepDistanceVelocityPercentRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Percentage;
-    }
-    parameters.velocity = m_OneStepDistanceVelocitySpinCtrl->GetValue();
-
-    if(true == m_OneStepDistanceLimitMmRelRadioBtn->GetValue()){
-      parameters.limitDistanceOrPercentage = DistanceOrPercentage::DistanceRelative;
-    }else if(true == m_OneStepDistanceLimitMmRadioBtn->GetValue()){
-      parameters.limitDistanceOrPercentage = DistanceOrPercentage::Distance;
-    }else if(true == m_OneStepDistanceLimitPercentRadioBtn->GetValue()){
-      parameters.limitDistanceOrPercentage = DistanceOrPercentage::Percentage;
-    }
-    parameters.limit = m_OneStepDistanceLimitSpinCtrl->GetValue();
-    parameters.dwell = m_OneStepDistanceDwellSpinCtrl->GetValue();
-  }
-  //wxLogMessage(std::string("MyFrame: limit: " + std::to_string(parameters.limit)).c_str());
-
-  if(true == m_OneStepEndOfEventHoldMmRelRadioBtn->GetValue()){
-    parameters.holdDistanceOrPercentage = DistanceOrPercentage::DistanceRelative;
-  }else if(true == m_OneStepEndOfEventHoldMmRadioBtn->GetValue()){
-    parameters.holdDistanceOrPercentage = DistanceOrPercentage::Distance;
-  }else if(true == m_OneStepEndOfEventHoldPercentRadioBtn->GetValue()){
-    parameters.holdDistanceOrPercentage = DistanceOrPercentage::Percentage;
-  }
-  parameters.holdDistance = m_OneStepEndOfEventHoldSpinCtrl->GetValue();
-
-  if(true == m_OneStepEndOfEventRepeatCheckBox->GetValue()){
-    parameters.cycles = m_OneStepEndOfEventRepeatSpinCtrl->GetValue();
-  }else{
-    parameters.cycles = 1;
-  }
-
-  if(true == m_OneStepEndOfEventHoldRadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::HoldADistance;
-  }else if(true == m_OneStepEndOfEventL0RadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::GoToL0;
-  }else if(true == m_OneStepEndOfEventStopRadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::Stop;
-  }else if(true == m_OneStepEndOfEventMLRadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::GoToML;
-  }
-
-  // Update parameters if an existing experiment should be changed.
-  if(true == m_BlockNotebookTabFlag){
-    m_OneStepSendButton->SetLabelText("Send to protocol");
-
-    std::shared_ptr<OneStepEvent> onestepevent = std::dynamic_pointer_cast<OneStepEvent>(m_CurrentProtocol->getEditExperiment());
-    onestepevent->setParameters(parameters);
-    m_CurrentProtocol->updateEditedExperimentParameters();
-
-    // Unblock tab.
-    m_BlockNotebookTabFlag = false;
-
-  }else{ // Otherwise create a new experiment.
-    ExperimentParameters experimentparameters;
-    experimentparameters.stageframe = m_StageFrame;
-    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-    experimentparameters.myframe = this;
-    experimentparameters.maxforcelimit = m_MaxForceLimit;
-    experimentparameters.minforcelimit = m_MinForceLimit;
-    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-    experimentparameters.mindistancelimit = m_MinDistanceLimit;
-    experimentparameters.type = ExperimentType::OneStepEvent;
-    experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
-    experimentparameters.gagelength = m_GageLength;
-    experimentparameters.mountinglength = m_MountingLength;
-    experimentparameters.maxposdistance = m_MaxPosDistance;
-    experimentparameters.currentdistance = m_CurrentDistance;
-    experimentparameters.area = m_Area;
-    std::unique_ptr<Experiment> experiment(new OneStepEvent(experimentparameters,
-
-                                                            m_StoragePath,
-                                                            &m_ForceStressDistanceGraph,
-                                                            &m_ForceStressDisplacementGraph,
-                                                            &m_VectorLayerMutex,
-                                                            &m_MaxStressForceLimitGraph,
-                                                            &m_MinStressForceLimitGraph,
-                                                            &m_MaxDistanceLimitGraph,
-                                                            &m_MinDistanceLimitGraph,
-                                                            m_ForceStressSensitivity,
-                                                            m_DistanceSensitivity,
-
-                                                            &m_Wait,
-                                                            &m_WaitMutex,
-
-                                                            parameters));
-
-    m_CurrentProtocol->addExperiment(experiment);
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses stress/force in the continuous event.
- * @param event Occuring event
- */
-void MyFrame::OnContinuousStressForce(wxCommandEvent& event){
-  m_ContinuousDistancePanel->Show(false);
-  m_ContinuousStressForcePanel->Show(true);
-  m_ContinuousPanel21->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses distance in the contiunous event.
- * @param event Occuring event
- */
-void MyFrame::OnContinuousDistance(wxCommandEvent& event){
-  m_ContinuousStressForcePanel->Show(false);
-  m_ContinuousDistancePanel->Show(true);
-  m_ContinuousPanel21->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses max value in the contiunous event.
- * @param event Occuring event
- */
-void MyFrame::OnContinuousMaxValue(wxCommandEvent& event){
-  m_ContinuousStressForceStepsStaticText->Show(false);
-  m_ContinuousStressForceStepsSpinCtrl->Show(false);
-  m_ContinuousDistanceStepsStaticText->Show(false);
-  m_ContinuousDistanceStepsSpinCtrl->Show(false);
-
-  m_ContinuousStressForceMaxValueStaticText->Show(true);
-  m_ContinuousStressForceMaxValueSpinCtrl->Show(true);
-  m_ContinuousStressForceMaxValueValueRadioBtn->Show(true);
-  m_ContinuousStressForceMaxValuePercentRadioBtn->Show(true);
-  m_ContinuousDistanceMaxValueStaticText->Show(true);
-  m_ContinuousDistanceMaxValueSpinCtrl->Show(true);
-  m_ContinuousDistancePanel23->Show(true);
-
-  m_ContinuousStressForcePanel->Layout();
-  m_ContinuousDistancePanel->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user chooses steps in the contiunous event.
- * @param event Occuring event
- */
-void MyFrame::OnContinuousSteps(wxCommandEvent& event){
-  m_ContinuousStressForceMaxValueStaticText->Show(false);
-  m_ContinuousStressForceMaxValueSpinCtrl->Show(false);
-  m_ContinuousStressForceMaxValueValueRadioBtn->Show(false);
-  m_ContinuousStressForceMaxValuePercentRadioBtn->Show(false);
-  m_ContinuousDistanceMaxValueStaticText->Show(false);
-  m_ContinuousDistanceMaxValueSpinCtrl->Show(false);
-  m_ContinuousDistancePanel23->Show(false);
-
-  m_ContinuousStressForceStepsStaticText->Show(true);
-  m_ContinuousStressForceStepsSpinCtrl->Show(true);
-  m_ContinuousDistanceStepsStaticText->Show(true);
-  m_ContinuousDistanceStepsSpinCtrl->Show(true);
-
-  m_ContinuousStressForcePanel->Layout();
-  m_ContinuousDistancePanel->Layout();
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Cancel" button in the continuous event. Aborts the edit process.
- * @param event Occuring event
- */
-void MyFrame::OnContinuousCancel(wxCommandEvent& event){
-  if(true == m_BlockNotebookTabFlag){
-    m_ContinuousSendButton->SetLabelText("Send to protocol");
-    // Unblock tab.
-    m_BlockNotebookTabFlag = false;
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the "Send to protocol" button in the continuous event. Creates a new continuous event experiment
- *				or changes its parameter if the user is editing an existing continuous event experiment.
- * @param event Occuring event
- */
-void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
-
-  checkProtocol();
-
-  // Get parameters.
-  ContinuousEventParameters parameters;
-  parameters.ramp2failure = false;
-  if(true == m_ContinuousStressForceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = m_DistanceOrForceOrStress;
-    parameters.holdtime = m_ContinuousStressForceHoldTimeSpinCtrl->GetValue();
-    parameters.incrementDistanceOrPercentage = DistanceOrPercentage::Distance;
-    parameters.increment = m_ContinuousStressForceIncrementSpinCtrl->GetValue();
-    parameters.velocity = m_ContinuousStressForceVelocitySpinCtrl->GetValue();
-    parameters.maxvalue = m_ContinuousStressForceMaxValueSpinCtrl->GetValue();
-
-    if(true == m_ContinuousStressForceVelocityMmRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Distance;
-    } else if(true == m_ContinuousStressForceVelocityPercentRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Percentage;
-    }
-
-    if(true == m_ContinuousStressForceMaxValueRadioBtn->GetValue()){
-      parameters.stepsOrMaxValue = StepsOrMaxValue::MaxValue;
-
-      if(true == m_ContinuousStressForceMaxValuePercentRadioBtn->GetValue()){
-        parameters.ramp2failure = true;
-      }else if(true == m_ContinuousStressForceMaxValueValueRadioBtn->GetValue()){
-        parameters.maxValueDistanceOrPercentage = DistanceOrPercentage::Distance;
-      }
-    } else if(true == m_ContinuousStressForceStepsRadioBtn->GetValue()){
-      parameters.stepsOrMaxValue = StepsOrMaxValue::Steps;
-      parameters.steps = m_ContinuousStressForceStepsSpinCtrl->GetValue();
-    }
-
-  }else if(true == m_ContinuousDistanceRadioBtn->GetValue()){
-    parameters.distanceOrStressOrForce = DistanceOrForceOrStress::Distance;
-    parameters.velocity = m_ContinuousDistanceVelocitySpinCtrl->GetValue();
-    parameters.holdtime = m_ContinuousDistanceHoldTimeSpinCtrl->GetValue();
-    parameters.increment = m_ContinuousDistanceIncrementSpinCtrl->GetValue();
-    parameters.maxvalue = m_ContinuousDistanceMaxValueSpinCtrl->GetValue();
-
-    if(true == m_ContinuousDistanceVelocityMmRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Distance;
-    } else if(true == m_ContinuousDistanceVelocityPercentRadioBtn->GetValue()){
-      parameters.velocityDistanceOrPercentage = DistanceOrPercentage::Percentage;
-    }
-
-    if(true == m_ContinuousDistanceIncrementMmRadioBtn->GetValue()){
-      parameters.incrementDistanceOrPercentage = DistanceOrPercentage::Distance;
-    } else if(true == m_ContinuousDistanceIncrementPercentRadioBtn->GetValue()){
-      parameters.incrementDistanceOrPercentage = DistanceOrPercentage::Percentage;
-    }
-
-    if(true == m_ContinuousDistanceMaxValueRadioBtn->GetValue()){
-      parameters.stepsOrMaxValue = StepsOrMaxValue::MaxValue;
-
-      if(true == m_ContinuousDistanceMaxValueMmRelRadioBtn->GetValue()){
-        parameters.maxValueDistanceOrPercentage = DistanceOrPercentage::DistanceRelative;
-      }else if(true == m_ContinuousDistanceMaxValueMmRadioBtn->GetValue()){
-        parameters.maxValueDistanceOrPercentage = DistanceOrPercentage::Distance;
-      }else if(true == m_ContinuousDistanceMaxValuePercentRadioBtn->GetValue()){
-        parameters.maxValueDistanceOrPercentage = DistanceOrPercentage::Percentage;
-      }
-    } else if(true == m_ContinuousDistanceStepsRadioBtn->GetValue()){
-      parameters.stepsOrMaxValue = StepsOrMaxValue::Steps;
-      parameters.steps = m_ContinuousDistanceStepsSpinCtrl->GetValue();
-    }
-  }
-
-  if(true == m_ContinuousEndOfEventRepeatCheckBox->GetValue()){
-    parameters.cycles = m_ContinuousEndOfEventRepeatSpinCtrl->GetValue();
-  }else{
-    parameters.cycles = 1;
-  }
-
-  if(true == m_ContinuousEndOfEventStopRadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::Stop;
-  }else if(true == m_ContinuousEndOfEventL0RadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::GoToL0;
-  }else if(true == m_ContinuousEndOfEventMLRadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::GoToML;
-  }else if(true == m_ContinuousEndOfEventHoldRadioBtn->GetValue()){
-    parameters.behaviorAfterStop = BehaviorAfterStop::HoldAForce;
-
-      //parameters.stopAtForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_Area * 10.0;
-    parameters.stopAtForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue();
-  }
-
-
-  // Update parameters if an existing experiment should be changed.
-  if(true == m_BlockNotebookTabFlag){
-    m_ContinuousSendButton->SetLabelText("Send to protocol");
-
-    std::shared_ptr<ContinuousEvent> continuousevent = std::dynamic_pointer_cast<ContinuousEvent>(m_CurrentProtocol->getEditExperiment());
-    continuousevent->setParameters(parameters);
-    m_CurrentProtocol->updateEditedExperimentParameters();
-
-    // Unblock tab.
-    m_BlockNotebookTabFlag = false;
-  }else{ // Otherwise creat a new experiment.
-    ExperimentParameters experimentparameters;
-    experimentparameters.stageframe = m_StageFrame;
-    experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-    experimentparameters.myframe = this;
-    experimentparameters.maxforcelimit = m_MaxForceLimit;
-    experimentparameters.minforcelimit = m_MinForceLimit;
-    experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-    experimentparameters.mindistancelimit = m_MinDistanceLimit;
-    experimentparameters.type = ExperimentType::ContinuousEvent;
-    experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
-    experimentparameters.gagelength = m_GageLength;
-    experimentparameters.mountinglength = m_MountingLength;
-    experimentparameters.maxposdistance = m_MaxPosDistance;
-    experimentparameters.currentdistance = m_CurrentDistance;
-    experimentparameters.area = m_Area;
-
-    std::unique_ptr<Experiment> experiment(new ContinuousEvent(experimentparameters,
-
-                                                               m_StoragePath,
-                                                               &m_ForceStressDistanceGraph,
-                                                               &m_ForceStressDisplacementGraph,
-                                                               &m_VectorLayerMutex,
-                                                               &m_MaxStressForceLimitGraph,
-                                                               &m_MinStressForceLimitGraph,
-                                                               &m_MaxDistanceLimitGraph,
-                                                               &m_MinDistanceLimitGraph,
-                                                               m_ForceStressSensitivity,
-                                                               m_DistanceSensitivity,
-
-                                                               &m_Wait,
-                                                               &m_WaitMutex,
-
-                                                               parameters));
-
-    m_CurrentProtocol->addExperiment(experiment);
-  }
-}
-
-/**
  * @brief Method wich will be executed, when the user sets the limits. Updates the limits and forwards them to the protocol.
  * @param event Occuring event
  */
@@ -1481,43 +965,6 @@ void MyFrame::OnMotorStop(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the export csv button. Checks if there is any data to export and opens the export dialog if there is some data.
- * @param event Occuring event
- */
-void MyFrame::OnExportCSV(wxCommandEvent& event){
-  checkProtocol();
-  // Checks if there is any data to export.
-  if(true == m_CurrentProtocol->hasData()){
-    std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
-    dialog->ShowModal();
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the export png button. Opens a file dialog and then saves the screen shot.
- * @param event Occuring event
- */
-void MyFrame::OnExportPNG(wxCommandEvent& event){
-  // Creating file name
-  std::time_t time = std::time(NULL);
-  char mbstr[100];
-  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-
-  std::string pathAndFilename = m_StoragePath + "/" + "Graph_" + std::string(mbstr) + ".png";
-
-  // Let user choose path and file name.
-  wxFileDialog saveFileDialog(this, _("Save png file"), "", "", "PNG files (*.png)|*.png", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-  saveFileDialog.SetPath(pathAndFilename);
-
-  if(wxID_CANCEL == saveFileDialog.ShowModal()){
-    return;
-  }
-
-  m_Graph->SaveScreenshot(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
-  wxLogMessage(std::string("Graph saved in: " + saveFileDialog.GetPath()).c_str());
-}
-
-/**
  * @brief Method wich will be executed, when the user clicks on the clear log button.
  * @param event Occuring event
  */
@@ -1551,131 +998,6 @@ void MyFrame::OnSaveLog(wxCommandEvent& event){
 }
 
 /**
- * @brief Method wich will be executed, when the user clicks on the delete experiment button.
- * @param event Occuring event
- */
-void MyFrame::OnDeleteExperiment(wxCommandEvent& event){
-  if(wxNOT_FOUND != m_ProtocolsListBox->GetSelection()){
-    m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the move experiment up button.
- * @param event Occuring event
- */
-void MyFrame::OnMoveUpExperiment(wxCommandEvent& event){
-  if(nullptr != m_CurrentProtocol){
-    m_CurrentProtocol->moveExperimentUp(m_ProtocolsListBox->GetSelection());
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the move experiment down button.
- * @param event Occuring event
- */
-void MyFrame::OnMoveDownExperiment(wxCommandEvent& event){
-  if(nullptr != m_CurrentProtocol){
-    m_CurrentProtocol->moveExperimentDown(m_ProtocolsListBox->GetSelection());
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the pause experiment down button. Creates a pause experiment.
- * @param event Occuring event
- */
-void MyFrame::OnPauseExperiment(wxCommandEvent& event){
-  checkProtocol();
-
-  // Get parmeters.
-  ExperimentParameters experimentparameters;
-  experimentparameters.stageframe = m_StageFrame;
-  experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-  experimentparameters.myframe = this;
-  experimentparameters.maxforcelimit = m_MaxForceLimit;
-  experimentparameters.minforcelimit = m_MinForceLimit;
-  experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-  experimentparameters.mindistancelimit = m_MinDistanceLimit;
-  experimentparameters.type = ExperimentType::Pause;
-  experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
-  experimentparameters.gagelength = m_GageLength;
-  experimentparameters.mountinglength = m_MountingLength;
-  experimentparameters.maxposdistance = m_MaxPosDistance;
-  experimentparameters.currentdistance = m_CurrentDistance;
-  experimentparameters.area = m_Area;
-  std::unique_ptr<Experiment> experiment(new Pause(experimentparameters,
-
-                                                   &m_ForceStressDistanceGraph,
-                                                   &m_ForceStressDisplacementGraph,
-                                                   &m_VectorLayerMutex,
-                                                   &m_MaxStressForceLimitGraph,
-                                                   &m_MinStressForceLimitGraph,
-                                                   &m_MaxDistanceLimitGraph,
-                                                   &m_MinDistanceLimitGraph,
-
-                                                   &m_Wait,
-                                                   &m_WaitMutex));
-
-  Pause *ptr = dynamic_cast<Pause*>(experiment.get());
-
-  // Create dialog to choose the pause time.
-  std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(ptr));
-  dialog->ShowModal();
-
-  if(true == dialog->getCreateExperimentFlag()){
-    m_CurrentProtocol->addExperiment(experiment);
-  }
-  //dialog->Close();
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the pause resume experiment button. Creates an pause/resume experiment.
- * @param event Occuring event
- */
-void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
-
-  checkProtocol();
-
-  // Get parameters.
-  ExperimentParameters experimentparameters;
-  experimentparameters.stageframe = m_StageFrame;
-  experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
-  experimentparameters.myframe = this;
-  experimentparameters.maxforcelimit = m_MaxForceLimit;
-  experimentparameters.minforcelimit = m_MinForceLimit;
-  experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
-  experimentparameters.mindistancelimit = m_MinDistanceLimit;
-  experimentparameters.type = ExperimentType::PauseResume;
-  experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
-  experimentparameters.gagelength = m_GageLength;
-  experimentparameters.mountinglength = m_MountingLength;
-  experimentparameters.maxposdistance = m_MaxPosDistance;
-  experimentparameters.currentdistance = m_CurrentDistance;
-  experimentparameters.area = m_Area;
-  std::unique_ptr<Experiment> experiment(new PauseResume(experimentparameters,
-
-                                                         &m_ForceStressDistanceGraph,
-                                                         &m_ForceStressDisplacementGraph,
-                                                         &m_VectorLayerMutex,
-                                                         &m_MaxStressForceLimitGraph,
-                                                         &m_MinStressForceLimitGraph,
-                                                         &m_MaxDistanceLimitGraph,
-                                                         &m_MinDistanceLimitGraph,
-
-                                                         &m_Wait,
-                                                         &m_WaitMutex));
-
-  m_CurrentProtocol->addExperiment(experiment);
-}
-
-/**
- * @brief Shows pause/resume dialog.
- */
-void MyFrame::showPauseResumeDialogFromPauseResume(std::condition_variable *wait, std::mutex *mutex){
-  CallAfter(&MyFrame::showPauseResumeDialog, wait, mutex);
-}
-
-/**
  * @brief Opens a velocity warning pop-up dialog.
  */
 bool MyFrame::showHighVelocityWarningFromExperiments(void){
@@ -1685,322 +1007,6 @@ bool MyFrame::showHighVelocityWarningFromExperiments(void){
   std::unique_lock<std::mutex> lck(m_WaitHighVelocityMutex);
   m_WaitHighVelocity.wait(lck);
   return(m_HighVelocityAbort);
-}
-
-/**
- * @brief Shows the export dialog.
- */
-void MyFrame::showExportCSVDialogFromProtocols(void){
-  CallAfter(&MyFrame::showExportCSVDialog);
-}
-
-/**
- * @brief Shows pause/resume dialog.
- */
-void MyFrame::showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex){
-  std::unique_ptr<wxMessageDialog> popup = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this, "Push the button OK to resume the protocol."));
-  popup->ShowModal();
-  std::lock_guard<std::mutex> lck(*mutex);
-  wait->notify_all();
-}
-
-/**
- * @brief Method wich will be executed, when the user makes a right click in the list box. Creates an context menu with the entry "Edit".
- * @param event Occuring event
- */
-void MyFrame::OnProtocolsListRightClick(wxMouseEvent& event){
-  // Creat context menu with an edit entry
-  std::unique_ptr<wxMenu> popup = std::unique_ptr<wxMenu>(new wxMenu);
-  popup->Append(wxID_OPEN, wxT("Edit"));
-
-  // Bind the context menu events, pop up the dialog and unbind.
-  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnEditExperiment, this);
-  PopupMenu(popup.get());
-  Unbind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnEditExperiment, this);
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on edit in the context menu. Switch to the according experiment tab and loads the parameters.
- * @param event Occuring event
- */
-void MyFrame::OnEditExperiment(wxCommandEvent& event){
-
-  switch(m_CurrentProtocol->getEditExperimentType()){
-    case ExperimentType::Preload:
-      {
-        // Change to preload tab.
-        m_Experiments->SetSelection(3);
-        // Block tab.
-        m_BlockNotebookTabFlag = true;
-
-        // Get preload parameters.
-        std::shared_ptr<Preload> preload = std::dynamic_pointer_cast<Preload>(m_CurrentProtocol->getEditExperiment());
-        PreloadParameters parameters = preload->getParametersForGUI();
-
-        m_PreloadLimitSpinCtrl->SetValue(parameters.stressForceLimit);
-        m_PreloadSpeedMmSpinCtrl->SetValue(parameters.velocity);
-        m_PreloadSpeedPreloadSpinCtrl->SetValue(parameters.velocity / (m_GageLength * 0.00009921875/*mm per micro step*/) * 100/*%*/);
-
-        m_PreloadSendButton->SetLabelText("Save changes");
-      }
-      break;
-
-    case ExperimentType::OneStepEvent:
-      {
-        // Change to the one step event tab.
-        m_Experiments->SetSelection(4);
-        // Block tab.
-        m_BlockNotebookTabFlag = true;
-
-        // Get one step event parameters.
-        std::shared_ptr<OneStepEvent> onestepevent = std::dynamic_pointer_cast<OneStepEvent>(m_CurrentProtocol->getEditExperiment());
-        OneStepEventParameters parameters = onestepevent->getParametersForGUI();
-
-        m_OneStepDistanceVelocitySpinCtrl->SetValue(parameters.velocity);
-        m_OneStepStressForceVelocitySpinCtrl->SetValue(parameters.velocity);
-
-        if(DistanceOrPercentage::Distance == parameters.velocityDistanceOrPercentage){
-          m_OneStepStressForceVelocityMmRadioBtn->SetValue(true);
-          m_OneStepStressForceVelocityPercentRadioBtn->SetValue(false);
-
-          m_OneStepDistanceVelocityMmRadioBtn->SetValue(true);
-          m_OneStepDistanceVelocityPercentRadioBtn->SetValue(false);
-        }else if(DistanceOrPercentage::Percentage == parameters.velocityDistanceOrPercentage){
-          m_OneStepStressForceVelocityMmRadioBtn->SetValue(false);
-          m_OneStepStressForceVelocityPercentRadioBtn->SetValue(true);
-
-          m_OneStepDistanceVelocityMmRadioBtn->SetValue(false);
-          m_OneStepDistanceVelocityPercentRadioBtn->SetValue(true);
-        }
-
-        m_OneStepDistanceDelaySpinCtrl->SetValue(parameters.delay);
-        m_OneStepStressForceDelaySpinCtrl->SetValue(parameters.delay);
-
-        m_OneStepDistanceDwellSpinCtrl->SetValue(parameters.dwell);
-        m_OneStepStressForceDwellSpinCtrl->SetValue(parameters.dwell);
-
-        if(DistanceOrForceOrStress::Distance == parameters.distanceOrStressOrForce){
-          m_OneStepStressForcePanel->Show(false);
-          m_OneStepDistancePanel->Show(true);
-          m_OneStepPanel21->Layout();
-
-          m_OneStepStressForceRadioBtn->SetValue(false);
-          m_OneStepDistanceRadioBtn->SetValue(true);
-
-          m_OneStepDistanceLimitSpinCtrl->SetValue(parameters.limit);
-          if(DistanceOrPercentage::DistanceRelative == parameters.limitDistanceOrPercentage){
-            m_OneStepDistanceLimitMmRelRadioBtn->SetValue(true);
-            m_OneStepDistanceLimitMmRadioBtn->SetValue(false);
-            m_OneStepDistanceLimitPercentRadioBtn->SetValue(false);
-          }else if(DistanceOrPercentage::Distance == parameters.limitDistanceOrPercentage){
-            m_OneStepDistanceLimitMmRadioBtn->SetValue(true);
-            m_OneStepDistanceLimitMmRelRadioBtn->SetValue(false);
-            m_OneStepDistanceLimitPercentRadioBtn->SetValue(false);
-          }else if(DistanceOrPercentage::Percentage == parameters.limitDistanceOrPercentage){
-            m_OneStepDistanceLimitPercentRadioBtn->SetValue(true);
-            m_OneStepDistanceLimitMmRadioBtn->SetValue(false);
-            m_OneStepDistanceLimitMmRelRadioBtn->SetValue(false);
-          }
-
-        }else{
-          m_OneStepDistancePanel->Show(false);
-          m_OneStepStressForcePanel->Show(true);
-          m_OneStepPanel21->Layout();
-
-          m_OneStepDistanceRadioBtn->SetValue(false);
-          m_OneStepStressForceRadioBtn->SetValue(true);
-
-          m_OneStepStressForceLimitSpinCtrl->SetValue(parameters.limit);
-        }
-
-        if(1 < parameters.cycles){
-          m_OneStepEndOfEventRepeatCheckBox->SetValue(true);
-          m_OneStepEndOfEventRepeatSpinCtrl->SetValue(parameters.cycles);
-        }
-
-        switch(parameters.behaviorAfterStop){
-          case BehaviorAfterStop::Stop:
-            m_OneStepEndOfEventStopRadioBtn->SetValue(true);
-            break;
-          case BehaviorAfterStop::HoldADistance:
-            m_OneStepEndOfEventHoldRadioBtn->SetValue(true);
-            switch(parameters.holdDistanceOrPercentage){
-              case DistanceOrPercentage::DistanceRelative:
-                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(true);
-                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(false);
-                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(false);
-                break;
-              case DistanceOrPercentage::Distance:
-                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(false);
-                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(true);
-                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(false);
-                break;
-              case DistanceOrPercentage::Percentage:
-                m_OneStepEndOfEventHoldMmRelRadioBtn->SetValue(false);
-                m_OneStepEndOfEventHoldMmRadioBtn->SetValue(false);
-                m_OneStepEndOfEventHoldPercentRadioBtn->SetValue(true);
-                break;
-            }
-
-            m_OneStepEndOfEventHoldSpinCtrl->SetValue(parameters.holdDistance);
-            break;
-          case BehaviorAfterStop::GoToL0:
-            m_OneStepEndOfEventL0RadioBtn->SetValue(true);
-            break;
-          case BehaviorAfterStop::GoToML:
-            m_OneStepEndOfEventMLRadioBtn->SetValue(true);
-            break;
-        }
-
-        m_OneStepSendButton->SetLabelText("Save changes");
-      }
-      break;
-
-    case ExperimentType::ContinuousEvent:
-      {
-        // Change to the continuous event tab.
-        m_Experiments->SetSelection(5);
-        // Block tab.
-        m_BlockNotebookTabFlag = true;
-
-        // Get continuous event parameters.
-        std::shared_ptr<ContinuousEvent> continuousevent = std::dynamic_pointer_cast<ContinuousEvent>(m_CurrentProtocol->getEditExperiment());
-        ContinuousEventParameters parameters = continuousevent->getParametersForGUI();
-
-        m_ContinuousDistanceVelocitySpinCtrl->SetValue(parameters.velocity);
-        m_ContinuousStressForceVelocitySpinCtrl->SetValue(parameters.velocity);
-
-        m_ContinuousDistanceHoldTimeSpinCtrl->SetValue(parameters.holdtime);
-        m_ContinuousStressForceHoldTimeSpinCtrl->SetValue(parameters.holdtime);
-
-        if(DistanceOrPercentage::Distance == parameters.velocityDistanceOrPercentage){
-          m_ContinuousDistanceVelocityMmRadioBtn->SetValue(true);
-          m_ContinuousDistanceVelocityPercentRadioBtn->SetValue(false);
-
-          m_ContinuousStressForceVelocityMmRadioBtn->SetValue(true);
-          m_ContinuousStressForceVelocityPercentRadioBtn->SetValue(false);
-        }else if(DistanceOrPercentage::Percentage == parameters.velocityDistanceOrPercentage){
-          m_ContinuousDistanceVelocityMmRadioBtn->SetValue(false);
-          m_ContinuousDistanceVelocityPercentRadioBtn->SetValue(true);
-
-          m_ContinuousStressForceVelocityMmRadioBtn->SetValue(false);
-          m_ContinuousStressForceVelocityPercentRadioBtn->SetValue(true);
-        }
-
-        if(DistanceOrForceOrStress::Distance == parameters.distanceOrStressOrForce){
-          m_ContinuousStressForcePanel->Show(false);
-          m_ContinuousDistancePanel->Show(true);
-          m_ContinuousPanel21->Layout();
-
-          m_ContinuousStressForceRadioBtn->SetValue(false);
-          m_ContinuousDistanceRadioBtn->SetValue(true);
-
-          m_ContinuousDistanceIncrementSpinCtrl->SetValue(parameters.increment);
-          if(DistanceOrPercentage::Distance == parameters.incrementDistanceOrPercentage){
-            m_ContinuousDistanceIncrementMmRadioBtn->SetValue(true);
-            m_ContinuousDistanceIncrementPercentRadioBtn->SetValue(false);
-          }else if(DistanceOrPercentage::Percentage == parameters.incrementDistanceOrPercentage){
-            m_ContinuousDistanceIncrementPercentRadioBtn->SetValue(true);
-            m_ContinuousDistanceIncrementMmRadioBtn->SetValue(false);
-          }
-
-          if(StepsOrMaxValue::MaxValue == parameters.stepsOrMaxValue){
-            m_ContinuousDistanceStepsRadioBtn->SetValue(false);
-            m_ContinuousDistanceMaxValueRadioBtn->SetValue(true);
-
-            m_ContinuousDistanceMaxValueSpinCtrl->SetValue(parameters.maxvalue);
-            if(DistanceOrPercentage::Distance == parameters.maxValueDistanceOrPercentage){
-              m_ContinuousDistanceMaxValueMmRadioBtn->SetValue(true);
-              m_ContinuousDistanceMaxValueMmRelRadioBtn->SetValue(false);
-              m_ContinuousDistanceMaxValuePercentRadioBtn->SetValue(false);
-            }else if(DistanceOrPercentage::DistanceRelative == parameters.maxValueDistanceOrPercentage){
-              m_ContinuousDistanceMaxValueMmRelRadioBtn->SetValue(true);
-              m_ContinuousDistanceMaxValueMmRadioBtn->SetValue(false);
-              m_ContinuousDistanceMaxValuePercentRadioBtn->SetValue(false);
-            }else if(DistanceOrPercentage::Percentage == parameters.maxValueDistanceOrPercentage){
-              m_ContinuousDistanceMaxValuePercentRadioBtn->SetValue(true);
-              m_ContinuousDistanceMaxValueMmRelRadioBtn->SetValue(false);
-              m_ContinuousDistanceMaxValueMmRadioBtn->SetValue(false);
-            }
-          }else{
-            m_ContinuousDistanceMaxValueRadioBtn->SetValue(false);
-            m_ContinuousDistanceStepsRadioBtn->SetValue(true);
-
-            m_ContinuousDistanceStepsSpinCtrl->SetValue(parameters.steps);
-          }
-
-        }else{
-          m_ContinuousDistancePanel->Show(false);
-          m_ContinuousStressForcePanel->Show(true);
-          m_ContinuousPanel21->Layout();
-
-          m_ContinuousDistanceRadioBtn->SetValue(false);
-          m_ContinuousStressForceRadioBtn->SetValue(true);
-
-          m_ContinuousStressForceIncrementSpinCtrl->SetValue(parameters.increment);
-
-          if(StepsOrMaxValue::MaxValue == parameters.stepsOrMaxValue){
-            m_ContinuousStressForceStepsRadioBtn->SetValue(false);
-            m_ContinuousStressForceMaxValueRadioBtn->SetValue(true);
-
-            m_ContinuousStressForceMaxValueSpinCtrl->SetValue(parameters.maxvalue);
-            if(true == parameters.ramp2failure){
-              m_ContinuousStressForceMaxValueValueRadioBtn->SetValue(false);
-              m_ContinuousStressForceMaxValuePercentRadioBtn->SetValue(true);
-            }else{
-              m_ContinuousStressForceMaxValuePercentRadioBtn->SetValue(false);
-              m_ContinuousStressForceMaxValueValueRadioBtn->SetValue(true);
-            }
-          }else{
-            m_ContinuousStressForceMaxValueRadioBtn->SetValue(false);
-            m_ContinuousStressForceStepsRadioBtn->SetValue(true);
-
-            m_ContinuousStressForceStepsSpinCtrl->SetValue(parameters.steps);
-          }
-
-        }
-
-        if(1 < parameters.cycles){
-          m_ContinuousEndOfEventRepeatCheckBox->SetValue(true);
-          m_ContinuousEndOfEventRepeatSpinCtrl->SetValue(parameters.cycles);
-        }
-
-        switch(parameters.behaviorAfterStop){
-          case BehaviorAfterStop::Stop:
-            m_ContinuousEndOfEventStopRadioBtn->SetValue(true);
-            break;
-          case BehaviorAfterStop::GoToL0:
-            m_ContinuousEndOfEventL0RadioBtn->SetValue(true);
-            break;
-          case BehaviorAfterStop::GoToML:
-            m_ContinuousEndOfEventMLRadioBtn->SetValue(true);
-            break;
-          case BehaviorAfterStop::HoldAForce:
-            m_ContinuousEndOfEventHoldRadioBtn->SetValue(true);
-            m_ContinuousEndOfEventHoldSpinCtrl->SetValue(parameters.stopAtForceStress);
-            break;
-        }
-        m_ContinuousSendButton->SetLabelText("Save changes");
-      }
-      break;
-
-    case ExperimentType::Pause:
-      // Get pause parameters
-      std::shared_ptr<Pause> pause = std::dynamic_pointer_cast<Pause>(m_CurrentProtocol->getEditExperiment());
-      double pausetime = pause->getParametersForGUI();
-
-      std::unique_ptr<MyPauseDialog> dialog = std::unique_ptr<MyPauseDialog>(new MyPauseDialog(std::dynamic_pointer_cast<Pause>(m_CurrentProtocol->getEditExperiment()).get(),
-                                                                                               pausetime));
-      dialog->ShowModal();
-      m_CurrentProtocol->updateEditedExperimentParameters();
-
-      /*
-      if(true == dialog->getCreateExperimentFlag()){
-        //m_CurrentProtocol->addExperiment(experiment);
-      }
-      */
-      break;
-  }
 }
 
 /**
@@ -2015,106 +1021,6 @@ void MyFrame::showHighVelocityWarning(void){
   }
   std::lock_guard<std::mutex> lck(m_WaitHighVelocityMutex);
   m_WaitHighVelocity.notify_all();
-}
-
-/**
- * @brief A message dialog asks the user if he/she wants to save the recorded data. If yes, the export dialog will show up.
- */
-void MyFrame::showExportCSVDialog(void){
-  // Ask if recorded data should be saved.
-  std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this, "The protocol is finished, do you want to save the recorded values?", wxMessageBoxCaptionStr, wxOK|wxCANCEL));
-  // Show the export dialog if yes.
-  if(wxID_OK == dialog->ShowModal()){
-    std::unique_ptr<MyExportDialog> dialog = std::unique_ptr<MyExportDialog>(new MyExportDialog(m_CurrentProtocol, m_CurrentProtocol->getExperimentNames(), m_StoragePath));
-    dialog->ShowModal();
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the preview protocol button.
- * @param event Occuring event
- */
-void MyFrame::OnPreviewProtocol(wxCommandEvent& event){
-  if(nullptr != m_CurrentProtocol){
-    m_CurrentProtocol->makePreview();
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the run protocol button.
- * @param event Occuring event
- */
-void MyFrame::OnRunProtocol(wxCommandEvent& event){
-  /*
-  wxMessageDialog *popup = new wxMessageDialog(this, "Limit will exeed, check your experiment settings.");
-  popup->Show();
-  popup->ShowModal();
-  delete popup;
-  */
-  if(nullptr != m_CurrentProtocol){
-    m_CurrentProtocol->runProtocol();
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user activates Loop in protocol.
- * @param event Occuring event
- */
-void MyFrame::OnLoopProtocol(wxCommandEvent& event){
-  if(nullptr != m_CurrentProtocol){
-    m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
-  }
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the stop protocol button. Stops the stage frame and the protocol.
- * @param event Occuring event
- */
-void MyFrame::OnStopProtocol(wxCommandEvent& event){
-  //OnMotorStop(event);
-  m_StageFrame->stop();
-  m_CurrentProtocol->stopProtocol();
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the save protocol button.
- * @param event Occuring event
- */
-void MyFrame::OnSaveProtocol(wxCommandEvent& event){
-  // Creating file name
-  std::time_t time = std::time(NULL);
-  char mbstr[100];
-  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
-
-  std::string pathAndFilename = m_StoragePath + "/" + "Protocol_" + std::string(mbstr) + ".xml";
-
-  // Let user choose path and file name.
-  wxFileDialog saveFileDialog(this, _("Save protocol file"), "", "", "Protocol files (*.xml)|*.xml", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-  saveFileDialog.SetPath(pathAndFilename);
-
-  if(wxID_CANCEL == saveFileDialog.ShowModal()){
-    return;
-  }
-
-  m_CurrentProtocol->saveProtocol(saveFileDialog.GetPath().ToStdString());
-  wxLogMessage(std::string("Protocol saved in: " + saveFileDialog.GetPath()).c_str());
-}
-
-/**
- * @brief Method wich will be executed, when the user clicks on the load protocol button.
- * @param event Occuring event
- */
-void MyFrame::OnLoadProtocol(wxCommandEvent& event){
-  checkProtocol();
-
-  // Let user choose path and file name.
-  wxFileDialog saveFileDialog(this, _("Save protocol file"), "", "", "Protocol files (*.xml)|*.xml", wxFD_OPEN);
-  saveFileDialog.SetPath(m_StoragePath);
-
-  if(wxID_CANCEL == saveFileDialog.ShowModal()){
-    return;
-  }
-  m_CurrentProtocol->loadProtocol(saveFileDialog.GetPath().ToStdString(), m_GageLength, m_MountingLength, m_MaxPosDistance, m_CurrentDistance);
 }
 
 /**
@@ -2138,48 +1044,4 @@ void MyFrame::updateForce(void){
     tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   }
   m_ForceStaticText->SetLabel(tmp);
-}
-
-
-
-/**
- * @brief Checks if a protocol object is already created, otherwise creates it.
- */
-void MyFrame::checkProtocol(void){
-  if(nullptr == m_CurrentProtocol){
-  m_CurrentProtocol = std::shared_ptr<Protocols>(new Protocols(m_ProtocolsListBox,
-                                                               this,
-                                                               m_StageFrame,
-                                                               m_ForceSensorMessageHandler,
-                                                               &m_VectorLayerMutex,
-                                                               m_GageLength,
-                                                               m_MountingLength,
-                                                               m_MaxPosDistance,
-                                                               m_CurrentDistance,
-                                                               &m_StagesStoppedFlag,
-                                                               &m_StagesStoppedMutex,
-                                                               &m_WaitMutex,
-                                                               &m_Wait,
-                                                               &m_PreloadDoneFlag,
-                                                               &m_PreloadDoneMutex,
-
-                                                               m_ProtocolsLoopCheckBox->GetValue(),
-                                                               m_Area,
-                                                               m_MaxDistanceLimit,
-                                                               m_MinDistanceLimit,
-                                                               m_MaxForceLimit,
-                                                               m_MinForceLimit,
-                                                               m_ForceStressSensitivity,
-                                                               m_DistanceSensitivity,
-
-                                                               &m_ForceStressDistanceGraph,
-                                                               &m_ForceStressDisplacementGraph,
-                                                               &m_StressForcePreviewGraph,
-                                                               &m_DistancePreviewGraph,
-                                                               &m_MaxStressForceLimitGraph,
-                                                               &m_MinStressForceLimitGraph,
-                                                               &m_MaxDistanceLimitGraph,
-                                                               &m_MinDistanceLimitGraph,
-                                                               m_StoragePath));
-  }
 }

@@ -4,6 +4,9 @@ set(SOURCE
         ./gui/myframe.cpp
         ./gui/myframe_presets.cpp
         ./gui/myframe_graph.cpp
+        ./gui/myframe_registration.cpp
+        ./gui/myframe_protocol.cpp
+        ./gui/myframe_experiments.cpp
         ./gui/mystartupdialog.cpp
         ./gui/myports.cpp
         ./gui/myfileoutput.cpp
