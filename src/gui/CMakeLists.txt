@@ -3,6 +3,7 @@ set(SOURCE
         ./gui/mybutton.cpp
         ./gui/myframe.cpp
         ./gui/myframe_presets.cpp
+        ./gui/myframe_graph.cpp
         ./gui/mystartupdialog.cpp
         ./gui/myports.cpp
         ./gui/myfileoutput.cpp
