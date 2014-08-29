@@ -1,3 +1,4 @@
+// Includes
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
@@ -24,6 +25,7 @@ wxBoxSizer* m_GraphSizer2;
 m_GraphSizer2 = static_cast<wxBoxSizer*>(m_GraphExportCSVButton->GetContainingSizer());
 m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
 
+MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
 
 
 

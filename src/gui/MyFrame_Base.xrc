@@ -2655,6 +2655,7 @@
 											<flag>wxALL</flag>
 											<border>5</border>
 											<object class="wxComboBox" name="m_GraphTypeComboBox">
+												<style>wxCB_READONLY</style>
 												<value>Distance</value>
 												<content>
 													<item>Distance</item>

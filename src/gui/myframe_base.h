@@ -5,6 +5,7 @@
 #ifndef __myframe_base_h__
 #define __myframe_base_h__
 
+// Includes
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
@@ -501,5 +502,6 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void InitXmlResource();
+void 
+InitXmlResource();
 #endif
