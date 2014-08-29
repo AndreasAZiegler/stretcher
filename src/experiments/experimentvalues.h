@@ -4,7 +4,6 @@
  * @author Andreas Ziegler
  */
 
-
 #ifndef EXPERIMENTVALUES_H
 #define EXPERIMENTVALUES_H
 

@@ -1,0 +1,52 @@
+/**
+@mainpage Stretcher software development manual
+
+@section intro_sec Introduction
+This software development manual should help developers to be able to understand the architecture of the stretcher software and how to use the development environment. The software is written in C++11 and uses several third party libraries, which are listed in the section dependencies. This software should be cross-platform compatible but it is only tested and used under Linux yet. wxFormBuilder was used to design the GUI and the required .xrc files. CMake is used to create make files or projekt files for any desired IDE. As version control git is used and hosted under bitbucket.
+
+@section dependencies_sec Dependencies
+Next to a C++ compiler, which has to support the C++11 standard, the following third party libraries are required for the stretcher software:
+
+wxWidget: wxWidgets is a C++ library that lets developers create applications for Windows, Mac OS X, Linux and other platforms with a single code base.<BR> 
+wxCTB: A cross-platform library to provide easy support for RS-232 interfaces.<BR>
+libconfig: A simple library for processing structured configuration files.<BR>
+wxMathplot: A library to add 2D scientific plot functionality to wxWidgets.<BR>
+pugixml: A light-weight, simple and fast XML parser for C++ with XPath support.<BR>
+
+@section development_environment_sec Development environment
+@subsection cmake CMake: Creating the make/project files
+To get make files or project files for any supported IDE, CMake can be used. The CMakeLists.txt in the project root folder is the main cmake file.
+
+@subsection gui_components GUI components
+The program reads the .xrc files to create the GUI. For this, the file content can be copied from the wxFormBuilder to the .xrc files. After that the required header files can be created by the console application "wxrc" by a command like "wxrc -e -c -o myframe_base.cpp MyFrame_Base.xrc". The tool "wxrc" doesn't automatically include the required header files, so this has to be done manually by the user. When the resulting header file is included, the GUI components can be used as normal objects.
+
+Attention: To file MyFrame_Base.xrc has to be modified before the header file can be created. Because the class wxSpingCtrlDouble is not supported by the wxFormBuilder, the wxSpinCtrl, which need floating point support, have to be changed to wxSpinCtrlDouble objects manually. Also the increas/decrease distance button have to be changed from wxButton to wxMyButton objects. The myframe_base.h header file also has to be edited manually, that the program can work correctly. The four lines "wxBoxSizer* m_GraphSizer1;", "wxBoxSizer* m_GraphSizer2;", "m_GraphSizer2 = static_cast<wxBoxSizer*>(m_GraphExportCSVButton->GetContainingSizer());" and "m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());" have to be copied from the file "myframe_base_INCLUDES.h" to the file "myframe_base.h". The constructor declaration also has to be edited, that it looks like "MyFrame_Base(const wxString& title, wxWindow *parent=NULL){".
+
+@section architecture_sec Architecture
+Some parts of the software are combined in folders. The following groups exist:<BR>
+experiments: All the experiment related classes are here.<BR>
+gui: All the GUI related things are here<BR>
+hardware: The hardware representation classes and the hardware related things are here.<BR>
+
+@subsection experiments Experiments
+All the experiments are realized by finite state machines (FSM). There are two classes per experiment. One which represents the FSM of experiment and one which is responsible for the recording of the measured values. Each of this classes inherits from one of the two base classes "Experiment" and "ExperimentValues". The class diagram of the experiment is shown below.
+@image html Experiments.png "Experiments class diagram" width=\textwidth
+
+@subsection gui GUI
+The GUI consists of of many frames and a own made button "wxMyButton" which allows to detect, when a button is pressed. With the exception of the main frame "MyFrame" all the frames are within one file. The main frame parts are splitted into multiple files for a better overview. From the main frame, the user can control the whole program and so interact with the hardware. Therefore the main frame is the owner of the hardware representative class objects. The class diagram of the GUI is shown below.
+@image html Gui.png "GUI class diagram" width=\textwidth
+
+@subsection hardware Hardware
+The hardware folder contains the classes for the force sensor, the linear stage and their message handlers and the stage frame. The stage frame basically combines the two linear stages into one object. All the hardware representative classes, which have to communicate over an RS-232 interface inherit from the class "SerialInterface". The message handlers receive the messages, the receive over the RS-232 connection from the hardware, process these messages and inform/forward them to the right place. The update mechanism for the measurement values relies on the base classes "UpdateValuesReceiver" and "UpdateValuesSender". The class diagram of the force sensor and the stage are shown below.
+@image html Hardware-Sensor.png "Sensor class diagram" width=\textwidth
+@image html Hardware-Stage.png "Stage class diagram" width=\textwidth
+
+@subsection protocols Protocols
+The protocol controls multiple experiments. The order of the experiments in the protocol can be changed, experiments can be deleted and also modified. To be able to modify the experiments, the protocol needs to communicate with the main frame. The protocol can also build a preview and checks if limits will be exceeded, when the protocol would run, before the protocol will start. The protocol also controls the export of the measured data into a file. The class diagram of the protocol is shown below.
+@image html Protocols.png "Protocols class diagram" width=\textwidth
+
+@subsection settings Settings
+The settings class is responsible for the loading and saving of the settings and parameters during the exit of the program and during the start of the program. This way the user can use the same parameters as he/she used the last time, if it is desired.
+@image html Settings.png "Settings class diagram" width=\textwidth
+
+*/
