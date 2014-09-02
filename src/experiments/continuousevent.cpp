@@ -200,12 +200,12 @@ void ContinuousEvent::initParameters(void){
 
     // Calculate increment and maximum value limit and steps.
     }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-      m_Increment = m_InitIncrement * m_Area * 10.0;
-      m_StopAtForce = m_InitHoldForce * m_Area * 10.0;
+      m_Increment = m_InitIncrement * m_Area / 100.0;
+      m_StopAtForce = m_InitHoldForce * m_Area / 100.0;
 
       if(StepsOrMaxValue::MaxValue == m_StepsOrMaxValue){
         if(DistanceOrPercentage::Distance == m_MaxValueDistanceOrPercentage){
-          m_MaxValueLimit = m_InitMaxValueLimit * m_Area * 10.0;
+          m_MaxValueLimit = m_InitMaxValueLimit * m_Area / 100.0;
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
           m_Steps = (m_MaxValueLimit - m_CurrentForce) / m_Increment;
           m_ExperimentValues->setSteps(m_Steps);
