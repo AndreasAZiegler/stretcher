@@ -656,9 +656,9 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_LengthsForceStressSensitivityStaticText->SetLabelText("Stress [kPa]");
     m_LengthsSetForceZeroButton->SetLabelText("Zero stress");
     m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
-    m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [kPa]:");
-    m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [kPa]:");
-    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dkPa]:");
+    m_OneStepStressForceLimitStaticText->SetLabelText(" Limit [kPa]:");
+    m_OneStepStressForceLimitStaticText->SetLabelText(" Limit [kPa]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText(" Incrementd [dkPa]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("kPa");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Smax.");
     m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [kPa]:");
@@ -686,9 +686,9 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_LengthsSetForceZeroButton->SetLabelText("Zero force");
     m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [N]:");
     m_PreloadLimitStaticText->SetLabelText("Force Limit [N]");
-    m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [N]:");
-    m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [N]:");
-    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dN]:");
+    m_OneStepStressForceLimitStaticText->SetLabelText(" Limit [N]:");
+    m_OneStepStressForceLimitStaticText->SetLabelText(" Limit [N]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText(" Incrementd [dN]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("N");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Fmax.");
     m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [N]:");

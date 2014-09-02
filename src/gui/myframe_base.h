@@ -502,6 +502,5 @@ MyFrame_Base(const wxString& title, wxWindow *parent=NULL){
  }
 };
 
-void 
-InitXmlResource();
+void InitXmlResource();
 #endif

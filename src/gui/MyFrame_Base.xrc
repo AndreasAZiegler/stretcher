@@ -1028,7 +1028,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepStressForceVelocityStaticText">
-																				<label>Velocity:</label>
+																				<label> Velocity:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1074,7 +1074,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepStressForceDelayStaticText">
-																				<label>Delay [s]:</label>
+																				<label> Delay [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1102,7 +1102,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepStressForceLimitStaticText">
-																				<label>Limit [N]:</label>
+																				<label> Limit [N]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1130,7 +1130,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepStressForceDwellStaticText">
-																				<label>Dwell [s]:</label>
+																				<label> Dwell [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1190,7 +1190,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepDistanceVelocityStaticText">
-																				<label>Velocity:</label>
+																				<label> Velocity:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1236,7 +1236,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepDistanceDelayStaticText">
-																				<label>Delay [s]:</label>
+																				<label> Delay [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1264,7 +1264,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepDistanceUpperLimitStaticText">
-																				<label>Limit:</label>
+																				<label> Limit:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1319,7 +1319,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_OneStepDistanceDwellStaticText">
-																				<label>Dwell [s]:</label>
+																				<label> Dwell [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1687,7 +1687,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousStressForceVelocityStaticText">
-																				<label>Velocity:</label>
+																				<label> Velocity:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1733,7 +1733,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousStressForceHoldTimeStaticText">
-																				<label>Hold time [s]:</label>
+																				<label> Hold time [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1761,7 +1761,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousStressForceIncrementStaticText">
-																				<label>Increment [dN]:</label>
+																				<label> Increment [dN]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1814,7 +1814,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousStressForceMaxValueStaticText">
-																				<label>Max. value:</label>
+																				<label> Max. value:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1860,7 +1860,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousStressForceStepsStaticText">
-																				<label>Steps:</label>
+																				<label> Steps:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1920,7 +1920,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousDistanceVelocityStaticText">
-																				<label>Velocity:</label>
+																				<label> Velocity:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1969,7 +1969,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousDistanceHoldTimeStaticText">
-																				<label>Hold time [s]:</label>
+																				<label> Hold time [s]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -1997,7 +1997,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousDistanceIncrementStaticText">
-																				<label>Increment [dmm]:</label>
+																				<label> Increment [dmm]:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -2070,7 +2070,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousDistanceMaxValueStaticText">
-																				<label>Max. Value:</label>
+																				<label> Max. Value:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>
@@ -2128,7 +2128,7 @@
 																			<flag>wxALIGN_CENTER_VERTICAL</flag>
 																			<border>5</border>
 																			<object class="wxStaticText" name="m_ContinuousDistanceStepsStaticText">
-																				<label>Steps:</label>
+																				<label> Steps:</label>
 																				<wrap>-1</wrap>
 																			</object>
 																		</object>

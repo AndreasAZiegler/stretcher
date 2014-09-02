@@ -7405,7 +7405,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Velocity:</property>
+                                                                                    <property name="label"> Velocity:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -7762,7 +7762,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Delay [s]:</property>
+                                                                                    <property name="label"> Delay [s]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -8015,7 +8015,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Limit [N]:</property>
+                                                                                    <property name="label"> Limit [N]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -8273,7 +8273,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Dwell [s]:</property>
+                                                                                    <property name="label"> Dwell [s]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -8717,7 +8717,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Velocity:</property>
+                                                                                    <property name="label"> Velocity:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -9074,7 +9074,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Delay [s]:</property>
+                                                                                    <property name="label"> Delay [s]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -9327,7 +9327,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Limit:</property>
+                                                                                    <property name="label"> Limit:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -9772,7 +9772,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Dwell [s]:</property>
+                                                                                    <property name="label"> Dwell [s]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -12617,7 +12617,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Velocity:</property>
+                                                                                    <property name="label"> Velocity:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -12974,7 +12974,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Hold time [s]:</property>
+                                                                                    <property name="label"> Hold time [s]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -13227,7 +13227,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Increment [dN]:</property>
+                                                                                    <property name="label"> Increment [dN]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -13666,7 +13666,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Max. value:</property>
+                                                                                    <property name="label"> Max. value:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -14023,7 +14023,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Steps:</property>
+                                                                                    <property name="label"> Steps:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -14467,7 +14467,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Velocity:</property>
+                                                                                    <property name="label"> Velocity:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -14899,7 +14899,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Hold time [s]:</property>
+                                                                                    <property name="label"> Hold time [s]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -15152,7 +15152,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Increment [dmm]:</property>
+                                                                                    <property name="label"> Increment [dmm]:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -15770,7 +15770,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Max. Value:</property>
+                                                                                    <property name="label"> Max. Value:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
@@ -16290,7 +16290,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Steps:</property>
+                                                                                    <property name="label"> Steps:</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
