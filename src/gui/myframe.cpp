@@ -385,6 +385,10 @@ void MyFrame::startup(void){
     m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 2));
 
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
+    // Reset limits of the stages
+    m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
+    m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
+
     std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
     dialog->ShowModal();
   }
@@ -638,6 +642,10 @@ void MyFrame::OnNotebookTabChanging(wxBookCtrlEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
+  // Reset limits of the stages
+  m_StageFrame->setMinDistanceLimitMS(0/*mm*/);
+  m_StageFrame->setMaxDistanceLimitMS(80/*mm*/);
+
   std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
   dialog->ShowModal();
 }
@@ -755,8 +763,10 @@ void MyFrame::setDistanceWActuatorCollision(double le){
   //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min. and max. distance and the distance at maximum positions.
-  m_StageFrame->setMinDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setMaxDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMinDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMaxDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMinDistanceLimitMS(m_CurrentDistance);
+  m_StageFrame->setMaxDistanceLimitMS(m_CurrentDistance);
   m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
   m_LengthsGoToSpinCtrl->SetValue(m_MaxPosDistance);
 }
