@@ -4,6 +4,7 @@
  * @author Andreas Ziegler
  */
 
+// Includes
 #include "serialtrigger.h"
 
 /**
@@ -20,13 +21,13 @@ SerialTrigger::SerialTrigger(unsigned int baudrate)
  */
 void SerialTrigger::trigger(void){
   char buffer[6];
-  char command[6] = "";
+  char message[] = "trigger";
 
-  memcpy(command, STAGE_RETURN_STORED_POSITION, 2);
-  memcpy(buffer, command, 6);
+  //memcpy(buffer, command, 6);
 
   {
-    lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
-    m_SerialPort.Writev(buffer, 6, 25/*ms*/);
+    std::lock_guard<std::mutex> lck{m_WritingSerialInterfaceMutex};
+    //m_SerialPort.Writev(buffer, 6, 25/*ms*/);
+    m_SerialPort.Writev(message, 6, 25/*ms*/);
   }
 }

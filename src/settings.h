@@ -609,6 +609,10 @@ class Settings
     libconfig::Setting* m_ForceSensorMeasureEndValueSetting;	/**< The setting for the measure end value of the force sensor */
     libconfig::Setting* m_ForceSensorZeroValueSetting;				/**< The setting for the zero value of the force sensor */
 
+    libconfig::Setting* m_SerialTriggerSettings;							/**< The settings for the serial trigger */
+    libconfig::Setting* m_SerialTriggerComPortSetting;				/**< The setting for the com port of the serial trigger */
+    libconfig::Setting* m_SerialTriggerBaudRateSetting;				/**< The setting for the baud rate of the serial trigger */
+
     libconfig::Setting* m_StoragePathsSetting;								/**< The settings for the storage path */
     libconfig::Setting* m_ConfigurationStoragePathSetting;		/**< Storage path for the configuration file */
     libconfig::Setting* m_MeasurementValuesStoragePathSetting;/**< Storage path for the measurement values */

@@ -45,6 +45,8 @@ Settings::Settings()
     m_ForceSensorInputSensitivity(1.0),
     m_ForceSensorMeasureEndValue(1597.83),
     m_ForceSensorZeroValue(8388608.0),
+    m_SerialTriggerComPort("/dev/ttyUSB3"),
+    m_SerialTriggerBaudRate(115200),
     m_MeasurementValuesStoragePath(std::string("/home")),
     m_Set1Name(std::string("")),
     m_Set1MaxDistance(0),
@@ -148,6 +150,15 @@ bool Settings::readSettings ()
       m_ForceSensorSettings->lookupValue("InputSensitivity", m_ForceSensorInputSensitivity);
       m_ForceSensorSettings->lookupValue("MeasureEndValue", m_ForceSensorMeasureEndValue);
       m_ForceSensorSettings->lookupValue("ZeroValue", m_ForceSensorZeroValue);
+    }catch(const SettingNotFoundException &nfex){
+      std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
+    }
+
+    // Read the settings for the serial trigger
+    try{
+      m_SerialTriggerSettings = &m_RootSettings->operator []("SerialTrigger");
+      m_SerialTriggerSettings->lookupValue("ComPort", m_SerialTriggerComPort);
+      m_SerialTriggerSettings->lookupValue("Baudrate", m_SerialTriggerBaudRate);
     }catch(const SettingNotFoundException &nfex){
       std::cerr << "Setting " << nfex.getPath() << " not found." << std::endl;
     }
@@ -374,6 +385,29 @@ bool Settings::writeSettings(){
     *m_ForceSensorZeroValueSetting = m_ForceSensorZeroValue;
   }else{
     m_ForceSensorSettings->add("ZeroValue", Setting::TypeFloat) = m_ForceSensorZeroValue;
+  }
+
+  // Writing the settings for the serial trigger
+  if(m_RootSettings->exists("SerialTrigger")){
+    m_SerialTriggerSettings = &m_RootSettings->operator []("SerialTrigger");
+  }else{
+    m_SerialTriggerSettings = &m_RootSettings->add("SerialTrigger", Setting::TypeGroup);
+  }
+
+  // Writing com port setting for serial trigger
+  if(m_SerialTriggerSettings->exists("ComPort")){
+    m_SerialTriggerComPortSetting = &m_SerialTriggerSettings->operator []("ComPort");
+    *m_SerialTriggerComPortSetting = m_SerialTriggerComPort;
+  }else{
+    m_SerialTriggerSettings->add("ComPort", Setting::TypeString) = m_SerialTriggerComPort;
+  }
+
+  // Writing baud rate setting for serial trigger
+  if(m_SerialTriggerSettings->exists("Baudrate")){
+    m_SerialTriggerBaudRateSetting = &m_SerialTriggerSettings->operator []("Baudrate");
+    *m_SerialTriggerBaudRateSetting = m_SerialTriggerBaudRate;
+  }else{
+    m_SerialTriggerSettings->add("Baudrate", Setting::TypeInt) = m_SerialTriggerBaudRate;
   }
 
   // Writing the settings for the limit 1 settings
