@@ -83,13 +83,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Register the force sensor and register update method at the force sensor message handler.
      * @param forcesensor Pointer to the force sensor.
      */
-    void registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
-      m_ForceSensor = forcesensor;
-
-      // Registers update method at forcesensormessagehandler.
-      m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
-      m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
-    }
+    void registerForceSensor(std::shared_ptr<ForceSensor> forcesensor);
 
     /**
      * @brief Register the serial trigger.

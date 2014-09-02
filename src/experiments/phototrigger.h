@@ -8,6 +8,7 @@
 #define PHOTOTRIGGER_H
 
 // Includes
+#include "../hardware/serialtrigger.h"
 #include "experiment.h"
 #include "phototriggervalues.h"
 
@@ -39,12 +40,19 @@ class PhotoTrigger : public Experiment
                  mpFXYVector *maxdistancelimitvector,
                  mpFXYVector *mindistancelimitvector,
                  std::condition_variable *wait,
-                 std::mutex *mutex);
+                 std::mutex *mutex,
+                 std::shared_ptr<SerialTrigger> serialtrigger);
 
     /**
      * @brief Sets the preload distance.
      */
     virtual void setPreloadDistance(void){}
+
+    /**
+     * @brief Saves the experiment settings in the xml_docuement.
+     * @param xml Pointer to the xml_document.
+     */
+    virtual void getXML(pugi::xml_document &xml);
 
     /**
      * @brief Saves the points required to creat a preview graph in the vector..
@@ -70,8 +78,20 @@ class PhotoTrigger : public Experiment
     virtual std::shared_ptr<ExperimentValues> getExperimentValues(void);
 
   private:
+    /**
+     * @enum State
+     * @brief Defines the states of the AutoStretch FSM.
+     */
+    enum State{stopState,       /**< Stop state */
+               runState};       /**< Run state */
 
+    std::shared_ptr<SerialTrigger> m_SerialTrigger;						/**< Pointer to the serial trigger object */
     std::shared_ptr<PhotoTriggerValues> m_ExperimentValues;		/**< Pointer to the experiment values. */
+
+    std::condition_variable *m_Wait;													/**< Pointer to the conditioning variable to indicate the end of the experiment. */
+    std::mutex *m_WaitMutex;																	/**< Mutex to protect m_WaitActive. */
+
+    State m_CurrentState;																			/**< Current state of the preload FSM. */
 };
 
 #endif // PHOTOTRIGGER_H

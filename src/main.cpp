@@ -136,6 +136,7 @@ bool MyApp::OnInit(){
   std::shared_ptr<SerialTrigger> m_SerialTrigger;
   m_SerialTrigger = std::make_shared<SerialTrigger>(m_MySettings.getSerialTriggerBaudRate());
   m_SerialTrigger->connect(m_MySettings.getSerialTriggerComPort());
+  m_MyFrame->registerSerialTrigger(m_SerialTrigger);
 
   m_MyFrame->startup();
 
