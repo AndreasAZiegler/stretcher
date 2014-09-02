@@ -7,6 +7,7 @@ set(SOURCE
         ./hardware/linearstagemessagehandler.cpp
         ./hardware/forcesensor.cpp
         ./hardware/forcesensormessagehandler.cpp
+        ./hardware/serialtrigger.cpp
         PARENT_SCOPE
 )
 
@@ -19,5 +20,6 @@ set(HEADERS
         ./hardware/linearstagemessagehandler.h
         ./hardware/forcesensor.h
         ./hardware/forcesensormessagehandler.h
+        ./hardware/serialtrigger.h
         PARENT_SCOPE
 )

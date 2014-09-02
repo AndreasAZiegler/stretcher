@@ -1,3 +1,9 @@
+/**
+ * @file pausevalues.h
+ * @brief Pause values
+ * @author Andreas Ziegler
+ */
+
 #ifndef PAUSEVALUES_H
 #define PAUSEVALUES_H
 

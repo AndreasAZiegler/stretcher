@@ -13,6 +13,7 @@
 #include "../experiments/continuousevent.h"
 #include "../experiments/pause.h"
 #include "../experiments/pauseresume.h"
+#include "../experiments/phototrigger.h"
 
 /**
  * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
@@ -570,6 +571,14 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
                                                          &m_WaitMutex));
 
   m_CurrentProtocol->addExperiment(experiment);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the photo button. Creates a photo trigger point.
+ * @param event Occuring event
+ */
+void MyFrame::OnMakePhoto(wxCommandEvent& event){
+
 }
 
 /**

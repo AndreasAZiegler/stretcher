@@ -45,10 +45,12 @@ void MyFrame::registerLinearStageMessageHandlers(std::vector<std::shared_ptr<Lin
  * @brief Register the force sensor and register update method at the force sensor message handler.
  * @param forcesensor Pointer to the force sensor.
  */
-void MyFrame::registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
-  m_ForceSensor = forcesensor;
 
-  // Registers update method at forcesensormessagehandler.
-  m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
-  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+
+/**
+ * @brief Register the serial trigger.
+ * @param serialtrigger Pointer to the serial trigger.
+ */
+void MyFrame::registerSerialTrigger(std::shared_ptr<SerialTrigger> serialtrigger){
+  m_SerialTrigger = serialtrigger;
 }

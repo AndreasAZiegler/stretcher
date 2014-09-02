@@ -20,6 +20,7 @@
 #include "./hardware/linearstage.h"
 #include "./hardware/stageframe.h"
 #include "./hardware/forcesensor.h"
+#include "./hardware/serialtrigger.h"
 #include "./experiments/experiment.h"
 #include "./experiments/experimentvalues.h"
 
@@ -82,7 +83,19 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Register the force sensor and register update method at the force sensor message handler.
      * @param forcesensor Pointer to the force sensor.
      */
-    void registerForceSensor(std::shared_ptr<ForceSensor> forcesensor);
+    void registerForceSensor(std::shared_ptr<ForceSensor> forcesensor){
+      m_ForceSensor = forcesensor;
+
+      // Registers update method at forcesensormessagehandler.
+      m_ForceSensorMessageHandler = m_ForceSensor->getMessageHandler();
+      m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+    }
+
+    /**
+     * @brief Register the serial trigger.
+     * @param serialtrigger Pointer to the serial trigger.
+     */
+    void registerSerialTrigger(std::shared_ptr<SerialTrigger> serialtrigger);
 
     /**
      * @brief Destructor. Unregister the update method from the message handlers, stops the receiver threads, removes vectors and axis from the graph. Waits until the message
@@ -535,6 +548,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnPauseResumeExperiment(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user clicks on the photo button. Creates a photo trigger point.
+     * @param event Occuring event
+     */
+    void OnMakePhoto(wxCommandEvent& event);
+
+    /**
      * @brief Shows pause/resume dialog.
      */
     void showPauseResumeDialog(std::condition_variable *wait, std::mutex *mutex);
@@ -666,6 +685,7 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     bool m_DisableDecreaseDistanceFlag;																										/**< Indicates if decreasing of the distance should be disabled. */
     std::shared_ptr<ForceSensor> m_ForceSensor;																						/**< Pointer to the force sensor */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; 							/**< Pointer to the force sensor message handler */
+    std::shared_ptr<SerialTrigger> m_SerialTrigger;																				/**< Pointer to the force sensor */
     std::vector<int> m_CurrentPositions;																									/**< Vector with the current stage positions */
     long m_CurrentDistance; 																															/**< Current distance */
     std::shared_ptr<Protocols> m_CurrentProtocol;																					/**< Pointer to the current protocol */
@@ -747,11 +767,13 @@ enum
 
   ID_ClearLog = 39,
   ID_SaveLog = 40,
+
   ID_GraphChangeType = 41,
   ID_GraphShowLimits = 42,
   ID_ClearGraph = 43,
   ID_ExportCSV = 44,
   ID_ExportPNG = 45,
+
   ID_DeleteExperiment = 46,
   ID_MoveUpExperiment = 47,
   ID_MoveDownExperiment = 48,

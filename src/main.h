@@ -12,11 +12,7 @@
 #include "wx/app.h"
 #include "./gui/myframe.h"
 #include "settings.h"
-#include "./hardware/linearstage.h"
-#include "./hardware/linearstagemessagehandler.h"
 #include "./hardware/stageframe.h"
-#include "./hardware/forcesensor.h"
-#include "./hardware/forcesensormessagehandler.h"
 
 /**
  * @class MyApp main.h "main.h"

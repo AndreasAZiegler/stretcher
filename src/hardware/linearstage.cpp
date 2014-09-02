@@ -29,8 +29,13 @@ LinearStage::LinearStage(UpdatedValuesReceiver::ValueType type,
                          std::shared_ptr<std::mutex> waitmessagehandlermutex,
                          std::shared_ptr<int> messagehandlerfinishednr,
                          unsigned int baudrate)
-    : SerialInterface(type, baudrate),
-      m_MessageHandler(&m_SerialPort, type, &m_ReadingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex, messagehandlerfinishednr),
+    : SerialInterface(baudrate),
+      m_MessageHandler(&m_SerialPort,
+                       type,
+                       &m_ReadingSerialInterfaceMutex,
+                       waitmessagehandler,
+                       waitmessagehandlermutex,
+                       messagehandlerfinishednr),
       m_Stepsize(0.00009921875),                    //Stepsize of Zaber T-LSM025A motor in millimeters
       m_CurrentSpeed(0),
       STAGE_DEVICE_MODE("\x00\x028"),
@@ -226,7 +231,7 @@ void LinearStage::storeCurrentPosition(void){
   {
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
-    // Wait 1 ms (necessary, that the stage receive the message)
+    // Wait 1 ms (necessary, that the stage receives the message)
     std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1)));
   }
 }

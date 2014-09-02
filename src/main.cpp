@@ -19,6 +19,11 @@
 #include "./gui/xh_wxmybuttonxmlhandler.h"
 #include <wx/spinctrl.h>
 #include "updatedvaluesreceiver.h"
+#include "./hardware/linearstage.h"
+#include "./hardware/linearstagemessagehandler.h"
+#include "./hardware/forcesensor.h"
+#include "./hardware/forcesensormessagehandler.h"
+#include "./hardware/serialtrigger.h"
 
 // An deleter which doesn't do anything, required for passing shared_ptr.
 template<typename T>
@@ -126,6 +131,11 @@ bool MyApp::OnInit(){
   // Run the receiver of the force sensor in seperate threads.
   m_ForceSensorReceiver = std::thread(&ForceSensorMessageHandler::receiver, m_ForceSensorMessageHandler);
   m_ForceSensorReceiver.detach();
+
+  // Create the serial trigger
+  std::shared_ptr<SerialTrigger> m_SerialTrigger;
+  m_SerialTrigger = std::make_shared<SerialTrigger>(m_MySettings.getSerialTriggerBaudRate());
+  m_SerialTrigger->connect(m_MySettings.getSerialTriggerComPort());
 
   m_MyFrame->startup();
 
