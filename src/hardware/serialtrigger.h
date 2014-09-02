@@ -10,6 +10,10 @@
 // Includes
 #include "serialinterface.h"
 
+/**
+ * @class SerialTrigger serialtrigger.h "hardware/serialtrigger.h"
+ * @brief Class that provides access to a device, which can be triggered by RS-232 interface.
+ */
 class SerialTrigger : public SerialInterface
 {
   public:
