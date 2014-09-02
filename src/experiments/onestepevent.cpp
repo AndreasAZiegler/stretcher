@@ -173,7 +173,7 @@ void OneStepEvent::initParameters(void){
   // Calculation of the limit.
   }else{
     if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-      m_Limit = m_InitLimit * m_Area * 10.0;
+      m_Limit = m_InitLimit * m_Area / 100.0;
     } else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
       m_Limit = m_InitLimit * 10000.0;
     }
