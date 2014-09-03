@@ -386,6 +386,8 @@ void MyFrame::startup(void){
 
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
     // Reset limits of the stages
+    m_MinDistanceLimit = 0;
+    m_MaxDistanceLimit = 80 / 0.00009921875/*mm per micro step*/;
     m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
     m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
 
@@ -643,8 +645,10 @@ void MyFrame::OnNotebookTabChanging(wxBookCtrlEvent& event){
  */
 void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
   // Reset limits of the stages
-  m_StageFrame->setMinDistanceLimitMS(0/*mm*/);
-  m_StageFrame->setMaxDistanceLimitMS(80/*mm*/);
+  m_MinDistanceLimit = 0;
+  m_MaxDistanceLimit = 80 / 0.00009921875/*mm per micro step*/;
+  m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
+  m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
 
   std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
   dialog->ShowModal();
