@@ -909,7 +909,7 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
     // Create IncreaseDecreaseVelocityTimer class object
     m_IncreaseDecreaseVelocityTimer = std::make_shared<IncreaseDecreaseVelocityTimer>(IncreaseDecreaseVelocityTimer(m_StageFrame, 1));
     // Start increaseTimer in a seperate thread. It will double the speed periodically.
-    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::increaseTimer, m_IncreaseDecreaseVelocityTimer);
+    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::decreaseDistanceTimer, m_IncreaseDecreaseVelocityTimer);
     m_IncreaseDecreaseVelocityTimerThread.detach();
   }else{
     wxLogMessage("MyFrame: Decrease distance disabled");
@@ -942,7 +942,7 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
     // Create IncreaseDecreaseVelocityTimer class object
     m_IncreaseDecreaseVelocityTimer = std::make_shared<IncreaseDecreaseVelocityTimer>(IncreaseDecreaseVelocityTimer(m_StageFrame, 1));
     // Start increaseTimer in a seperate thread. It will double the speed periodically.
-    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::increaseTimer, m_IncreaseDecreaseVelocityTimer);
+    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::increaseDistanceTimer, m_IncreaseDecreaseVelocityTimer);
     m_IncreaseDecreaseVelocityTimerThread.detach();
   }else{
     wxLogMessage("MyFrame: Increase distance disabled");

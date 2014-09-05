@@ -22,30 +22,33 @@ IncreaseDecreaseVelocityTimer::IncreaseDecreaseVelocityTimer(std::shared_ptr<Sta
 }
 
 /**
- * @brief Timer method which increases the linear stage speed every cycle.
+ * @brief Timer method which decreases the linear stage speed every cycle.
  */
-void IncreaseDecreaseVelocityTimer::increaseTimer(void){
+void IncreaseDecreaseVelocityTimer::decreaseDistanceTimer(void){
   // Run until exit flag is set true by the main frame, when the decrease/increase-button is released.
   while(!m_ExitFlag){
     // Wait two seconds.
     std::this_thread::sleep_for(std::chrono::seconds(2));
-    m_Velocity *= 2;
-    if(false == m_ExitFlag){
-      // Set the new speed of the stage frame, if the exit flag is not already set.
-      m_StageFrame->setSpeed(m_Velocity);
+    if((false == m_ExitFlag) && (20/*mm/s*/ > m_Velocity)){
+      // Set the new speed of the stage frame, if the exit flag is not already set and the speed is lower than 20 mm/s
+      m_Velocity *= 2;
+      m_StageFrame->moveForward(m_Velocity);
     }
   }
 }
 
 /**
- * @brief Timer method which decreases the linear stage speed every cycle.
+ * @brief Timer method which increases the linear stage speed every cycle.
  */
-void IncreaseDecreaseVelocityTimer::decreaseTimer(void){
+void IncreaseDecreaseVelocityTimer::increaseDistanceTimer(void){
+  // Run until exit flag is set true by the main frame, when the decrease/increase-button is released.
   while(!m_ExitFlag){
+    // Wait two seconds.
     std::this_thread::sleep_for(std::chrono::seconds(2));
-    m_Velocity /= 2;
-    if(false == m_ExitFlag){
-      m_StageFrame->setSpeed(m_Velocity);
+    if((false == m_ExitFlag) && (20/*mm/s*/ > m_Velocity)){
+      // Set the new speed of the stage frame, if the exit flag is not already set and the speed is lower than 20 mm/s
+      m_Velocity *= 2;
+      m_StageFrame->moveBackward(m_Velocity);
     }
   }
 }

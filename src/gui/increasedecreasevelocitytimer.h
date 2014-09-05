@@ -32,14 +32,14 @@ class IncreaseDecreaseVelocityTimer
     }
 
     /**
-     * @brief Timer method which increases the stage frame speed every cycle.
+     * @brief Timer method which decreases the linear stage speed every cycle.
      */
-    void increaseTimer(void);
+    void decreaseDistanceTimer(void);
 
     /**
-     * @brief Timer method which decreases the stage frame speed every cycle.
+     * @brief Timer method which increases the stage frame speed every cycle.
      */
-    void decreaseTimer(void);
+    void increaseDistanceTimer(void);
 
   private:
     std::shared_ptr<StageFrame> m_StageFrame;
