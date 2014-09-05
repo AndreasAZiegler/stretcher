@@ -665,8 +665,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     std::mutex m_ForceLimitExceededMutex;																									/**< Mutex to protect m_ForceLimitExceededFlag. */
     bool m_DisableIncreaseDistanceFlag;																										/**< Indicates if increasing of the distance should be disabled. */
     bool m_DisableDecreaseDistanceFlag;																										/**< Indicates if decreasing of the distance should be disabled. */
-    std::shared_ptr<IncreaseDecreaseVelocityTimer> m_IncreaseDecreaseVelocityTimer;
-    std::thread m_IncreaseDecreaseVelocityTimerThread;
+    std::shared_ptr<IncreaseDecreaseVelocityTimer> m_IncreaseDecreaseVelocityTimer;				/**< Pointer to the increase/decrease velocity timer. /*
+    std::thread m_IncreaseDecreaseVelocityTimerThread;																		/**< Thread for the increase velocity method. /*
     std::shared_ptr<ForceSensor> m_ForceSensor;																						/**< Pointer to the force sensor */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler; 							/**< Pointer to the force sensor message handler */
     std::vector<int> m_CurrentPositions;																									/**< Vector with the current stage positions */
