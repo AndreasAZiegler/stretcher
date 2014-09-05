@@ -13,6 +13,7 @@ set(SOURCE
         ./gui/myhomestages.cpp
         ./gui/myexportdialog.cpp
         ./gui/mypausedialog.cpp
+        ./gui/increasedecreasevelocitytimer.cpp
         ./gui/xh_wxspinctrldoublexmlhandler.cpp
         #./gui/xh_mathplotxmlhandler.cpp
         ./gui/xh_wxmybuttonxmlhandler.cpp
@@ -37,6 +38,7 @@ set(HEADERS
         ./gui/myexportdialog_base.h
         ./gui/mypausedialog.h
         ./gui/mypausedialog_base.h
+        ./gui/increasedecreasevelocitytimer.h
         ./gui/xh_wxspinctrldoublexmlhandler.h
         #./gui/xh_mathplotxmlhandler.h
         ./gui/xh_wxmybuttonxmlhandler.h

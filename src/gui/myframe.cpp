@@ -422,7 +422,7 @@ std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
  *        handlers are finished and saves the start up settings in the configuration file.
  */
 
-MyFrame::~MyFrame(){
+MyFrame::~MyFrame(void){
   // Unregister update methods
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
@@ -906,6 +906,9 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   if(false == m_DisableDecreaseDistanceFlag){
     m_StageFrame->moveForward(1/*mm/s*/);
+    m_IncreaseDecreaseVelocityTimer = std::make_shared<IncreaseDecreaseVelocityTimer>(IncreaseDecreaseVelocityTimer(m_StageFrame, 1));
+    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::increaseTimer, m_IncreaseDecreaseVelocityTimer);
+    m_IncreaseDecreaseVelocityTimerThread.detach();
   }else{
     wxLogMessage("MyFrame: Decrease distance disabled");
   }
@@ -919,6 +922,8 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
 void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->stop();
+  m_IncreaseDecreaseVelocityTimer->setExitFlag();
+  m_IncreaseDecreaseVelocityTimer.reset();
   event.Skip();
 }
 
@@ -930,6 +935,9 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   if(false == m_DisableIncreaseDistanceFlag){
     m_StageFrame->moveBackward(1/*mm/s*/);
+    m_IncreaseDecreaseVelocityTimer = std::make_shared<IncreaseDecreaseVelocityTimer>(IncreaseDecreaseVelocityTimer(m_StageFrame, 1));
+    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::increaseTimer, m_IncreaseDecreaseVelocityTimer);
+    m_IncreaseDecreaseVelocityTimerThread.detach();
   }else{
     wxLogMessage("MyFrame: Increase distance disabled");
   }
@@ -943,6 +951,8 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
 void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->stop();
+  m_IncreaseDecreaseVelocityTimer->setExitFlag();
+  m_IncreaseDecreaseVelocityTimer.reset();
   event.Skip();
 }
 
