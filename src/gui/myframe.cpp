@@ -957,7 +957,9 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
 void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   m_StageFrame->stop();
+  // Stop increaseTimer method, which runs in an own thread.
   m_IncreaseDecreaseVelocityTimer->setExitFlag();
+  // Delete the IncreaseDecreaseVelocityTimer object for later use.
   m_IncreaseDecreaseVelocityTimer.reset();
   event.Skip();
 }
