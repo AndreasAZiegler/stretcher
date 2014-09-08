@@ -28,10 +28,10 @@ void IncreaseDecreaseVelocityTimer::decreaseDistanceTimer(void){
   // Run until exit flag is set true by the main frame, when the decrease/increase-button is released.
   while(!m_ExitFlag){
     // Wait two seconds.
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if((false == m_ExitFlag) && (20/*mm/s*/ > m_Velocity)){
       // Set the new speed of the stage frame, if the exit flag is not already set and the speed is lower than 20 mm/s
-      m_Velocity *= 2;
+      m_Velocity += 0.1;
       m_StageFrame->moveForward(m_Velocity);
     }
   }
@@ -44,10 +44,10 @@ void IncreaseDecreaseVelocityTimer::increaseDistanceTimer(void){
   // Run until exit flag is set true by the main frame, when the decrease/increase-button is released.
   while(!m_ExitFlag){
     // Wait two seconds.
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if((false == m_ExitFlag) && (20/*mm/s*/ > m_Velocity)){
       // Set the new speed of the stage frame, if the exit flag is not already set and the speed is lower than 20 mm/s
-      m_Velocity *= 2;
+      m_Velocity += 0.1;
       m_StageFrame->moveBackward(m_Velocity);
     }
   }
