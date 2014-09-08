@@ -922,18 +922,16 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
-  if(false == m_DisableDecreaseDistanceFlag){
-    //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-    m_StageFrame->stop();
+  // Only proceed if the increase velocity thread exists.
+  if(m_IncreaseDecreaseVelocityTimer){
+    // Only stop the stage if it is not already done by the limit check.
+    if(false == m_DisableDecreaseDistanceFlag){
+      m_StageFrame->stop();
+    }
     // Stop increaseTimer method, which runs in an own thread.
     m_IncreaseDecreaseVelocityTimer->setExitFlag();
     // Delete the IncreaseDecreaseVelocityTimer object for later use.
     m_IncreaseDecreaseVelocityTimer.reset();
-  }else{
-    if(m_IncreaseDecreaseVelocityTimer){
-      m_IncreaseDecreaseVelocityTimer->setExitFlag();
-      m_IncreaseDecreaseVelocityTimer.reset();
-    }
   }
   event.Skip();
 }
@@ -962,18 +960,16 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
-  if(false == m_DisableIncreaseDistanceFlag){
-    //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-    m_StageFrame->stop();
+  // Only proceed if the increase velocity thread exists.
+  if(m_IncreaseDecreaseVelocityTimer){
+    // Only stop the stage if it is not already done by the limit check.
+    if(false == m_DisableIncreaseDistanceFlag){
+      m_StageFrame->stop();
+    }
     // Stop increaseTimer method, which runs in an own thread.
     m_IncreaseDecreaseVelocityTimer->setExitFlag();
     // Delete the IncreaseDecreaseVelocityTimer object for later use.
     m_IncreaseDecreaseVelocityTimer.reset();
-  }else{
-    if(m_IncreaseDecreaseVelocityTimer){
-      m_IncreaseDecreaseVelocityTimer->setExitFlag();
-      m_IncreaseDecreaseVelocityTimer.reset();
-    }
   }
   event.Skip();
 }
