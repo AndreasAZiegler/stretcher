@@ -22,7 +22,7 @@ IncreaseDecreaseVelocityTimer::IncreaseDecreaseVelocityTimer(std::shared_ptr<Sta
 }
 
 /**
- * @brief Timer method which decreases the linear stage speed every cycle.
+ * @brief Increases the speed of the linear stage during decreasing the distance, every timer cycle.
  */
 void IncreaseDecreaseVelocityTimer::decreaseDistanceTimer(void){
   // Run until exit flag is set true by the main frame, when the decrease/increase-button is released.
@@ -38,7 +38,7 @@ void IncreaseDecreaseVelocityTimer::decreaseDistanceTimer(void){
 }
 
 /**
- * @brief Timer method which increases the linear stage speed every cycle.
+ * @brief Increases the speed of the linear stage during increasing the distance, every timer cycle.
  */
 void IncreaseDecreaseVelocityTimer::increaseDistanceTimer(void){
   // Run until exit flag is set true by the main frame, when the decrease/increase-button is released.

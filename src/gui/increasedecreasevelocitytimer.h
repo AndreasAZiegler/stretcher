@@ -25,26 +25,26 @@ class IncreaseDecreaseVelocityTimer
     IncreaseDecreaseVelocityTimer(std::shared_ptr<StageFrame> &stageframe, double velocity);
 
     /**
-     * @brief Sets the exit flag true.
+     * @brief Sets the exit flag.
      */
     void setExitFlag(void){
       m_ExitFlag = true;
     }
 
     /**
-     * @brief Timer method which decreases the linear stage speed every cycle.
+     * @brief Increases the speed of the linear stage during decreasing the distance, every timer cycle.
      */
     void decreaseDistanceTimer(void);
 
     /**
-     * @brief Timer method which increases the stage frame speed every cycle.
+     * @brief Increases the speed of the linear stage during increasing the distance, every timer cycle.
      */
     void increaseDistanceTimer(void);
 
   private:
-    std::shared_ptr<StageFrame> m_StageFrame;
-    double m_Velocity;
-    bool m_ExitFlag;
+    std::shared_ptr<StageFrame> m_StageFrame;						/**< Pointer to the stage frame. */
+    double m_Velocity;																	/**< The velocity at the start of the timer. */
+    bool m_ExitFlag;																		/**< The exit flag. */
 };
 
 #endif // INCREASEDECREASEVELOCITYTIMER_H
