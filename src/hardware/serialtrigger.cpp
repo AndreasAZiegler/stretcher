@@ -20,14 +20,11 @@ SerialTrigger::SerialTrigger(unsigned int baudrate)
  * @brief Loads the in the stage stored position.
  */
 void SerialTrigger::trigger(void){
-  char buffer[6];
   char message[] = "trigger";
-
-  //memcpy(buffer, command, 6);
 
   {
     std::lock_guard<std::mutex> lck{m_WritingSerialInterfaceMutex};
-    //m_SerialPort.Writev(buffer, 6, 25/*ms*/);
+    // Send trigger message (With 7 bytes message length, the string ending 00 is "cutted" away).
     m_SerialPort.Writev(message, 7, 25/*ms*/);
   }
 }

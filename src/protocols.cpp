@@ -1094,7 +1094,7 @@ void Protocols::checkFinishedExperiment(void){
     if(true == m_MeasurementValuesRecordingFlag){
       m_MeasurementValuesRecordingFlag = false;
       //m_CurrentExperimentValues->stopMeasurement();
-      m_ExperimentValues[m_CurrentExperimentNr-1]->stopMeasurement();
+      m_ExperimentValues[m_CurrentExperimentNr - 1]->stopMeasurement();
     }
   }
   m_Experiments[m_CurrentExperimentNr - 1]->resetExperiment();
