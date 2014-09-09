@@ -590,7 +590,7 @@ void MyFrame::OnMakePhoto(wxCommandEvent& event){
   experimentparameters.minforcelimit = m_MinForceLimit;
   experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
   experimentparameters.mindistancelimit = m_MinDistanceLimit;
-  experimentparameters.type = ExperimentType::PauseResume;
+  experimentparameters.type = ExperimentType::Photo;
   experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   experimentparameters.gagelength = m_GageLength;
   experimentparameters.mountinglength = m_MountingLength;

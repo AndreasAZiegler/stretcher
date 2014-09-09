@@ -67,15 +67,15 @@ class PhotoTrigger : public Experiment
     virtual void process(Event event);
 
     /**
-     * @brief Do all the required things to stop the experiment during process.
-     */
-    virtual void resetExperiment(void){}
-
-    /**
      * @brief Returns a pointer to the experiment values.
      * @return A pointer to the experiment values.
      */
     virtual std::shared_ptr<ExperimentValues> getExperimentValues(void);
+
+    /**
+     * @brief Do all the required things to stop the experiment during process.
+     */
+    virtual void resetExperiment(void){}
 
   private:
     /**

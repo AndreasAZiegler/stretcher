@@ -47,7 +47,7 @@ class PhotoTriggerValues : public ExperimentValues
      * @brief Returns the experiment settings as a std::string.
      * @return Experiment settings as std::string.
      */
-    virtual std::string getExperimentSettings(void) = 0;
+    virtual std::string getExperimentSettings(void);
 
     /**
      * @brief Returns the experiment settings in a short form, usable for the experiment name.

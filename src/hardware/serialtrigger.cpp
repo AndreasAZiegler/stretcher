@@ -28,6 +28,6 @@ void SerialTrigger::trigger(void){
   {
     std::lock_guard<std::mutex> lck{m_WritingSerialInterfaceMutex};
     //m_SerialPort.Writev(buffer, 6, 25/*ms*/);
-    m_SerialPort.Writev(message, 6, 25/*ms*/);
+    m_SerialPort.Writev(message, 7, 25/*ms*/);
   }
 }

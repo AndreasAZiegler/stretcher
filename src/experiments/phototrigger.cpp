@@ -24,7 +24,24 @@ PhotoTrigger::PhotoTrigger(ExperimentParameters experimentparameters,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
     m_SerialTrigger(serialtrigger),
     m_Wait(wait),
-    m_WaitMutex(mutex)
+    m_WaitMutex(mutex),
+    m_CurrentState(State::stopState),
+    m_ExperimentValues(std::make_shared<PhotoTriggerValues>(experimentparameters.stageframe,
+                                                            experimentparameters.forcesensormessagehandler,
+                                                            forceStressDistanceGraph,
+                                                            forceStressDisplacementGraph,
+                                                            vectoraccessmutex,
+                                                            maxforcelimitvector,
+                                                            minforcelimitvector,
+                                                            maxdistancelimitvector,
+                                                            mindistancelimitvector,
+
+                                                            experimentparameters.myframe,
+
+                                                            experimentparameters.type,
+                                                            experimentparameters.distanceOrForceOrStress,
+                                                            experimentparameters.area,
+                                                            experimentparameters.gagelength))
 {
 }
 
@@ -57,6 +74,7 @@ void PhotoTrigger::process(Event event){
         m_SerialTrigger->trigger();
         wxLogMessage("Photo: taken");
 
+        m_CurrentState = stopState;
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);
         m_Wait->notify_all();
