@@ -21,17 +21,20 @@ void MyFrame::OnGraphChangeType(wxCommandEvent& event){
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDistanceGraph);
+        m_XAxis->SetName(wxT("Distance [mm]"));
         break;
       case 1: /*Displacement*/
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
         m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+        m_XAxis->SetName(wxT("Displacement"));
         break;
       case 2: /*Distance and Displacmente*/
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
         m_Graph->AddLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+        m_XAxis->SetName(wxT("Distance/Displacement [mm]"));
         break;
     }
     m_Graph->Fit();
@@ -94,7 +97,19 @@ void MyFrame::createValuesGraph(void){
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
   // Set up and add axis.
-  m_XAxis.reset(new mpScaleX(wxT("Distance/Displacement [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+  switch(m_GraphTypeComboBox->GetSelection()){
+    case 0:
+      m_XAxis.reset(new mpScaleX(wxT("Distance [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+      break;
+
+    case 1:
+      m_XAxis.reset(new mpScaleX(wxT("Displacement"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+      break;
+
+    case 2:
+      m_XAxis.reset(new mpScaleX(wxT("Distance/Displacement [mm]"), mpALIGN_BOTTOM, true, mpX_NORMAL));
+      break;
+  }
 
   if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_BORDER_LEFT, true));
