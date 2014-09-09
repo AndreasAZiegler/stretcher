@@ -5,6 +5,7 @@
  */
 
 // Includes
+#include <thread>
 #include <wx/log.h>
 #include "phototrigger.h"
 
@@ -73,6 +74,9 @@ void PhotoTrigger::process(Event event){
         m_CurrentState = runState;
         m_SerialTrigger->trigger();
         wxLogMessage("Photo: taken");
+
+        // Sleep for one milli second, that the "check finished experiments" has time to be started.
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
         m_CurrentState = stopState;
         // Notify that the experiment finished.
