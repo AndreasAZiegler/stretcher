@@ -250,8 +250,9 @@ void ContinuousEvent::initParameters(void){
  * @brief Sets the preload distance.
  * @param preloaddistance Preload distance
  */
-void ContinuousEvent::setPreloadDistance(){
+void ContinuousEvent::setPreloadDistance(void){
   m_GageLength = m_CurrentDistance;
+  m_ExperimentValues->setGageLength(m_GageLength * 0.00009921875/*mm per micro step*/);
 
   // Initialize parameters.
   initParameters();

@@ -60,6 +60,12 @@ class PreloadValues : public ExperimentValues
     void setParameters(PreloadParameters parameters);
 
     /**
+     * @brief Sets the gage lengt.
+     * @param gagelength The gage length.
+     */
+    virtual void setGageLength(long gagelength);
+
+    /**
      * @brief Returns the experiment settings as a std::string.
      * @return Experiment settings as std::string.
      */

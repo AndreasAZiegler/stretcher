@@ -74,6 +74,18 @@ void PreloadValues::setParameters(PreloadParameters parameters){
 }
 
 /**
+ * @brief Sets the gage lengt.
+ * @param gagelength The gage length.
+ */
+void PreloadValues::setGageLength(long gagelength){
+  for(double i : *m_DisplacementGraphValues){
+    i = i * m_GageLength / gagelength;
+  }
+  m_GageLength = gagelength;
+
+}
+
+/**
  * @brief Returns the experiment settings as a std::string.
  * @return Experiment settings as std::string.
  */

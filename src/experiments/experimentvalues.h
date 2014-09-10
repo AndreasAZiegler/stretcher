@@ -97,7 +97,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Sets the gage lengt.
      * @param gagelength The gage length.
      */
-    void setGageLength(long gagelength){
+    virtual void setGageLength(long gagelength){
       m_GageLength = gagelength;
     }
 
@@ -240,6 +240,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
     double m_Area;																																		/**< Area size of the sample. */
     DistanceOrForceOrStress m_DistanceOrForceOrStress;										  					/**< Defines if the experiment is distance of stress/force based. */
+    std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;										/**< Vector containing only the displacement values */
+    double m_GageLength;																															/**< The gage length. */
 
 	private:
 
@@ -258,7 +260,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;		/**< Vector containing structs with distance values and their time stamps */
     std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;										/**< Vector containing only the stress/force - distance values */
     std::shared_ptr<std::vector<double>> m_DistanceGraphValues;												/**< Vector containing only the distance values */
-    std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;										/**< Vector containing only the displacement values */
     std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;									/**< Pointer to the vector containing the max force limit graph values. */
     std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;									/**< Pointer to the vector containing the min force limit graph values. */
     std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;								/**< Pointer to the vector containing the values for the x-axis for the force limits. */
@@ -269,7 +270,6 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     int m_CurrentProtocolCycle;																												/**< The current cycle numer. */
     bool m_ResetProtocolFlag;																													/**< Indicate it the protocol stops and the recorded values should be deleted. */
     int m_DisplayGraphDelay;																													/**< Variable used that the graph is not updated with every value update */
-    double m_GageLength;																															/**< The gage length. */
 
 };
 

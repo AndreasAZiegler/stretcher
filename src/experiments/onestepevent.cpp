@@ -198,6 +198,7 @@ void OneStepEvent::initParameters(void){
  */
 void OneStepEvent::setPreloadDistance(){
   m_GageLength = m_CurrentDistance;
+  m_ExperimentValues->setGageLength(m_GageLength * 0.00009921875/*mm per micro step*/);
 
   // Initialize parameters.
   initParameters();
