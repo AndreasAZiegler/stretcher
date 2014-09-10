@@ -10,10 +10,6 @@
 			<label>MyMenuBar</label>
 			<object class="wxMenu" name="m_SettingsMenu">
 				<label>Settings</label>
-				<object class="wxMenuItem" name="m_SamplingFrequencyMenuItem">
-					<label>Sampling Frequency</label>
-					<help></help>
-				</object>
 				<object class="wxMenuItem" name="m_PortsMenuMenuItem">
 					<label>Ports</label>
 					<help></help>

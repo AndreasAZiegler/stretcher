@@ -44,7 +44,6 @@ void do_nothing_deleter(T *ptr){return;}
 // Event table connect events to the according methods.
 wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_MENU(wxID_EXIT,	MyFrame::OnExit)
-  EVT_MENU(XRCID("m_SamplingFrequencyMenuItem"), MyFrame::OnSamplingFrequencySettings)
   EVT_MENU(XRCID("m_PortsMenuMenuItem"), MyFrame::OnPortsSettings)
   EVT_MENU(XRCID("m_FileOutputMenuItem"), MyFrame::OnFileOutputSettings)
   EVT_MENU(XRCID("m_StartUpDialogMenuItem"), MyFrame::OnOpenStartUpDialog)
@@ -589,16 +588,6 @@ void MyFrame::updateStoragePath(std::string path){
  */
 void MyFrame::OnExit(wxCommandEvent& event){
   Close(true);
-}
-
-/**
- * @todo Remove sampling frequency settings.
- * @brief Method wich will be executed, when the user goes to the frequency settings.
- * @param event Occuring event
- */
-void MyFrame::OnSamplingFrequencySettings(wxCommandEvent& event){
-  std::unique_ptr<MySamplingFrequency_Base> samplingFrequency = std::unique_ptr<MySamplingFrequency_Base>(new MySamplingFrequency_Base(this));
-  samplingFrequency->ShowModal();
 }
 
 /**
