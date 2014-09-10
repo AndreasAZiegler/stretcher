@@ -422,7 +422,7 @@ std::shared_ptr<int> MyFrame::getMessageHandlersFinishedNumber(void){
  *        handlers are finished and saves the start up settings in the configuration file.
  */
 
-MyFrame::~MyFrame(){
+MyFrame::~MyFrame(void){
   // Unregister update methods
   m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
@@ -906,6 +906,11 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   if(false == m_DisableDecreaseDistanceFlag){
     m_StageFrame->moveForward(1/*mm/s*/);
+    // Create IncreaseDecreaseVelocityTimer class object
+    m_IncreaseDecreaseVelocityTimer = std::make_shared<IncreaseDecreaseVelocityTimer>(IncreaseDecreaseVelocityTimer(m_StageFrame, 0.1/*mm/s*/));
+    // Start increaseTimer in a seperate thread. It will increase the speed periodically.
+    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::decreaseDistanceTimer, m_IncreaseDecreaseVelocityTimer);
+    m_IncreaseDecreaseVelocityTimerThread.detach();
   }else{
     wxLogMessage("MyFrame: Decrease distance disabled");
   }
@@ -917,8 +922,17 @@ void MyFrame::OnMotorDecreaseDistanceStart(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorDecreaseDistanceStop(wxCommandEvent& event){
-  //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-  m_StageFrame->stop();
+  // Only proceed if the increase velocity thread exists.
+  if(m_IncreaseDecreaseVelocityTimer){
+    // Only stop the stage if it is not already done by the limit check.
+    if(false == m_DisableDecreaseDistanceFlag){
+      m_StageFrame->stop();
+    }
+    // Stop increaseTimer method, which runs in an own thread.
+    m_IncreaseDecreaseVelocityTimer->setExitFlag();
+    // Delete the IncreaseDecreaseVelocityTimer object for later use.
+    m_IncreaseDecreaseVelocityTimer.reset();
+  }
   event.Skip();
 }
 
@@ -930,6 +944,11 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
   //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
   if(false == m_DisableIncreaseDistanceFlag){
     m_StageFrame->moveBackward(1/*mm/s*/);
+    // Create IncreaseDecreaseVelocityTimer class object
+    m_IncreaseDecreaseVelocityTimer = std::make_shared<IncreaseDecreaseVelocityTimer>(IncreaseDecreaseVelocityTimer(m_StageFrame, 0.1/*mm/s*/));
+    // Start increaseTimer in a seperate thread. It will increase the speed periodically.
+    m_IncreaseDecreaseVelocityTimerThread = std::thread(&IncreaseDecreaseVelocityTimer::increaseDistanceTimer, m_IncreaseDecreaseVelocityTimer);
+    m_IncreaseDecreaseVelocityTimerThread.detach();
   }else{
     wxLogMessage("MyFrame: Increase distance disabled");
   }
@@ -941,8 +960,17 @@ void MyFrame::OnMotorIncreaseDistanceStart(wxCommandEvent &event){
  * @param event Occuring event
  */
 void MyFrame::OnMotorIncreaseDistanceStop(wxCommandEvent& event){
-  //std::cout << "MyFrame event Id: " << event.GetId() << std::endl;
-  m_StageFrame->stop();
+  // Only proceed if the increase velocity thread exists.
+  if(m_IncreaseDecreaseVelocityTimer){
+    // Only stop the stage if it is not already done by the limit check.
+    if(false == m_DisableIncreaseDistanceFlag){
+      m_StageFrame->stop();
+    }
+    // Stop increaseTimer method, which runs in an own thread.
+    m_IncreaseDecreaseVelocityTimer->setExitFlag();
+    // Delete the IncreaseDecreaseVelocityTimer object for later use.
+    m_IncreaseDecreaseVelocityTimer.reset();
+  }
   event.Skip();
 }
 
