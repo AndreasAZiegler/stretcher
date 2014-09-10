@@ -60,6 +60,12 @@ class PreloadValues : public ExperimentValues
     void setParameters(PreloadParameters parameters);
 
     /**
+     * @brief Recalculate the displacement point with the new gage length.
+     * @param gagelength The gage length in mm.
+     */
+    void recalculateDisplacement(double gagelength);
+
+    /**
      * @brief Sets the gage lengt.
      * @param gagelength The gage length.
      */

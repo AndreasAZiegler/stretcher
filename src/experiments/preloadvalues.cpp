@@ -75,10 +75,12 @@ void PreloadValues::setParameters(PreloadParameters parameters){
 }
 
 /**
- * @brief Sets the gage lengt.
- * @param gagelength The gage length.
+ * @brief Recalculate the displacement point with the new gage length.
+ * @param gagelength The gage length in mm.
  */
-void PreloadValues::setGageLength(double gagelength){
+void PreloadValues::recalculateDisplacement(double gagelength){
+  m_GageLength = gagelength;
+
   for(double i : *m_DisplacementGraphValues){
     wxLogMessage(std::string("Preload: Old i:" + std::to_string(i)).c_str());
     i = i * m_GageLength / gagelength;
@@ -89,6 +91,13 @@ void PreloadValues::setGageLength(double gagelength){
   // Update the graph from the main thread.
   m_ForceStressDisplacementGraph->SetData(*m_DisplacementGraphValues, *m_ForceStressGraphValues);
   m_MyFrame->updateGraphFromExperimentValues();
+}
+
+/**
+ * @brief Sets the gage length.
+ * @param gagelength The gage length in mm.
+ */
+void PreloadValues::setGageLength(double gagelength){
 
   m_GageLength = gagelength;
 

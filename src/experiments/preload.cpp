@@ -294,6 +294,9 @@ void Preload::process(Event event){
 
               wxLogMessage("Preload: Stop");
 
+              // Recalculate displacment point with the new gage length.
+              m_ExperimentValues->recalculateDisplacement(m_CurrentDistance *  0.00009921875/*mm per micro step*/);
+
               // Notify that the experiment finished.
               std::lock_guard<std::mutex> lck(*m_WaitMutex);
               m_Wait->notify_all();
