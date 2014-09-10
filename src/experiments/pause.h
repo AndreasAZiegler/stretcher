@@ -44,6 +44,12 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
           int pausetime = 0);
 
     /**
+     * @brief Destructor unregisters the update method.
+     */
+    ~Pause();
+
+
+    /**
      * @brief Sets pause time.
      * @param pausetime Pause time in sec.
      */
@@ -55,7 +61,7 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
     /**
      * @brief Sets the preload distance.
      */
-    virtual void setPreloadDistance(void){}
+    virtual void setPreloadDistance(void);
 
     /**
      * @brief Returns struct with the parameters for the GUI.
@@ -100,7 +106,7 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    virtual void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type){}
+    virtual void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
 
   private:
     /**

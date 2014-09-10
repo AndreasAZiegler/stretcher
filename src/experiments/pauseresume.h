@@ -42,9 +42,14 @@ class PauseResume : public Experiment, virtual public UpdatedValuesReceiver
                 std::mutex *mutex);
 
     /**
+     * @brief Destructor unregisters the update method.
+     */
+    ~PauseResume();
+
+    /**
      * @brief Sets the preload distance.
      */
-    virtual void setPreloadDistance(void){}
+    virtual void setPreloadDistance(void);
 
     /**
      * @brief Saves the experiment settings in the xml_docuement.
@@ -81,7 +86,7 @@ class PauseResume : public Experiment, virtual public UpdatedValuesReceiver
      * @param value Position of linear stage 1 or 2 or the force
      * @param type Type of value.
      */
-    virtual void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type){}
+    virtual void updateValues(MeasurementValue value, UpdatedValuesReceiver::ValueType type);
 
   private:
     /**

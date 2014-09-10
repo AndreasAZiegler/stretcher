@@ -6,6 +6,7 @@
 
 // Includes
 #include <string>
+#include "../gui/myframe.h"
 #include "preloadvalues.h"
 #include "preload.h"
 
@@ -77,10 +78,18 @@ void PreloadValues::setParameters(PreloadParameters parameters){
  * @brief Sets the gage lengt.
  * @param gagelength The gage length.
  */
-void PreloadValues::setGageLength(long gagelength){
+void PreloadValues::setGageLength(double gagelength){
   for(double i : *m_DisplacementGraphValues){
+    wxLogMessage(std::string("Preload: Old i:" + std::to_string(i)).c_str());
     i = i * m_GageLength / gagelength;
+    wxLogMessage(std::string("Preload: New i:" + std::to_string(i)).c_str());
   }
+  wxLogMessage("Preload: Displacement values should be recalculated.");
+
+  // Update the graph from the main thread.
+  m_ForceStressDisplacementGraph->SetData(*m_DisplacementGraphValues, *m_ForceStressGraphValues);
+  m_MyFrame->updateGraphFromExperimentValues();
+
   m_GageLength = gagelength;
 
 }

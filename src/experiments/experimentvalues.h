@@ -95,9 +95,9 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
     /**
      * @brief Sets the gage lengt.
-     * @param gagelength The gage length.
+     * @param gagelength The gage length in mm.
      */
-    virtual void setGageLength(long gagelength){
+    virtual void setGageLength(double gagelength){
       m_GageLength = gagelength;
     }
 
@@ -240,7 +240,10 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 
     double m_Area;																																		/**< Area size of the sample. */
     DistanceOrForceOrStress m_DistanceOrForceOrStress;										  					/**< Defines if the experiment is distance of stress/force based. */
+    MyFrame *m_MyFrame;																																/**< Pointer to the main frame object. */
+    mpFXYVector *m_ForceStressDisplacementGraph;																			/**< Pointer to the force/stress - displacement graph. */
     std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;										/**< Vector containing only the displacement values */
+    std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;										/**< Vector containing only the stress/force - distance values */
     double m_GageLength;																															/**< The gage length. */
 
 	private:
@@ -249,16 +252,13 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;						/**< Pointer to the message handler object */
     mpFXYVector *m_ForceStressDistanceGraph;																					/**< Pointer to the force/stress - distance graph */
-    mpFXYVector *m_ForceStressDisplacementGraph;																			/**< Pointer to the force/stress - displacement graph. */
     std::mutex *m_VectorLayerMutex;																										/**< Pointer to the mutex to protect m_VectorLayer */
     mpFXYVector *m_MaxForceLimitVectorLayer;																					/**< Pointer to the maximal force limit graph. */
     mpFXYVector *m_MinForceLimitVectorLayer;																					/**< Pointer to the minimal force limit graph. */
     mpFXYVector *m_MaxDistanceLimitVectorLayer;																				/**< Pointer to the maximal distance limit graph. */
     mpFXYVector *m_MinDistanceLimitVectorLayer;																				/**< Pointer to the minimal distance limit graph. */
-    MyFrame *m_MyFrame;																																/**< Pointer to the main frame object. */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;	/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;		/**< Vector containing structs with distance values and their time stamps */
-    std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;										/**< Vector containing only the stress/force - distance values */
     std::shared_ptr<std::vector<double>> m_DistanceGraphValues;												/**< Vector containing only the distance values */
     std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;									/**< Pointer to the vector containing the max force limit graph values. */
     std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;									/**< Pointer to the vector containing the min force limit graph values. */

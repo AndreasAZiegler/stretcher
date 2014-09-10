@@ -59,6 +59,25 @@ Pause::Pause(ExperimentParameters experimentparameters,
                                                      experimentparameters.area,
                                                      experimentparameters.gagelength))
 {
+  // Registers the update method at the message handlers.
+  m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+}
+
+/**
+ * @brief Destructor unregisters the update method.
+ */
+Pause::~Pause(){
+  // Unregisters the update method at the message handlers.
+  m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+}
+
+/**
+ * @brief Sets the preload distance.
+ */
+void Pause::setPreloadDistance(void){
+   m_GageLength = m_CurrentDistance;
+
+   m_ExperimentValues->setGageLength(m_GageLength * 0.00009921875/*mm per micro step*/);
 }
 
 /**
@@ -132,6 +151,20 @@ void Pause::process(Event event){
  */
 std::shared_ptr<ExperimentValues> Pause::getExperimentValues(void){
   return(m_ExperimentValues);
+}
+
+/**
+ * @brief Abstract method which will be calles by the message handlers to update the values
+ * @param value Position of linear stage 1 or 2 or the force
+ * @param type Type of value.
+ */
+void Pause::updateValues(MeasurementValue measurementValue, UpdatedValuesReceiver::ValueType type){
+
+  switch(type){
+    case UpdatedValuesReceiver::ValueType::Distance:
+      m_CurrentDistance = measurementValue.value;
+      break;
+  }
 }
 
 /**
