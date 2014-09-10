@@ -89,7 +89,7 @@ Preload::Preload(ExperimentParameters experimentparameters,
   if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_StressForceLimit = m_InitStressForceLimit * 10000.0;
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    m_StressForceLimit = m_InitStressForceLimit * m_Area * 10;
+    m_StressForceLimit = m_InitStressForceLimit * m_Area / 100;
   }
 }
 

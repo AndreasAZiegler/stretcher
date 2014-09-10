@@ -384,6 +384,12 @@ void MyFrame::startup(void){
     m_InitializeDistanceSensitivityShowStaticText->SetLabelText(to_string_wp(m_DistanceSensitivity * 0.00009921875/*mm per micro step*/, 2));
 
   }else if(wxID_YES == answer){ // If the set up changed, show start up dialog.
+    // Reset limits of the stages
+    m_MinDistanceLimit = 0;
+    m_MaxDistanceLimit = 80 / 0.00009921875/*mm per micro step*/;
+    m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
+    m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
+
     std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
     dialog->ShowModal();
   }
@@ -627,6 +633,12 @@ void MyFrame::OnNotebookTabChanging(wxBookCtrlEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
+  // Reset limits of the stages
+  m_MinDistanceLimit = 0;
+  m_MaxDistanceLimit = 80 / 0.00009921875/*mm per micro step*/;
+  m_StageFrame->setMinDistanceLimitMS(m_MinDistanceLimit);
+  m_StageFrame->setMaxDistanceLimitMS(m_MaxDistanceLimit);
+
   std::unique_ptr<MyStartUpDialog> dialog = std::unique_ptr<MyStartUpDialog>(new MyStartUpDialog(this));
   dialog->ShowModal();
 }
@@ -638,26 +650,26 @@ void MyFrame::OnOpenStartUpDialog(wxCommandEvent& event){
 void MyFrame::OnUnit(wxCommandEvent& event){
   // Changes to stress.
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    m_InitializeMinForceStaticText->SetLabelText("Min. stress [kPa]:");
-    m_InitializeMaxForceStaticText->SetLabelText("Max. stress [kPa]:");
-    m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [kPa]:");
-    m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [kPa]:");
-    m_LengthsForceStressSensitivityStaticText->SetLabelText("Stress [kPa]");
+    m_InitializeMinForceStaticText->SetLabelText("Min. stress [MPa]:");
+    m_InitializeMaxForceStaticText->SetLabelText("Max. stress [MPa]:");
+    m_LimitsLimitMaxForceStaticText->SetLabelText("Maximal stress [MPa]:");
+    m_LimitsLimitMinForceStaticText->SetLabelText("Minimal stress [MPa]:");
+    m_LengthsForceStressSensitivityStaticText->SetLabelText("Stress [MPa]");
     m_LengthsSetForceZeroButton->SetLabelText("Zero stress");
-    m_PreloadLimitStaticText->SetLabelText("Stress Limit [kPa]");
-    m_OneStepStressForceLimitStaticText->SetLabelText(" Limit [kPa]:");
-    m_OneStepStressForceLimitStaticText->SetLabelText(" Limit [kPa]:");
-    m_ContinuousStressForceIncrementStaticText->SetLabelText(" Incrementd [dkPa]:");
-    m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("kPa");
+    m_PreloadLimitStaticText->SetLabelText("Stress Limit [MPa]");
+    m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [MPa]:");
+    m_OneStepStressForceLimitStaticText->SetLabelText("Upper limit [MPa]:");
+    m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dMPa]:");
+    m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("MPa");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Smax.");
-    m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [kPa]:");
-    m_ForceUnit = wxT(" kPa");
+    m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [MPa]:");
+    m_ForceUnit = wxT(" MPa");
 
     // If the graph is active.
     if(true == m_ShowGraphFlag){
       wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
       m_Graph->DelLayer(m_Y1Axis.get());
-      m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_LEFT, true));
+      m_Y1Axis.reset(new mpScaleY(wxT("Stress [MPa]"), mpALIGN_LEFT, true));
       m_Y1Axis->SetPen(vectorpenStressForce);
       wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
       m_Y1Axis->SetFont(graphFont);
@@ -744,8 +756,10 @@ void MyFrame::setDistanceWActuatorCollision(double le){
   //m_MaxPosDistance = m_LengthsLESpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
   m_DistanceWActuatorCollisionSetFlag = true;
   // Set min. and max. distance and the distance at maximum positions.
-  m_StageFrame->setMinDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
-  m_StageFrame->setMaxDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMinDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  //m_StageFrame->setMaxDistanceLimitMM(m_CurrentDistance * 0.00009921875/*mm per micro step*/);
+  m_StageFrame->setMinDistanceLimitMS(m_CurrentDistance);
+  m_StageFrame->setMaxDistanceLimitMS(m_CurrentDistance);
   m_MaxPosDistance = m_StageFrame->setDistanceWActuatorCollision(le / 0.00009921875/*mm per micro step*/);
   m_LengthsGoToSpinCtrl->SetValue(m_MaxPosDistance);
 }
@@ -1056,7 +1070,7 @@ void MyFrame::updateDistance(void){
 void MyFrame::updateForce(void){
   wxString tmp;
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    tmp << (static_cast<double>(((m_CurrentForce) / 10000.0) / m_Area) * 1000) << m_ForceUnit;
+    tmp << (static_cast<double>((m_CurrentForce / 10000.0) / m_Area)) << m_ForceUnit;
   } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
     tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   }
