@@ -81,20 +81,18 @@ void PreloadValues::setParameters(PreloadParameters parameters){
  */
 void PreloadValues::recalculateDisplacement(double gagelength){
 
+  /*
+  Should theoretically work but in practice it does not.
   for(double i : *m_DisplacementGraphValues){
     wxLogMessage(std::string("Preload: Old i:" + std::to_string(i)).c_str());
     i = i * m_GageLength / gagelength;
     wxLogMessage(std::string("Preload: New i:" + std::to_string(i)).c_str());
   }
-  /*
-  for(int i = 0; i < m_DisplacementGraphValues->size(); ++i){
-    m_DisplacementGraphValues->operator [](i) = m_DisplacementGraphValues->operator [](i) * m_GageLength / gagelength;
-  }
+  */
+  // Recalculate all the displacement points with the new gage length.
   for(auto it = begin(*m_DisplacementGraphValues); it != end(*m_DisplacementGraphValues); ++it){
     *it = *it * m_GageLength / gagelength;
   }
-  wxLogMessage("Preload: Displacement values should be recalculated.");
-  */
   m_GageLength = gagelength;
 
   // Update the graph from the main thread.
