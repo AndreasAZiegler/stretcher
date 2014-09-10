@@ -87,8 +87,13 @@ void PreloadValues::recalculateDisplacement(double gagelength){
     wxLogMessage(std::string("Preload: New i:" + std::to_string(i)).c_str());
   }
   */
+  /*
   for(int i = 0; i < m_DisplacementGraphValues->size(); ++i){
     m_DisplacementGraphValues->operator [](i) = m_DisplacementGraphValues->operator [](i) * m_GageLength / gagelength;
+  }
+  */
+  for(auto it = begin(*m_DisplacementGraphValues); it != end(*m_DisplacementGraphValues); ++it){
+    *it = *it * m_GageLength / gagelength;
   }
   wxLogMessage("Preload: Displacement values should be recalculated.");
   m_GageLength = gagelength;
