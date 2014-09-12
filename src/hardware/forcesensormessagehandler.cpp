@@ -26,7 +26,12 @@ ForceSensorMessageHandler::ForceSensorMessageHandler(wxSerialPort *serialport,
                                                      std::shared_ptr<std::condition_variable> waitmessagehandler,
                                                      std::shared_ptr<std::mutex> waitmessagehandlermutex,
                                                      std::shared_ptr<int> messagehandlerfinishednr)
-  : MessageHandler(serialport, type, readingSerialInterfaceMutex, waitmessagehandler, waitmessagehandlermutex, messagehandlerfinishednr)//,
+  : MessageHandler(serialport,
+                   type,
+                   readingSerialInterfaceMutex,
+                   waitmessagehandler,
+                   waitmessagehandlermutex,
+                   messagehandlerfinishednr)//,
     //m_CurrentForce(0)
 {
 }

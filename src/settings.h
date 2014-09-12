@@ -139,6 +139,22 @@ class Settings
     }
 
     /**
+     * @brief Returns the com port of the serial trigger.
+     * @return com port as a string.
+     */
+    const char* getSerialTriggerComPort(){
+      return(m_SerialTriggerComPort.c_str());
+    }
+
+    /**
+     * @brief Returns the baud rate of the serial trigger.
+     * @return com port as a string.
+     */
+    int getSerialTriggerBaudRate(){
+      return(m_SerialTriggerBaudRate);
+    }
+
+    /**
      * @brief Returns the storage place for images and data.
      * @return Storage place as a string.
      */
@@ -476,6 +492,21 @@ class Settings
     }
 
     /**
+     * @brief Set the com port for the serial trigger.
+     * @param comPort com port as a string.
+     */
+    void setSerialTriggerComPort(std::string comPort){
+      m_SerialTriggerComPort = comPort;
+    }
+
+    /**
+     * @brief Set the baud rate for the serial trigger.
+     * @param baudrate baud rate
+     */
+    void setSerialTriggerBaudRate(int baudrate){
+      m_SerialTriggerBaudRate = baudrate;
+    }
+    /**
      * @brief Sets the storage place for images and data
      * @param Storage place as a string
      */
@@ -578,6 +609,10 @@ class Settings
     libconfig::Setting* m_ForceSensorMeasureEndValueSetting;	/**< The setting for the measure end value of the force sensor */
     libconfig::Setting* m_ForceSensorZeroValueSetting;				/**< The setting for the zero value of the force sensor */
 
+    libconfig::Setting* m_SerialTriggerSettings;							/**< The settings for the serial trigger */
+    libconfig::Setting* m_SerialTriggerComPortSetting;				/**< The setting for the com port of the serial trigger */
+    libconfig::Setting* m_SerialTriggerBaudRateSetting;				/**< The setting for the baud rate of the serial trigger */
+
     libconfig::Setting* m_StoragePathsSetting;								/**< The settings for the storage path */
     libconfig::Setting* m_ConfigurationStoragePathSetting;		/**< Storage path for the configuration file */
     libconfig::Setting* m_MeasurementValuesStoragePathSetting;/**< Storage path for the measurement values */
@@ -634,6 +669,9 @@ class Settings
     double m_ForceSensorInputSensitivity;											/**< The input sensitivity for the force sensor */
     double m_ForceSensorMeasureEndValue;											/**< The measure end value for the force sensor */
     double m_ForceSensorZeroValue;														/**< The zero value for the force sensor */
+
+    std::string m_SerialTriggerComPort;												/**< The com port for the force sensor */
+    int m_SerialTriggerBaudRate;															/**< The baud rate for the force sensor */
 
     std::string m_ConfigurationStoragePath;										/**< Folder where the configuration file will be saved */
     std::string m_MeasurementValuesStoragePath;								/**< Folder where the images and the data will be saved */

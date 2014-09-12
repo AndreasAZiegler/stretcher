@@ -1,20 +1,16 @@
 /**
- * @file pausevalues.h
- * @brief Pause values
+ * @file phototriggervalues.h
+ * @brief Photo trigger
  * @author Andreas Ziegler
  */
 
-#ifndef PAUSEVALUES_H
-#define PAUSEVALUES_H
+#ifndef PHOTOTRIGGERVALUES_H
+#define PHOTOTRIGGERVALUES_H
 
 // Includes
 #include "experimentvalues.h"
 
-/**
- * @class PauseValues pausevalues.h "experiments/pausevalues.h"
- * @brief The Pause values.
- */
-class PauseValues : public ExperimentValues
+class PhotoTriggerValues : public ExperimentValues
 {
   public:
   /**
@@ -31,31 +27,21 @@ class PauseValues : public ExperimentValues
    * @param distanceOrForceOrStress Indicates if the experiment is distance-, force- or stress-based.
    * @param area Cross section area.
    * @param gagelength The gage length.
-   * @param pausetime The pause time in s.
    */
-    PauseValues(std::shared_ptr<StageFrame> stageframe,
-                std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
-                mpFXYVector *forceStressDistanceGraph,
-                mpFXYVector *forceStressDisplacementGraph,
-                std::mutex *vectoraccessmutex,
-                mpFXYVector *maxforcelimitvector,
-                mpFXYVector *minforcelimitvector,
-                mpFXYVector *maxdistancelimitvector,
-                mpFXYVector *mindistancelimitvector,
-                MyFrame *myframe,
-                ExperimentType experimentType,
-                DistanceOrForceOrStress distanceOrStressOrForce,
-                double area,
-                long gagelength,
-                int pausetime = 0);
-
-    /**
-     * @brief Sets pause time.
-     * @param pausetime Pause time in sec.
-     */
-    void setPauseTime(double pausetime){
-      m_PauseTime = pausetime;
-    }
+    PhotoTriggerValues(std::shared_ptr<StageFrame> stageframe,
+                       std::shared_ptr<ForceSensorMessageHandler> forcesensormessagehandler,
+                       mpFXYVector *forceStressDistanceGraph,
+                       mpFXYVector *forceStressDisplacementGraph,
+                       std::mutex *vectoraccessmutex,
+                       mpFXYVector *maxforcelimitvector,
+                       mpFXYVector *minforcelimitvector,
+                       mpFXYVector *maxdistancelimitvector,
+                       mpFXYVector *mindistancelimitvector,
+                       MyFrame *myframe,
+                       ExperimentType experimentType,
+                       DistanceOrForceOrStress distanceOrStressOrForce,
+                       double area,
+                       long gagelength);
 
     /**
      * @brief Returns the experiment settings as a std::string.
@@ -68,9 +54,6 @@ class PauseValues : public ExperimentValues
      * @return The experiment settings in a short form.
      */
     virtual std::string experimentSettingsForName(void);
-
-  private:
-    double m_PauseTime;																				/**< The amount of seconds, the pause shoudl be. */
 };
 
-#endif // PAUSEVALUES_H
+#endif // PHOTOTRIGGERVALUES_H

@@ -899,7 +899,7 @@ void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
   m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
 
   // Add string in list box.
-  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString() + ":" + m_ExperimentValues.back()->experimentSettingsForName());
+  const wxString tmp((m_ExperimentValues.back())->experimentTypeToString() + ":" + (m_ExperimentValues.back())->experimentSettingsForName());
   m_ListBox->Append(tmp);
 }
 
@@ -1094,7 +1094,7 @@ void Protocols::checkFinishedExperiment(void){
     if(true == m_MeasurementValuesRecordingFlag){
       m_MeasurementValuesRecordingFlag = false;
       //m_CurrentExperimentValues->stopMeasurement();
-      m_ExperimentValues[m_CurrentExperimentNr-1]->stopMeasurement();
+      m_ExperimentValues[m_CurrentExperimentNr - 1]->stopMeasurement();
     }
   }
   m_Experiments[m_CurrentExperimentNr - 1]->resetExperiment();

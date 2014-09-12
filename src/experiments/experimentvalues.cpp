@@ -301,6 +301,10 @@ std::string ExperimentValues::experimentTypeToString(){
     case ExperimentType::PauseResume:
       return("PauseResume");
       break;
+
+    case ExperimentType::Photo:
+      return("Photo");
+      break;
   }
 }
 

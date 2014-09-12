@@ -93,6 +93,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_MoveDownExperiment, MyFrame::OnMoveDownExperiment)
   EVT_BUTTON(ID_PauseExperiment, MyFrame::OnPauseExperiment)
   EVT_BUTTON(ID_PauseResumeExperiment, MyFrame::OnPauseResumeExperiment)
+  EVT_BUTTON(ID_MakePhoto, MyFrame::OnMakePhoto)
   EVT_BUTTON(ID_Preview, MyFrame::OnPreviewProtocol)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
   EVT_CHECKBOX(ID_LoopProtocol, MyFrame::OnLoopProtocol)
@@ -206,6 +207,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsDownButton->SetId(ID_MoveDownExperiment);
   m_ProtocolsPauseButton->SetId(ID_PauseExperiment);
   m_ProtocolsPauseResumeButton->SetId(ID_PauseResumeExperiment);
+  m_ProtocolsPhotoButton->SetId(ID_MakePhoto);
   m_ProtocolsLoopCheckBox->SetId(ID_LoopProtocol);
   m_ProtocolsPreviewButton->SetId(ID_Preview);
   m_ProtocolsRunButton->SetId(ID_RunProtocol);

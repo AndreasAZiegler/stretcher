@@ -13,6 +13,7 @@
 #include "../experiments/continuousevent.h"
 #include "../experiments/pause.h"
 #include "../experiments/pauseresume.h"
+#include "../experiments/phototrigger.h"
 
 /**
  * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
@@ -570,6 +571,50 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
                                                          &m_WaitMutex));
 
   m_CurrentProtocol->addExperiment(experiment);
+}
+
+/**
+ * @brief Method wich will be executed, when the user clicks on the photo button. Creates a photo trigger point.
+ * @param event Occuring event
+ */
+void MyFrame::OnMakePhoto(wxCommandEvent& event){
+
+  checkProtocol();
+
+  // Get parameters.
+  ExperimentParameters experimentparameters;
+  experimentparameters.stageframe = m_StageFrame;
+  experimentparameters.forcesensormessagehandler = m_ForceSensorMessageHandler;
+  experimentparameters.myframe = this;
+  experimentparameters.maxforcelimit = m_MaxForceLimit;
+  experimentparameters.minforcelimit = m_MinForceLimit;
+  experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
+  experimentparameters.mindistancelimit = m_MinDistanceLimit;
+  experimentparameters.type = ExperimentType::Photo;
+  experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
+  experimentparameters.gagelength = m_GageLength;
+  experimentparameters.mountinglength = m_MountingLength;
+  experimentparameters.maxposdistance = m_MaxPosDistance;
+  experimentparameters.currentdistance = m_CurrentDistance;
+  experimentparameters.area = m_Area;
+
+  std::unique_ptr<Experiment> experiment(new PhotoTrigger(experimentparameters,
+
+                                                          &m_ForceStressDistanceGraph,
+                                                          &m_ForceStressDisplacementGraph,
+                                                          &m_VectorLayerMutex,
+                                                          &m_MaxStressForceLimitGraph,
+                                                          &m_MinStressForceLimitGraph,
+                                                          &m_MaxDistanceLimitGraph,
+                                                          &m_MinDistanceLimitGraph,
+
+                                                          &m_Wait,
+                                                          &m_WaitMutex,
+
+                                                          m_SerialTrigger));
+
+  m_CurrentProtocol->addExperiment(experiment);
+
 }
 
 /**

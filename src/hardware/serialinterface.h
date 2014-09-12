@@ -26,7 +26,7 @@ class SerialInterface
      * @param type Type
      * @param Baudrate Baudrate
      */
-    SerialInterface(UpdatedValuesReceiver::ValueType type, unsigned int baudrate = 115200);
+    SerialInterface(unsigned int baudrate = 115200);
 
     /**
      * @brief Closes the port if still open
