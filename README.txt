@@ -1,3 +1,5 @@
+The git repository of this project is hosted on bitbucket under: https://bitbucket.org/biomechanics/stretcher.git 
+
 This is the root folder of the stretcher program. This folder contains the following subfolders:
 
 build						: The binaries
