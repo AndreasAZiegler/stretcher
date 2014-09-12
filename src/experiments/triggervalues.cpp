@@ -52,5 +52,5 @@ std::string TriggerValues::getExperimentSettings(void){
  * @return The experiment settings in a short form.
  */
 std::string TriggerValues::experimentSettingsForName(void){
-  return(std::string("Photo"));
+  return(std::string("Trigger"));
 }

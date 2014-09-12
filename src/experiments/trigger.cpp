@@ -51,7 +51,7 @@ Trigger::Trigger(ExperimentParameters experimentparameters,
  * @param xml Pointer to the xml_document.
  */
 void Trigger::getXML(pugi::xml_document &xml){
-  pugi::xml_node node = xml.append_child("Photo");
+  pugi::xml_node node = xml.append_child("Trigger");
 }
 
 /**
@@ -73,7 +73,7 @@ void Trigger::process(Event event){
       if(Event::evStart == event){
         m_CurrentState = runState;
         m_SerialTrigger->trigger();
-        wxLogMessage("Photo: taken");
+        wxLogMessage("Trigger: triggered");
 
         // Sleep for one milli second, that the "check finished experiments" has time to be started.
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -89,7 +89,7 @@ void Trigger::process(Event event){
       if(Event::evStop == event){
         m_CurrentState = stopState;
 
-        wxLogMessage("Photo: Stop");
+        wxLogMessage("Trigger: Stop");
 
         // Notify that the experiment finished.
         std::lock_guard<std::mutex> lck(*m_WaitMutex);

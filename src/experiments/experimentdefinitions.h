@@ -24,7 +24,7 @@ enum class ExperimentType{
   ContinuousEvent = 2,
   Pause = 3,
   PauseResume = 4,
-  Photo = 5
+  Trigger = 5
 };
 
 /**
