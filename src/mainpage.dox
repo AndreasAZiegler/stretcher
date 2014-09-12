@@ -13,6 +13,20 @@ libconfig: A simple library for processing structured configuration files.<BR>
 wxMathplot: A library to add 2D scientific plot functionality to wxWidgets.<BR>
 pugixml: A light-weight, simple and fast XML parser for C++ with XPath support.<BR>
 
+@section tools_sec Tools
+The following tools were used to develop the stretcher software:
+
+Gantproject: For a project time plan.<BR>
+Umbrello: To create the class diagrams.<BR>
+CMake: To generate the make files.<BR>
+QtCreater: A more or less lightweight cross-platform IDE.<BR>
+wxFormBuilder 3.4.2-beta: To create the GUI.<BR>
+GNU G++: The C++ compiler with C++11 support.<BR>
+GNU GDB: The debugger.<BR>
+Doxygen: To generate the programming documentation.<BR>
+LaTeX: To write the user manual.<BR>
+
+
 @section development_environment_sec Development environment
 @subsection cmake CMake: Creating the make/project files
 To get make files or project files for any supported IDE, CMake can be used. The CMakeLists.txt in the project root folder is the main cmake file.
