@@ -4,3 +4,7 @@ bin/
 *.txt~
 *.txt.user
 *.bak
+*.aux
+*.log
+*.toc
+*.synctex.gz
