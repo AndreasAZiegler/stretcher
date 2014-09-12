@@ -24,7 +24,7 @@ void SerialTrigger::trigger(void){
 
   {
     std::lock_guard<std::mutex> lck{m_WritingSerialInterfaceMutex};
-    // Send trigger message (With 7 bytes message length, the string ending 00 is "cutted" away).
-    m_SerialPort.Writev(message, 7, 25/*ms*/);
+    // Send trigger message.
+    m_SerialPort.Writev(message, 8, 25/*ms*/);
   }
 }
