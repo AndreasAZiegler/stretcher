@@ -782,7 +782,7 @@ enum
   ID_StopProtocol = 54,
   ID_SaveProtocol = 55,
   ID_LoadProtocol = 56,
-  ID_MakePhoto = 57
+  ID_TriggerMessage = 57
 };
 
 #endif // MYFRAME_H

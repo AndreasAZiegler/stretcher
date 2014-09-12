@@ -235,7 +235,7 @@ protected:
  wxListBox* m_ProtocolsListBox;
  wxPanel* m_ProtocolsNavigationPanel;
  wxButton* m_ProtocolsUpButton;
- wxButton* m_ProtocolsPhotoButton;
+ wxButton* m_ProtocolsTriggerButton;
  wxButton* m_ProtocolsXButton;
  wxButton* m_ProtocolsPauseButton;
  wxButton* m_ProtocolsDownButton;
@@ -472,7 +472,7 @@ private:
   m_ProtocolsListBox = XRCCTRL(*this,"m_ProtocolsListBox",wxListBox);
   m_ProtocolsNavigationPanel = XRCCTRL(*this,"m_ProtocolsNavigationPanel",wxPanel);
   m_ProtocolsUpButton = XRCCTRL(*this,"m_ProtocolsUpButton",wxButton);
-  m_ProtocolsPhotoButton = XRCCTRL(*this,"m_ProtocolsPhotoButton",wxButton);
+  m_ProtocolsTriggerButton = XRCCTRL(*this,"m_ProtocolsTriggerButton",wxButton);
   m_ProtocolsXButton = XRCCTRL(*this,"m_ProtocolsXButton",wxButton);
   m_ProtocolsPauseButton = XRCCTRL(*this,"m_ProtocolsPauseButton",wxButton);
   m_ProtocolsDownButton = XRCCTRL(*this,"m_ProtocolsDownButton",wxButton);
