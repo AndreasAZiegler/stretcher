@@ -13,7 +13,7 @@
 #include "../experiments/continuousevent.h"
 #include "../experiments/pause.h"
 #include "../experiments/pauseresume.h"
-#include "../experiments/phototrigger.h"
+#include "../experiments/trigger.h"
 
 /**
  * @brief Method wich will be executed, when the user changes the speed value in percent in preload.
@@ -598,20 +598,20 @@ void MyFrame::OnMakePhoto(wxCommandEvent& event){
   experimentparameters.currentdistance = m_CurrentDistance;
   experimentparameters.area = m_Area;
 
-  std::unique_ptr<Experiment> experiment(new PhotoTrigger(experimentparameters,
+  std::unique_ptr<Experiment> experiment(new Trigger(experimentparameters,
 
-                                                          &m_ForceStressDistanceGraph,
-                                                          &m_ForceStressDisplacementGraph,
-                                                          &m_VectorLayerMutex,
-                                                          &m_MaxStressForceLimitGraph,
-                                                          &m_MinStressForceLimitGraph,
-                                                          &m_MaxDistanceLimitGraph,
-                                                          &m_MinDistanceLimitGraph,
+                                                     &m_ForceStressDistanceGraph,
+                                                     &m_ForceStressDisplacementGraph,
+                                                     &m_VectorLayerMutex,
+                                                     &m_MaxStressForceLimitGraph,
+                                                     &m_MinStressForceLimitGraph,
+                                                     &m_MaxDistanceLimitGraph,
+                                                     &m_MinDistanceLimitGraph,
 
-                                                          &m_Wait,
-                                                          &m_WaitMutex,
+                                                     &m_Wait,
+                                                     &m_WaitMutex,
 
-                                                          m_SerialTrigger));
+                                                     m_SerialTrigger));
 
   m_CurrentProtocol->addExperiment(experiment);
 

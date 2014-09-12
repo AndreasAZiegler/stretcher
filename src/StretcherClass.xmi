@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<XMI verified="false" xmi.version="1.2" timestamp="2014-09-01T08:09:54" xmlns:UML="http://schema.omg.org/spec/UML/1.3">
+<XMI verified="false" xmi.version="1.2" timestamp="2014-09-12T10:34:10" xmlns:UML="http://schema.omg.org/spec/UML/1.3">
  <XMI.header>
   <XMI.documentation>
    <XMI.exporter>umbrello uml modeller http://umbrello.kde.org</XMI.exporter>
@@ -98,6 +98,8 @@
         <UML:DataType stereotype="datatype" visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="LyxmOYQ16xNQ" isRoot="false" xmi.id="XwMset6tf37u" name="std::vector&lt; int >"/>
         <UML:DataType stereotype="datatype" visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="GhifBfX4OXub" isRoot="false" xmi.id="u6zVhfXkC0XL" name="std::shared_ptr&lt; Protocols >"/>
         <UML:DataType stereotype="datatype" visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="hBA1219spbnO" isRoot="false" xmi.id="HA1M8qwX0CVX" name="libconfig::Setting*"/>
+        <UML:DataType stereotype="datatype" visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="GhifBfX4OXub" isRoot="false" xmi.id="8rBDtbjCndwx" name="std::shared_ptr&lt; SerialTrigger >"/>
+        <UML:DataType stereotype="datatype" visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="GhifBfX4OXub" isRoot="false" xmi.id="N6pyxZjM9tGf" name="std::shared_ptr&lt; TriggerValues >"/>
        </UML:Namespace.ownedElement>
       </UML:Package>
       <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="R9XPRFgKPf3U" name="DistanceOrForceOrStress"/>
@@ -259,6 +261,59 @@
         <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="B6IjNLDQFdiM" xmi.id="caL9lC6B0wSW" client="sF3Jd9oQG1DY" name=""/>
         <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="B6IjNLDQFdiM" xmi.id="v2AcZFBE2P7C" client="sF3Jd9oQG1DY" name=""/>
         <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="B6IjNLDQFdiM" xmi.id="6DYZDrKLaqg9" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="3VCjhD81geaQ" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="bIs5CAnUzO32" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="uxc4z32h15d8" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="U4XWcSkzkVSN" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="8iVh2K6jP1aj" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="XUkkfS1c0PYq" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="qtulzFufoyRc" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="RZRLePDXUnFw" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="MVOzYiOopmD2" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="i4UtGHFsmkKM" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="dioAYygqxZnS" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="pnSeJCLtUxAO" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="wMPxHXvIJaI5" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="uvtPvZBneDJN" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="slbbuaqM8kWm" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="ENHnAne2OZ0h" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="wx6IGsaAM6Mt" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="VV54atOxjaTu" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="X007aQvLNHRK" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="Uwe5ohxoFmJG" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="wTp9SyRohulI" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="0O47QlL0AFmp" client="9M13HVRivQwp" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="mBfqW4etbYJa" client="cCnq7NYecVYa" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="Uw7APb2wxnEK" client="cCnq7NYecVYa" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="mTjrdMqZRyo2" client="cCnq7NYecVYa" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="Zlr0sFmxmMa6" client="Uez66OmCqTjl" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="C8lU27gPN46i" client="Uez66OmCqTjl" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="juwqwiSj7Ulr" client="ZRv20erzGwck" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="q4F9jlx6k7Tz" client="ZRv20erzGwck" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="twnC1k9lcvHZ" client="4IcXLlLUacue" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="orDo1yh81L9y" client="4IcXLlLUacue" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="odZuG7kZy9e5" client="4IcXLlLUacue" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="mA6wuNUmQzzR" client="4IcXLlLUacue" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="6yhtwCYvMqC0" client="dnpGGFpyadLO" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="ex3AkZrb4Xx2" client="dnpGGFpyadLO" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="2EcUzKSLh9cS" client="evT6mAReklDq" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="LWOuVJ1NVI2g" client="evT6mAReklDq" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="qwH5wFbHrF9M" client="SeMPhGHhxV1Q" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="iis6EwDSPDcP" client="SeMPhGHhxV1Q" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="G66OLQk1x3GL" client="SeMPhGHhxV1Q" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="NMy7dNBYbvFT" client="SeMPhGHhxV1Q" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="jCjYYkeaKyrm" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="1AKgtaIzmwzA" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="GMQRGLVKZ1MH" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="5FckNMmLfZox" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="iry1wjTlsMVd" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="RFe5YezQJo8R" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="Z9DjTZfMgbpk" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="LD7XVLdfpjra" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="HqBSDymy2QJU" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="caL9lC6B0wSW" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="v2AcZFBE2P7C" client="sF3Jd9oQG1DY" name=""/>
+        <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="6DYZDrKLaqg9" client="sF3Jd9oQG1DY" name=""/>
         <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="3VCjhD81geaQ" client="9M13HVRivQwp" name=""/>
         <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="bIs5CAnUzO32" client="9M13HVRivQwp" name=""/>
         <UML:Dependency visibility="public" isSpecification="false" namespace="B6IjNLDQFdiM" supplier="B6IjNLDQFdiM" xmi.id="uxc4z32h15d8" client="9M13HVRivQwp" name=""/>
@@ -1362,175 +1417,6 @@
         </UML:Operation>
        </UML:Classifier.feature>
       </UML:Class>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="9M13HVRivQwp" comment="@class ExperimentValues experimentvalues.h &quot;experiments/experimentvalues.h&quot;&#xa;@brief Class representing the experiment values." name="ExperimentValues">
-       <UML:GeneralizableElement.generalization>
-        <UML:Generalization xmi.idref="od8u16d8RcBi"/>
-       </UML:GeneralizableElement.generalization>
-       <UML:Classifier.feature>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="FtrqrSvvbrHP" type="ZXQsEvgAg5nt" comment="&lt; Area size of the sample. " name="m_Area"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="GTIbebxsTFGY" type="R9XPRFgKPf3U" comment="&lt; Defines if the experiment is distance of stress/force based. " name="m_DistanceOrForceOrStress"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="M8AisQ45Jww8" type="hjMJskdBRWzu" comment="&lt; Type of the experiment " name="m_ExperimentType"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Wi3LRqqeqLQC" type="RnD4GXcJLDcP" comment="&lt; Pointer to the stage frame object " name="m_StageFrame"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="IWvUURz6QJ2u" type="p8CmI2ijqvo4" comment="&lt; Pointer to the message handler object " name="m_ForceSensorMessageHandler"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="mlgBraslmP1a" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the force/stress - distance graph " name="m_ForceStressDistanceGraph"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="K2amGahW6bza" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the force/stress - displacement graph. " name="m_ForceStressDisplacementGraph"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="2yhSIjK4T0DK" type="ReI4dzBWbyh3" comment="&lt; Pointer to the mutex to protect m_VectorLayer " name="m_VectorLayerMutex"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Y53IS4tm5TYJ" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the maximal force limit graph. " name="m_MaxForceLimitVectorLayer"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="1En8pmiplNG1" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the minimal force limit graph. " name="m_MinForceLimitVectorLayer"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="5a3WZGq7JsQl" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the maximal distance limit graph. " name="m_MaxDistanceLimitVectorLayer"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="wHVzi3GkF4s2" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the minimal distance limit graph. " name="m_MinDistanceLimitVectorLayer"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="qYsZu6axgdTD" type="1vGpp2uDOGxx" comment="&lt; Pointer to the main frame object. " name="m_MyFrame"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="8yzbu8tpvUlj" type="rHJ89jt4yO3g" comment="&lt; Vector containing structs with stress/force values and their time stamps " name="m_StressForceValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="ej4siwcVaGST" type="rHJ89jt4yO3g" comment="&lt; Vector containing structs with distance values and their time stamps " name="m_DistanceValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="ZgkHKyF6lTqH" type="u8LgUTldK2KA" comment="&lt; Vector containing only the stress/force - distance values " name="m_ForceStressGraphValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="yIizqhzCn0Eq" type="u8LgUTldK2KA" comment="&lt; Vector containing only the distance values " name="m_DistanceGraphValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="AKikm0ReXz7l" type="u8LgUTldK2KA" comment="&lt; Vector containing only the displacement values " name="m_DisplacementGraphValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="iV42O4R69MAc" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the max force limit graph values. " name="m_GraphMaxForceLimitValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="W9fPqMODMMJz" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the min force limit graph values. " name="m_GraphMinForceLimitValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="7lV9ehhGWQyW" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the values for the x-axis for the force limits. " name="m_GraphForceLimitXAxisPoints"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="pScjUdVNor7b" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the max distance limit graph values. " name="m_GraphMaxDistanceLimitValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="34j8qbaFHTVS" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the min distance limit graph vlaues. " name="m_GraphMinDistanceLimitValues"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Rcx8is6BgYNF" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the values for the x-axis for the force limits. " name="m_GraphDistanceLimitYAxisPoints"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="c60I7wnLHz4N" type="wiFrjcqc0McX" comment="&lt; Mutex to protect the values vectors. " name="m_AccessValuesMutex"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="tgHLtfiIHfOx" type="v7n6lb1NezAI" comment="&lt; The current cycle numer. " name="m_CurrentProtocolCycle"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="WV9C3WPdaQwf" type="ylPcF6lADWEy" comment="&lt; Indicate it the protocol stops and the recorded values should be deleted. " name="m_ResetProtocolFlag"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Kj1bh3wajEta" type="v7n6lb1NezAI" comment="&lt; Variable used that the graph is not updated with every value update " name="m_DisplayGraphDelay"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="tbt8FH3lkCvm" type="ZXQsEvgAg5nt" comment="&lt; The gage length. " name="m_GageLength"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="RakrqZXPJUOa" name="ExperimentValues">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="TZ0UYLgyxWNY" type="RnD4GXcJLDcP" value="" name="stageframe"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="7NPW1u3a79Z2" type="p8CmI2ijqvo4" value="" name="forcesensormessagehandler"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="vQX0X72lf0j7" type="r3Jpmadrx1Nz" value="" name="forceStressDistanceGraph"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="temBSa5HcM6O" type="r3Jpmadrx1Nz" value="" name="forceStressDisplacementGraph"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="WkK84PUy5jqo" type="ReI4dzBWbyh3" value="" name="vectoraccessmutex"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JeQJy2qPe6UH" type="r3Jpmadrx1Nz" value="" name="maxforcelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="6dlhbTl6B3CE" type="r3Jpmadrx1Nz" value="" name="minforcelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="QhCVQ2Jifh1d" type="r3Jpmadrx1Nz" value="" name="maxdistancelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="jq3MwVd08Pii" type="r3Jpmadrx1Nz" value="" name="mindistancelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="qRmzSyDtfOO4" type="1vGpp2uDOGxx" value="" name="myframe"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="Ogm3Nlh5ZiPW" type="hjMJskdBRWzu" value="" name="experimenttype"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="D0WJNCzDblB4" type="R9XPRFgKPf3U" value="" name="distanceOrStressOrForce"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="iMvNiHP7x9AJ" type="ZXQsEvgAg5nt" value="" name="area"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="tpMSVlyilT09" type="4sEZeaND5n4H" value="" name="gagelength"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="dzKFjTHRqCmW" name="~ ExperimentValues"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="TCdPJmiCb2f7" name="setGageLength">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="nbnW2lfgjytS" type="4sEZeaND5n4H" value="" name="gagelength"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="RArFKdmlnNA5" name="setCrossSectionArea">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="9qHjswodWZAY" type="ZXQsEvgAg5nt" value="" name="crosssectionarea"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="LnE2j7S9FJMZ" comment="@brief Registers the update methods to receive the measurement values.&#xa;@param forcestressvector Vector for the force values.&#xa;@param distancevector Vector for the distance alues.&#xa;@param displacementvector Vector for the displacment values&#xa;@param maxforcelimitvector Vector for the maximum force limit values.&#xa;@param minforcelimitvector Vector for the minimum force limit values.&#xa;@param maxdistancelimitvector Vector for the maximum distance limit values.&#xa;@param mindistancelimitvector Vector for the minimum distance limit values.&#xa;@param limittimepointvector Vector for the limit timepoints." name="startMeasurement">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="GsOdUUQ7h7TZ" type="u8LgUTldK2KA" value="" name="forcestressvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="BgAyQE3j0HGS" type="u8LgUTldK2KA" value="" name="distancevector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="8zGmWjgbpiul" type="u8LgUTldK2KA" value="" name="displacementvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="evpO84IfagmG" type="u8LgUTldK2KA" value="" name="maxforcelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="v1HfEvxQsFek" type="u8LgUTldK2KA" value="" name="minforcelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="pfPcdXaCbnQp" type="u8LgUTldK2KA" value="" name="maxdistancelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="cCuFEpKXvpQ4" type="u8LgUTldK2KA" value="" name="mindistancelimitvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="gASZ3n8ymK9B" type="u8LgUTldK2KA" value="" name="forcelimittimepointsvector"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="UNePiPRoMoX6" type="u8LgUTldK2KA" value="" name="distancelimittimepointsvector"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="g6HGzwAlhjIw" comment="@brief Stops the measurement. Unregisters the update method and increases the current protocol cycle." name="stopMeasurement"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="3CGJ1QXVoBuW" comment="@brief Reset recorded values, executed from the protocol. Sets the reset protocol flag true." name="resetProtocol"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="aJIx5p3ktLys" name="setDistanceOrStressOrForce">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="F8dwpwts89A9" type="R9XPRFgKPf3U" value="" name="distanceOrForceOrStress"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ZhcNsUrSn7Nq" name="setDiameter">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="xPaqiZhxhKuX" type="ZXQsEvgAg5nt" value="" name="diameter"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ElNKsXTPC3l4" comment="@brief Method which will be calles by the message handlers to update the values.&#xa;@param value Position of linear stage 1 or 2 or the force.&#xa;@param type Type of value." name="updateValues">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="MTlYVWb276Ln" type="I8tyTlThWq2M" value="" name="measurementValue"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="jt6Dh6Z1YJa3" type="wUQABr5U0yQR" value="" name="type"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="p95uDOh9s7H4" comment="@brief Returns a pointer to the vector containing the stress/force values.&#xa;@return Pointer to the vector." name="getStressForceValues">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="weRX9BZn2fCG" type="zNWxLwO3nSEU"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="b6WX2PoMkWL0" comment="@brief Returns a pointer to the vector containing the distance values.&#xa;@return Pointer to the vector." name="getDistanceValues">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="WafTyxHa2ShA" type="SwQnQlWKNxrU"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="Od5i3lJesrkV" comment="@brief Returns the experiment settings as a std::string.&#xa;@return Experiment settings as std::string." name="getExperimentSettings">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="ndOKX6W1gBVc" type="NI46WPr04kxL"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="6kC9ArHXTMFW" comment="@brief Returns the current experiment type as a string.&#xa;@return The current experiment type as a string." name="experimentTypeToString">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="8Y8yNtTAWrU1" type="NI46WPr04kxL"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="vy3b8WBEGLLQ" comment="@brief Returns the experiment settings in a short form, usable for the experiment name.&#xa;@return The experiment settings in a short form." name="experimentSettingsForName">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="BcvezBA7hI35" type="NI46WPr04kxL"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="9WFdMifHggro" comment="@brief Returns the measurement unit (stress/force).&#xa;@return The unit as std::string." name="getForceOrStress">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="C03QMOoXzkBy" type="NI46WPr04kxL"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="vJ3cZ6fjavMw" comment="@brief Returns the the measurement type (distance/stressForce).&#xa;@return The type as std::string." name="getDistanceOrForceOrStress">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="dzCHf16p17FL" type="NI46WPr04kxL"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="T4qSo1OhIRHs" comment="@brief Normalizes the value according to the experiment.&#xa;@param value The value.&#xa;@return The normalized value." name="normalizeValue">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="BmQBtdWNhNnT" type="ZXQsEvgAg5nt"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="VxZ4sv0TvAia" type="ZXQsEvgAg5nt" value="" name="value"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="MC8fbQV5L49B" name="to_string_wp">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="GtKQ58scMlHO" type="NI46WPr04kxL"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="6yxR04cyCEoS" type="S9L8U7ZqJiTs" value="" name="a_value"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="48vNqPEuNBJM" type="YFtf4WeVdxb7" value="" name="n"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-       </UML:Classifier.feature>
-       <UML:Namespace.ownedElement>
-        <UML:Class visibility="public" isSpecification="false" namespace="9M13HVRivQwp" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="yGOPsX7y8Vz8" comment="@brief Struct for the measurement values containing the values and the time stamp." name="MeasurementValue">
-         <UML:Classifier.feature>
-          <UML:Attribute visibility="public" isSpecification="false" xmi.id="YmyzHILkwgFn" type="ZXQsEvgAg5nt" name="value"/>
-          <UML:Attribute visibility="public" isSpecification="false" xmi.id="lCuUaC0Xhch5" type="9WNI0LEi0nSJ" name="timestamp"/>
-          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="spZqsHhc1fhx" name="MeasurementValue"/>
-          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ISfYMJnKXBjO" name="MeasurementValue">
-           <UML:BehavioralFeature.parameter>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="jqMpJJvB8U0y" type="ZXQsEvgAg5nt" value="" name="v"/>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="46unQ1q1wD90" type="9WNI0LEi0nSJ" value="" name="ts"/>
-           </UML:BehavioralFeature.parameter>
-          </UML:Operation>
-          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="HgnBWLMgrhwq" name="MeasurementValue">
-           <UML:BehavioralFeature.parameter>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="GdSCqZC7FxGk" type="28Y3wyK03FnT" value="" name="mv"/>
-           </UML:BehavioralFeature.parameter>
-          </UML:Operation>
-          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="JaO8IIyIQVJM" name="MeasurementValue">
-           <UML:BehavioralFeature.parameter>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="xUbCQruhQIpg" type="TeMWt7x9iPKW" value="" name="mv"/>
-           </UML:BehavioralFeature.parameter>
-          </UML:Operation>
-         </UML:Classifier.feature>
-        </UML:Class>
-       </UML:Namespace.ownedElement>
-      </UML:Class>
       <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="UghM7vKflV0X" xmi.id="WslwpsTar89V" parent="9M13HVRivQwp" name=""/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="bJnpm3D8eDFj" client="UghM7vKflV0X" name=""/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="MeX1pli2dx5q" client="UghM7vKflV0X" name=""/>
@@ -2285,114 +2171,6 @@
         <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="fGd0AZHlKnmF" type="Sqgj0ioN0sRX" name="" aggregation="none"/>
        </UML:Association.connection>
       </UML:Association>
-      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Sqgj0ioN0sRX" comment="@class Experiment experiment.h &quot;experiments/experiment.h&quot;&#xa;@brief Base class for all the experiments." name="Experiment">
-       <UML:Classifier.feature>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="cLJIaSnDRN6X" type="RnD4GXcJLDcP" comment="&lt; Pointer to the stage frame object " name="m_StageFrame"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="QOMkby9CHQSr" type="p8CmI2ijqvo4" comment="&lt; Pointer to the message handler object " name="m_ForceSensorMessageHandler"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="C49RUcJKpMdS" type="1vGpp2uDOGxx" comment="&lt; Pointer to the main frame. " name="m_MyFrame"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="TQtjP4GQzUGm" type="ZXQsEvgAg5nt" comment="&lt; Cross section area. " name="m_Area"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="W8ysMvpWyxxQ" type="ylPcF6lADWEy" comment="&lt; Indicates if the limits should be checked. " name="m_CheckLimitsFlag"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="XGlMaMn4mglB" type="4sEZeaND5n4H" comment="&lt; Maximal force limit. " name="m_MaxForceLimit"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="k1chVqSzwQpI" type="4sEZeaND5n4H" comment="&lt; Minimal force limit. " name="m_MinForceLimit"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="JfmFajg7yRRY" type="4sEZeaND5n4H" comment="&lt; Maximal distance limit. " name="m_MaxDistanceLimit"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="lEaYsKhaJHIn" type="4sEZeaND5n4H" comment="&lt; Minimal distance limit. " name="m_MinDistanceLimit"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="7ik16aJNF5dp" type="4sEZeaND5n4H" comment="&lt; Threshold for the comparison. " name="m_ForceStressThreshold"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="nJuliLHRaqzQ" type="4sEZeaND5n4H" comment="&lt; Threshold for the coparison of distances. " name="m_DistanceThreshold"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="ZNQmQ3bDKTw0" type="8h1RyHE4zz53" comment="&lt; The current direction " name="m_CurrentDirection"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="oCSM0Pn86mZ3" type="hjMJskdBRWzu" comment="&lt; Type of the experiment " name="m_ExperimentType"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="3o50l83ITT4u" type="R9XPRFgKPf3U" comment="&lt; Defines if the experiment is distance of stress/force based. " name="m_DistanceOrStressOrForce"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="Xd5p60qsCGDA" type="4sEZeaND5n4H" comment="&lt; Preload distance of the stage frame. " name="m_GageLength"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="fyIkkrnndqlM" type="4sEZeaND5n4H" comment="&lt; Mountinglength of the stage frame. " name="m_MountingLength"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="yoeSHiKmLNcP" type="4sEZeaND5n4H" comment="&lt; Default preload distance of the stage frame. " name="m_DefaultGageLength"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="NQIXgThJRx3B" type="4sEZeaND5n4H" comment="&lt; Zero distance " name="m_MaxPosDistance"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="nowQehlbVP1k" type="4sEZeaND5n4H" comment="&lt; Distance where the experiment starts. " name="m_StartLength"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="6JXPg7p2V5ZB" type="4sEZeaND5n4H" comment="&lt; Current distance of the stage frame. " name="m_CurrentDistance"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="YFUzCW8zK4Ox" type="ZXQsEvgAg5nt" comment="&lt; Current force " name="m_CurrentForce"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="YrW3u4CSHfRR" type="j9WEWXwcqT2U" comment="&lt; Vector with the current stage positions. " name="m_CurrentPositions"/>
-        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="BZPTbnQKuwWQ" type="ylPcF6lADWEy" comment="&lt; Flag indicating that the experiment should stop imediatly. " name="m_ExitFlag"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="CQ1d3eVVGYOt" name="Experiment">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="B5Aydlpp9oQC" type="OhqaEQoxya8w" value="" name="experimentparameters"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="QwfgS3XqiMPw" type="ZXQsEvgAg5nt" value="" name="forcesStressThreshold"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="mDrllxfw3pvg" type="ZXQsEvgAg5nt" value="" name="distanceThreshold"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="YiThWrtwlWcE" comment="@brief Set new limits and forwards them to the experiments.&#xa;@param mindistancelimit Value for the minimal distance limit.&#xa;@param maxdistancelimit Value for the maximal distance limit.&#xa;@param minforcelimit Value for the minimal force limit.&#xa;@param maxforcelimit Value for the maximal force limit." name="setLimits">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="Z72HTPBGd31O" type="4sEZeaND5n4H" value="" name="mindistancelimit"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ygJ1TCf1u6gQ" type="4sEZeaND5n4H" value="" name="maxdistancelimit"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="yXKj3uvc1yrV" type="4sEZeaND5n4H" value="" name="minforcelimit"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="N2jy5kL4Oe3p" type="4sEZeaND5n4H" value="" name="maxforcelimit"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="ojoipU6l1QT2" comment="@brief Sets the preload distance." name="setPreloadDistance"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="IOcJKTmgVVeZ" comment="@brief Sets the start length." name="setStartLength"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="DxbZZeONLC5B" comment="@brief Sets the new sensitivities.&#xa;@param forcestresssensitivity The force/stress sensitivity.&#xa;@param distancesensitivity The distance sensitivity." name="setSensitivities">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="e9udXNfpmH74" type="4sEZeaND5n4H" value="" name="forcestresssensitivity"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ktkENPnYKO8u" type="4sEZeaND5n4H" value="" name="distancesensitivity"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="0UHMfLVJUPx0" name="~ Experiment"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="ncpXswbaoKo9" comment="@brief Saves the experiment settings in the xml_docuement.&#xa;@param xml Pointer to the xml_document." name="getXML">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="4wQK7iFdTSbd" type="i2CUK1b1aH2W" value="" name="xml"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="daZNMzz2zCVJ" comment="@brief Saves the points required to creat a preview graph in the vector..&#xa;@param previewvalues Vector containing the preview values." name="getPreview">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="nem2GUOZQLMo" type="uMRuWwBh0URM" value="" name="previewvalues"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="rkowh9KbVlT0" comment="@brief FSM of the experiment&#xa;@param e Occuring event" name="process">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="EKYdduPSeBOJ" type="ffhe960wjmyz" value="" name="e"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="KjtoSMo81Tm8" comment="@brief Do all the required things to stop the experiment during process." name="resetExperiment"/>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="am4JW0GiIoJt" name="getExperimentType">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="sl0sCk0mW330" type="hjMJskdBRWzu"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="1JgI6yBnfX4X" comment="@brief Returns a pointer to the experiment values.&#xa;@return A pointer to the experiment values." name="getExperimentValues">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter kind="return" xmi.id="MMX1ucY8HFlT" type="HuLlvPjvgODk"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="sJVFqPq6H9rB" name="setDistanceOrForceOrStress">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="YZ6DxJxJfTKX" type="R9XPRFgKPf3U" value="" name="distanceOrStressOrForce"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="3qdK3PlwiGBW" name="setExitFlag">
-         <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="dzct8S4fzAsw" type="ylPcF6lADWEy" value="" name="flag"/>
-         </UML:BehavioralFeature.parameter>
-        </UML:Operation>
-       </UML:Classifier.feature>
-       <UML:Namespace.ownedElement>
-        <UML:Class visibility="public" isSpecification="false" namespace="Sqgj0ioN0sRX" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="HIVL3TgYzKjJ" comment="@brief The PreviewValue struct" name="PreviewValue">
-         <UML:Classifier.feature>
-          <UML:Attribute visibility="public" isSpecification="false" xmi.id="KCYN3grARdfu" type="v7n6lb1NezAI" name="timepoint"/>
-          <UML:Attribute visibility="public" isSpecification="false" xmi.id="Se3vdrJxCZcG" type="R9XPRFgKPf3U" name="distanceOrForce"/>
-          <UML:Attribute visibility="public" isSpecification="false" xmi.id="ialDxdzGnXbq" type="v7n6lb1NezAI" name="value"/>
-          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="sCzj57dYvHHt" name="PreviewValue">
-           <UML:BehavioralFeature.parameter>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="z5G0vfVAy0Vz" type="v7n6lb1NezAI" value="" name="itimepoint"/>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="kg2fvKWuNmsH" type="R9XPRFgKPf3U" value="" name="idistanceOrForce"/>
-            <UML:Parameter visibility="private" isSpecification="false" xmi.id="QLROKxLl4s8U" type="v7n6lb1NezAI" value="" name="ivalue"/>
-           </UML:BehavioralFeature.parameter>
-          </UML:Operation>
-          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="7noWSpzBT1oO" name="getTimepoint">
-           <UML:BehavioralFeature.parameter>
-            <UML:Parameter kind="return" xmi.id="JLIh59yVUPro" type="v7n6lb1NezAI"/>
-           </UML:BehavioralFeature.parameter>
-          </UML:Operation>
-         </UML:Classifier.feature>
-        </UML:Class>
-       </UML:Namespace.ownedElement>
-      </UML:Class>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="QRfxwW0XG35W" client="Sqgj0ioN0sRX" name=""/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="HIVL3TgYzKjJ" xmi.id="ymgFnjl2N1S7" client="Sqgj0ioN0sRX" name=""/>
       <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="0xTNwtUQ6FEc" client="Sqgj0ioN0sRX" name=""/>
@@ -3703,10 +3481,415 @@
         <UML:AssociationEnd changeability="changeable" visibility="private" isNavigable="true" isSpecification="false" multiplicity="1" xmi.id="gInoQRyIuw8P" type="dnpGGFpyadLO" name="m_ForceSensorMessageHandler" aggregation="none"/>
        </UML:Association.connection>
       </UML:Association>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="EopQuqFMQ1KL" comment="Includes" name="TriggerValues">
+       <UML:GeneralizableElement.generalization>
+        <UML:Generalization xmi.idref="CsSBCdVwwru5"/>
+        <UML:Generalization xmi.idref="0fVkIW5tF1zG"/>
+       </UML:GeneralizableElement.generalization>
+       <UML:Classifier.feature>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="sNdnEVsBSG19" name="TriggerValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="UTzCEH9ngBzs" type="RnD4GXcJLDcP" value="" name="stageframe"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JWJLSSp4dOVX" type="p8CmI2ijqvo4" value="" name="forcesensormessagehandler"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="GBpY0D2Nqa8Z" type="r3Jpmadrx1Nz" value="" name="forceStressDistanceGraph"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="XLr5kwK3RdMt" type="r3Jpmadrx1Nz" value="" name="forceStressDisplacementGraph"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="4BvfYODmZ0Ja" type="ReI4dzBWbyh3" value="" name="vectoraccessmutex"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="DLv4v1bQNSW7" type="r3Jpmadrx1Nz" value="" name="maxforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="No8oQThUcb9A" type="r3Jpmadrx1Nz" value="" name="minforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="zKvXJE5WX0YS" type="r3Jpmadrx1Nz" value="" name="maxdistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="0ArNaNSx9YjX" type="r3Jpmadrx1Nz" value="" name="mindistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="1P1e09mxRhUk" type="1vGpp2uDOGxx" value="" name="myframe"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="tXFQWnrWvitW" type="hjMJskdBRWzu" value="" name="experimentType"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="3LRCrBktYjXY" type="R9XPRFgKPf3U" value="" name="distanceOrStressOrForce"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="qHVGzyyqVDH1" type="ZXQsEvgAg5nt" value="" name="area"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="z8XuoOOrho1Z" type="4sEZeaND5n4H" value="" name="gagelength"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="zjQVRv3FCWT9" comment="@brief Returns the experiment settings as a std::string.&#xa;@return Experiment settings as std::string." name="getExperimentSettings">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="US0ydHxcNVXB" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="rt0Zhz6ejW98" comment="@brief Returns the experiment settings in a short form, usable for the experiment name.&#xa;@return The experiment settings in a short form." name="experimentSettingsForName">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="RCLdhpn9Hn7u" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="9M13HVRivQwp" comment="@class ExperimentValues experimentvalues.h &quot;experiments/experimentvalues.h&quot;&#xa;@brief Class representing the experiment values." name="ExperimentValues">
+       <UML:GeneralizableElement.generalization>
+        <UML:Generalization xmi.idref="od8u16d8RcBi"/>
+       </UML:GeneralizableElement.generalization>
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="FtrqrSvvbrHP" type="ZXQsEvgAg5nt" comment="&lt; Area size of the sample. " name="m_Area"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="GTIbebxsTFGY" type="R9XPRFgKPf3U" comment="&lt; Defines if the experiment is distance of stress/force based. " name="m_DistanceOrForceOrStress"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="M8AisQ45Jww8" type="hjMJskdBRWzu" comment="&lt; Type of the experiment " name="m_ExperimentType"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Wi3LRqqeqLQC" type="RnD4GXcJLDcP" comment="&lt; Pointer to the stage frame object " name="m_StageFrame"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="IWvUURz6QJ2u" type="p8CmI2ijqvo4" comment="&lt; Pointer to the message handler object " name="m_ForceSensorMessageHandler"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="mlgBraslmP1a" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the force/stress - distance graph " name="m_ForceStressDistanceGraph"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="K2amGahW6bza" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the force/stress - displacement graph. " name="m_ForceStressDisplacementGraph"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="2yhSIjK4T0DK" type="ReI4dzBWbyh3" comment="&lt; Pointer to the mutex to protect m_VectorLayer " name="m_VectorLayerMutex"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Y53IS4tm5TYJ" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the maximal force limit graph. " name="m_MaxForceLimitVectorLayer"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="1En8pmiplNG1" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the minimal force limit graph. " name="m_MinForceLimitVectorLayer"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="5a3WZGq7JsQl" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the maximal distance limit graph. " name="m_MaxDistanceLimitVectorLayer"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="wHVzi3GkF4s2" type="r3Jpmadrx1Nz" comment="&lt; Pointer to the minimal distance limit graph. " name="m_MinDistanceLimitVectorLayer"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="qYsZu6axgdTD" type="1vGpp2uDOGxx" comment="&lt; Pointer to the main frame object. " name="m_MyFrame"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="8yzbu8tpvUlj" type="rHJ89jt4yO3g" comment="&lt; Vector containing structs with stress/force values and their time stamps " name="m_StressForceValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="ej4siwcVaGST" type="rHJ89jt4yO3g" comment="&lt; Vector containing structs with distance values and their time stamps " name="m_DistanceValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="ZgkHKyF6lTqH" type="u8LgUTldK2KA" comment="&lt; Vector containing only the stress/force - distance values " name="m_ForceStressGraphValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="yIizqhzCn0Eq" type="u8LgUTldK2KA" comment="&lt; Vector containing only the distance values " name="m_DistanceGraphValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="AKikm0ReXz7l" type="u8LgUTldK2KA" comment="&lt; Vector containing only the displacement values " name="m_DisplacementGraphValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="iV42O4R69MAc" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the max force limit graph values. " name="m_GraphMaxForceLimitValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="W9fPqMODMMJz" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the min force limit graph values. " name="m_GraphMinForceLimitValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="7lV9ehhGWQyW" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the values for the x-axis for the force limits. " name="m_GraphForceLimitXAxisPoints"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="pScjUdVNor7b" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the max distance limit graph values. " name="m_GraphMaxDistanceLimitValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="34j8qbaFHTVS" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the min distance limit graph vlaues. " name="m_GraphMinDistanceLimitValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Rcx8is6BgYNF" type="u8LgUTldK2KA" comment="&lt; Pointer to the vector containing the values for the x-axis for the force limits. " name="m_GraphDistanceLimitYAxisPoints"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="c60I7wnLHz4N" type="wiFrjcqc0McX" comment="&lt; Mutex to protect the values vectors. " name="m_AccessValuesMutex"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="tgHLtfiIHfOx" type="v7n6lb1NezAI" comment="&lt; The current cycle numer. " name="m_CurrentProtocolCycle"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="WV9C3WPdaQwf" type="ylPcF6lADWEy" comment="&lt; Indicate it the protocol stops and the recorded values should be deleted. " name="m_ResetProtocolFlag"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="Kj1bh3wajEta" type="v7n6lb1NezAI" comment="&lt; Variable used that the graph is not updated with every value update " name="m_DisplayGraphDelay"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="tbt8FH3lkCvm" type="ZXQsEvgAg5nt" comment="&lt; The gage length. " name="m_GageLength"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="RakrqZXPJUOa" name="ExperimentValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="TZ0UYLgyxWNY" type="RnD4GXcJLDcP" value="" name="stageframe"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="7NPW1u3a79Z2" type="p8CmI2ijqvo4" value="" name="forcesensormessagehandler"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="vQX0X72lf0j7" type="r3Jpmadrx1Nz" value="" name="forceStressDistanceGraph"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="temBSa5HcM6O" type="r3Jpmadrx1Nz" value="" name="forceStressDisplacementGraph"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="WkK84PUy5jqo" type="ReI4dzBWbyh3" value="" name="vectoraccessmutex"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JeQJy2qPe6UH" type="r3Jpmadrx1Nz" value="" name="maxforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="6dlhbTl6B3CE" type="r3Jpmadrx1Nz" value="" name="minforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="QhCVQ2Jifh1d" type="r3Jpmadrx1Nz" value="" name="maxdistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="jq3MwVd08Pii" type="r3Jpmadrx1Nz" value="" name="mindistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="qRmzSyDtfOO4" type="1vGpp2uDOGxx" value="" name="myframe"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="Ogm3Nlh5ZiPW" type="hjMJskdBRWzu" value="" name="experimenttype"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="D0WJNCzDblB4" type="R9XPRFgKPf3U" value="" name="distanceOrStressOrForce"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="iMvNiHP7x9AJ" type="ZXQsEvgAg5nt" value="" name="area"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="tpMSVlyilT09" type="4sEZeaND5n4H" value="" name="gagelength"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="dzKFjTHRqCmW" name="~ ExperimentValues"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="TCdPJmiCb2f7" name="setGageLength">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="nbnW2lfgjytS" type="4sEZeaND5n4H" value="" name="gagelength"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="RArFKdmlnNA5" name="setCrossSectionArea">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="9qHjswodWZAY" type="ZXQsEvgAg5nt" value="" name="crosssectionarea"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="LnE2j7S9FJMZ" comment="@brief Registers the update methods to receive the measurement values.&#xa;@param forcestressvector Vector for the force values.&#xa;@param distancevector Vector for the distance alues.&#xa;@param displacementvector Vector for the displacment values&#xa;@param maxforcelimitvector Vector for the maximum force limit values.&#xa;@param minforcelimitvector Vector for the minimum force limit values.&#xa;@param maxdistancelimitvector Vector for the maximum distance limit values.&#xa;@param mindistancelimitvector Vector for the minimum distance limit values.&#xa;@param limittimepointvector Vector for the limit timepoints." name="startMeasurement">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="GsOdUUQ7h7TZ" type="u8LgUTldK2KA" value="" name="forcestressvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="BgAyQE3j0HGS" type="u8LgUTldK2KA" value="" name="distancevector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="8zGmWjgbpiul" type="u8LgUTldK2KA" value="" name="displacementvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="evpO84IfagmG" type="u8LgUTldK2KA" value="" name="maxforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="v1HfEvxQsFek" type="u8LgUTldK2KA" value="" name="minforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="pfPcdXaCbnQp" type="u8LgUTldK2KA" value="" name="maxdistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="cCuFEpKXvpQ4" type="u8LgUTldK2KA" value="" name="mindistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="gASZ3n8ymK9B" type="u8LgUTldK2KA" value="" name="forcelimittimepointsvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="UNePiPRoMoX6" type="u8LgUTldK2KA" value="" name="distancelimittimepointsvector"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="g6HGzwAlhjIw" comment="@brief Stops the measurement. Unregisters the update method and increases the current protocol cycle." name="stopMeasurement"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="3CGJ1QXVoBuW" comment="@brief Reset recorded values, executed from the protocol. Sets the reset protocol flag true." name="resetProtocol"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="aJIx5p3ktLys" name="setDistanceOrStressOrForce">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="F8dwpwts89A9" type="R9XPRFgKPf3U" value="" name="distanceOrForceOrStress"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ZhcNsUrSn7Nq" name="setDiameter">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="xPaqiZhxhKuX" type="ZXQsEvgAg5nt" value="" name="diameter"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ElNKsXTPC3l4" comment="@brief Method which will be calles by the message handlers to update the values.&#xa;@param value Position of linear stage 1 or 2 or the force.&#xa;@param type Type of value." name="updateValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="MTlYVWb276Ln" type="I8tyTlThWq2M" value="" name="measurementValue"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="jt6Dh6Z1YJa3" type="wUQABr5U0yQR" value="" name="type"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="p95uDOh9s7H4" comment="@brief Returns a pointer to the vector containing the stress/force values.&#xa;@return Pointer to the vector." name="getStressForceValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="weRX9BZn2fCG" type="zNWxLwO3nSEU"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="b6WX2PoMkWL0" comment="@brief Returns a pointer to the vector containing the distance values.&#xa;@return Pointer to the vector." name="getDistanceValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="WafTyxHa2ShA" type="SwQnQlWKNxrU"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="Od5i3lJesrkV" comment="@brief Returns the experiment settings as a std::string.&#xa;@return Experiment settings as std::string." name="getExperimentSettings">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="ndOKX6W1gBVc" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="6kC9ArHXTMFW" comment="@brief Returns the current experiment type as a string.&#xa;@return The current experiment type as a string." name="experimentTypeToString">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="8Y8yNtTAWrU1" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="vy3b8WBEGLLQ" comment="@brief Returns the experiment settings in a short form, usable for the experiment name.&#xa;@return The experiment settings in a short form." name="experimentSettingsForName">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="BcvezBA7hI35" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="9WFdMifHggro" comment="@brief Returns the measurement unit (stress/force).&#xa;@return The unit as std::string." name="getForceOrStress">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="C03QMOoXzkBy" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="vJ3cZ6fjavMw" comment="@brief Returns the the measurement type (distance/stressForce).&#xa;@return The type as std::string." name="getDistanceOrForceOrStress">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="dzCHf16p17FL" type="NI46WPr04kxL"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="T4qSo1OhIRHs" comment="@brief Normalizes the value according to the experiment.&#xa;@param value The value.&#xa;@return The normalized value." name="normalizeValue">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="BmQBtdWNhNnT" type="ZXQsEvgAg5nt"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="VxZ4sv0TvAia" type="ZXQsEvgAg5nt" value="" name="value"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="MC8fbQV5L49B" name="to_string_wp">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="GtKQ58scMlHO" type="NI46WPr04kxL"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="6yxR04cyCEoS" type="S9L8U7ZqJiTs" value="" name="a_value"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="48vNqPEuNBJM" type="YFtf4WeVdxb7" value="" name="n"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+       <UML:Namespace.ownedElement>
+        <UML:Class visibility="public" isSpecification="false" namespace="9M13HVRivQwp" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="yGOPsX7y8Vz8" comment="@brief Struct for the measurement values containing the values and the time stamp." name="MeasurementValue">
+         <UML:Classifier.feature>
+          <UML:Attribute visibility="public" isSpecification="false" xmi.id="YmyzHILkwgFn" type="ZXQsEvgAg5nt" name="value"/>
+          <UML:Attribute visibility="public" isSpecification="false" xmi.id="lCuUaC0Xhch5" type="9WNI0LEi0nSJ" name="timestamp"/>
+          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="spZqsHhc1fhx" name="MeasurementValue"/>
+          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ISfYMJnKXBjO" name="MeasurementValue">
+           <UML:BehavioralFeature.parameter>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="jqMpJJvB8U0y" type="ZXQsEvgAg5nt" value="" name="v"/>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="46unQ1q1wD90" type="9WNI0LEi0nSJ" value="" name="ts"/>
+           </UML:BehavioralFeature.parameter>
+          </UML:Operation>
+          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="HgnBWLMgrhwq" name="MeasurementValue">
+           <UML:BehavioralFeature.parameter>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="GdSCqZC7FxGk" type="28Y3wyK03FnT" value="" name="mv"/>
+           </UML:BehavioralFeature.parameter>
+          </UML:Operation>
+          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="JaO8IIyIQVJM" name="MeasurementValue">
+           <UML:BehavioralFeature.parameter>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="xUbCQruhQIpg" type="TeMWt7x9iPKW" value="" name="mv"/>
+           </UML:BehavioralFeature.parameter>
+          </UML:Operation>
+         </UML:Classifier.feature>
+        </UML:Class>
+       </UML:Namespace.ownedElement>
+      </UML:Class>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="EopQuqFMQ1KL" xmi.id="CsSBCdVwwru5" parent="9M13HVRivQwp" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="YU3bjMZpttJQ" client="EopQuqFMQ1KL" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="cCnq7NYecVYa" xmi.id="lrick23F9AFX" client="EopQuqFMQ1KL" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="OSYVbn2nknHz" client="EopQuqFMQ1KL" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="V0eTVCWlNJbx" client="EopQuqFMQ1KL" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="dnpGGFpyadLO" xmi.id="vstJ9TGeD6mf" client="EopQuqFMQ1KL" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="acBoivR43y9W" client="EopQuqFMQ1KL" name=""/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="T2FAYPIzbebG" comment="@class PhotoTrigger phototrigger.h &quot;experiments/phototrigger.h&quot;&#xa;@brief The photo trigger." name="Trigger">
+       <UML:GeneralizableElement.generalization>
+        <UML:Generalization xmi.idref="TOQi9VaBY5Y4"/>
+        <UML:Generalization xmi.idref="aITqHS41cSnJ"/>
+        <UML:Generalization xmi.idref="oBEOb0in2YmC"/>
+       </UML:GeneralizableElement.generalization>
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="djgxc7n6eOFk" type="8rBDtbjCndwx" comment="&lt; Run state &#xa;(&lt; Pointer to the serial trigger object )" name="m_SerialTrigger"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="vLm3uUiPWef1" type="N6pyxZjM9tGf" comment="&lt; Pointer to the experiment values. " name="m_ExperimentValues"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="lOMYZLt8smNa" type="wlslaX2nP1oo" comment="&lt; Pointer to the conditioning variable to indicate the end of the experiment. " name="m_Wait"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="1OoxOJVHeGLY" type="ReI4dzBWbyh3" comment="&lt; Mutex to protect m_WaitActive. " name="m_WaitMutex"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="k3xHhaIRwdzW" type="PDKAcoUqPo9k" comment="&lt; Current state of the preload FSM. " name="m_CurrentState"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ym8UreZvizsE" name="Trigger">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JSFgFPaUsPGw" type="OhqaEQoxya8w" value="" name="experimentparameters"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="rISflfchRiBH" type="r3Jpmadrx1Nz" value="" name="forceStressDistanceGraph"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="MiA2f2GzUTfj" type="r3Jpmadrx1Nz" value="" name="forceStressDisplacementGraph"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="tDBlcRfRi76R" type="ReI4dzBWbyh3" value="" name="vectoraccessmutex"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="lg8AOHRiybkd" type="r3Jpmadrx1Nz" value="" name="maxforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="d0c5UGnNTy64" type="r3Jpmadrx1Nz" value="" name="minforcelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="OlV6raXcGdmd" type="r3Jpmadrx1Nz" value="" name="maxdistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="sCLql6SN42QY" type="r3Jpmadrx1Nz" value="" name="mindistancelimitvector"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="IDtkCxoYjJcY" type="wlslaX2nP1oo" value="" name="wait"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="r988kujc44Ro" type="ReI4dzBWbyh3" value="" name="mutex"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="1hD04jgNwBVw" type="8rBDtbjCndwx" value="" name="serialtrigger"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="iILzwsaLY6Fo" name="setPreloadDistance"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="kclPLdtMK4LM" comment="@brief Saves the experiment settings in the xml_docuement.&#xa;@param xml Pointer to the xml_document." name="getXML">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ozkkBDetTxqP" type="i2CUK1b1aH2W" value="" name="xml"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="pQlLW09Hcuev" name="getPreview">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="wd0KXjNvQs8l" type="uMRuWwBh0URM" value="" name="previewvalues"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="9mkJ0yJVKci8" comment="@brief FSM of the experiment&#xa;@param e Occuring event" name="process">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="4GtjTEYNpXfL" type="ffhe960wjmyz" value="" name="event"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="G3GevON498N9" comment="@brief Returns a pointer to the experiment values.&#xa;@return A pointer to the experiment values." name="getExperimentValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="DcJLLllgcjxw" type="HuLlvPjvgODk"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="jc5H98WTQtvb" name="resetExperiment"/>
+       </UML:Classifier.feature>
+       <UML:Namespace.ownedElement>
+        <UML:Enumeration stereotype="enum" visibility="public" isSpecification="false" namespace="T2FAYPIzbebG" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="PDKAcoUqPo9k" comment="@enum State&#xa;@brief Defines the states of the AutoStretch FSM." name="State">
+         <UML:EnumerationLiteral visibility="public" isSpecification="false" namespace="PDKAcoUqPo9k" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="XuO7bJ3Lu8c3" name="stopState"/>
+         <UML:EnumerationLiteral visibility="public" isSpecification="false" namespace="PDKAcoUqPo9k" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="G8XfzQEOeWWG" name="runState"/>
+        </UML:Enumeration>
+       </UML:Namespace.ownedElement>
+      </UML:Class>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Sqgj0ioN0sRX" comment="@class Experiment experiment.h &quot;experiments/experiment.h&quot;&#xa;@brief Base class for all the experiments." name="Experiment">
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="cLJIaSnDRN6X" type="RnD4GXcJLDcP" comment="&lt; Pointer to the stage frame object " name="m_StageFrame"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="QOMkby9CHQSr" type="p8CmI2ijqvo4" comment="&lt; Pointer to the message handler object " name="m_ForceSensorMessageHandler"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="C49RUcJKpMdS" type="1vGpp2uDOGxx" comment="&lt; Pointer to the main frame. " name="m_MyFrame"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="TQtjP4GQzUGm" type="ZXQsEvgAg5nt" comment="&lt; Cross section area. " name="m_Area"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="W8ysMvpWyxxQ" type="ylPcF6lADWEy" comment="&lt; Indicates if the limits should be checked. " name="m_CheckLimitsFlag"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="XGlMaMn4mglB" type="4sEZeaND5n4H" comment="&lt; Maximal force limit. " name="m_MaxForceLimit"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="k1chVqSzwQpI" type="4sEZeaND5n4H" comment="&lt; Minimal force limit. " name="m_MinForceLimit"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="JfmFajg7yRRY" type="4sEZeaND5n4H" comment="&lt; Maximal distance limit. " name="m_MaxDistanceLimit"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="lEaYsKhaJHIn" type="4sEZeaND5n4H" comment="&lt; Minimal distance limit. " name="m_MinDistanceLimit"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="7ik16aJNF5dp" type="4sEZeaND5n4H" comment="&lt; Threshold for the comparison. " name="m_ForceStressThreshold"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="nJuliLHRaqzQ" type="4sEZeaND5n4H" comment="&lt; Threshold for the coparison of distances. " name="m_DistanceThreshold"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="ZNQmQ3bDKTw0" type="8h1RyHE4zz53" comment="&lt; The current direction " name="m_CurrentDirection"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="oCSM0Pn86mZ3" type="hjMJskdBRWzu" comment="&lt; Type of the experiment " name="m_ExperimentType"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="3o50l83ITT4u" type="R9XPRFgKPf3U" comment="&lt; Defines if the experiment is distance of stress/force based. " name="m_DistanceOrStressOrForce"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="Xd5p60qsCGDA" type="4sEZeaND5n4H" comment="&lt; Preload distance of the stage frame. " name="m_GageLength"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="fyIkkrnndqlM" type="4sEZeaND5n4H" comment="&lt; Mountinglength of the stage frame. " name="m_MountingLength"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="yoeSHiKmLNcP" type="4sEZeaND5n4H" comment="&lt; Default preload distance of the stage frame. " name="m_DefaultGageLength"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="NQIXgThJRx3B" type="4sEZeaND5n4H" comment="&lt; Zero distance " name="m_MaxPosDistance"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="nowQehlbVP1k" type="4sEZeaND5n4H" comment="&lt; Distance where the experiment starts. " name="m_StartLength"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="6JXPg7p2V5ZB" type="4sEZeaND5n4H" comment="&lt; Current distance of the stage frame. " name="m_CurrentDistance"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="YFUzCW8zK4Ox" type="ZXQsEvgAg5nt" comment="&lt; Current force " name="m_CurrentForce"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="YrW3u4CSHfRR" type="j9WEWXwcqT2U" comment="&lt; Vector with the current stage positions. " name="m_CurrentPositions"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="BZPTbnQKuwWQ" type="ylPcF6lADWEy" comment="&lt; Flag indicating that the experiment should stop imediatly. " name="m_ExitFlag"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="CQ1d3eVVGYOt" name="Experiment">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="B5Aydlpp9oQC" type="OhqaEQoxya8w" value="" name="experimentparameters"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="QwfgS3XqiMPw" type="ZXQsEvgAg5nt" value="" name="forcesStressThreshold"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="mDrllxfw3pvg" type="ZXQsEvgAg5nt" value="" name="distanceThreshold"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="YiThWrtwlWcE" comment="@brief Set new limits and forwards them to the experiments.&#xa;@param mindistancelimit Value for the minimal distance limit.&#xa;@param maxdistancelimit Value for the maximal distance limit.&#xa;@param minforcelimit Value for the minimal force limit.&#xa;@param maxforcelimit Value for the maximal force limit." name="setLimits">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="Z72HTPBGd31O" type="4sEZeaND5n4H" value="" name="mindistancelimit"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ygJ1TCf1u6gQ" type="4sEZeaND5n4H" value="" name="maxdistancelimit"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="yXKj3uvc1yrV" type="4sEZeaND5n4H" value="" name="minforcelimit"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="N2jy5kL4Oe3p" type="4sEZeaND5n4H" value="" name="maxforcelimit"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="ojoipU6l1QT2" comment="@brief Sets the preload distance." name="setPreloadDistance"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="IOcJKTmgVVeZ" comment="@brief Sets the start length." name="setStartLength"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="DxbZZeONLC5B" comment="@brief Sets the new sensitivities.&#xa;@param forcestresssensitivity The force/stress sensitivity.&#xa;@param distancesensitivity The distance sensitivity." name="setSensitivities">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="e9udXNfpmH74" type="4sEZeaND5n4H" value="" name="forcestresssensitivity"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ktkENPnYKO8u" type="4sEZeaND5n4H" value="" name="distancesensitivity"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="0UHMfLVJUPx0" name="~ Experiment"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="ncpXswbaoKo9" comment="@brief Saves the experiment settings in the xml_docuement.&#xa;@param xml Pointer to the xml_document." name="getXML">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="4wQK7iFdTSbd" type="i2CUK1b1aH2W" value="" name="xml"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="daZNMzz2zCVJ" comment="@brief Saves the points required to creat a preview graph in the vector..&#xa;@param previewvalues Vector containing the preview values." name="getPreview">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="nem2GUOZQLMo" type="uMRuWwBh0URM" value="" name="previewvalues"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="rkowh9KbVlT0" comment="@brief FSM of the experiment&#xa;@param e Occuring event" name="process">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="EKYdduPSeBOJ" type="ffhe960wjmyz" value="" name="e"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="KjtoSMo81Tm8" comment="@brief Do all the required things to stop the experiment during process." name="resetExperiment"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="am4JW0GiIoJt" name="getExperimentType">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="sl0sCk0mW330" type="hjMJskdBRWzu"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="true" isLeaf="false" isRoot="false" xmi.id="1JgI6yBnfX4X" comment="@brief Returns a pointer to the experiment values.&#xa;@return A pointer to the experiment values." name="getExperimentValues">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="MMX1ucY8HFlT" type="HuLlvPjvgODk"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="sJVFqPq6H9rB" name="setDistanceOrForceOrStress">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="YZ6DxJxJfTKX" type="R9XPRFgKPf3U" value="" name="distanceOrStressOrForce"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="3qdK3PlwiGBW" name="setExitFlag">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="dzct8S4fzAsw" type="ylPcF6lADWEy" value="" name="flag"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+       <UML:Namespace.ownedElement>
+        <UML:Class visibility="public" isSpecification="false" namespace="Sqgj0ioN0sRX" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="HIVL3TgYzKjJ" comment="@brief The PreviewValue struct" name="PreviewValue">
+         <UML:Classifier.feature>
+          <UML:Attribute visibility="public" isSpecification="false" xmi.id="KCYN3grARdfu" type="v7n6lb1NezAI" name="timepoint"/>
+          <UML:Attribute visibility="public" isSpecification="false" xmi.id="Se3vdrJxCZcG" type="R9XPRFgKPf3U" name="distanceOrForce"/>
+          <UML:Attribute visibility="public" isSpecification="false" xmi.id="ialDxdzGnXbq" type="v7n6lb1NezAI" name="value"/>
+          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="sCzj57dYvHHt" name="PreviewValue">
+           <UML:BehavioralFeature.parameter>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="z5G0vfVAy0Vz" type="v7n6lb1NezAI" value="" name="itimepoint"/>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="kg2fvKWuNmsH" type="R9XPRFgKPf3U" value="" name="idistanceOrForce"/>
+            <UML:Parameter visibility="private" isSpecification="false" xmi.id="QLROKxLl4s8U" type="v7n6lb1NezAI" value="" name="ivalue"/>
+           </UML:BehavioralFeature.parameter>
+          </UML:Operation>
+          <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="7noWSpzBT1oO" name="getTimepoint">
+           <UML:BehavioralFeature.parameter>
+            <UML:Parameter kind="return" xmi.id="JLIh59yVUPro" type="v7n6lb1NezAI"/>
+           </UML:BehavioralFeature.parameter>
+          </UML:Operation>
+         </UML:Classifier.feature>
+        </UML:Class>
+       </UML:Namespace.ownedElement>
+      </UML:Class>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="T2FAYPIzbebG" xmi.id="TOQi9VaBY5Y4" parent="Sqgj0ioN0sRX" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="akVH17ntEvzy" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="hyMvtJrhzNYi" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="XVGpZb9Nat5l" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="1HfZ8jJDQwl5" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="4hcPJKVLaN21" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="9M13HVRivQwp" xmi.id="UNe3kg2JFPfK" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="YD9nam6z9kRQ" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="Kz4hlDRI5oPh" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="9YXCMvtUMtTr" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="CRK37AHltvgT" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="EopQuqFMQ1KL" xmi.id="zGesALMDmtua" client="T2FAYPIzbebG" name=""/>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical View" supplier="od8u16d8RcBi" xmi.id="Xi1HatqEAbkh" client="T2FAYPIzbebG" name=""/>
+      <UML:Association visibility="public" isSpecification="false" namespace="Logical View" xmi.id="8YV5BSZ6IDss" name="">
+       <UML:Association.connection>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="BFSaOzLszNyG" type="T2FAYPIzbebG" name="" aggregation="composite"/>
+        <UML:AssociationEnd changeability="changeable" visibility="private" isNavigable="true" isSpecification="false" multiplicity="1" xmi.id="jbH89ZCF5gKF" type="EopQuqFMQ1KL" name="m_ExperimentValues" aggregation="none"/>
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association visibility="public" isSpecification="false" namespace="Logical View" xmi.id="2VYDcoYGF6yL" name="">
+       <UML:Association.connection>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="0uWkC4XdqbXJ" type="T2FAYPIzbebG" name="" aggregation="composite"/>
+        <UML:AssociationEnd changeability="changeable" visibility="private" isNavigable="true" isSpecification="false" multiplicity="1" xmi.id="REMMc0lcVHn6" type="EopQuqFMQ1KL" name="m_ExperimentValues" aggregation="none"/>
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="EopQuqFMQ1KL" xmi.id="0fVkIW5tF1zG" parent="9M13HVRivQwp" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="T2FAYPIzbebG" xmi.id="aITqHS41cSnJ" parent="Sqgj0ioN0sRX" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical View" child="T2FAYPIzbebG" xmi.id="oBEOb0in2YmC" parent="RgGHsi19MDgg" name=""/>
      </UML:Namespace.ownedElement>
      <XMI.extension xmi.extender="umbrello">
       <diagrams>
-       <diagram showopsig="1" linecolor="#000000" snapx="25" showattribassocs="1" snapy="25" linewidth="0" showattsig="1" textcolor="#000000" isopen="1" showpackage="1" showpubliconly="0" showstereotype="1" name="Experiments" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="1372" canvaswidth="3209" localid="-1" snapcsgrid="0" showgrid="1" showops="1" griddotcolor="#000000" backgroundcolor="#ffffff" usefillcolor="1" fillcolor="#ffffff" zoom="42" xmi.id="JXWtWIIcgUh9" documentation="" showscope="1" snapgrid="1" showatts="1" type="1">
+       <diagram showopsig="1" linecolor="#000000" snapx="25" showattribassocs="1" snapy="25" linewidth="0" showattsig="1" textcolor="#000000" isopen="1" showpackage="1" showpubliconly="0" showstereotype="1" name="Experiments" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="1472" canvaswidth="3209" localid="-1" snapcsgrid="0" showgrid="1" showops="1" griddotcolor="#000000" backgroundcolor="#ffffff" usefillcolor="1" fillcolor="#ffffff" zoom="81" xmi.id="JXWtWIIcgUh9" documentation="" showscope="1" snapgrid="1" showatts="1" type="1">
         <widgets>
          <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="1" showpackage="1" x="-150" showattsigs="601" showstereotype="1" y="-675" showattributes="1" font="Sans Serif,9,-1,0,50,1,0,0,0,0" localid="RS1Fu3kQsEUk" width="784" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="Sqgj0ioN0sRX" showscope="1" height="217" showopsigs="601"/>
          <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="1" showpackage="1" x="-1225" showattsigs="601" showstereotype="1" y="-725" showattributes="1" font="Sans Serif,9,-1,0,50,1,0,0,0,0" localid="hJNHhJx11wai" width="1000" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="9M13HVRivQwp" showscope="1" height="287" showopsigs="601"/>
@@ -3721,6 +3904,8 @@
          <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="1" showpackage="1" x="-2325" showattsigs="601" showstereotype="1" y="-675" showattributes="1" font="Sans Serif,9,-1,0,75,0,0,0,0,0" localid="TcHzc6OEzdIE" width="1000" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="cKAwy14PgU3x" showscope="1" height="77" showopsigs="601"/>
          <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-2575" showattsigs="601" showstereotype="1" y="-525" showattributes="1" font="Sans Serif,9,-1,0,75,0,0,0,0,0" localid="l9Oe7VB9bw4X" width="1000" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="EYnuMK7miAPs" showscope="1" height="196" showopsigs="601"/>
          <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-2575" showattsigs="601" showstereotype="1" y="-250" showattributes="1" font="Sans Serif,9,-1,0,75,0,0,0,0,0" localid="1fvdhtSqRO4b" width="1000" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="UghM7vKflV0X" showscope="1" height="63" showopsigs="601"/>
+         <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-2375" showattsigs="601" showstereotype="1" y="-1350" showattributes="1" font="Sans Serif,9,-1,0,75,0,0,0,0,0" localid="wqeoa0NZOBXn" width="1000" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="T2FAYPIzbebG" showscope="1" height="182" showopsigs="601"/>
+         <classwidget linecolor="none" usesdiagramfillcolor="0" linewidth="0" showoperations="1" textcolor="#000000" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-2375" showattsigs="601" showstereotype="1" y="-1100" showattributes="1" font="Sans Serif,9,-1,0,75,0,0,0,0,0" localid="U226INe1PaI4" width="1000" isinstance="0" usefillcolor="1" fillcolor="#ffffff" xmi.id="EopQuqFMQ1KL" showscope="1" height="63" showopsigs="601"/>
         </widgets>
         <messages/>
         <associations>
@@ -3856,6 +4041,32 @@
           <linepath layout="Polyline">
            <startpoint startx="-1575" starty="-525"/>
            <endpoint endx="-50" endy="-825"/>
+          </linepath>
+         </assocwidget>
+         <assocwidget indexa="1" indexb="1" usesdiagramusefillcolor="0" widgetaid="T2FAYPIzbebG" usesdiagramfillcolor="0" fillcolor="#ffff00" linecolor="#000000" totalcounta="2" xmi.id="2VYDcoYGF6yL" widgetbid="EopQuqFMQ1KL" totalcountb="2" type="510" textcolor="#000000" usefillcolor="1" linewidth="0" font="Sans Serif,9,-1,0,50,0,0,0,0,0">
+          <linepath layout="Polyline">
+           <startpoint startx="-1875" starty="-1150"/>
+           <endpoint endx="-1875" endy="-1100"/>
+          </linepath>
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" textcolor="none" usesdiagramusefillcolor="1" x="-1875" showstereotype="1" y="-1125" text="1" font="Sans Serif,9,-1,5,50,0,0,0,0,0" localid="dlx63lC74ZQU" pretext="" role="702" width="16" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="r4s4B0TNeTMr" height="18"/>
+          <floatingtext linecolor="none" usesdiagramfillcolor="1" linewidth="none" textcolor="none" usesdiagramusefillcolor="1" x="-2025" showstereotype="1" y="-1125" text="m_ExperimentValues" font="Sans Serif,9,-1,5,50,0,0,0,0,0" localid="6LMLRKeQF98P" pretext="-" role="710" width="140" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="Bg21FXIeld0L" height="18"/>
+         </assocwidget>
+         <assocwidget indexa="1" indexb="1" usesdiagramusefillcolor="0" widgetaid="EopQuqFMQ1KL" usesdiagramfillcolor="0" fillcolor="#ffff00" linecolor="none" totalcounta="2" xmi.id="0fVkIW5tF1zG" widgetbid="9M13HVRivQwp" totalcountb="2" type="500" textcolor="none" usefillcolor="1" linewidth="none" font="Sans Serif,9,-1,0,50,0,0,0,0,0">
+          <linepath layout="Polyline">
+           <startpoint startx="-1375" starty="-1025"/>
+           <endpoint endx="-1225" endy="-725"/>
+          </linepath>
+         </assocwidget>
+         <assocwidget indexa="1" indexb="1" usesdiagramusefillcolor="0" widgetaid="T2FAYPIzbebG" usesdiagramfillcolor="0" fillcolor="#ffff00" linecolor="none" totalcounta="2" xmi.id="aITqHS41cSnJ" widgetbid="Sqgj0ioN0sRX" totalcountb="2" type="500" textcolor="none" usefillcolor="1" linewidth="none" font="Sans Serif,9,-1,0,50,0,0,0,0,0">
+          <linepath layout="Polyline">
+           <startpoint startx="-1375" starty="-1150"/>
+           <endpoint endx="-150" endy="-675"/>
+          </linepath>
+         </assocwidget>
+         <assocwidget indexa="1" indexb="1" usesdiagramusefillcolor="0" widgetaid="T2FAYPIzbebG" usesdiagramfillcolor="0" fillcolor="#ffff00" linecolor="none" totalcounta="2" xmi.id="oBEOb0in2YmC" widgetbid="RgGHsi19MDgg" totalcountb="2" type="500" textcolor="none" usefillcolor="1" linewidth="none" font="Sans Serif,9,-1,0,50,0,0,0,0,0">
+          <linepath layout="Polyline">
+           <startpoint startx="-1375" starty="-1150"/>
+           <endpoint endx="-50" endy="-900"/>
           </linepath>
          </assocwidget>
         </associations>
@@ -4115,6 +4326,8 @@
       <UML:Artifact visibility="public" isSpecification="false" namespace="Component View" drawas="1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="1FZRe2qulnUU" comment="/**&#xa; * @file main.h&#xa; * @brief The protocol.&#xa; * @author Andreas Ziegler&#xa; */" name="protocols.h"/>
       <UML:Artifact visibility="public" isSpecification="false" namespace="Component View" drawas="1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="pqfmv17p4Ciy" comment="/**&#xd;&#xa; * @file myframe.h&#xd;&#xa; * @brief The main frame.&#xd;&#xa; * @author Andreas Ziegler&#xd;&#xa; */" name="myframe.h"/>
       <UML:Artifact visibility="public" isSpecification="false" namespace="Component View" drawas="1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="BGFTcKylXVeX" comment="/**&#xa; * @file settings.h&#xa; * @brief The protocol.&#xa; * @author Andreas Ziegler&#xa; */" name="settings.h"/>
+      <UML:Artifact visibility="public" isSpecification="false" namespace="Component View" drawas="1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="kLMxA75Lultc" comment="/**&#xa; * @file phototriggervalues.h&#xa; * @brief Photo trigger&#xa; * @author Andreas Ziegler&#xa; */" name="triggervalues.h"/>
+      <UML:Artifact visibility="public" isSpecification="false" namespace="Component View" drawas="1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="23VNW2WNvWwd" comment="/**&#xa; * @file phototrigger.h&#xa; * @brief Photo trigger.&#xa; * @author Andreas Ziegler&#xa; */" name="trigger.h"/>
      </UML:Namespace.ownedElement>
     </UML:Model>
     <UML:Model stereotype="folder" visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Deployment View" name="Deployment View">
@@ -4127,7 +4340,7 @@
   </UML:Model>
  </XMI.content>
  <XMI.extensions xmi.extender="umbrello">
-  <docsettings viewid="JXWtWIIcgUh9" uniqueid="YHOnz6DieFFL" documentation=""/>
+  <docsettings viewid="JXWtWIIcgUh9" uniqueid="eG0dc7qQH3ms" documentation=""/>
   <listview>
    <listitem open="1" type="800" id="Views">
     <listitem open="1" type="821" id="Component View">
@@ -4153,6 +4366,8 @@
      <listitem open="0" type="824" id="7hEPC1fjFb1J"/>
      <listitem open="0" type="824" id="BGFTcKylXVeX"/>
      <listitem open="0" type="824" id="zc5cVffEKjpI"/>
+     <listitem open="0" type="824" id="23VNW2WNvWwd"/>
+     <listitem open="0" type="824" id="kLMxA75Lultc"/>
      <listitem open="0" type="824" id="qz3MQdg4d8Y4"/>
     </listitem>
     <listitem open="1" type="827" id="Deployment View"/>
@@ -4269,11 +4484,13 @@
       <listitem open="0" type="829" id="O7hFQalETpBh"/>
       <listitem open="0" type="829" id="WcApNMD3TP9Q"/>
       <listitem open="0" type="829" id="u6zVhfXkC0XL"/>
+      <listitem open="0" type="829" id="8rBDtbjCndwx"/>
       <listitem open="0" type="829" id="RnD4GXcJLDcP"/>
       <listitem open="0" type="829" id="ppkjlACXuUjA"/>
       <listitem open="0" type="829" id="DQeIBo23Tc6D"/>
       <listitem open="0" type="829" id="aHpio2vtdmu4"/>
       <listitem open="0" type="829" id="u8LgUTldK2KA"/>
+      <listitem open="0" type="829" id="N6pyxZjM9tGf"/>
       <listitem open="0" type="829" id="C1UzZ4NXUVTX"/>
       <listitem open="0" type="829" id="uoD0T40CPeVx"/>
       <listitem open="0" type="829" id="Bg3bfQgjpGJA"/>
@@ -5208,6 +5425,29 @@
      </listitem>
      <listitem open="0" type="813" id="4jldTGvSleif"/>
      <listitem open="0" type="813" id="x7esIKRR7pc0"/>
+     <listitem open="0" type="813" id="T2FAYPIzbebG">
+      <listitem open="0" type="815" id="G3GevON498N9"/>
+      <listitem open="0" type="815" id="pQlLW09Hcuev"/>
+      <listitem open="0" type="815" id="kclPLdtMK4LM"/>
+      <listitem open="0" type="814" id="k3xHhaIRwdzW"/>
+      <listitem open="0" type="814" id="vLm3uUiPWef1"/>
+      <listitem open="0" type="814" id="djgxc7n6eOFk"/>
+      <listitem open="0" type="814" id="lOMYZLt8smNa"/>
+      <listitem open="0" type="814" id="1OoxOJVHeGLY"/>
+      <listitem open="0" type="815" id="9mkJ0yJVKci8"/>
+      <listitem open="0" type="815" id="jc5H98WTQtvb"/>
+      <listitem open="0" type="815" id="iILzwsaLY6Fo"/>
+      <listitem open="0" type="831" id="PDKAcoUqPo9k">
+       <listitem open="0" type="839" id="G8XfzQEOeWWG"/>
+       <listitem open="0" type="839" id="XuO7bJ3Lu8c3"/>
+      </listitem>
+      <listitem open="0" type="815" id="ym8UreZvizsE"/>
+     </listitem>
+     <listitem open="0" type="813" id="EopQuqFMQ1KL">
+      <listitem open="0" type="815" id="rt0Zhz6ejW98"/>
+      <listitem open="0" type="815" id="zjQVRv3FCWT9"/>
+      <listitem open="0" type="815" id="sNdnEVsBSG19"/>
+     </listitem>
      <listitem open="0" type="813" id="XaVIis9dFjRx">
       <listitem open="0" type="813" id="I8tyTlThWq2M"/>
      </listitem>

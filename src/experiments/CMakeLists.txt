@@ -12,8 +12,8 @@ set(SOURCE
         ./experiments/pausevalues.cpp
         ./experiments/pauseresume.cpp
         ./experiments/pauseresumevalues.cpp
-        ./experiments/phototrigger.cpp
-        ./experiments/phototriggervalues.cpp
+        ./experiments/trigger.cpp
+        ./experiments/triggervalues.cpp
         #./experiments/conditioning.cpp
         #./experiments/ramp2failure.cpp
         #./experiments/relaxation.cpp
@@ -37,8 +37,8 @@ set(HEADERS
         ./experiments/pausevalues.h
         ./experiments/pauseresume.h
         ./experiments/pauseresumevalues.h
-        ./experiments/phototrigger.h
-        ./experiments/phototriggervalues.h
+        ./experiments/trigger.h
+        ./experiments/triggervalues.h
         #./experiments/conditioning.h
         #./experiments/ramp2failure.h
         #./experiments/relaxation.h
