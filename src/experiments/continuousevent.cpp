@@ -192,7 +192,12 @@ void ContinuousEvent::initParameters(void){
           m_ExperimentValues->setMaxValue(m_MaxValueLimit);
         }
 
-        m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
+        // Catch divided by zero exception.
+        if(0 < m_Increment){ // Only calculate the amount of steps when an increment was defined.
+          m_Steps = (m_MaxValueLimit - m_CurrentDistance) / m_Increment;
+        }else{ // Set the steps equal to zero if increment is not defined.
+          m_Steps = 0;
+        }
         wxLogMessage(std::string("ContinuousEvent: Steps: " + std::to_string(m_Steps)).c_str());
       }else if(StepsOrMaxValue::Steps == m_StepsOrMaxValue){
 
