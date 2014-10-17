@@ -41,7 +41,7 @@ class Pause : public Experiment, virtual public UpdatedValuesReceiver
           mpFXYVector *mindistancelimitvector,
           std::condition_variable *wait,
           std::mutex *mutex,
-          int pausetime = 0);
+          double pausetime = 0);
 
     /**
      * @brief Destructor unregisters the update method.

@@ -34,7 +34,7 @@ Pause::Pause(ExperimentParameters experimentparameters,
              std::condition_variable *wait,
              std::mutex *mutex,
 
-             int pausetime)
+             double pausetime)
   : Experiment(experimentparameters,
                0.005 * 10000.0/*stress force threshold*/,
                0.01 / 0.00009921875/*mm per micro step*//*distance threshold*/),
@@ -57,7 +57,8 @@ Pause::Pause(ExperimentParameters experimentparameters,
                                                      experimentparameters.type,
                                                      experimentparameters.distanceOrForceOrStress,
                                                      experimentparameters.area,
-                                                     experimentparameters.gagelength))
+                                                     experimentparameters.gagelength,
+                                                     pausetime))
 {
   // Registers the update method at the message handlers.
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);

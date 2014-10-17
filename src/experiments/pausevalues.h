@@ -47,7 +47,7 @@ class PauseValues : public ExperimentValues
                 DistanceOrForceOrStress distanceOrStressOrForce,
                 double area,
                 long gagelength,
-                int pausetime = 0);
+                double pausetime = 0);
 
     /**
      * @brief Sets pause time.

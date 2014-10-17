@@ -38,7 +38,7 @@ PauseValues::PauseValues(std::shared_ptr<StageFrame> stageframe,
                          DistanceOrForceOrStress distanceOrStressOrForce,
                          double area,
                          long gagelength,
-                         int pausetime)
+                         double pausetime)
   : ExperimentValues(stageframe,
                      forcesensormessagehandler,
                      forceStressDistanceGraph,

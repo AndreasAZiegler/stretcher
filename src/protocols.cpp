@@ -358,7 +358,8 @@ void Protocols::loadProtocol(std::string path, long gagelength, long mountinglen
                                                        m_MinDistanceLimitGraph,
 
                                                        m_Wait,
-                                                       m_WaitMutex));
+                                                       m_WaitMutex,
+                                                       pausetime));
 
       // Add experiment.
       addExperiment(experiment);
