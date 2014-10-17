@@ -238,7 +238,7 @@ void OneStepEvent::getXML(pugi::xml_document &xml){
   node.append_attribute("DistanceOrStressOrForce") = static_cast<int>(m_DistanceOrForceOrStress);
   node.append_attribute("CrossSectionArea") = m_Area;
   node.append_attribute("VelocityDistanceOrPercentage") = static_cast<int>(m_VelocityDistanceOrPercentage);
-  node.append_attribute("Velocity") = m_Velocity;
+  node.append_attribute("Velocity") = m_InitVelocity;
   node.append_attribute("Delay") = m_Delay;
   node.append_attribute("LimitDistanceOrPercentage") = static_cast<int>(m_LimitDistanceOrPercentage);
   node.append_attribute("Limit") = m_InitLimit;
