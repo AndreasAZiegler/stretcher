@@ -1025,13 +1025,15 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
             file << stressForceValues->operator [](j)[i].value << ";"
                  << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
           }else{
-            file << 0 << ";" << 0 << ";";
+            //file << 0 << ";" << 0 << ";";
+            file << ";;";
           }
           if(distanceValues->operator [](j).size() > i){
             file << distanceValues->operator [](j)[i].value << ";"
                  << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
           }else{
-            file << 0 << ";" << 0 << ";";
+            //file << 0 << ";" << 0 << ";";
+            file << ";;";
           }
           file << std::endl;
         }
