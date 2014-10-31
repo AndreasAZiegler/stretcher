@@ -29,12 +29,6 @@ void MyFrame::OnPreviewProtocol(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnRunProtocol(wxCommandEvent& event){
-  /*
-  wxMessageDialog *popup = new wxMessageDialog(this, "Limit will exeed, check your experiment settings.");
-  popup->Show();
-  popup->ShowModal();
-  delete popup;
-  */
   if(nullptr != m_CurrentProtocol){
     m_CurrentProtocol->runProtocol();
   }
