@@ -178,16 +178,16 @@ void StageFrame::setSpeed(double speedinmm){
  * @brief Moves the stage frame forward at constant speed
  */
 void StageFrame::moveForward(double speed){
- (m_LinearStages.at(0))->moveForward(speed);
- (m_LinearStages.at(1))->moveForward(speed);
+ (m_LinearStages.at(0))->moveForward(speed / 2);
+ (m_LinearStages.at(1))->moveForward(speed / 2);
 }
 
 /**
  * @brief Moves the stage frame backward at constant speed
  */
 void StageFrame::moveBackward(double speed){
- (m_LinearStages.at(0))->moveBackward(speed);
- (m_LinearStages.at(1))->moveBackward(speed);
+ (m_LinearStages.at(0))->moveBackward(speed / 2);
+ (m_LinearStages.at(1))->moveBackward(speed / 2);
 }
 
 /**
