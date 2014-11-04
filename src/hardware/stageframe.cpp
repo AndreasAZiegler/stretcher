@@ -169,8 +169,9 @@ void StageFrame::returnStoredPosition(MeasurementValue measurementValue, Updated
  * @param speedinmm Speed in mm/s
  */
 void StageFrame::setSpeed(double speedinmm){
- (m_LinearStages.at(0))->setSpeed(speedinmm);
- (m_LinearStages.at(1))->setSpeed(speedinmm);
+ // Devides the speed by 2 to reach the speed with the 2 stages.
+ (m_LinearStages.at(0))->setSpeed(speedinmm / 2);
+ (m_LinearStages.at(1))->setSpeed(speedinmm / 2);
 }
 
 /**
