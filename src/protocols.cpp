@@ -581,6 +581,13 @@ void Protocols::getValues(void){
  * @brief Runs the protocol.
  */
 void Protocols::runProtocol(void){
+  // Return if an experiment is currently running
+  {
+    std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+    if(true == m_ExperimentRunningFlag){
+      return;
+    }
+  }
   // Check if the protocol will exceed some limits and returns with a message in this case.
   if(false == checkProtocol()){
     std::unique_ptr<wxMessageDialog> popup = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(m_MyFrame, "Limit will exeed, check your experiment settings."));
