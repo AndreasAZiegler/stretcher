@@ -773,6 +773,8 @@ void ContinuousEvent::process(Event event){
               t1.join();
 
               wxLogMessage("ContinuousEvent: Holding over.");
+
+              m_MyFrame->OnSaveLog();
             }
 
             if((m_Steps - 1) <= m_CurrentStep){ // If it is the last step.

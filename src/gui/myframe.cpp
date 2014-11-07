@@ -1031,6 +1031,27 @@ void MyFrame::OnSaveLog(wxCommandEvent& event){
   wxLogMessage(std::string("Log saved in: " + saveFileDialog.GetPath()).c_str());
 }
 
+void MyFrame::OnSaveLog(void){
+  // Creating file name
+  std::time_t time = std::time(NULL);
+  char mbstr[100];
+  std::strftime(mbstr, sizeof(mbstr), "%Y%m%d_%H:%M:%S", std::localtime(&time));
+
+  std::string pathAndFilename = m_StoragePath + "/" + "Log_" + std::string(mbstr) + ".txt";
+
+  // Let user choose path and file name.
+  wxFileDialog saveFileDialog(this, _("Save png file"), "", "", "LOG files (*.txt)|*.txt", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+  saveFileDialog.SetPath(pathAndFilename);
+
+  if(wxID_CANCEL == saveFileDialog.ShowModal()){
+    return;
+  }
+
+  m_LogTextCtrl->SaveFile(saveFileDialog.GetPath());
+
+  wxLogMessage(std::string("Log saved in: " + saveFileDialog.GetPath()).c_str());
+}
+
 /**
  * @brief Opens a velocity warning pop-up dialog.
  */

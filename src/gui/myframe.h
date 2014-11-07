@@ -202,6 +202,8 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void showExportCSVDialogFromProtocols(void);
 
+    void OnSaveLog(void);
+
   private:
 
     /**
