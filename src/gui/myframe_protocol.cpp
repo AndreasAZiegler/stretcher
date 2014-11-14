@@ -249,6 +249,9 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
         if(1 < parameters.cycles){
           m_OneStepEndOfEventRepeatCheckBox->SetValue(true);
           m_OneStepEndOfEventRepeatSpinCtrl->SetValue(parameters.cycles);
+        }else{
+          m_OneStepEndOfEventRepeatCheckBox->SetValue(false);
+          m_OneStepEndOfEventRepeatSpinCtrl->SetValue(1);
         }
 
         switch(parameters.behaviorAfterStop){
@@ -396,6 +399,9 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
         if(1 < parameters.cycles){
           m_ContinuousEndOfEventRepeatCheckBox->SetValue(true);
           m_ContinuousEndOfEventRepeatSpinCtrl->SetValue(parameters.cycles);
+        }else{
+          m_ContinuousEndOfEventRepeatCheckBox->SetValue(false);
+          m_ContinuousEndOfEventRepeatSpinCtrl->SetValue(1);
         }
 
         switch(parameters.behaviorAfterStop){
