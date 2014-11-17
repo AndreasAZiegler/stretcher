@@ -997,13 +997,13 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
   // Printing the experiment settings.
   for(int i = 0; i < m_ExperimentValues.size(); ++i){
     if(false == disableexport[i]){
-      file << m_ExperimentValues[i]->getExperimentSettings();
+      file << "Experiment #: " << i << ": "<< m_ExperimentValues[i]->getExperimentSettings();
     }
   }
 
   file << std::endl << std::endl;
 
-  file << "Stress/Force in " << m_ExperimentValues[0]->getForceOrStress() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
+  file << "Experiment #: " << "Stress/Force in " << m_ExperimentValues[0]->getForceOrStress() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
 
   int length = m_ExperimentValues[0]->getStressForceValues()->size();
   for(long j = 0; j < length; ++j){
@@ -1027,17 +1027,17 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
         }
 
         // Print the measured values.
-        for(long i = 0; i < length2; ++i){
-          if(stressForceValues->operator [](j).size() > i){
-            file << stressForceValues->operator [](j)[i].value << ";"
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
+        for(long k = 0; k < length2; ++k){
+          if(stressForceValues->operator [](j).size() > k){
+            file << i << ";" << stressForceValues->operator [](j)[k].value << ";"
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(stressForceValues->operator [](j)[k].timestamp - m_StartTimePoint).count() << ";";
           }else{
             //file << 0 << ";" << 0 << ";";
             file << ";;";
           }
-          if(distanceValues->operator [](j).size() > i){
-            file << distanceValues->operator [](j)[i].value << ";"
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[i].timestamp - m_StartTimePoint).count() << ";";
+          if(distanceValues->operator [](j).size() > k){
+            file << i << ";" << distanceValues->operator [](j)[k].value << ";"
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[k].timestamp - m_StartTimePoint).count() << ";";
           }else{
             //file << 0 << ";" << 0 << ";";
             file << ";;";
