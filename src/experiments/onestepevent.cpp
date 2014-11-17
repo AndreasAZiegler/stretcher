@@ -85,6 +85,7 @@ OneStepEvent::OneStepEvent(ExperimentParameters experimentparameters,
                                               path,
 
                                               experimentparameters.type,
+                                              experimentparameters.experimentnumber,
                                               experimentparameters.distanceOrForceOrStress,
                                               experimentparameters.area,
                                               experimentparameters.gagelength,

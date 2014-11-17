@@ -40,10 +40,12 @@ ExperimentValues::ExperimentValues(std::shared_ptr<StageFrame> stageframe,
                                    MyFrame *myframe,
 
                                    ExperimentType experimenttype,
+                                   int experimentnr,
                                    DistanceOrForceOrStress distanceOrStressOrForce,
                                    double area,
                                    long gagelength)
   : m_ExperimentType(experimenttype),
+    m_ExperimentNr(experimentnr),
     m_DistanceOrForceOrStress(distanceOrStressOrForce),
     m_StageFrame(stageframe),
     m_ForceSensorMessageHandler(forcesensormessagehandler),

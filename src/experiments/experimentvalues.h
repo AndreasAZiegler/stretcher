@@ -84,6 +84,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
                      MyFrame *myframe,
 
                      ExperimentType experimenttype,
+                     int experimentnr,
                      DistanceOrForceOrStress distanceOrStressOrForce,
                      double area,
                      long gagelength);
@@ -92,6 +93,18 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
      * @brief Destructor
      */
     ~ExperimentValues();
+
+    /**
+     * @brief Sets the Number of the experiment in the protocol.
+     * @param experimentnumber The experiment number.
+     */
+    void setExperimentNumber(int experimentnumber){
+      m_ExperimentNr = experimentnumber;
+    }
+
+    int getExperimentNumber(void){
+      return(m_ExperimentNr);
+    }
 
     /**
      * @brief Sets the gage lengt.
@@ -249,6 +262,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
 	private:
 
     ExperimentType m_ExperimentType;																									/**< Type of the experiment */
+    int m_ExperimentNr;                                                               /**< Experiment number in the protocol. */
     std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;						/**< Pointer to the message handler object */
     mpFXYVector *m_ForceStressDistanceGraph;																					/**< Pointer to the force/stress - distance graph */

@@ -83,6 +83,7 @@ void MyFrame::OnPreloadSendToProtocol(wxCommandEvent& event){
     experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
     experimentparameters.mindistancelimit = m_MinDistanceLimit;
     experimentparameters.type = ExperimentType::Preload;
+    experimentparameters.experimentnumber = 999;
     experimentparameters.distanceOrForceOrStress = parameters.distanceOrForceOrStress;
     experimentparameters.gagelength = m_GageLength;
     experimentparameters.mountinglength = m_MountingLength;
@@ -238,6 +239,7 @@ void MyFrame::OnOneStepSendToProtocol(wxCommandEvent& event){
     experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
     experimentparameters.mindistancelimit = m_MinDistanceLimit;
     experimentparameters.type = ExperimentType::OneStepEvent;
+    experimentparameters.experimentnumber = 999;
     experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
     experimentparameters.gagelength = m_GageLength;
     experimentparameters.mountinglength = m_MountingLength;
@@ -456,6 +458,7 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
     experimentparameters.mindistancelimit = m_MinDistanceLimit;
     experimentparameters.type = ExperimentType::ContinuousEvent;
+    experimentparameters.experimentnumber = 999;
     experimentparameters.distanceOrForceOrStress = parameters.distanceOrStressOrForce;
     experimentparameters.gagelength = m_GageLength;
     experimentparameters.mountinglength = m_MountingLength;
@@ -502,6 +505,7 @@ void MyFrame::OnPauseExperiment(wxCommandEvent& event){
   experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
   experimentparameters.mindistancelimit = m_MinDistanceLimit;
   experimentparameters.type = ExperimentType::Pause;
+  experimentparameters.experimentnumber = 999;
   experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   experimentparameters.gagelength = m_GageLength;
   experimentparameters.mountinglength = m_MountingLength;
@@ -551,6 +555,7 @@ void MyFrame::OnPauseResumeExperiment(wxCommandEvent& event){
   experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
   experimentparameters.mindistancelimit = m_MinDistanceLimit;
   experimentparameters.type = ExperimentType::PauseResume;
+  experimentparameters.experimentnumber = 999;
   experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   experimentparameters.gagelength = m_GageLength;
   experimentparameters.mountinglength = m_MountingLength;
@@ -591,6 +596,7 @@ void MyFrame::OnMakePhoto(wxCommandEvent& event){
   experimentparameters.maxdistancelimit = m_MaxDistanceLimit;
   experimentparameters.mindistancelimit = m_MinDistanceLimit;
   experimentparameters.type = ExperimentType::Trigger;
+  experimentparameters.experimentnumber = 999;
   experimentparameters.distanceOrForceOrStress = m_DistanceOrForceOrStress;
   experimentparameters.gagelength = m_GageLength;
   experimentparameters.mountinglength = m_MountingLength;

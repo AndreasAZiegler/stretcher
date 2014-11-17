@@ -42,6 +42,7 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                                              std::string path,
 
                                              ExperimentType experimentType,
+                                             int experimentnumber,
                                              DistanceOrForceOrStress distanceOrStressOrForce,
                                              double area,
                                              long gagelength,
@@ -64,6 +65,7 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                      myframe,
 
                      experimentType,
+                     experimentnumber,
                      distanceOrStressOrForce,
                      area,
                      gagelength),

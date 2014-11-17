@@ -40,6 +40,7 @@ Trigger::Trigger(ExperimentParameters experimentparameters,
                                                             experimentparameters.myframe,
 
                                                             experimentparameters.type,
+                                                            experimentparameters.experimentnumber,
                                                             experimentparameters.distanceOrForceOrStress,
                                                             experimentparameters.area,
                                                             experimentparameters.gagelength))

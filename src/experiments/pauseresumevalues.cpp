@@ -34,6 +34,7 @@ PauseResumeValues::PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
                                      MyFrame *myframe,
 
                                      ExperimentType experimentType,
+                                     int experimentnumber,
                                      DistanceOrForceOrStress distanceOrStressOrForce,
                                      double area,
                                      long gagelength)
@@ -49,6 +50,7 @@ PauseResumeValues::PauseResumeValues(std::shared_ptr<StageFrame> stageframe,
                      myframe,
 
                      experimentType,
+                     experimentnumber,
                      distanceOrStressOrForce,
                      area,
                      gagelength)

@@ -45,7 +45,7 @@ class PreloadValues : public ExperimentValues
                   mpFXYVector *mindistancelimitvector,
                   MyFrame *myframe,
 
-                  ExperimentType experimentType,
+                  ExperimentType experimentType, int experimentNr,
                   DistanceOrForceOrStress distanceOrStressOrForce,
                   double area,
                   long gagelength,

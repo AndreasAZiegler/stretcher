@@ -844,6 +844,14 @@ void Protocols::moveExperimentUp(int experimentPosition){
     m_ListBox->SetString(experimentPosition, stringUp);
     m_ListBox->SetString(experimentPosition - 1, stringPos);
 
+    // Update the experiment number of the 2 experiments.
+    m_ExperimentValues[experimentPosition-1]->setExperimentNumber(experimentPosition);
+    m_ExperimentValues[experimentPosition]->setExperimentNumber(experimentPosition + 1);
+
+    for(int lv = 0; lv < m_ExperimentValues.size(); lv++){
+      wxLogMessage(std::to_string(m_ExperimentValues[lv]->getExperimentNumber()));
+    }
+
     // Swap the selection in the list box.
     m_ListBox->SetSelection(experimentPosition, false);
     m_ListBox->SetSelection(experimentPosition - 1, true);
@@ -883,6 +891,14 @@ void Protocols::moveExperimentDown(int experimentPosition){
     m_ListBox->SetString(experimentPosition, stringDown);
     m_ListBox->SetString(experimentPosition + 1, stringPos);
 
+    // Update the experiment number of the 2 experiments.
+    m_ExperimentValues[experimentPosition]->setExperimentNumber(experimentPosition);
+    m_ExperimentValues[experimentPosition+1]->setExperimentNumber(experimentPosition + 1);
+
+    for(int lv = 0; lv < m_ExperimentValues.size(); lv++){
+      wxLogMessage(std::string(std::to_string(m_ExperimentValues[lv]->getExperimentNumber()));
+    }
+
     // Swap the selection in the list box.
     m_ListBox->SetSelection(experimentPosition, false);
     m_ListBox->SetSelection(experimentPosition + 1, true);
@@ -905,6 +921,7 @@ void Protocols::addExperiment(std::unique_ptr<Experiment> &experiment){
   m_Experiments.push_back(std::move(experiment));
   // Add experiment value object.
   m_ExperimentValues.push_back(m_Experiments.back()->getExperimentValues());
+  m_ExperimentValues.back()->setExperimentNumber(m_ExperimentValues.size()-1);
 
   // Add string in list box.
   const wxString tmp((m_ExperimentValues.back())->experimentTypeToString() + ":" + (m_ExperimentValues.back())->experimentSettingsForName());

@@ -18,6 +18,7 @@ TriggerValues::TriggerValues(std::shared_ptr<StageFrame> stageframe,
                              mpFXYVector *mindistancelimitvector,
                              MyFrame *myframe,
                              ExperimentType experimentType,
+                             int experimentnumber,
                              DistanceOrForceOrStress distanceOrStressOrForce,
                              double area,
                              long gagelength)
@@ -33,6 +34,7 @@ TriggerValues::TriggerValues(std::shared_ptr<StageFrame> stageframe,
                      myframe,
 
                      experimentType,
+                     experimentnumber,
                      distanceOrStressOrForce,
                      area,
                      gagelength)

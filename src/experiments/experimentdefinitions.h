@@ -66,6 +66,7 @@ struct ExperimentParameters{
   long maxdistancelimit;
   long mindistancelimit;
   ExperimentType type;
+  int experimentnumber;
   DistanceOrForceOrStress distanceOrForceOrStress;
   long gagelength;
   long mountinglength;

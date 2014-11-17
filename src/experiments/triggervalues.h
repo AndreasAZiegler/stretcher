@@ -39,6 +39,7 @@ class TriggerValues : public ExperimentValues
                   mpFXYVector *mindistancelimitvector,
                   MyFrame *myframe,
                   ExperimentType experimentType,
+                  int experimentnumber,
                   DistanceOrForceOrStress distanceOrStressOrForce,
                   double area,
                   long gagelength);

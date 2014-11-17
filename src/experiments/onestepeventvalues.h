@@ -51,7 +51,7 @@ class OneStepEventValues : public ExperimentValues
                        MyFrame *myframe,
                        std::string path,
 
-                       ExperimentType experimentType,
+                       ExperimentType experimentType, int experimentnumber,
                        DistanceOrForceOrStress distanceOrStressOrForce,
                        double area,
                        long gagelength,
