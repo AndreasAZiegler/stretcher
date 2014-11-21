@@ -1036,7 +1036,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
             file << ";;";
           }
           if(distanceValues->operator [](j).size() > k){
-            file << ";" << distanceValues->operator [](j)[k].value << ";"
+            file << distanceValues->operator [](j)[k].value << ";"
                  << std::chrono::duration_cast<std::chrono::milliseconds>(distanceValues->operator [](j)[k].timestamp - m_StartTimePoint).count() << ";";
           }else{
             //file << 0 << ";" << 0 << ";";
