@@ -1003,7 +1003,7 @@ void Protocols::exportCSV(std::vector<bool> disableexport, std::string pathname)
 
   file << std::endl << std::endl;
 
-  file << "Experiment #: " << "Stress/Force in " << m_ExperimentValues[0]->getForceOrStress() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
+  file << "Experiment #; " << "Stress/Force in " << m_ExperimentValues[0]->getForceOrStress() << "; Time stamp for stress/force in milliseconds; Distance in mm; Time stamp for the distance in milliseconds" << std::endl;
 
   int length = m_ExperimentValues[0]->getStressForceValues()->size();
   for(long j = 0; j < length; ++j){
