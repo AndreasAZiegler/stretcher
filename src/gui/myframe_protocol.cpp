@@ -448,7 +448,10 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
  */
 void MyFrame::OnDeleteExperiment(wxCommandEvent& event){
   if(wxNOT_FOUND != m_ProtocolsListBox->GetSelection()){
-    m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
+    // Check if the desired experiment to delete is currently edited.
+    if(false == m_BlockNotebookTabFlag){
+     m_CurrentProtocol->removeExperiment(m_ProtocolsListBox->GetSelection());
+    }
   }
 }
 
