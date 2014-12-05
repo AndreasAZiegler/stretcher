@@ -317,7 +317,7 @@ void MyFrame::startup(void){
   m_LengthsForceStressSensitivitySpinCtrl->SetValue(0.001);
   m_LengthsDistanceSensitivitySpinCtrl->SetDigits(4);
   m_LengthsDistanceSensitivitySpinCtrl->SetValue(0.001);
-  m_PreloadLimitSpinCtrl->SetDigits(2);
+  m_PreloadLimitSpinCtrl->SetDigits(3);
   m_PreloadSpeedPreloadSpinCtrl->SetDigits(3);
   m_PreloadSpeedMmSpinCtrl->SetDigits(3);
   m_PreloadSpeedMmSpinCtrl->SetRange(0.01, 11);
