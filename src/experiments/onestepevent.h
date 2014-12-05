@@ -151,8 +151,8 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     double m_Velocity;																											/**< Velocity in mm/s. */
     double m_Delay;																													/**< Hold time 1 in s. */
     DistanceOrPercentage m_LimitDistanceOrPercentage;												/**< Indicates if the upper limit is given by value or by % of L0. */
-    double m_InitLimit;																											/**< Limit in N, kPa, mm relative, mm or %L0. */
-    long m_Limit;																														/**< Limit in kPa, N or mm. */
+    double m_InitLimit;																											/**< Limit in N, MPa, mm relative, mm or %L0. */
+    long m_Limit;																														/**< Limit in MPa, N or mm. */
     double m_Dwell;																													/**< Hold time 2 in s. */
     bool m_HoldLimitFlag;																										/**< Indicates if the upper force limit should be hold during waiting. */
     DistanceOrPercentage m_HoldDistanceOrPercentage;												/**< Indicates if the hold distance is given by value or by % of L0. */

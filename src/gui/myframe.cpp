@@ -785,7 +785,8 @@ void MyFrame::OnSetSensitivities(wxCommandEvent& event){
   if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     m_ForceStressSensitivity = m_LengthsForceStressSensitivitySpinCtrl->GetValue() * 10000.0;
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    m_ForceStressSensitivity = (m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+    //m_ForceStressSensitivity = (m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+    m_ForceStressSensitivity = m_LengthsForceStressSensitivitySpinCtrl->GetValue() * m_Area / 1000000000000.0;
   }
 
   m_DistanceSensitivity = m_LengthsDistanceSensitivitySpinCtrl->GetValue() / 0.00009921875/*mm per micro step*/;
@@ -886,8 +887,10 @@ void MyFrame::OnLimitsSetLimits(wxCommandEvent& event){
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   } else if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
-    m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+    //m_MaxForceLimit = (m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+    //m_MinForceLimit = (m_LimitsLimitMinForceSpinCtrl->GetValue() * m_Area / 1000) * 10000.0;
+    m_MaxForceLimit = m_LimitsLimitMaxForceSpinCtrl->GetValue() * m_Area / 1000000000000.0;
+    m_MinForceLimit = m_LimitsLimitMinForceSpinCtrl->GetValue() * m_Area / 1000000000000.0;
     m_InitializeMinForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMinForceSpinCtrl->GetValue(), 2));
     m_InitializeMaxForceShowStaticText->SetLabelText(to_string_wp(m_LimitsLimitMaxForceSpinCtrl->GetValue(), 2));
   }
@@ -1073,7 +1076,8 @@ void MyFrame::updateDistance(void){
 void MyFrame::updateForce(void){
   wxString tmp;
   if(0 == m_InitializeUnitRadioBox->GetSelection()){
-    tmp << (static_cast<double>((m_CurrentForce / 10000.0) / m_Area)) << m_ForceUnit;
+    //tmp << (static_cast<double>((m_CurrentForce / 10000.0) / m_Area)) << m_ForceUnit;
+    tmp << (static_cast<double>((m_CurrentForce / 10000.0) / m_Area * 1000000000000.0)) << m_ForceUnit;
   } else if(1 == m_InitializeUnitRadioBox->GetSelection()){
     tmp << (static_cast<double>(m_CurrentForce) / 10000.0) << m_ForceUnit;
   }

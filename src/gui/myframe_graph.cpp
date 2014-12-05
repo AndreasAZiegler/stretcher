@@ -119,7 +119,7 @@ void MyFrame::createValuesGraph(void){
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
   } else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [MPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_ForceStressDistanceGraph.SetName("Stress / Distance");
     m_ForceStressDisplacementGraph.SetName("Stress / Displacement");
@@ -229,7 +229,7 @@ void MyFrame::createPreviewGraph(void){
     m_MaxStressForceLimitGraph.SetName("Maximal force limit");
     m_MinStressForceLimitGraph.SetName("Minimal force limit");
   } else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    m_Y1Axis.reset(new mpScaleY(wxT("Stress [kPa]"), mpALIGN_BORDER_LEFT, true));
+    m_Y1Axis.reset(new mpScaleY(wxT("Stress [MPa]"), mpALIGN_BORDER_LEFT, true));
     m_Y1Axis->SetPen(vectorpenStressForce);
     m_MaxStressForceLimitGraph.SetName("Maximal stress limit");
     m_MinStressForceLimitGraph.SetName("Minimal stress limit");

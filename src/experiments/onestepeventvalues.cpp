@@ -120,7 +120,7 @@ std::string OneStepEventValues::getExperimentSettings(void){
   }else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     limit = std::string(std::to_string(m_Limit) + "N");
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    limit = std::string(std::to_string(m_Limit) + "kPa");
+    limit = std::string(std::to_string(m_Limit) + "MPa");
   }
 
   return(std::string("Experiment: " + experimentTypeToString() +
@@ -146,7 +146,7 @@ std::string OneStepEventValues::experimentSettingsForName(void){
   }else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     limit = std::string(to_string_wp(m_Limit) + "N");
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    limit = std::string(to_string_wp(m_Limit) + "kPa");
+    limit = std::string(to_string_wp(m_Limit) + "MPa");
   }
 
   return(std::string("DoSoF:" + getDistanceOrForceOrStress() +

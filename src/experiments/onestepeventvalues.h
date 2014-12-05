@@ -115,7 +115,7 @@ class OneStepEventValues : public ExperimentValues
     DistanceOrForceOrStress m_DistanceOrForceOrStress;					/**< Defines if the experiment is distance or stress/force based. */
     double m_Velocity;																					/**< Velocity in mm/s. */
     double m_DelayTime;																					/**< Hold time 1 in s. */
-    double m_Limit;																							/**< Upper limit in kPa, N or mm. */
+    double m_Limit;																							/**< Upper limit in MPa, N or mm. */
     double m_DwellTime;																					/**< Hold time 1 in s. */
     long m_HoldDistance;																				/**< Hold distance in mm. */
     int m_Cycles;																								/**< Amount of cycles. */

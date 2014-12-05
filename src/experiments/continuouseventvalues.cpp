@@ -113,14 +113,20 @@ std::string ContinuousEventValues::getExperimentSettings(void){
   std::string increment;
   std::string maxvalue;
   if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
-    increment = std::string(std::to_string(m_Increment * 0.00009921875/*mm per micro step*/) + "mm");
-    maxvalue = std::string(std::to_string(m_MaxValue * 0.00009921875/*mm per micro step*/) + "mm");
+    //increment = std::string(std::to_string(m_Increment * 0.00009921875/*mm per micro step*/) + "mm");
+    //maxvalue = std::string(std::to_string(m_MaxValue * 0.00009921875/*mm per micro step*/) + "mm");
+    increment = std::string(std::to_string(m_Increment + "mm");
+    maxvalue = std::string(std::to_string(m_MaxValue + "mm");
   }else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
+    //increment = std::string(std::to_string(m_Increment / 10000.0) + "N");
+    //maxvalue = std::string(std::to_string(m_MaxValue / 10000.0) + "N");
     increment = std::string(std::to_string(m_Increment / 10000.0) + "N");
     maxvalue = std::string(std::to_string(m_MaxValue / 10000.0) + "N");
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    increment = std::string(std::to_string(m_Increment / (m_Area * 10.0)) + "kPa");
-    maxvalue = std::string(std::to_string(m_MaxValue / (m_Area * 10.0)) + "kPa");
+    //increment = std::string(std::to_string(m_Increment / (m_Area * 10.0)) + "MPa");
+    //maxvalue = std::string(std::to_string(m_MaxValue / (m_Area * 10.0)) + "MPa");
+    increment = std::string(std::to_string(m_Increment) + "MPa");
+    maxvalue = std::string(std::to_string(m_MaxValue) + "MPa");
   }
 
   return(std::string("Experiment: " + experimentTypeToString() +
@@ -144,14 +150,20 @@ std::string ContinuousEventValues::experimentSettingsForName(void){
   std::string increment;
   std::string maxvalue;
   if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
-    increment = std::string(to_string_wp(m_Increment * 0.00009921875/*mm per micro step*/) + "mm");
-    maxvalue = std::string(to_string_wp(m_MaxValue * 0.00009921875/*mm per micro step*/) + "mm");
+    //increment = std::string(to_string_wp(m_Increment * 0.00009921875/*mm per micro step*/) + "mm");
+    //maxvalue = std::string(to_string_wp(m_MaxValue * 0.00009921875/*mm per micro step*/) + "mm");
+    increment = std::string(to_string_wp(m_Increment) + "mm");
+    maxvalue = std::string(to_string_wp(m_MaxValue) + "mm");
   }else if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
-    increment = std::string(to_string_wp(m_Increment / 10000.0) + "N");
-    maxvalue = std::string(to_string_wp(m_MaxValue / 10000.0) + "N");
+    //increment = std::string(to_string_wp(m_Increment / 10000.0) + "N");
+    //maxvalue = std::string(to_string_wp(m_MaxValue / 10000.0) + "N");
+    increment = std::string(to_string_wp(m_Increment) + "N");
+    maxvalue = std::string(to_string_wp(m_MaxValue) + "N");
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    increment = std::string(to_string_wp(m_Increment / (m_Area * 10.0)) + "kPa");
-    maxvalue = std::string(to_string_wp(m_MaxValue / (m_Area * 10.0)) + "kPa");
+    //increment = std::string(to_string_wp(m_Increment / (m_Area * 10.0)) + "MPa");
+    //maxvalue = std::string(to_string_wp(m_MaxValue / (m_Area * 10.0)) + "MPa");
+    increment = std::string(to_string_wp(m_Increment) + "MPa");
+    maxvalue = std::string(to_string_wp(m_MaxValue) + "MPa");
   }
 
   return(std::string("DoSoF:" + getDistanceOrForceOrStress() +

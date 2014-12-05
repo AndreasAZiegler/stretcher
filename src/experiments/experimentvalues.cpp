@@ -72,7 +72,8 @@ double ExperimentValues::normalizeValue(double value){
   if(DistanceOrForceOrStress::Force == m_DistanceOrForceOrStress){
     value /= 10000.0;
   }else if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    value = (value / 10) / m_Area;
+    //value = (value / 10) / m_Area;
+    value = value / m_Area * 1000000000000.0;
   }else if(DistanceOrForceOrStress::Distance == m_DistanceOrForceOrStress){
     value *= 0.00009921875/*mm per micro step*/;
   }
@@ -166,7 +167,8 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
-          m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
+          //m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
+          m_ForceStressGraphValues->push_back(measurementValue.value / m_Area * 1000000000000.0);
           /*
           wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
                                    " value: " + std::to_string(measurementValue.value) +
@@ -315,7 +317,7 @@ std::string ExperimentValues::experimentTypeToString(){
 std::string ExperimentValues::getForceOrStress(void){
   std::string stressforce;
   if(DistanceOrForceOrStress::Stress == m_DistanceOrForceOrStress){
-    stressforce = "kPa";
+    stressforce = "MPa";
   }else{
     stressforce = "N";
   }
