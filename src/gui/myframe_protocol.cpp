@@ -40,7 +40,12 @@ void MyFrame::OnRunProtocol(wxCommandEvent& event){
  */
 void MyFrame::OnLoopProtocol(wxCommandEvent& event){
   if(nullptr != m_CurrentProtocol){
-    m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
+    // Set loop in protocol, if it is desired.
+    if(true == m_ProtocolsLoopCheckBox->GetValue()){
+      m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue(), m_ProtocolsLoopSpinCtrl->GetValue());
+    }else{ // Otherwise unset it.
+      m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
+     }
   }
 }
 
@@ -117,6 +122,7 @@ void MyFrame::checkProtocol(void){
                                                                &m_PreloadDoneMutex,
 
                                                                m_ProtocolsLoopCheckBox->GetValue(),
+                                                               m_ProtocolsLoopSpinCtrl->GetValue(),
                                                                m_Area,
                                                                m_MaxDistanceLimit,
                                                                m_MinDistanceLimit,

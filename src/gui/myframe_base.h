@@ -241,7 +241,9 @@ protected:
  wxButton* m_ProtocolsDownButton;
  wxButton* m_ProtocolsPauseResumeButton;
  wxCheckBox* m_ProtocolsLoopCheckBox;
+ wxSpinCtrl* m_ProtocolsLoopSpinCtrl;
  wxButton* m_ProtocolsPreviewButton;
+ wxStaticText* m_staticText91;
  wxButton* m_ProtocolsRunButton;
  wxButton* m_ProtocolsStopButton;
  wxButton* m_ProtocolsSaveButton;
@@ -478,7 +480,9 @@ private:
   m_ProtocolsDownButton = XRCCTRL(*this,"m_ProtocolsDownButton",wxButton);
   m_ProtocolsPauseResumeButton = XRCCTRL(*this,"m_ProtocolsPauseResumeButton",wxButton);
   m_ProtocolsLoopCheckBox = XRCCTRL(*this,"m_ProtocolsLoopCheckBox",wxCheckBox);
+  m_ProtocolsLoopSpinCtrl = XRCCTRL(*this,"m_ProtocolsLoopSpinCtrl",wxSpinCtrl);
   m_ProtocolsPreviewButton = XRCCTRL(*this,"m_ProtocolsPreviewButton",wxButton);
+  m_staticText91 = XRCCTRL(*this,"m_staticText91",wxStaticText);
   m_ProtocolsRunButton = XRCCTRL(*this,"m_ProtocolsRunButton",wxButton);
   m_ProtocolsStopButton = XRCCTRL(*this,"m_ProtocolsStopButton",wxButton);
   m_ProtocolsSaveButton = XRCCTRL(*this,"m_ProtocolsSaveButton",wxButton);

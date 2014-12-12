@@ -73,7 +73,7 @@ class Protocols
               std::condition_variable *wait,
               bool *preloaddoneflag,
               std::mutex *preloaddonemutex,
-              bool loopflag,
+              bool loopflag, int loopnumber,
               double area,
               long maxdistance,
               long mindistance,
@@ -258,8 +258,9 @@ class Protocols
      * @brief Sets the loop flag.
      * @param flag
      */
-    void setLoopFlag(bool flag){
+    void setLoopFlag(bool flag, int loopnumber = 0){
       m_LoopProtocolFlag = flag;
+      m_LoopNumber = loopnumber;
       wxLogMessage(std::string("Protocols: LoopFlag: " + std::to_string(m_LoopProtocolFlag)).c_str());
     }
 
@@ -308,6 +309,8 @@ class Protocols
     std::chrono::high_resolution_clock::time_point m_StartTimePoint;				/**< Start time point of the experiment. */
 
     bool m_LoopProtocolFlag;																								/**< Indicates if the protocol should be looped. */
+    int m_LoopNumber;																															/**< The amount of times the protocol should be looped. */
+    int m_CurrentLoopNumber;																								/**< The current loop number. */
     bool m_StopProtocolFlag;																								/**< Indicates if the protocol should be stopped. */
     std::mutex *m_WaitMutex;																								/**< Mutex to protect m_Wait */
     std::condition_variable *m_Wait;																				/**< Wait condition variable to wait for the end of an experiment */

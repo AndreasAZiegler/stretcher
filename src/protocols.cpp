@@ -72,6 +72,7 @@ Protocols::Protocols(wxListBox *listbox,
                      bool *preloaddoneflag,
                      std::mutex *preloaddonemutex,
                      bool loopflag,
+                     int loopnumber,
                      double area,
                      long maxdistance,
                      long mindistance,
@@ -102,6 +103,8 @@ Protocols::Protocols(wxListBox *listbox,
     m_WaitMutex(waitmutex),
     m_Wait(wait),
     m_LoopProtocolFlag(loopflag),
+    m_LoopNumber(loopnumber),
+    m_CurrentLoopNumber(0),
     m_StopProtocolFlag(false),
     m_PreloadDoneFlag(preloaddoneflag),
     m_PreloadDoneMutex(preloaddonemutex),
@@ -602,6 +605,7 @@ void Protocols::runProtocol(void){
 
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
+  m_CurrentLoopNumber = 0;
 
   // Clear vectors
   m_PreviewStressForceLimitTimePoints.clear();
@@ -761,11 +765,13 @@ void Protocols::process(void){
     m_CurrentExperimentNr = 0;
     m_ListBox->SetSelection(m_CurrentExperimentNr);
 
-    if(true == m_LoopProtocolFlag){
+    if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
       //runProtocol();
+      m_CurrentLoopNumber++;
       process();
     }else{
       // Ask the user if the recorded data should be saved.
+      m_CurrentLoopNumber = 0;
       m_MyFrame->showExportCSVDialogFromProtocols();
     }
   }
@@ -1111,6 +1117,7 @@ void Protocols::checkFinishedExperiment(void){
   // Reset the current experiment number if protocol should stop.
   if(true == m_StopProtocolFlag){
     m_CurrentExperimentNr = 0;
+    m_CurrentLoopNumber = 0;
   }
 
   {
