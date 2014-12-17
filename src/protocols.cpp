@@ -687,7 +687,6 @@ void Protocols::runProtocol(void){
     t1.detach();
     m_CurrentExperimentNr++;
     m_CurrentLoopNumber++;
-    CurrentLoop;
 
     // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
