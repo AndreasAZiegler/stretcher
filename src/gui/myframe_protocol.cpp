@@ -50,6 +50,14 @@ void MyFrame::OnLoopProtocol(wxCommandEvent& event){
 }
 
 /**
+ * @brief Updates the current loop nr in the GUI.
+ * @param nr The current loop nr.
+ */
+void MyFrame::updateCurrentLoopNr(int nr){
+ m_ProtocolsCurrentLoopNrStaticText->SetLabel(wxString(to_string_wp(nr)));
+}
+
+/**
  * @brief Method which will be executed, when the user changes the loop number.
  * @param event Occuring event
  */

@@ -202,6 +202,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      */
     void showExportCSVDialogFromProtocols(void);
 
+    /**
+     * @brief Updates the current loop nr in the GUI.
+     * @param nr The current loop nr.
+     */
+    void updateCurrentLoopNr(int nr);
+
   private:
 
     /**

@@ -606,6 +606,8 @@ void Protocols::runProtocol(void){
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
   m_CurrentLoopNumber = 0;
+  // Update current loop number in the GUI.
+  m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
   // Clear vectors
   m_PreviewStressForceLimitTimePoints.clear();
@@ -687,6 +689,8 @@ void Protocols::runProtocol(void){
     t1.detach();
     m_CurrentExperimentNr++;
     m_CurrentLoopNumber++;
+    // Update current loop number in the GUI.
+    m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
     // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
@@ -769,10 +773,14 @@ void Protocols::process(void){
     if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
       //runProtocol();
       m_CurrentLoopNumber++;
+      // Update current loop number in the GUI.
+      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
       process();
     }else{
       // Ask the user if the recorded data should be saved.
       m_CurrentLoopNumber = 0;
+      // Update current loop number in the GUI.
+      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
       m_MyFrame->showExportCSVDialogFromProtocols();
     }
   }
@@ -1119,6 +1127,8 @@ void Protocols::checkFinishedExperiment(void){
   if(true == m_StopProtocolFlag){
     m_CurrentExperimentNr = 0;
     m_CurrentLoopNumber = 0;
+    // Update current loop number in the GUI.
+    m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
   }
 
   {

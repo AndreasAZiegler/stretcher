@@ -2425,7 +2425,7 @@
 									<object class="wxPanel" name="m_ProtocolsNavigationPanel">
 										<style>wxTAB_TRAVERSAL</style>
 										<object class="wxFlexGridSizer">
-											<rows>7</rows>
+											<rows>8</rows>
 											<cols>2</cols>
 											<vgap>0</vgap>
 											<hgap>0</hgap>
@@ -2503,6 +2503,24 @@
 													<value>0</value>
 													<min>0</min>
 													<max>10</max>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="m_ProtocolsCurrentLoopStaticText">
+													<label>Current Loop:</label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="m_ProtocolsCurrentLoopNrStaticText">
+													<label></label>
+													<wrap>-1</wrap>
 												</object>
 											</object>
 											<object class="sizeritem">
