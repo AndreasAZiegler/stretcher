@@ -582,6 +582,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnLoopProtocol(wxCommandEvent& event);
 
     /**
+     * @brief Method which will be executed, when the user changes the loop number.
+     * @param event Occuring event
+     */
+    void OnLoopNumber(wxSpinEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the stop protocol button.
      * @param event Occuring event
      */
@@ -777,12 +783,13 @@ enum
   ID_PauseExperiment = 49,
   ID_PauseResumeExperiment = 50,
   ID_LoopProtocol = 51,
-  ID_Preview = 52,
-  ID_RunProtocol = 53,
-  ID_StopProtocol = 54,
-  ID_SaveProtocol = 55,
-  ID_LoadProtocol = 56,
-  ID_TriggerMessage = 57
+  ID_LoopNumber = 52,
+  ID_Preview = 53,
+  ID_RunProtocol = 54,
+  ID_StopProtocol = 55,
+  ID_SaveProtocol = 56,
+  ID_LoadProtocol = 57,
+  ID_TriggerMessage = 58
 };
 
 #endif // MYFRAME_H

@@ -98,6 +98,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_Preview, MyFrame::OnPreviewProtocol)
   EVT_BUTTON(ID_RunProtocol, MyFrame::OnRunProtocol)
   EVT_CHECKBOX(ID_LoopProtocol, MyFrame::OnLoopProtocol)
+  EVT_SPINCTRL(ID_LoopNumber, MyFrame::OnLoopNumber)
   EVT_BUTTON(ID_StopProtocol, MyFrame::OnStopProtocol)
   EVT_BUTTON(ID_SaveProtocol, MyFrame::OnSaveProtocol)
   EVT_BUTTON(ID_LoadProtocol, MyFrame::OnLoadProtocol)
@@ -210,6 +211,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsPauseResumeButton->SetId(ID_PauseResumeExperiment);
   m_ProtocolsTriggerButton->SetId(ID_TriggerMessage);
   m_ProtocolsLoopCheckBox->SetId(ID_LoopProtocol);
+  m_ProtocolsLoopSpinCtrl->SetId(ID_LoopNumber);
   m_ProtocolsPreviewButton->SetId(ID_Preview);
   m_ProtocolsRunButton->SetId(ID_RunProtocol);
   m_ProtocolsStopButton->SetId(ID_StopProtocol);

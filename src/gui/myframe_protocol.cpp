@@ -45,7 +45,22 @@ void MyFrame::OnLoopProtocol(wxCommandEvent& event){
       m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue(), m_ProtocolsLoopSpinCtrl->GetValue());
     }else{ // Otherwise unset it.
       m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
-     }
+    }
+  }
+}
+
+/**
+ * @brief Method which will be executed, when the user changes the loop number.
+ * @param event Occuring event
+ */
+void MyFrame::OnLoopNumber(wxSpinEvent &event){
+  if(nullptr != m_CurrentProtocol){
+    // Set loop in protocol, if it is desired.
+    if(true == m_ProtocolsLoopCheckBox->GetValue()){
+      m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue(), m_ProtocolsLoopSpinCtrl->GetValue());
+    }else{ // Otherwise unset it.
+      m_CurrentProtocol->setLoopFlag(m_ProtocolsLoopCheckBox->GetValue());
+    }
   }
 }
 
