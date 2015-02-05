@@ -773,8 +773,6 @@ void Protocols::process(void){
     m_ListBox->SetSelection(m_CurrentExperimentNr);
 
     if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
-      // Set the start length (distance between the stages) of the first experiment.
-      m_Experiments[m_CurrentExperimentNr]->setStartLength();
 
 						// Check if an experiment is currently running
 						bool flag = false;
@@ -785,6 +783,9 @@ void Protocols::process(void){
 							}
 							std::this_thread::sleep_for(std::chrono::milliseconds(1));
 						}
+
+      // Set the start length (distance between the stages) of the first experiment.
+      m_Experiments[m_CurrentExperimentNr]->setStartLength();
 
       //runProtocol();
       m_CurrentLoopNumber++;
