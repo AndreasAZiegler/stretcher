@@ -605,7 +605,6 @@ void Protocols::runProtocol(void){
 
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
-  m_CurrentLoopNumber = 0;
   // Update current loop number in the GUI.
   m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
