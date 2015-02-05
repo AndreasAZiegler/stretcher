@@ -775,12 +775,12 @@ void Protocols::process(void){
     if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
 
 						// Check if an experiment is currently running
-						bool flag = false;
+						bool flag = true;
 						while(true == flag){
 							{
 								std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
 								if(false == m_ExperimentRunningFlag){
-									flag = true;
+									flag = false;
 								}
 							}
 							std::this_thread::sleep_for(std::chrono::milliseconds(1));
