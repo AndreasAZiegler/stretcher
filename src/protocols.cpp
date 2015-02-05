@@ -780,8 +780,19 @@ void Protocols::process(void){
       //runProtocol();
       m_CurrentLoopNumber++;
 
+						// Check if an experiment is currently running
+						bool flag = false;
+						while(true == flag){
+							std::lock_guard<std::mutex> lck{m_ExperimentRunningMutex};
+							if(false == m_ExperimentRunningFlag){
+								flag = true;
+							}
+							std::this_thread::sleep_for(std::chrono::milliseconds(1));
+						}
+
       // Update current loop number in the GUI.
       m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+
       process();
     }else{
       // Ask the user if the recorded data should be saved.
