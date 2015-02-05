@@ -688,9 +688,12 @@ void Protocols::runProtocol(void){
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.detach();
     m_CurrentExperimentNr++;
+
+    /*
     m_CurrentLoopNumber++;
     // Update current loop number in the GUI.
     m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+    */
 
     // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
