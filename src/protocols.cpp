@@ -777,9 +777,6 @@ void Protocols::process(void){
       // Set the start length (distance between the stages) of the first experiment.
       m_Experiments[m_CurrentExperimentNr]->setStartLength();
 
-      //runProtocol();
-      m_CurrentLoopNumber++;
-
 						// Check if an experiment is currently running
 						bool flag = false;
 						while(true == flag){
@@ -790,10 +787,13 @@ void Protocols::process(void){
 							std::this_thread::sleep_for(std::chrono::milliseconds(1));
 						}
 
+      //runProtocol();
+      m_CurrentLoopNumber++;
+
       // Update current loop number in the GUI.
       m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
-      process();
+      runProtocol();
     }else{
       // Ask the user if the recorded data should be saved.
       m_CurrentLoopNumber = 0;
