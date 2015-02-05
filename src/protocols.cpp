@@ -792,7 +792,7 @@ void Protocols::process(void){
       // Update current loop number in the GUI.
       m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
-      runProtocol();
+      process();
     }else{
       // Ask the user if the recorded data should be saved.
       m_CurrentLoopNumber = 0;
