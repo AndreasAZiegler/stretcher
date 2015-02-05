@@ -771,8 +771,12 @@ void Protocols::process(void){
     m_ListBox->SetSelection(m_CurrentExperimentNr);
 
     if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
+      // Set the start length (distance between the stages) of the first experiment.
+      m_Experiments[m_CurrentExperimentNr]->setStartLength();
+
       //runProtocol();
       m_CurrentLoopNumber++;
+
       // Update current loop number in the GUI.
       m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
       process();
