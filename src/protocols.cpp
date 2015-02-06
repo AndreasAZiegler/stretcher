@@ -780,11 +780,13 @@ void Protocols::process(void){
       // Update current loop number in the GUI.
       m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
       process();
-    }else{
-      // Ask the user if the recorded data should be saved.
+    }else{ // Protocol should not be looped.
       m_CurrentLoopNumber = 0;
+
       // Update current loop number in the GUI.
-      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber - 1);
+
+      // Ask the user if the recorded data should be saved.
       m_MyFrame->showExportCSVDialogFromProtocols();
     }
   }

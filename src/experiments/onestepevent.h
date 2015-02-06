@@ -74,6 +74,11 @@ class OneStepEvent : public Experiment, virtual public UpdatedValuesReceiver
     virtual void setPreloadDistance();
 
     /**
+     * @brief Sets the start length.
+     */
+    virtual void setStartLength(void);
+
+    /**
      * @brief Returns struct with the parameters for the GUI.
      * @return The parameters for the GUI.
      */

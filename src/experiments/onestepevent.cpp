@@ -205,6 +205,16 @@ void OneStepEvent::setPreloadDistance(){
 }
 
 /**
+ * @brief Sets the start length.
+ */
+void OneStepEvent::setStartLength(void){
+  m_StartLength = m_CurrentDistance;
+
+  // Initialize parameters.
+  initParameters();
+}
+
+/**
  * @brief Returns struct with the parameters for the GUI.
  * @return The parameters for the GUI.
  */
