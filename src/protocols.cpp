@@ -688,9 +688,10 @@ void Protocols::runProtocol(void){
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.detach();
     m_CurrentExperimentNr++;
-    m_CurrentLoopNumber++;
+
+    //m_CurrentLoopNumber++;
     // Update current loop number in the GUI.
-    m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+    //m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
     // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
@@ -770,7 +771,7 @@ void Protocols::process(void){
     m_CurrentExperimentNr = 0;
     m_ListBox->SetSelection(m_CurrentExperimentNr);
 
-    if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
+    if((true == m_LoopProtocolFlag) && ((m_LoopNumber > (m_CurrentLoopNumber + 1)) || (0 == m_LoopNumber))){
       //runProtocol();
       m_CurrentLoopNumber++;
       // Update current loop number in the GUI.
@@ -780,7 +781,7 @@ void Protocols::process(void){
       // Ask the user if the recorded data should be saved.
       m_CurrentLoopNumber = 0;
       // Update current loop number in the GUI.
-      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber - 1);
       m_MyFrame->showExportCSVDialogFromProtocols();
     }
   }

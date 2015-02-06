@@ -54,7 +54,7 @@ void MyFrame::OnLoopProtocol(wxCommandEvent& event){
  * @param nr The current loop nr.
  */
 void MyFrame::updateCurrentLoopNr(int nr){
- m_ProtocolsCurrentLoopNrStaticText->SetLabel(wxString(to_string_wp(nr)));
+ m_ProtocolsCurrentLoopNrStaticText->SetLabel(wxString(to_string_wp(nr + 1)));
 }
 
 /**
