@@ -605,7 +605,6 @@ void Protocols::runProtocol(void){
 
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
-  m_CurrentLoopNumber = 0;
   // Update current loop number in the GUI.
   m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
 
@@ -688,9 +687,12 @@ void Protocols::runProtocol(void){
     //std::thread t1(&Experiment::process, m_CurrentExperiment, Preload::Event::evStart);
     t1.detach();
     m_CurrentExperimentNr++;
+
+    /*
     m_CurrentLoopNumber++;
     // Update current loop number in the GUI.
     m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+    */
 
     // Start checkFinishedExperiment method to catch the end of the experiment.
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
@@ -714,7 +716,7 @@ void Protocols::process(void){
       return;
     }
   }
-  if(m_Experiments.size() > m_CurrentExperimentNr){
+  if(m_Experiments.size() > m_CurrentExperimentNr){ // Check if the protocol is not finished yet.
 
     // Check if the experiment is a preloading experiment where a flag has to be set.
     if(ExperimentType::Preload == m_Experiments[m_CurrentExperimentNr]->getExperimentType()){
@@ -766,19 +768,21 @@ void Protocols::process(void){
     m_ExperimentRunningThread.reset(new std::thread(&Protocols::checkFinishedExperiment, this));
     m_ExperimentRunningThread->detach();
 
-  } else{
+  } else{ // Protocol finished
     m_CurrentExperimentNr = 0;
     m_ListBox->SetSelection(m_CurrentExperimentNr);
 
-    if((true == m_LoopProtocolFlag) && ((m_LoopNumber > m_CurrentLoopNumber) || (0 == m_LoopNumber))){
-      // Set the start length (distance between the stages) of the first experiment.
-      m_Experiments[m_CurrentExperimentNr]->setStartLength();
+    // Check if the protocol should be looped.
+    if((true == m_LoopProtocolFlag) && ((m_LoopNumber > (m_CurrentLoopNumber + 1)) || (0 == m_LoopNumber))){
 
-      //runProtocol();
+      // Set the start length (distance between the stages) of the first experiment.
+      //m_Experiments[m_CurrentExperimentNr]->setStartLength();
+
       m_CurrentLoopNumber++;
 
       // Update current loop number in the GUI.
       m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+
       process();
     }else{ // Protocol should not be looped.
       m_CurrentLoopNumber = 0;
