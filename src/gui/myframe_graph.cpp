@@ -195,7 +195,7 @@ void MyFrame::updateGraph(void){
   m_Graph->Fit();
  }catch(int e){
   //std::cout << "ExperimentVaues graph fitted." << std::endl;
-   wxLogMessage("An exception occurred.");
+   std::cout << "An exception occurred." << std::endl;
  }
 }
 
