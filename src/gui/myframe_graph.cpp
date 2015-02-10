@@ -191,8 +191,12 @@ void MyFrame::showPreviewGraph(){
  * @brief Updates the graph in the GUI.
  */
 void MyFrame::updateGraph(void){
+ try{
   m_Graph->Fit();
+ }catch(int e){
   //std::cout << "ExperimentVaues graph fitted." << std::endl;
+   wxLogMessage("An exception occurred.");
+ }
 }
 
 /**
