@@ -2502,7 +2502,7 @@
 													<style>wxSP_ARROW_KEYS</style>
 													<value>0</value>
 													<min>0</min>
-													<max>10</max>
+													<max>1000</max>
 												</object>
 											</object>
 											<object class="sizeritem">
