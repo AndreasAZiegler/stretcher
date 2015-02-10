@@ -255,7 +255,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_ForceStressDisplacementGraph->SetData(*m_DisplacementGraphValues, *m_ForceStressGraphValues);
       }
       // Update the graph from the main thread.
-      m_MyFrame->updateGraphFromExperimentValues();
+      //m_MyFrame->updateGraphFromExperimentValues();
     }
   }
 }
