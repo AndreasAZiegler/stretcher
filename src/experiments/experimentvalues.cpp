@@ -167,6 +167,11 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
           m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
+
+										if(0.001 > ((measurementValue.value / 10.0) / m_Area)){
+											wxLogMessage(std::string("Stress/Force level: " + std::to_string((measurementValue.value / 10.0) / m_Area)).c_str());
+										}
+
           /*
           wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
                                    " value: " + std::to_string(measurementValue.value) +
