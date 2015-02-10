@@ -795,6 +795,7 @@ void OneStepEvent::resetExperiment(void){
   m_CheckLimitsFlag = false;
   m_CurrentDirection = Direction::Stop;
   m_GageLength = m_DefaultGageLength;
+  m_StartLength = m_CurrentDistance;
 
   // Initialize parameters.
   initParameters();
