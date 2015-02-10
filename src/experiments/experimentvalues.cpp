@@ -225,7 +225,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
   {
     // Update graph only every 10th update.
     m_DisplayGraphDelay++;
-    if(10 <= m_DisplayGraphDelay){
+    if(50 <= m_DisplayGraphDelay){
       m_DisplayGraphDelay = 0;
 
       std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
