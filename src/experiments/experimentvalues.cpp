@@ -80,6 +80,14 @@ double ExperimentValues::normalizeValue(double value){
 }
 
 /**
+ * @brief Sets the activation/deactivation flag for the graph
+ * @param flag true = activated / false = deactivated.
+ */
+void ExperimentValues::activateDeactivateGraph(bool flag){
+ m_GraphActivatedFlag = flag;
+}
+
+/**
  * @brief Registers the update methods to receive the measurement values.
  * @param forcestressvector Vector for the force values.
  * @param distancevector Vector for the distance alues.
@@ -255,7 +263,9 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_ForceStressDisplacementGraph->SetData(*m_DisplacementGraphValues, *m_ForceStressGraphValues);
       }
       // Update the graph from the main thread.
-      m_MyFrame->updateGraphFromExperimentValues();
+      if(true == m_GraphActivatedFlag){
+       m_MyFrame->updateGraphFromExperimentValues();
+      }
     }
   }
 }

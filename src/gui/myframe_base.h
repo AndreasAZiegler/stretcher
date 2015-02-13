@@ -273,6 +273,7 @@ protected:
  wxButton* m_GraphClearButton;
  wxComboBox* m_GraphTypeComboBox;
  wxCheckBox* m_GraphLimitsCheckBox;
+ wxCheckBox* m_GraphAcDeacCheckBox;
 
 private:
  void InitWidgetsFromXRC(wxWindow *parent){
@@ -523,6 +524,7 @@ private:
   m_GraphClearButton = XRCCTRL(*this,"m_GraphClearButton",wxButton);
   m_GraphTypeComboBox = XRCCTRL(*this,"m_GraphTypeComboBox",wxComboBox);
   m_GraphLimitsCheckBox = XRCCTRL(*this,"m_GraphLimitsCheckBox",wxCheckBox);
+  m_GraphAcDeacCheckBox = XRCCTRL(*this,"m_GraphAcDeacCheckBox",wxCheckBox);
   m_GraphSizer2 = static_cast<wxBoxSizer*>(m_GraphExportCSVButton->GetContainingSizer());
   m_GraphSizer1 = static_cast<wxBoxSizer*>(m_GraphPanel->GetSizer());
  }

@@ -110,6 +110,12 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     }
 
     /**
+     * @brief Sets the activation/deactivation flag for the graph
+     * @param flag true = activated / false = deactivated.
+     */
+    void activateDeactivateGraph(bool flag);
+
+    /**
      * @brief Registers the update methods to receive the measurement values.
      * @param forcestressvector Vector for the force values.
      * @param distancevector Vector for the distance alues.
@@ -251,6 +257,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     ExperimentType m_ExperimentType;																									/**< Type of the experiment */
     std::shared_ptr<StageFrame> m_StageFrame;																					/**< Pointer to the stage frame object */
     std::shared_ptr<ForceSensorMessageHandler> m_ForceSensorMessageHandler;						/**< Pointer to the message handler object */
+    bool m_GraphActivatedFlag;																													/** Indicates if the graph should be activated or deactivated. */
     mpFXYVector *m_ForceStressDistanceGraph;																					/**< Pointer to the force/stress - distance graph */
     std::mutex *m_VectorLayerMutex;																										/**< Pointer to the mutex to protect m_VectorLayer */
     mpFXYVector *m_MaxForceLimitVectorLayer;																					/**< Pointer to the maximal force limit graph. */

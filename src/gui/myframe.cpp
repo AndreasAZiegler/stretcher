@@ -86,6 +86,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, MyFrame_Base)
   EVT_BUTTON(ID_SaveLog, MyFrame::OnSaveLog)
   EVT_COMBOBOX(ID_GraphChangeType, MyFrame::OnGraphChangeType)
   EVT_CHECKBOX(ID_GraphShowLimits, MyFrame::OnGraphShowLimits)
+  EVT_CHECKBOX(ID_GraphAcDeactivate, MyFrame::OnGraphAcDeactivate)
   EVT_BUTTON(ID_ClearGraph, MyFrame::OnClearGraph)
   EVT_BUTTON(ID_ExportCSV, MyFrame::OnExportCSV)
   EVT_BUTTON(ID_ExportPNG, MyFrame::OnExportPNG)
@@ -201,6 +202,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_LogSaveButton->SetId(ID_SaveLog);
   m_GraphTypeComboBox->SetId(ID_GraphChangeType);
   m_GraphLimitsCheckBox->SetId(ID_GraphShowLimits);
+  m_GraphAcDeacCheckBox->SetId(ID_GraphAcDeactivate);
   m_GraphClearButton->SetId(ID_ClearGraph);
   m_GraphExportCSVButton->SetId(ID_ExportCSV);
   m_GraphExportPNGButton->SetId(ID_ExportPNG);

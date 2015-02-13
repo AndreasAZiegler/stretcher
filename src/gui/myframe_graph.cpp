@@ -64,6 +64,14 @@ void MyFrame::OnGraphShowLimits(wxCommandEvent& event){
 }
 
 /**
+ * @brief Method wich will be executed, when the user wants to activate/deactivate the graph.
+ * @param event Occuring event
+ */
+void MyFrame::OnGraphAcDeactivate(wxCommandEvent& event){
+
+}
+
+/**
  * @brief Prepares the graph to show the experiment values.
  */
 void MyFrame::createValuesGraph(void){

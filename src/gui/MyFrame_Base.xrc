@@ -2715,7 +2715,7 @@
 								<object class="sizeritem">
 									<option>1</option>
 									<flag>wxEXPAND</flag>
-									<border>5</border>
+									<border>6</border>
 									<object class="wxBoxSizer">
 										<orient>wxHORIZONTAL</orient>
 										<object class="sizeritem">
@@ -2807,6 +2807,15 @@
 											<border>5</border>
 											<object class="wxCheckBox" name="m_GraphLimitsCheckBox">
 												<label>Show limits</label>
+												<checked>0</checked>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxCheckBox" name="m_GraphAcDeacCheckBox">
+												<label>Deactivate</label>
 												<checked>0</checked>
 											</object>
 										</object>
