@@ -51,7 +51,7 @@ class MyFileOutput : public MyFileOutput_Base
  */
 enum
 {
-  ID_FileOutputOK = 60
+  ID_FileOutputOK = 61
 };
 
 #endif // MYFILEOUTPUT_H

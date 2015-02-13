@@ -193,6 +193,12 @@ class Protocols
     void stopProtocol(void);
 
     /**
+     * @brief Activates & deactivated the graph in the experiment values class.
+     * @param flag true = activated / false = deactivated.
+     */
+    void acDeactivateGraph(bool flag);
+
+    /**
      * @brief Moves the experiment from the current position to the one before.
      * @param experimentPosition The current experiment position.
      */

@@ -513,6 +513,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void OnGraphShowLimits(wxCommandEvent& event);
 
     /**
+     * @brief Method wich will be executed, when the user wants to activate/deactivate the graph.
+     * @param event Occuring event
+     */
+    void OnGraphAcDeactivate(wxCommandEvent& event);
+
+    /**
      * @brief Method wich will be executed, when the user clicks on the clear graph button.
      * @param event Occuring event
      */
@@ -785,23 +791,24 @@ enum
 
   ID_GraphChangeType = 41,
   ID_GraphShowLimits = 42,
-  ID_ClearGraph = 43,
-  ID_ExportCSV = 44,
-  ID_ExportPNG = 45,
+  ID_GraphAcDeactivate = 43,
+  ID_ClearGraph = 44,
+  ID_ExportCSV = 45,
+  ID_ExportPNG = 46,
 
-  ID_DeleteExperiment = 46,
-  ID_MoveUpExperiment = 47,
-  ID_MoveDownExperiment = 48,
-  ID_PauseExperiment = 49,
-  ID_PauseResumeExperiment = 50,
-  ID_LoopProtocol = 51,
-  ID_LoopNumber = 52,
-  ID_Preview = 53,
-  ID_RunProtocol = 54,
-  ID_StopProtocol = 55,
-  ID_SaveProtocol = 56,
-  ID_LoadProtocol = 57,
-  ID_TriggerMessage = 58
-};
+  ID_DeleteExperiment = 47,
+  ID_MoveUpExperiment = 48,
+  ID_MoveDownExperiment = 49,
+  ID_PauseExperiment = 50,
+  ID_PauseResumeExperiment = 51,
+  ID_LoopProtocol = 52,
+  ID_LoopNumber = 53,
+  ID_Preview = 54,
+  ID_RunProtocol = 55,
+  ID_StopProtocol = 56,
+  ID_SaveProtocol = 57,
+  ID_LoadProtocol = 58,
+  ID_TriggerMessage = 59
+ };
 
 #endif // MYFRAME_H
