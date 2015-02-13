@@ -68,7 +68,7 @@ void MyFrame::OnGraphShowLimits(wxCommandEvent& event){
  * @param event Occuring event
  */
 void MyFrame::OnGraphAcDeactivate(wxCommandEvent& event){
-
+ m_CurrentProtocol->acDeactivateGraph(m_GraphAcDeacCheckBox->GetValue());
 }
 
 /**
