@@ -50,6 +50,14 @@ void MyFrame::OnLoopProtocol(wxCommandEvent& event){
 }
 
 /**
+ * @brief Updates the current loop nr in the GUI from the protocol.
+ * @param nr The current loop nr.
+ */
+void MyFrame::updateCurrentLoopNrFromProtocol(int nr){
+  CallAfter(&MyFrame::updateCurrentLoopNr, nr);
+}
+
+/**
  * @brief Updates the current loop nr in the GUI.
  * @param nr The current loop nr.
  */

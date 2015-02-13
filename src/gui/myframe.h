@@ -203,10 +203,10 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
     void showExportCSVDialogFromProtocols(void);
 
     /**
-     * @brief Updates the current loop nr in the GUI.
+     * @brief Updates the current loop nr in the GUI from the protocol.
      * @param nr The current loop nr.
      */
-    void updateCurrentLoopNr(int nr);
+    void updateCurrentLoopNrFromProtocol(int nr);
 
   private:
 
@@ -642,6 +642,12 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
      * @brief Creates the preview graph.
      */
     void createPreviewGraph(void);
+
+    /**
+     * @brief Updates the current loop nr in the GUI.
+     * @param nr The current loop nr.
+     */
+    void updateCurrentLoopNr(int nr);
 
   private:
 

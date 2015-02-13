@@ -606,7 +606,7 @@ void Protocols::runProtocol(void){
   m_StopProtocolFlag = false;
   m_CurrentExperimentNr = 0;
   // Update current loop number in the GUI.
-  m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+  m_MyFrame->updateCurrentLoopNrFromProtocol(m_CurrentLoopNumber);
 
   // Clear vectors
   m_PreviewStressForceLimitTimePoints.clear();
@@ -781,14 +781,14 @@ void Protocols::process(void){
       m_CurrentLoopNumber++;
 
       // Update current loop number in the GUI.
-      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber);
+      m_MyFrame->updateCurrentLoopNrFromProtocol(m_CurrentLoopNumber);
 
       process();
     }else{ // Protocol should not be looped.
       m_CurrentLoopNumber = 0;
 
       // Update current loop number in the GUI.
-      m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber - 1);
+      m_MyFrame->updateCurrentLoopNrFromProtocol(m_CurrentLoopNumber - 1);
 
       // Ask the user if the recorded data should be saved.
       m_MyFrame->showExportCSVDialogFromProtocols();
@@ -1138,7 +1138,7 @@ void Protocols::checkFinishedExperiment(void){
     m_CurrentExperimentNr = 0;
     m_CurrentLoopNumber = 0;
     // Update current loop number in the GUI.
-    m_MyFrame->updateCurrentLoopNr(m_CurrentLoopNumber - 1);
+    m_MyFrame->updateCurrentLoopNrFromProtocol(m_CurrentLoopNumber - 1);
   }
 
   {
