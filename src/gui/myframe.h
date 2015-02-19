@@ -14,6 +14,9 @@
 #include <wx/window.h>
 #include <wx/string.h>
 #include <condition_variable>
+#include <plplot.h>
+#include "wxPLplotstream.h"
+#include "wxPLplotwindow.h"
 #include "myframe_base.h"
 #include "increasedecreasevelocitytimer.h"
 #include "../updatedvaluesreceiver.h"
@@ -652,7 +655,13 @@ class MyFrame : public MyFrame_Base, public UpdatedValuesReceiver
   private:
 
     bool m_BlockNotebookTabFlag;																													/**< Indicate if the current tab in wxNotebook should be blocked. */
-    std::unique_ptr<mpWindow> m_Graph;																										/**< Pointer to the graph */
+
+    //wxMemoryDC *m_MemPlotDC;
+    //wxBitmap *m_MemPlotDCBitmap;
+    //wxPLplotstream *m_MySteam;
+
+    wxPLplotwindow<wxPanel> *m_Graph;
+
     std::mutex m_UpdateGraphMutex;																												/**< Mutex to protect the graph update. */
     bool m_ShowGraphFlag;																																	/**< Indicates if the graph is active or not. */
     mpFXYVector m_ForceStressDistanceGraph;																								/**< Vector layer for the value graph */

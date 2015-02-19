@@ -155,6 +155,12 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_XAxis(nullptr),
     m_Y1Axis(nullptr),
     m_Y2Axis(nullptr),
+
+    m_Graph(nullptr),
+    //m_MemPlotDC(nullptr),
+    //m_MemPlotDCBitmap(nullptr),
+    //m_MySteam(nullptr),
+
     m_MessageHandlersFinishedNumber(0),
     m_HighVelocityAbort(false)
 {
@@ -238,9 +244,60 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsListBox->Connect(m_ProtocolsListBox->GetId(), wxEVT_CONTEXT_MENU, wxMouseEventHandler(MyFrame::OnProtocolsListRightClick), NULL, this);
 
   // Create graph
-  m_Graph = std::unique_ptr<mpWindow>(new mpWindow(m_GraphPanel, wxID_ANY));
+  //m_Graph = std::unique_ptr<wxMyGraph>(new wxMyGraph(m_GraphPanel, wxID_ANY));
+
+  m_Graph = new wxPLplotwindow<wxPanel>();
+  m_Graph->Create( m_GraphPanel, wxID_ANY);
+  m_Graph->Show(true);
+
+  wxPLplotstream *tmp = m_Graph->GetStream();
+
+  PLFLT x[100], y[100];
+  PLFLT xmin = 0., xmax = 1., ymin = 0., ymax = 100.;
+  int   i;
+
+  for ( i = 0; i < 100; i++ )
+  {
+    x[i] = (PLFLT) ( i ) / (PLFLT) ( 100 - 1 );
+    y[i] = ymax * x[i] * x[i];
+  }
+
+  tmp->adv(0);
+  tmp->col0(1);
+  tmp->env(xmin, xmax, ymin, ymax, 0, 0);
+  tmp->col0(2);
+  tmp->lab("x", "y", "test");
+
+  tmp->col0(3);
+  tmp->width(2);
+  tmp->line(100, x, y);
+  tmp->SetSize(600,400);
+
+  m_Graph->RenewPlot();
+
+  /*
+  m_MemPlotDC = new wxMemoryDC;
+  m_MemPlotDCBitmap = new wxBitmap( 640, 400, -1 );
+  m_MemPlotDC->SelectObject( *m_MemPlotDCBitmap );
+  m_MySteam = new wxPLplotstream( (wxDC*)m_MemPlotDC, 600, 400 );
+
+  PLFLT x[100], y[100];
+  PLFLT xmin = 0., xmax = 1., ymin = 0., ymax = 100.;
+  int   i;
+
+  for ( i = 0; i < 100; i++ )
+  {
+    x[i] = (PLFLT) ( i ) / (PLFLT) ( 100 - 1 );
+    y[i] = ymax * x[i] * x[i];
+  }
+
+  m_MySteam->init();
+  m_MySteam->env(xmin, xmax, ymin, ymax, 0, 0);
+  m_MySteam->line(100, x, y);
+  */
 
   // Define layer for the graph
+  /*
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
     m_ForceStressDistanceGraph.SetContinuity(true);
@@ -271,10 +328,12 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_MinDistanceLimitGraph.SetContinuity(true);
     m_MinDistanceLimitGraph.SetName("Minimal distance limit");
   }
+  */
 
   // Add graph to window
-  m_Graph->Fit();
-  m_GraphSizer1->Insert(0, m_Graph.get(), 0, wxEXPAND);
+  //m_Graph->Fit();
+  //m_GraphSizer1->Insert(0, m_Graph.get(), 0, wxEXPAND);
+  m_GraphSizer1->Insert(0, m_Graph, 0, wxEXPAND);
   m_GraphPanel->Layout();
 
   // Load file path
@@ -444,6 +503,7 @@ MyFrame::~MyFrame(void){
   (m_ForceSensor->getMessageHandler())->setExitFlag(false);
 
   // Remove vector, and the axis from graph.
+  /*
   m_Graph->DelLayer(&m_ForceStressDistanceGraph);
   m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
   m_Graph->DelLayer(&m_StressForcePreviewGraph);
@@ -455,6 +515,7 @@ MyFrame::~MyFrame(void){
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
+  */
 
   {
     // Wait until the message handlers are finished.
@@ -673,13 +734,13 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     // If the graph is active.
     if(true == m_ShowGraphFlag){
       wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
-      m_Graph->DelLayer(m_Y1Axis.get());
+      //m_Graph->DelLayer(m_Y1Axis.get());
       m_Y1Axis.reset(new mpScaleY(wxT("Stress [MPa]"), mpALIGN_LEFT, true));
       m_Y1Axis->SetPen(vectorpenStressForce);
       wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
       m_Y1Axis->SetFont(graphFont);
-      m_Graph->AddLayer(m_Y1Axis.get());
-      m_Graph->Fit();
+      //m_Graph->AddLayer(m_Y1Axis.get());
+      //m_Graph->Fit();
     }
 
     m_DistanceOrForceOrStress = DistanceOrForceOrStress::Stress;
@@ -703,13 +764,13 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     // If the graph is active.
     if(true == m_ShowGraphFlag){
       wxPen vectorpenStressForce(*wxBLUE, 2, wxSOLID);
-      m_Graph->DelLayer(m_Y1Axis.get());
+      //m_Graph->DelLayer(m_Y1Axis.get());
       m_Y1Axis.reset(new mpScaleY(wxT("Force [N]"), mpALIGN_LEFT, true));
       m_Y1Axis->SetPen(vectorpenStressForce);
       wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
       m_Y1Axis->SetFont(graphFont);
-      m_Graph->AddLayer(m_Y1Axis.get());
-      m_Graph->Fit();
+      //m_Graph->AddLayer(m_Y1Axis.get());
+      //m_Graph->Fit();
     }
 
     m_DistanceOrForceOrStress = DistanceOrForceOrStress::Force;

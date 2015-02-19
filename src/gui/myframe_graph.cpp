@@ -18,26 +18,32 @@ void MyFrame::OnGraphChangeType(wxCommandEvent& event){
   if(true == m_ShowGraphFlag){
     switch(m_GraphTypeComboBox->GetSelection()){
       case 0: /*Distance*/
+       /*
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDistanceGraph);
+        */
         m_XAxis->SetName(wxT("Distance [mm]"));
         break;
       case 1: /*Displacement*/
+       /*
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
         m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+        */
         m_XAxis->SetName(wxT("Displacement"));
         break;
       case 2: /*Distance and Displacmente*/
+       /*
         m_Graph->DelLayer(&m_ForceStressDistanceGraph);
         m_Graph->DelLayer(&m_ForceStressDisplacementGraph);
         m_Graph->AddLayer(&m_ForceStressDistanceGraph);
         m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+        */
         m_XAxis->SetName(wxT("Distance/Displacement [mm]"));
         break;
     }
-    m_Graph->Fit();
+    //m_Graph->Fit();
   }
 }
 
@@ -49,17 +55,21 @@ void MyFrame::OnGraphShowLimits(wxCommandEvent& event){
   // If the graph is active
   if(true == m_ShowGraphFlag){
     if(true == m_GraphLimitsCheckBox->GetValue()){
+      /*
       m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
       m_Graph->AddLayer(&m_MinStressForceLimitGraph);
       m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
       m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+      */
     }else{
+      /*
       m_Graph->DelLayer(&m_MaxStressForceLimitGraph);
       m_Graph->DelLayer(&m_MinStressForceLimitGraph);
       m_Graph->DelLayer(&m_MaxDistanceLimitGraph);
       m_Graph->DelLayer(&m_MinDistanceLimitGraph);
+      */
     }
-    m_Graph->Fit();
+    //m_Graph->Fit();
   }
 }
 
@@ -71,6 +81,7 @@ void MyFrame::createValuesGraph(void){
   m_ShowGraphFlag = true;
 
   // Remove layers
+  /*
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
@@ -82,6 +93,7 @@ void MyFrame::createValuesGraph(void){
   m_Graph->DelLayer(&m_MinStressForceLimitGraph);
   m_Graph->DelLayer(&m_MaxDistanceLimitGraph);
   m_Graph->DelLayer(&m_MinDistanceLimitGraph);
+  */
 
   // Clear vectors
   {
@@ -131,22 +143,24 @@ void MyFrame::createValuesGraph(void){
   m_XAxis->SetDrawOutsideMargins(false);
   m_Y1Axis->SetDrawOutsideMargins(false);
 
+  /*
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
   m_Graph->AddLayer(m_XAxis.get());
   m_Graph->AddLayer(m_Y1Axis.get());
+  */
 
   // Add vectors according to the active graph type.
   switch(m_GraphTypeComboBox->GetSelection()){
     case 0: /*Distance*/
-      m_Graph->AddLayer(&m_ForceStressDistanceGraph);
+      //m_Graph->AddLayer(&m_ForceStressDistanceGraph);
       break;
     case 1: /*Displacement*/
-      m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+      //m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
       break;
     case 2: /*Distance and Displacmente*/
-      m_Graph->AddLayer(&m_ForceStressDistanceGraph);
-      m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
+      //m_Graph->AddLayer(&m_ForceStressDistanceGraph);
+      //m_Graph->AddLayer(&m_ForceStressDisplacementGraph);
       break;
   }
 
@@ -162,14 +176,16 @@ void MyFrame::createValuesGraph(void){
     m_ForceStressDisplacementGraph.SetPen(vectorpenDistance);
   }
   if(true == m_GraphLimitsCheckBox->GetValue()){
+    /*
     m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
     m_Graph->AddLayer(&m_MinStressForceLimitGraph);
     m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
     m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+    */
   }
 
   // Update graph.
-  m_Graph->Fit();
+  //m_Graph->Fit();
 }
 
 /**
@@ -191,7 +207,7 @@ void MyFrame::showPreviewGraph(){
  * @brief Updates the graph in the GUI.
  */
 void MyFrame::updateGraph(void){
-  m_Graph->Fit();
+  //m_Graph->Fit();
   //std::cout << "ExperimentVaues graph fitted." << std::endl;
 }
 
@@ -203,6 +219,7 @@ void MyFrame::createPreviewGraph(void){
   m_ShowGraphFlag = true;
 
   // Remove layers
+  /*
   m_Graph->DelLayer(m_XAxis.get());
   m_Graph->DelLayer(m_Y1Axis.get());
   m_Graph->DelLayer(m_Y2Axis.get());
@@ -214,6 +231,7 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->DelLayer(&m_MinStressForceLimitGraph);
   m_Graph->DelLayer(&m_MaxDistanceLimitGraph);
   m_Graph->DelLayer(&m_MinDistanceLimitGraph);
+  */
 
   // Defines pen styles and font.
   wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -253,6 +271,7 @@ void MyFrame::createPreviewGraph(void){
   m_DistancePreviewGraph.SetPen(vectorpenDistance);
 
   // Set margins and add layers.
+  /*
   m_Graph->SetMargins(20, 20, 30, 50);
   m_Graph->EnableMousePanZoom(true);
   m_Graph->AddLayer(m_XAxis.get());
@@ -260,15 +279,18 @@ void MyFrame::createPreviewGraph(void){
   m_Graph->AddLayer(m_Y2Axis.get());
   m_Graph->AddLayer(&m_StressForcePreviewGraph);
   m_Graph->AddLayer(&m_DistancePreviewGraph);
+  */
 
   if(true == m_GraphLimitsCheckBox->GetValue()){
+    /*
     m_Graph->AddLayer(&m_MaxStressForceLimitGraph);
     m_Graph->AddLayer(&m_MinStressForceLimitGraph);
     m_Graph->AddLayer(&m_MaxDistanceLimitGraph);
     m_Graph->AddLayer(&m_MinDistanceLimitGraph);
+    */
   }
 
-  m_Graph->Fit();
+  //m_Graph->Fit();
 }
 
 /**
@@ -324,7 +346,7 @@ void MyFrame::OnExportPNG(wxCommandEvent& event){
     return;
   }
 
-  m_Graph->SaveScreenshot(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
+  //m_Graph->SaveScreenshot(saveFileDialog.GetPath(), wxBITMAP_TYPE_PNG);
   wxLogMessage(std::string("Graph saved in: " + saveFileDialog.GetPath()).c_str());
 }
 
@@ -350,6 +372,6 @@ void MyFrame::OnClearGraph(wxCommandEvent& event){
     m_ForceStressDisplacementGraph.Clear();
   }
   wxLogMessage("Cleared graph.");
-  m_Graph->Fit();
+  //m_Graph->Fit();
   //delete m_CurrentExperimentValues;
 }
