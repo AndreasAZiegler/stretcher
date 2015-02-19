@@ -207,7 +207,7 @@ void MyFrame::showPreviewGraph(){
  * @brief Updates the graph in the GUI.
  */
 void MyFrame::updateGraph(void){
-  //m_Graph->Fit();
+  m_Graph->Fit();
   //std::cout << "ExperimentVaues graph fitted." << std::endl;
 }
 

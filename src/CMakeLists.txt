@@ -55,19 +55,12 @@ if(WXMATHPLOT_FOUND)
   set(EXTERN_LIBS ${EXTERN_LIBS} ${WXMATHPLOT_LIBRARY})
 endif(WXMATHPLOT_FOUND)
 
-# Add library for the graph plplot
-find_package(Plplot REQUIRED)
-if(PLPLOT_FOUND)
-  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${PLPLOT_INCLUDE_DIR})
-  set(EXTERN_LIBS ${EXTERN_LIBS} ${PLPLOT_LIBRARY})
-endif(PLPLOT_FOUND)
-
-# Add library for the graph plplotwxwidgets
-find_package(PlplotWXWidgets REQUIRED)
-if(PLPLOTWXWIDGETS_FOUND)
-  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${PLPLOTWXWIDGETS_INCLUDE_DIR})
-  set(EXTERN_LIBS ${EXTERN_LIBS} ${PLPLOTWXWIDGETS_LIBRARY})
-endif(PLPLOTWXWIDGETS_FOUND)
+# Add library for the graph ngl
+find_package(Ngl REQUIRED)
+if(NGL_FOUND)
+  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${NGL_INCLUDE_DIR})
+  set(EXTERN_LIBS ${EXTERN_LIBS} ${NGL_LIBRARY})
+endif(NGL_FOUND)
 
 # Add library for loading and saving of settings
 find_package(Libconfig REQUIRED)

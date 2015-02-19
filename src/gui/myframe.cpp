@@ -157,9 +157,6 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
     m_Y2Axis(nullptr),
 
     m_Graph(nullptr),
-    //m_MemPlotDC(nullptr),
-    //m_MemPlotDCBitmap(nullptr),
-    //m_MySteam(nullptr),
 
     m_MessageHandlersFinishedNumber(0),
     m_HighVelocityAbort(false)
@@ -244,59 +241,20 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   m_ProtocolsListBox->Connect(m_ProtocolsListBox->GetId(), wxEVT_CONTEXT_MENU, wxMouseEventHandler(MyFrame::OnProtocolsListRightClick), NULL, this);
 
   // Create graph
-  //m_Graph = std::unique_ptr<wxMyGraph>(new wxMyGraph(m_GraphPanel, wxID_ANY));
+  m_Graph = std::unique_ptr<LineGraph>(new LineGraph(m_GraphPanel, wxID_ANY, wxSize(400,250)));
 
-  m_Graph = new wxPLplotwindow<wxPanel>();
-  m_Graph->Create( m_GraphPanel, wxID_ANY);
-  m_Graph->Show(true);
+		double *pTemp;
+		pTemp = (double *)malloc ((size_t)(400 * sizeof (double)));
+		int i;
+		for (i = 0; i < 400; i++)
+		{
+			pTemp[i] = sin ((TWO_PI * ((double)i)) / 512.0L);
+		}
+		m_Graph->AddDataSet (pTemp, GRAPH_SCALE, *wxBLUE, 400);
+		free (pTemp);
+		m_Graph->Show(true);
 
-  wxPLplotstream *tmp = m_Graph->GetStream();
-
-  PLFLT x[100], y[100];
-  PLFLT xmin = 0., xmax = 1., ymin = 0., ymax = 100.;
-  int   i;
-
-  for ( i = 0; i < 100; i++ )
-  {
-    x[i] = (PLFLT) ( i ) / (PLFLT) ( 100 - 1 );
-    y[i] = ymax * x[i] * x[i];
-  }
-
-  tmp->adv(0);
-  tmp->col0(1);
-  tmp->env(xmin, xmax, ymin, ymax, 0, 0);
-  tmp->col0(2);
-  tmp->lab("x", "y", "test");
-
-  tmp->col0(3);
-  tmp->width(2);
-  tmp->line(100, x, y);
-  tmp->SetSize(600,400);
-
-  m_Graph->RenewPlot();
-
-  /*
-  m_MemPlotDC = new wxMemoryDC;
-  m_MemPlotDCBitmap = new wxBitmap( 640, 400, -1 );
-  m_MemPlotDC->SelectObject( *m_MemPlotDCBitmap );
-  m_MySteam = new wxPLplotstream( (wxDC*)m_MemPlotDC, 600, 400 );
-
-  PLFLT x[100], y[100];
-  PLFLT xmin = 0., xmax = 1., ymin = 0., ymax = 100.;
-  int   i;
-
-  for ( i = 0; i < 100; i++ )
-  {
-    x[i] = (PLFLT) ( i ) / (PLFLT) ( 100 - 1 );
-    y[i] = ymax * x[i] * x[i];
-  }
-
-  m_MySteam->init();
-  m_MySteam->env(xmin, xmax, ymin, ymax, 0, 0);
-  m_MySteam->line(100, x, y);
-  */
-
-  // Define layer for the graph
+    // Define layer for the graph
   /*
   {
     std::lock_guard<std::mutex> lck{m_VectorLayerMutex};
@@ -333,7 +291,7 @@ MyFrame::MyFrame(const wxString &title, Settings *settings, wxWindow *parent)
   // Add graph to window
   //m_Graph->Fit();
   //m_GraphSizer1->Insert(0, m_Graph.get(), 0, wxEXPAND);
-  m_GraphSizer1->Insert(0, m_Graph, 0, wxEXPAND);
+  m_GraphSizer1->Insert(0, m_Graph.get(), 0, wxEXPAND);
   m_GraphPanel->Layout();
 
   // Load file path
