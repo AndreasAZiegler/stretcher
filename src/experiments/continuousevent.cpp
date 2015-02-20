@@ -69,6 +69,9 @@ ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
         m_MaxValueLimit(parameters.maxvalue),
         m_Steps(parameters.steps),
         m_Cycles(parameters.cycles),
+        m_HoldDistanceOrPercentage(parameters.holdDistanceOrPercentage),
+        m_InitHoldDistance(parameters.holdDistance),
+        m_HoldDistance(parameters.holdDistance),
         m_BehaviorAfterStop(parameters.behaviorAfterStop),
         m_CurrentState(State::stopState),
         m_CurrentLimit(0),
@@ -101,6 +104,7 @@ ContinuousEvent::ContinuousEvent(ExperimentParameters experimentparameters,
                                                      parameters.holdtime,
                                                      parameters.steps,
                                                      parameters.maxvalue,
+                                                     parameters.holdDistance,
                                                      parameters.cycles,
                                                      parameters.behaviorAfterStop))
 {
@@ -132,6 +136,9 @@ void ContinuousEvent::setParameters(ContinuousEventParameters parameters){
   m_InitMaxValueLimit = parameters.maxvalue;
   m_Steps = parameters.steps;
   m_Cycles = parameters.cycles;
+  m_HoldDistanceOrPercentage = parameters.holdDistanceOrPercentage;
+  m_InitHoldDistance = parameters.holdDistance;
+  m_HoldDistance = parameters.holdDistance;
   m_BehaviorAfterStop = parameters.behaviorAfterStop;
   m_InitHoldForce = parameters.stopAtForceStress;
   m_StopAtForce = parameters.stopAtForceStress;
@@ -249,6 +256,18 @@ void ContinuousEvent::initParameters(void){
     m_Steps = 1;
     m_ExperimentValues->setSteps(m_Steps);
   }
+
+  // Calculation of the hold distance.
+  if(DistanceOrPercentage::DistanceRelative == m_HoldDistanceOrPercentage){
+    m_HoldDistance = m_StartLength + (m_InitHoldDistance / 0.00009921875/*mm per micro step*/);
+    m_ExperimentValues->setHoldDistance(m_HoldDistance);
+  }else if(DistanceOrPercentage::Distance == m_HoldDistanceOrPercentage){
+    m_HoldDistance = m_InitHoldDistance / 0.00009921875/*mm per micro step*/;
+  }else if(DistanceOrPercentage::Percentage == m_HoldDistanceOrPercentage){
+    m_HoldDistance = (1 + (m_InitHoldDistance / 100.0)) * m_GageLength;
+    m_ExperimentValues->setHoldDistance(m_HoldDistance);
+    //std::cout << "OneStepEvent hold distance percent: " << m_HoldDistance << " m_GageLength: " << m_GageLength/* 0.00009921875*/ << std::endl;
+  }
 }
 
 /**
@@ -294,6 +313,8 @@ ContinuousEventParameters ContinuousEvent::getParametersForGUI(void){
   params.steps = m_Steps;
   params.cycles = m_Cycles;
   params.behaviorAfterStop = m_BehaviorAfterStop;
+  params.holdDistanceOrPercentage = m_HoldDistanceOrPercentage;
+  params.holdDistance = m_InitHoldDistance;
   params.stopAtForceStress = m_InitHoldForce;
 
   return(params);
@@ -320,6 +341,7 @@ void ContinuousEvent::getXML(pugi::xml_document &xml){
   node.append_attribute("Steps") = m_Steps;
   node.append_attribute("Cycles") = m_Cycles;
   node.append_attribute("BehaviorAfterStop") = static_cast<int>(m_BehaviorAfterStop);
+  node.append_attribute("HoldDistance") = m_InitHoldDistance;
   node.append_attribute("HoldForce") = m_InitHoldForce;
 }
 
@@ -376,6 +398,9 @@ void ContinuousEvent::getPreview(std::vector<Experiment::PreviewValue>& previewv
           break;
         case BehaviorAfterStop::HoldAForce:
           previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Force, m_StopAtForce));
+          break;
+        case BehaviorAfterStop::HoldADistance:
+          previewvalue.push_back(PreviewValue(timepoint, DistanceOrForceOrStress::Distance, m_HoldDistance));
           break;
       }
     }
@@ -548,6 +573,11 @@ void ContinuousEvent::process(Event event){
                     }
                   }
                   break;
+                case BehaviorAfterStop::HoldADistance:
+                  m_CurrentLimit = m_HoldDistance;
+                  wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance * 0.00009921875/*mm per micro step*/) + " mm").c_str());
+                  m_StageFrame->gotoStepsDistance(m_HoldDistance);
+                  break;
               }
               //wxLogMessage("ContinuousEvent: Went to end length.");
               //process(Event::evUpdate);
@@ -686,6 +716,11 @@ void ContinuousEvent::process(Event event){
                         m_StageFrame->moveForward(m_Velocity);
                       }
                     }
+                    break;
+                   case BehaviorAfterStop::HoldADistance:
+                    m_CurrentLimit = m_HoldDistance;
+                    wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance * 0.00009921875/*mm per micro step*/) + " mm").c_str());
+                    m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
                 //wxLogMessage("ContinuousEvent: Went to end length.");
@@ -841,6 +876,11 @@ void ContinuousEvent::process(Event event){
                         m_StageFrame->moveForward(m_Velocity);
                       }
                     }
+                    break;
+                   case BehaviorAfterStop::HoldADistance:
+                    m_CurrentLimit = m_HoldDistance;
+                    wxLogMessage(std::string("OneStepEvent: Go to hold distance: " + std::to_string(m_HoldDistance * 0.00009921875/*mm per micro step*/) + " mm").c_str());
+                    m_StageFrame->gotoStepsDistance(m_HoldDistance);
                     break;
                 }
                 //wxLogMessage("ContinuousEvent: Went to end length.");

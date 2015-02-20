@@ -124,6 +124,8 @@ struct ContinuousEventParameters{
   int steps;
   int cycles;
   BehaviorAfterStop behaviorAfterStop;
+  DistanceOrPercentage holdDistanceOrPercentage;
+  double holdDistance;
   double stopAtForceStress;
 };
 

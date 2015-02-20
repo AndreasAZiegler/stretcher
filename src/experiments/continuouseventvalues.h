@@ -62,6 +62,7 @@ class ContinuousEventValues : public ExperimentValues
                           double holdtime,
                           int steps,
                           long maxvalue,
+                          long holddistance,
                           int cycles,
                           BehaviorAfterStop behaviorAfterStop);
 
@@ -77,6 +78,14 @@ class ContinuousEventValues : public ExperimentValues
      */
     void setVelocity(double velocity){
       m_Velocity = velocity;
+    }
+
+    /**
+     * @brief Sets the hold distance.
+     * @param holddistance Hold distance
+     */
+    void setHoldDistance(double holddistance){
+      m_HoldDistance = holddistance * 0.00009921875/*mm per micro step*/;
     }
 
     /**
@@ -124,6 +133,7 @@ class ContinuousEventValues : public ExperimentValues
     double m_Increment;																					/**< Increments */
     double m_MaxValue;																					/**< Maximum value */
     int m_Steps;																								/**< Number of steps. */
+    long m_HoldDistance;																				/**< Hold distance in mm. */
     int m_Cycles;																								/**< Amount of cycles. */
     BehaviorAfterStop m_BehaviorAfterStop;											/**< Defines the behavior after the experiment stops. */
 };
