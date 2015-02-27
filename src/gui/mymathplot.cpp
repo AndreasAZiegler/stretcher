@@ -26,6 +26,12 @@ void mpFXYVector::AddXData(double x, std::vector<double> &xs){
 		//xs.erase(xs.begin());
 		//xy.erase(xy.begin());
 
+		//After a certain number of points implement a FIFO buffer
+		//As plotting too many points can cause missing data
+		if (x > 300){
+				xs.erase(xs.begin());
+		}
+
 		//Add new Data points at the end
 		xs.push_back(x);
 
@@ -70,6 +76,12 @@ void mpFXYVector::AddYData(double y, std::vector<double> &ys){
 		//Delete first point if you need a filo buffer (i dont need it)
 		//xs.erase(xs.begin());
 		//xy.erase(xy.begin());
+
+		//After a certain number of points implement a FIFO buffer
+		//As plotting too many points can cause missing data
+		if (y > 300){
+				ys.erase(ys.begin());
+		}
 
 		//Add new Data points at the end
 		ys.push_back(y);
