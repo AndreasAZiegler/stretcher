@@ -1273,13 +1273,27 @@ public:
     */
     void SetData( const std::vector<double> &xs,const std::vector<double> &ys);
 
+    /**
+     * @brief Adds a new data x-point to the x-vector.
+     * @param x X value
+     * @param xs Reference to the vector containing the x values.
+     */
+    void AddXData(double x, std::vector<double> &xs);
+
+    /**
+     * @brief Adds a new data y-point to the y-vector.
+     * @param y Y value
+     * @param ys Reference to the vector containing the y values.
+     */
+    void AddYData(double y, std::vector<double> &ys);
+
     /** Clears all the data, leaving the layer empty.
       * @sa SetData
       */
     void Clear();
 
 protected:
-    /** The internal copy of the set of data to draw.
+    /** The internal copy of the set of data to draw
       */
     std::vector<double>  m_xs,m_ys;
 

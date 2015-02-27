@@ -166,7 +166,8 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
-          m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
+          m_ForceStressDistanceGraph->AddYData((measurementValue.value / 10.0) / m_Area, m_ForceStressGraphValues.operator *());
+          //m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
           /*
           wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
                                    " value: " + std::to_string(measurementValue.value) +
@@ -205,8 +206,11 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         // Add new distance value.
         std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
         m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
-        m_DistanceGraphValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
-        m_DisplacementGraphValues->push_back(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
+
+        m_ForceStressDistanceGraph->AddXData(measurementValue.value * 0.00009921875/*mm per micro step*/, m_DistanceGraphValues.operator *());
+        m_ForceStressDisplacementGraph->AddXData(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength, m_DisplacementGraphValues.operator *());
+        //m_DistanceGraphValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+        //m_DisplacementGraphValues->push_back(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
       }
 
       // Update the max force values, if the range changed.
@@ -232,7 +236,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       // Sets data for the graph if the stress/force vector and the distance vector have the same lengths.
       if(m_ForceStressGraphValues->size() == m_DistanceGraphValues->size()){
         std::lock_guard<std::mutex> lck{*m_VectorLayerMutex};
-        m_ForceStressDistanceGraph->SetData(*m_DistanceGraphValues, *m_ForceStressGraphValues);
+        //m_ForceStressDistanceGraph->SetData(*m_DistanceGraphValues, *m_ForceStressGraphValues);
         m_ForceStressDisplacementGraph->SetData(*m_DisplacementGraphValues, *m_ForceStressGraphValues);
       }else{ // Otherwise correct the length.
         //std::cout << "ExperimentValues stress/force: " << m_GraphStressForceValues.size() << " distance: " << m_GraphDistanceValues.size() << std::endl;

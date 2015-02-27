@@ -1,6 +1,7 @@
 set(SOURCE
 	${SOURCE}
         ./gui/mybutton.cpp
+        ./gui/mymathplot.cpp
         ./gui/myframe.cpp
         ./gui/myframe_presets.cpp
         ./gui/myframe_graph.cpp
