@@ -242,8 +242,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     DistanceOrForceOrStress m_DistanceOrForceOrStress;										  					/**< Defines if the experiment is distance of stress/force based. */
     MyFrame *m_MyFrame;																																/**< Pointer to the main frame object. */
     mpFXYVector *m_ForceStressDisplacementGraph;																			/**< Pointer to the force/stress - displacement graph. */
-    std::shared_ptr<std::vector<double>> m_DisplacementGraphValues;										/**< Vector containing only the displacement values */
-    std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;										/**< Vector containing only the stress/force - distance values */
+    std::shared_ptr<std::deque<double>> m_DisplacementGraphValues;										/**< Vector containing only the displacement values */
+    std::shared_ptr<std::deque<double>> m_ForceStressGraphValues;										/**< Vector containing only the stress/force - distance values */
     double m_GageLength;																															/**< The gage length. */
 
 	private:
@@ -259,7 +259,7 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     mpFXYVector *m_MinDistanceLimitVectorLayer;																				/**< Pointer to the minimal distance limit graph. */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_StressForceValues;	/**< Vector containing structs with stress/force values and their time stamps */
     std::vector<std::vector<ExperimentValues::MeasurementValue>> m_DistanceValues;		/**< Vector containing structs with distance values and their time stamps */
-    std::shared_ptr<std::vector<double>> m_DistanceGraphValues;												/**< Vector containing only the distance values */
+    std::shared_ptr<std::deque<double>> m_DistanceGraphValues;												/**< Vector containing only the distance values */
     std::shared_ptr<std::vector<double>> m_GraphMaxForceLimitValues;									/**< Pointer to the vector containing the max force limit graph values. */
     std::shared_ptr<std::vector<double>> m_GraphMinForceLimitValues;									/**< Pointer to the vector containing the min force limit graph values. */
     std::shared_ptr<std::vector<double>> m_GraphForceLimitXAxisPoints;								/**< Pointer to the vector containing the values for the x-axis for the force limits. */

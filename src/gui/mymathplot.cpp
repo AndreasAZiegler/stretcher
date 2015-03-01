@@ -13,7 +13,7 @@
  * @param x X value
  * @param xs Reference to the vector containing the x values.
  */
-void mpFXYVector::AddXData(double x, std::vector<double> &xs){
+void mpFXYVector::AddXData(double x, std::deque<double> &xs){
 		// Check if the data vectora are of the same size
 	/*
 		if (xs.size() != ys.size()) {
@@ -44,7 +44,7 @@ void mpFXYVector::AddXData(double x, std::vector<double> &xs){
 				m_minX  = xs[0];
 				m_maxX  = xs[0];
 
-				std::vector<double>::const_iterator  it;
+				std::deque<double>::const_iterator  it;
 
 				for (it=xs.begin();it!=xs.end();it++){
 						if (*it<m_minX) m_minX=*it;
@@ -64,7 +64,7 @@ void mpFXYVector::AddXData(double x, std::vector<double> &xs){
  * @param y Y value
  * @param ys Reference to the vector containing the y values.
  */
-void mpFXYVector::AddYData(double y, std::vector<double> &ys){
+void mpFXYVector::AddYData(double y, std::deque<double> &ys){
 		// Check if the data vectora are of the same size
 	/*
 		if (xs.size() != ys.size()) {
@@ -95,7 +95,7 @@ void mpFXYVector::AddYData(double y, std::vector<double> &ys){
 				m_minY  = ys[0];
 				m_maxY  = ys[0];
 
-				std::vector<double>::const_iterator  it;
+				std::deque<double>::const_iterator  it;
 
 				for (it=ys.begin();it!=ys.end();it++){
 						if (*it<m_minY) m_minY=*it;

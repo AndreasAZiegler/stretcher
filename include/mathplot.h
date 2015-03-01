@@ -1278,14 +1278,14 @@ public:
      * @param x X value
      * @param xs Reference to the vector containing the x values.
      */
-    void AddXData(double x, std::vector<double> &xs);
+    void AddXData(double x, std::deque<double> &xs);
 
     /**
      * @brief Adds a new data y-point to the y-vector.
      * @param y Y value
      * @param ys Reference to the vector containing the y values.
      */
-    void AddYData(double y, std::vector<double> &ys);
+    void AddYData(double y, std::deque<double> &ys);
 
     /** Clears all the data, leaving the layer empty.
       * @sa SetData
@@ -1295,7 +1295,7 @@ public:
 protected:
     /** The internal copy of the set of data to draw
       */
-    std::vector<double>  m_xs,m_ys;
+    std::deque<double>  m_xs,m_ys;
 
     /** The internal counter for the "GetNextXY" interface
       */
