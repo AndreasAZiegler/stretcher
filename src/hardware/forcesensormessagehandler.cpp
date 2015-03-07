@@ -73,12 +73,13 @@ void ForceSensorMessageHandler::receiver(void){
   int syncPos;
 
   // Loop until the receiver should stop.
-  int lv = 8388608;
+  int lv = 0;
   while(m_ExitFlag){
 
-      //measforce = 100 * sin(lv++ * (1/(6.28 * 1000)));
-      measforce = lv;
-      lv -= 10;
+      measforce = (8388608 - 100000) - 100000 * sin(lv * (1/(6.28 * 500)));
+      //measforce = lv;
+      //lv -= 10;
+      lv += 10;
       /*
       measforce = (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+2]) << 16) +
                   (static_cast<unsigned char>(m_ReceiveBuffer[syncPos+3]) << 8) +
@@ -95,7 +96,7 @@ void ForceSensorMessageHandler::receiver(void){
         }
       }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(5));
   }
   // Signaling that the message handler is finished.
   {

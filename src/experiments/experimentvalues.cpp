@@ -184,11 +184,9 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         }
       }
 
-      {
       // Update the max distance values, if the range changed.
-      std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
-      if((*std::max_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) < m_ForceStressGraphValues->back()) ||
-         (*std::min_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) > m_ForceStressGraphValues->back())){
+      //if((*std::max_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) < m_ForceStressGraphValues->back()) ||
+      //   (*std::min_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) > m_ForceStressGraphValues->back())){
         /*
         m_GraphDistanceLimitYAxisPoints->push_back(m_ForceStressGraphValues->back());
         m_GraphMaxDistanceLimitValues->push_back(m_GraphMaxDistanceLimitValues->back());
@@ -213,8 +211,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_MinDistanceLimitVectorLayer->AddXData(m_GraphMinDistanceLimitValues->back());
         m_MinDistanceLimitVectorLayer->AddYData(m_ForceStressGraphValues->back());
         */
-      }
-      }
+      //}
       break;
 
     case UpdatedValuesReceiver::ValueType::Distance:

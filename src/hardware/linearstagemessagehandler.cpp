@@ -8,6 +8,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <cmath>
 #include <wx/log.h>
 #include "linearstagemessagehandler.h"
 
@@ -59,7 +60,7 @@ void LinearStageMessageHandler::receiver(void){
 
 		m_ReceiveBuffer[0] = 0x01;
 		m_ReceiveBuffer[1] = MESSAGE_CURRENT_POSITION;
-		long lv = 100787;
+		long lv = 0;
 		long cmd_data;
 
 		while(m_ExitFlag){
@@ -76,8 +77,9 @@ void LinearStageMessageHandler::receiver(void){
     */
 
 				//if(true == m_GenerateDataFlag){
-						cmd_data = lv;
-						lv -= 10;
+						cmd_data = (1*100787) + 100787 * sin(lv * (1/(6.28 * 500)));
+						//cmd_data = lv;
+						lv += 10;
 						if(0 > cmd_data){
 								cmd_data = 256*256*256*256 + cmd_data;
 						}
@@ -90,7 +92,7 @@ void LinearStageMessageHandler::receiver(void){
 						m_ReceiveBuffer[2] = cmd_data;
 
 						handler(&m_ReceiveBuffer[0]);
-						std::this_thread::sleep_for(std::chrono::milliseconds(10));
+						std::this_thread::sleep_for(std::chrono::milliseconds(5));
 				//}
 		}
 		// Signaling that the message handler is finished.
