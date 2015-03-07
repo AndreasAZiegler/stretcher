@@ -79,6 +79,10 @@ LinearStage::~LinearStage()
   //std::cout << "LinearStage destructor finished." << std::endl;
 }
 
+void LinearStage::startGenerateData(void){
+  m_MessageHandler.startGenerateData();
+}
+
 /**
   * @brief Returns the pointer to the message handler.
   * @return Pointer to the message handler.
@@ -363,6 +367,7 @@ void LinearStage::moveForward(double speedinmm){
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
+  m_MessageHandler.startGenerateData();
 }
 
 /**
@@ -390,6 +395,7 @@ void LinearStage::moveBackward(double speedinmm){
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
+  m_MessageHandler.startGenerateData();
 }
 
 /**
@@ -408,6 +414,7 @@ void LinearStage::moveSteps(long steps){
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
+  m_MessageHandler.startGenerateData();
 }
 
 /**
@@ -426,6 +433,7 @@ void LinearStage::moveToAbsolute(long position){
     lock_guard<mutex> lck{m_WritingSerialInterfaceMutex};
     m_SerialPort.Writev(buffer, 6, 5/*ms*/);
   }
+  m_MessageHandler.startGenerateData();
 }
 
 /**

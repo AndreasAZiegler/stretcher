@@ -40,6 +40,8 @@ class StageFrame : virtual public UpdatedValuesReceiver
      */
     ~StageFrame();
 
+    void startGenerateData(void);
+
     /**
      * @brief Registers the linear stages and get pointer for the message handlers of the linear stages and register update method at the message handlers.
      * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.

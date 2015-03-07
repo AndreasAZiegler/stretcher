@@ -37,6 +37,11 @@ StageFrame::~StageFrame(){
   (m_LinearStagesMessageHandlers.at(1))->unregisterUpdateMethod(m_Position2Id);
 }
 
+void StageFrame::startGenerateData(void){
+  m_LinearStagesMessageHandlers.at(0)->startGenerateData();
+  m_LinearStagesMessageHandlers.at(1)->startGenerateData();
+}
+
 /**
  * @brief Registers the linear stages and get pointer for the message handlers of the linear stages.
  * @param linearstages Pointer to the vector containing the pointer to the linear stages objects.

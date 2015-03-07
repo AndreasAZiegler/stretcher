@@ -6,6 +6,7 @@
 
 // Includes
 #include <iostream>
+#include <thread>
 #include <chrono>
 #include <wx/log.h>
 #include "linearstagemessagehandler.h"
@@ -33,7 +34,8 @@ LinearStageMessageHandler::LinearStageMessageHandler(wxSerialPort *serialport,
                    readingSerialInterfaceMutex,
                    waitmessagehandler,
                    waitmessagehandlermutex,
-                   messagehandlerfinishednr)//,
+                   messagehandlerfinishednr),
+    m_GenerateDataFlag(false)
 {
 }
 
@@ -44,28 +46,25 @@ LinearStageMessageHandler::~LinearStageMessageHandler(){
   //std::cout << "LinearStageMessageHandler destructor finished." << std::endl;
 }
 
+void LinearStageMessageHandler::startGenerateData(void){
+ m_GenerateDataFlag = true;
+}
+
 /**
  * @brief Receiving method (Should be executed in a own thread). Listen to the serial port and forwards the received messages to the handler.
  */
 void LinearStageMessageHandler::receiver(void){
   unsigned int timeout = 5/*ms*/;
   size_t answerLen = 0;
-  while(m_ExitFlag){
-    // Only receive messages, when there is no other method reading from the serial interface.
-    {
-      lock_guard<mutex> lck {*m_ReadingSerialInterfaceMutex};
-      if(1 == m_SerialPort->IsOpen()){
-        answerLen = m_SerialPort->Readv(m_ReceiveBuffer, 6, timeout);
-        if(0 < answerLen){
-          // Read data until 1 message is received
-          while(6 > answerLen){
-            answerLen += m_SerialPort->Readv(&m_ReceiveBuffer[answerLen], (6 - answerLen) , timeout);
-          }
-        }
-      }
-    }
 
-    // If messages are received, process the messages.
+		m_ReceiveBuffer[0] = 0x01;
+		m_ReceiveBuffer[1] = MESSAGE_CURRENT_POSITION;
+		long lv = 100787;
+		long cmd_data;
+
+		while(m_ExitFlag){
+
+    /*
     if(answerLen > 0){
       // Check the whole buffer in the case, that the "Command" is not the second byte.
       for(int i = 0; i < (static_cast<int>(answerLen) - 5); ++i){
@@ -74,14 +73,33 @@ void LinearStageMessageHandler::receiver(void){
         }
       }
     }
-  }
-  // Signaling that the message handler is finished.
-  {
-    std::lock_guard<std::mutex> lck{*m_WaitMessageHandlerMutex};
-    (*m_MessageHandlersFinishedNumber)++;
-    m_WaitMessageHandler->notify_all();
-    std::cout << "LinearStageMessageHandler finished" << std::endl;
-  }
+    */
+
+				//if(true == m_GenerateDataFlag){
+						cmd_data = lv;
+						lv -= 10;
+						if(0 > cmd_data){
+								cmd_data = 256*256*256*256 + cmd_data;
+						}
+						m_ReceiveBuffer[5] = cmd_data / (256*256*256);
+						cmd_data = cmd_data - 256*256*256 * m_ReceiveBuffer[5];
+						m_ReceiveBuffer[4] = cmd_data / (256*256);
+						cmd_data = cmd_data - 256*256 * m_ReceiveBuffer[4];
+						m_ReceiveBuffer[3] = cmd_data / 256;
+						cmd_data = cmd_data - 256 * m_ReceiveBuffer[3];
+						m_ReceiveBuffer[2] = cmd_data;
+
+						handler(&m_ReceiveBuffer[0]);
+						std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				//}
+		}
+		// Signaling that the message handler is finished.
+		{
+				std::lock_guard<std::mutex> lck{*m_WaitMessageHandlerMutex};
+				(*m_MessageHandlersFinishedNumber)++;
+				m_WaitMessageHandler->notify_all();
+				std::cout << "LinearStageMessageHandler finished" << std::endl;
+		}
 }
 
 /**
@@ -109,6 +127,7 @@ void LinearStageMessageHandler::handler(char *message){
     case MESSAGE_CURRENT_POSITION:
       // Notify updated distance
       m_CurrentPosition.timestamp = std::chrono::high_resolution_clock::now();
+      //m_CurrentPosition.value = static_cast<long>(message[1]);
       m_CurrentPosition.value = calculatePosition(&message[1]);
       {
         std::lock_guard<std::mutex> lck{m_AccessListMutex};

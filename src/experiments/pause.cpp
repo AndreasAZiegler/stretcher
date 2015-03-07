@@ -62,6 +62,7 @@ Pause::Pause(ExperimentParameters experimentparameters,
 {
   // Registers the update method at the message handlers.
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**
@@ -70,6 +71,7 @@ Pause::Pause(ExperimentParameters experimentparameters,
 Pause::~Pause(){
   // Unregisters the update method at the message handlers.
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+  m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
 }
 
 /**
@@ -116,6 +118,7 @@ void Pause::process(Event event){
       if(Event::evStart == event){
         m_CurrentState = runState;
         wxLogMessage("Pause: Start");
+        m_StageFrame->startGenerateData();
         wxLogMessage(std::string("Pause: Hold for: " + std::to_string(m_PauseTime * 1000) + " ms").c_str());
         std::thread t1(&Pause::sleepForMilliseconds, this, m_PauseTime);
         t1.join();

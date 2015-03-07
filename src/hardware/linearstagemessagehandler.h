@@ -46,6 +46,8 @@ class LinearStageMessageHandler : virtual public MessageHandler
      */
     ~LinearStageMessageHandler();
 
+    void startGenerateData(void);
+
     /**
      * @brief Registers the stage frame object.
      * @param stageframe Pointer to the stage frame object.
@@ -85,6 +87,8 @@ class LinearStageMessageHandler : virtual public MessageHandler
     enum { ANSWER_MOVE_AT_CONSTANT_SPEED = 0x16 };    /**< Answer from the command "Move At Constant Speed" */
     enum { ANSWER_MOTOR_STOP = 0x17 };                /**< Answer from the command "Stop" */
     enum { ANSWER_RETURN_STORED_POSITION = 0x11 };
+
+    bool m_GenerateDataFlag;
 
     /**
      * @brief Calculates the position from the receiving position data. See manual page. 7

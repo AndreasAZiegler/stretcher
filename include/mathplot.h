@@ -76,6 +76,7 @@
 #include <wx/print.h>
 #include <wx/image.h>
 
+#include <boost/circular_buffer.hpp>
 
 #include <deque>
 
@@ -1267,25 +1268,17 @@ public:
     */
     mpFXYVector(wxString name = wxEmptyString, int flags = mpALIGN_NE);
 
+    void AddXData(double x_value);
+
+    void AddYData(double x_value);
+
+    void PrepareXYData(void);
+
     /** Changes the internal data: the set of points to draw.
         Both vectors MUST be of the same length. This method DOES NOT refresh the mpWindow; do it manually.
       * @sa Clear
     */
     void SetData( const std::vector<double> &xs,const std::vector<double> &ys);
-
-    /**
-     * @brief Adds a new data x-point to the x-vector.
-     * @param x X value
-     * @param xs Reference to the vector containing the x values.
-     */
-    void AddXData(double x, std::vector<double> &xs);
-
-    /**
-     * @brief Adds a new data y-point to the y-vector.
-     * @param y Y value
-     * @param ys Reference to the vector containing the y values.
-     */
-    void AddYData(double y, std::vector<double> &ys);
 
     /** Clears all the data, leaving the layer empty.
       * @sa SetData
@@ -1293,9 +1286,15 @@ public:
     void Clear();
 
 protected:
-    /** The internal copy of the set of data to draw
+    /** The internal copy of the set of data to draw.
       */
-    std::vector<double>  m_xs,m_ys;
+    boost::circular_buffer<double> m_xs;
+    boost::circular_buffer<double> m_ys;
+
+    /** Temporary vector for the added values.
+      */
+    std::vector<double> m_temp_xs;
+    std::vector<double> m_temp_ys;
 
     /** The internal counter for the "GetNextXY" interface
       */

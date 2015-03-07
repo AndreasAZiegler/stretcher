@@ -44,6 +44,8 @@ class LinearStage : public SerialInterface
      */
     ~LinearStage();
 
+    void startGenerateData(void);
+
     /**
       * @brief Returns the pointer to the message handler.
       * @return Pointer to the message handler.
