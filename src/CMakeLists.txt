@@ -49,11 +49,11 @@ if(WXCTB_FOUND)
 endif(WXCTB_FOUND)
 
 # Add library for the graph wxmathplot
-find_package(Libmathplot REQUIRED)
-if(WXMATHPLOT_FOUND)
-  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${WXMATHPLOT_INCLUDE_DIR})
-  set(EXTERN_LIBS ${EXTERN_LIBS} ${WXMATHPLOT_LIBRARY})
-endif(WXMATHPLOT_FOUND)
+#find_package(Libmathplot REQUIRED)
+#if(WXMATHPLOT_FOUND)
+#  set(EXTERN_INCLUDES ${EXTERN_INCLUDES} ${WXMATHPLOT_INCLUDE_DIR})
+#  set(EXTERN_LIBS ${EXTERN_LIBS} ${WXMATHPLOT_LIBRARY})
+#endif(WXMATHPLOT_FOUND)
 
 # Add library for loading and saving of settings
 find_package(Libconfig REQUIRED)
