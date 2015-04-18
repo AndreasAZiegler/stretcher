@@ -1,6 +1,7 @@
 set(SOURCE
 	${SOURCE}
         ./gui/mybutton.cpp
+        ./gui/mathplot.cpp
         ./gui/myframe.cpp
         ./gui/myframe_presets.cpp
         ./gui/myframe_graph.cpp
@@ -23,6 +24,7 @@ set(SOURCE
 set(HEADERS
 	${HEADERS}
         ./gui/mybutton.h
+        ./gui/mathplot.h
         ./gui/myfileoutput_base.h
         ./gui/myframe_base.h
         ./gui/mystartupdialog.h

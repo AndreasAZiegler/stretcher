@@ -62,6 +62,7 @@ Pause::Pause(ExperimentParameters experimentparameters,
 {
   // Registers the update method at the message handlers.
   m_DistanceId = m_StageFrame->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
+  m_ForceId = m_ForceSensorMessageHandler->registerUpdateMethod(&UpdatedValuesReceiver::updateValues, this);
 }
 
 /**
@@ -70,6 +71,7 @@ Pause::Pause(ExperimentParameters experimentparameters,
 Pause::~Pause(){
   // Unregisters the update method at the message handlers.
   m_StageFrame->unregisterUpdateMethod(m_DistanceId);
+  m_ForceSensorMessageHandler->unregisterUpdateMethod(m_ForceId);
 }
 
 /**
