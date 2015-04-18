@@ -180,7 +180,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
           //m_ForceStressGraphValues->push_back(measurementValue.value / 10000.0);
-          m_ForceStressDistanceGraph->AddYData(measurementValue.value / 100000.0);
+          m_ForceStressDistanceGraph->AddYData(measurementValue.value / 10000.0);
         }
       }
 
