@@ -187,9 +187,9 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
       // Update the max distance values, if the range changed.
       //if((*std::max_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) < m_ForceStressGraphValues->back()) ||
       //   (*std::min_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) > m_ForceStressGraphValues->back())){
-        m_GraphDistanceLimitYAxisPoints->push_back(m_ForceStressGraphValues->back());
-        m_GraphMaxDistanceLimitValues->push_back(m_GraphMaxDistanceLimitValues->back());
-        m_GraphMinDistanceLimitValues->push_back(m_GraphMinDistanceLimitValues->back());
+      //  m_GraphDistanceLimitYAxisPoints->push_back(m_ForceStressGraphValues->back());
+      //  m_GraphMaxDistanceLimitValues->push_back(m_GraphMaxDistanceLimitValues->back());
+      //  m_GraphMinDistanceLimitValues->push_back(m_GraphMinDistanceLimitValues->back());
         /*
         wxLogMessage(std::string("ExperimentValues: m_GraphDistanceLimitYAxisPoints: " + std::to_string(m_GraphDistanceLimitYAxisPoints->size()) +
                                  " m_GraphMaxDistanceLimitValues: " + std::to_string(m_GraphMaxDistanceLimitValues->size())).c_str());
@@ -197,12 +197,11 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
                                  " m_GraphMaxDistanceLimitValues->back(): " + std::to_string(m_GraphMaxDistanceLimitValues->back()) +
                                  " m_GraphMinDistanceLimitValues->back(): " + std::to_string(m_GraphMinDistanceLimitValues->back())).c_str());
         */
-        m_MaxDistanceLimitVectorLayer->SetData(*m_GraphMaxDistanceLimitValues, *m_GraphDistanceLimitYAxisPoints);
-        m_MinDistanceLimitVectorLayer->SetData(*m_GraphMinDistanceLimitValues, *m_GraphDistanceLimitYAxisPoints);
+        //m_MaxDistanceLimitVectorLayer->SetData(*m_GraphMaxDistanceLimitValues, *m_GraphDistanceLimitYAxisPoints);
+        //m_MinDistanceLimitVectorLayer->SetData(*m_GraphMinDistanceLimitValues, *m_GraphDistanceLimitYAxisPoints);
+      //  m_MaxDistanceLimitVectorLayer->AddXData(m_GraphMaxDistanceLimitValues->back());
+      //  m_MaxDistanceLimitVectorLayer->AddYData(m_ForceStressGraphValues->back());
       //}
-
-        m_MaxDistanceLimitVectorLayer->AddXData(m_GraphMaxDistanceLimitValues->back());
-        m_MaxDistanceLimitVectorLayer->AddYData(m_ForceStressGraphValues->back());
 
       break;
 
