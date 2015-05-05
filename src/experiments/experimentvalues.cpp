@@ -166,8 +166,8 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           // Add new stress value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
-          //m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
           m_ForceStressDistanceGraph->AddYData((measurementValue.value / 10.0) / m_Area);
+          //m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
           /*
           wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
                                    " value: " + std::to_string(measurementValue.value) +
@@ -179,8 +179,8 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           // Add new force value.
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
-          //m_ForceStressGraphValues->push_back(measurementValue.value / 10000.0);
           m_ForceStressDistanceGraph->AddYData(measurementValue.value / 10000.0);
+          //m_ForceStressGraphValues->push_back(measurementValue.value / 10000.0);
         }
       }
 
@@ -210,8 +210,10 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         // Add new distance value.
         std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
         m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
-        m_DistanceGraphValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
-        m_DisplacementGraphValues->push_back(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
+        m_ForceStressDistanceGraph->AddXData(measurementValue.value * 0.00009921875/*mm per micro step*/);
+        m_ForceStressDisplacementGraph->AddXData(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
+        //m_DistanceGraphValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
+        //m_DisplacementGraphValues->push_back(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
       }
 
       // Update the max force values, if the range changed.
