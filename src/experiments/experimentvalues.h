@@ -268,6 +268,8 @@ class ExperimentValues : virtual public UpdatedValuesReceiver
     std::shared_ptr<std::vector<double>> m_GraphMinDistanceLimitValues;								/**< Pointer to the vector containing the min distance limit graph vlaues. */
     std::shared_ptr<std::vector<double>> m_GraphDistanceLimitYAxisPoints;							/**< Pointer to the vector containing the values for the x-axis for the force limits. */
     std::shared_ptr<std::vector<double>> m_ForceStressGraphValues;														/**< Vector containing only the stress/force - distance values */
+    double m_CurrentForceStressGraphValue;														/**< Current force/stress value for the graph. */
+    double m_CurrentDistanceGraphValue;																	/**< Current distance value for the graph. */
     std::mutex m_AccessValuesMutex;																										/**< Mutex to protect the values vectors. */
     int m_CurrentProtocolCycle;																												/**< The current cycle numer. */
     bool m_ResetProtocolFlag;																													/**< Indicate it the protocol stops and the recorded values should be deleted. */

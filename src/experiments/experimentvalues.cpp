@@ -167,6 +167,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue((measurementValue.value / 10.0) / m_Area, measurementValue.timestamp));
           m_ForceStressDistanceGraph->AddYData((measurementValue.value / 10.0) / m_Area);
+          m_CurrentForceStressGraphValue = (measurementValue.value / 10.0) / m_Area;
           //m_ForceStressGraphValues->push_back((measurementValue.value / 10.0) / m_Area);
           /*
           wxLogMessage(std::string("ExperimentValues: Value: " + std::to_string((measurementValue.value / 10.0) / m_Area) +
@@ -180,13 +181,14 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
           std::lock_guard<std::mutex> lck{m_AccessValuesMutex};
           m_StressForceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value / 10000.0, measurementValue.timestamp));
           m_ForceStressDistanceGraph->AddYData(measurementValue.value / 10000.0);
+          m_CurrentForceStressGraphValue = measurementValue.value / 10000.0;
           //m_ForceStressGraphValues->push_back(measurementValue.value / 10000.0);
         }
       }
 
       // Update the max distance values, if the range changed.
-      if((*std::max_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) < m_ForceStressGraphValues->back()) ||
-         (*std::min_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) > m_ForceStressGraphValues->back())){
+      if((*std::max_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) < m_CurrentForceStressGraphValue) ||
+         (*std::min_element(m_GraphDistanceLimitYAxisPoints->begin(), m_GraphDistanceLimitYAxisPoints->end()) > m_CurrentForceStressGraphValue)){
         m_GraphDistanceLimitYAxisPoints->push_back(m_ForceStressGraphValues->back());
         m_GraphMaxDistanceLimitValues->push_back(m_GraphMaxDistanceLimitValues->back());
         m_GraphMinDistanceLimitValues->push_back(m_GraphMinDistanceLimitValues->back());
@@ -213,13 +215,14 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
         m_ForceStressDistanceGraph->AddXData(measurementValue.value * 0.00009921875/*mm per micro step*/);
         m_ForceStressDisplacementGraph->AddXData(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
+        m_CurrentForceStressGraphValue = measurementValue.value * 0.00009921875/*mm per micro step*/;
         //m_DistanceGraphValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         //m_DisplacementGraphValues->push_back(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
       }
 
       // Update the max force values, if the range changed.
-      if((*std::max_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) < m_DistanceGraphValues->back()) ||
-         (*std::min_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) > m_DistanceGraphValues->back())){
+      if((*std::max_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) < m_CurrentDistanceGraphValue) ||
+         (*std::min_element(m_GraphForceLimitXAxisPoints->begin(), m_GraphForceLimitXAxisPoints->end()) > m_CurrentDistanceGraphValue)){
         m_GraphForceLimitXAxisPoints->push_back(m_DistanceGraphValues->back());
         m_GraphMaxForceLimitValues->push_back(m_GraphMaxForceLimitValues->back());
         m_GraphMinForceLimitValues->push_back(m_GraphMinForceLimitValues->back());
