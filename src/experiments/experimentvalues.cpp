@@ -217,7 +217,7 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
         m_DistanceValues[m_CurrentProtocolCycle].push_back(ExperimentValues::MeasurementValue(measurementValue.value * 0.00009921875/*mm per micro step*/, measurementValue.timestamp));
         m_ForceStressDistanceGraph->AddXData(measurementValue.value * 0.00009921875/*mm per micro step*/);
         m_ForceStressDisplacementGraph->AddXData(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
-        m_CurrentForceStressGraphValue = measurementValue.value * 0.00009921875/*mm per micro step*/;
+        m_CurrentDistanceGraphValue = measurementValue.value * 0.00009921875/*mm per micro step*/;
         //m_DistanceGraphValues->push_back(measurementValue.value * 0.00009921875/*mm per micro step*/);
         //m_DisplacementGraphValues->push_back(measurementValue.value *  0.00009921875/*mm per micro step*/ / m_GageLength);
       }
