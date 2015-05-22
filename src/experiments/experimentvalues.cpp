@@ -252,6 +252,11 @@ void ExperimentValues::updateValues(UpdatedValues::MeasurementValue measurementV
 						m_ForceStressDistanceGraph->PrepareXYData();
 						m_ForceStressDisplacementGraph->PrepareXYData();
 
+						m_MaxDistanceLimitVectorLayer->PrepareXYData();
+						m_MinDistanceLimitVectorLayer->PrepareXYData();
+						m_MaxForceLimitVectorLayer->PrepareXYData();
+						m_MinForceLimitVectorLayer->PrepareXYData();
+
       // Update the graph from the main thread.
       m_MyFrame->updateGraphFromExperimentValues();
     }
