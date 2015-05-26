@@ -346,7 +346,8 @@ void MyFrame::startup(void){
   m_ContinuousDistanceHoldTimeSpinCtrl->SetDigits(2);
   m_ContinuousDistanceIncrementSpinCtrl->SetDigits(2);
   m_ContinuousDistanceMaxValueSpinCtrl->SetDigits(2);
-  m_ContinuousEndOfEventHoldSpinCtrl->SetDigits(2);
+  m_ContinuousEndOfEventHoldDistanceSpinCtrl->SetDigits(2);
+  m_ContinuousEndOfEventHoldStressForceSpinCtrl->SetDigits(2);
 
   std::unique_ptr<wxMessageDialog> dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(this,
                                                                                                  "Does the mechanical set up changed since the last use?",
@@ -669,7 +670,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ContinuousStressForceIncrementStaticText->SetLabelText("Incrementd [dMPa]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("MPa");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Smax.");
-    m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [MPa]:");
+    m_ContinuousEndOfEventHoldStressForceRadioBtn->SetLabelText("Stop at [MPa]:");
     m_ForceUnit = wxT(" MPa");
 
     // If the graph is active.
@@ -699,7 +700,7 @@ void MyFrame::OnUnit(wxCommandEvent& event){
     m_ContinuousStressForceIncrementStaticText->SetLabelText(" Incrementd [dN]:");
     m_ContinuousStressForceMaxValueValueRadioBtn->SetLabelText("N");
     m_ContinuousStressForceMaxValuePercentRadioBtn->SetLabelText("%Fmax.");
-    m_ContinuousEndOfEventHoldRadioBtn->SetLabelText("Stop at [N]:");
+    m_ContinuousEndOfEventHoldStressForceRadioBtn->SetLabelText("Stop at [N]:");
     m_ForceUnit = wxT(" N");
 
     // If the graph is active.

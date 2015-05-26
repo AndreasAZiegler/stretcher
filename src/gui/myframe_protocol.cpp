@@ -452,8 +452,8 @@ void MyFrame::OnEditExperiment(wxCommandEvent& event){
             m_ContinuousEndOfEventMLRadioBtn->SetValue(true);
             break;
           case BehaviorAfterStop::HoldAForce:
-            m_ContinuousEndOfEventHoldRadioBtn->SetValue(true);
-            m_ContinuousEndOfEventHoldSpinCtrl->SetValue(parameters.stopAtForceStress);
+            m_ContinuousEndOfEventHoldStressForceRadioBtn->SetValue(true);
+            m_ContinuousEndOfEventHoldStressForceSpinCtrl->SetValue(parameters.stopAtForceStress);
             break;
         }
         m_ContinuousSendButton->SetLabelText("Save changes");
