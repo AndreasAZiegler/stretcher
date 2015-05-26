@@ -422,17 +422,28 @@ void MyFrame::OnContinuousSendToProtocol(wxCommandEvent& event){
     parameters.cycles = 1;
   }
 
+  if(true == m_ContinuousEndOfEventHoldMmRelRadioBtn->GetValue()){
+    parameters.holdDistanceOrPercentage = DistanceOrPercentage::DistanceRelative;
+  }else if(true == m_ContinuousEndOfEventHoldMmRadioBtn->GetValue()){
+    parameters.holdDistanceOrPercentage = DistanceOrPercentage::Distance;
+  }else if(true == m_ContinuousEndOfEventHoldPercentRadioBtn->GetValue()){
+    parameters.holdDistanceOrPercentage = DistanceOrPercentage::Percentage;
+  }
+  parameters.holdDistance = m_OneStepEndOfEventHoldSpinCtrl->GetValue();
+
   if(true == m_ContinuousEndOfEventStopRadioBtn->GetValue()){
     parameters.behaviorAfterStop = BehaviorAfterStop::Stop;
+  }else if(true == m_ContinuousEndOfEventHoldDistanceRadioBtn->GetValue()){
+    parameters.behaviorAfterStop = BehaviorAfterStop::HoldADistance;
   }else if(true == m_ContinuousEndOfEventL0RadioBtn->GetValue()){
     parameters.behaviorAfterStop = BehaviorAfterStop::GoToL0;
   }else if(true == m_ContinuousEndOfEventMLRadioBtn->GetValue()){
     parameters.behaviorAfterStop = BehaviorAfterStop::GoToML;
-  }else if(true == m_ContinuousEndOfEventHoldRadioBtn->GetValue()){
+  }else if(true == m_ContinuousEndOfEventHoldStressForceRadioBtn->GetValue()){
     parameters.behaviorAfterStop = BehaviorAfterStop::HoldAForce;
 
       //parameters.stopAtForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue() * m_Area * 10.0;
-    parameters.stopAtForceStress = m_ContinuousEndOfEventHoldSpinCtrl->GetValue();
+    parameters.stopAtForceStress = m_ContinuousEndOfEventHoldStressForceSpinCtrl->GetValue();
   }
 
 

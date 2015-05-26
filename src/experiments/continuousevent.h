@@ -162,6 +162,9 @@ class ContinuousEvent : public Experiment, virtual public UpdatedValuesReceiver
     long m_MaxValueLimit;																										/**< Max value in mm or N. */
     int m_Steps;																														/**< Number of steps. */
     int m_Cycles;																														/**< Amount of cycles. */
+    DistanceOrPercentage m_HoldDistanceOrPercentage;												/**< Indicates if the hold distance is given by value or by % of L0. */
+    double m_InitHoldDistance;																							/**< Hold distance in mm relative, mm or %L0. */
+    long m_HoldDistance;																										/**< Hold distance in mm. */
     BehaviorAfterStop m_BehaviorAfterStop;																	/**< Defines the behavior after the experiment stops. */
 
     State m_CurrentState;																										/**< The current experiment state. */

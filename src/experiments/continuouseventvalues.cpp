@@ -50,6 +50,7 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
                                              double holdtime,
                                              int steps,
                                              long maxvalue,
+                                             long holddistance,
                                              int cycles,
                                              BehaviorAfterStop behaviorAfterStop)
   : ExperimentValues(stageframe,
@@ -71,6 +72,7 @@ ContinuousEventValues::ContinuousEventValues(std::shared_ptr<StageFrame> stagefr
    m_HoldTime(holdtime),
    m_Steps(steps),
    m_MaxValue(maxvalue),
+   m_HoldDistance(holddistance),
    m_Cycles(cycles),
    m_BehaviorAfterStop(behaviorAfterStop)
 {
@@ -171,6 +173,10 @@ std::string ContinuousEventValues::getEndOfEvent(void){
   switch(m_BehaviorAfterStop){
     case BehaviorAfterStop::Stop:
       return(std::string("Stop."));
+      break;
+
+    case BehaviorAfterStop::HoldADistance:
+      return(std::string("Hold a distance: " + to_string_wp(m_HoldDistance * 0.00009921875/*mm per micro step*/, 2) + " mm"));
       break;
 
     case BehaviorAfterStop::GoToL0:
