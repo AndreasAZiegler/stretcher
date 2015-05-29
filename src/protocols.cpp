@@ -449,7 +449,7 @@ void Protocols::setLimits(long mindistancelimit, long maxdistancelimit, long min
   m_MinDistanceLimit = mindistancelimit;
   m_MaxDistanceLimit = maxdistancelimit;
   m_MinForceLimit = minforcelimit;
-  m_MaxForceLimit = maxdistancelimit;
+  m_MaxForceLimit = maxforcelimit;
 
   for(auto i : m_Experiments){
     i->setLimits(mindistancelimit, maxdistancelimit, minforcelimit, maxforcelimit);
