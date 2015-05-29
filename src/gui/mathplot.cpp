@@ -2389,8 +2389,8 @@ IMPLEMENT_DYNAMIC_CLASS(mpFXYVector, mpFXY)
 // Constructor
 mpFXYVector::mpFXYVector(wxString name, int flags )
  : mpFXY(name,flags),
-   m_xs(1000),
-   m_ys(1000)
+   m_xs(10000),
+   m_ys(10000)
 {
     m_index = 0;
     m_minX  = -1;
